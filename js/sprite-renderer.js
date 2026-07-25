@@ -22,7 +22,7 @@ export class SpriteRenderer{
     const dx=-pivotX*scale+(frame.visualOffsetX||0),dy=-pivotY*scale+(frame.visualOffsetY||0);
     ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,opacity));ctx.imageSmoothingEnabled=this.atlas.manifest.defaults?.pixelSmoothing!==false;
     ctx.translate(groundX,groundY);if(face<0)ctx.scale(-1,1);
-    if(fighter?.hitFlash>0){ctx.globalCompositeOperation='screen';ctx.filter='brightness(1.8) saturate(.45)'}
+    const hitFlashScale=fighter?.world?.hitFlashScale??1,outline=fighter?.world?.strongOutlines?'drop-shadow(0 0 2px #fff) ':'';if(fighter?.hitFlash>0&&hitFlashScale>0){ctx.globalCompositeOperation='screen';ctx.filter=`${outline}brightness(${1+hitFlashScale*.8}) saturate(${1-hitFlashScale*.55})`}else if(outline)ctx.filter=outline.trim();
     ctx.drawImage(this.atlas.image,sx,sy,sw,sh,dx,dy,sw*scale,sh*scale);
     ctx.restore();
   }

@@ -93,12 +93,12 @@ export function updateCinematic(world){
   return true;
 }
 
-export function drawCinematicOverlay(ctx,cinematic,width,height){
+export function drawCinematicOverlay(ctx,cinematic,width,height,{flashScale=1,effects='full'}={}){
   if(!cinematic?.active||cinematic.mode==='off')return;
   const {data,attacker,frame,duration}=cinematic,progress=1-frame/duration;
-  ctx.save();ctx.fillStyle=`rgba(2,3,10,${.2+Math.sin(progress*Math.PI)*.38})`;ctx.fillRect(0,0,width,height);
+  const effectScale=effects==='reduced'?0.58:1;ctx.save();ctx.fillStyle=`rgba(2,3,10,${(.2+Math.sin(progress*Math.PI)*.38)*flashScale*effectScale})`;ctx.fillRect(0,0,width,height);
   ctx.fillStyle='#02040d';ctx.fillRect(0,0,width,34);ctx.fillRect(0,height-34,width,34);
-  ctx.textAlign='center';ctx.shadowColor=data.accent;ctx.shadowBlur=18;ctx.fillStyle=data.color;ctx.font='1000 27px Segoe UI';ctx.fillText(attacker.c.n.toUpperCase(),width/2,68);
+  ctx.textAlign='center';ctx.shadowColor=data.accent;ctx.shadowBlur=18*effectScale;ctx.fillStyle=data.color;ctx.font='1000 27px Segoe UI';ctx.fillText(attacker.c.n.toUpperCase(),width/2,68);
   ctx.font='900 15px Segoe UI';ctx.fillStyle='#fff';ctx.fillText(data.name.toUpperCase(),width/2,91);
   ctx.restore();
 }

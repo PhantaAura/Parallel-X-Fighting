@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Parallels X: Clash of Souls</title>
 <link rel="stylesheet" href="css/game.css">
+<link rel="stylesheet" href="css/combat.css">
 <style>
 :root{--orange:#ff5a1f;--bg:#080a11;--panel:#151a29;--line:#343b58;--text:#f5f7ff;--muted:#aeb6d1}
 *{box-sizing:border-box;margin:0;padding:0;user-select:none}html,body{min-height:100%;background:radial-gradient(circle at 20% 5%,#252b50,#0b0d16 42%,#05060a);color:var(--text);font-family:Segoe UI,Arial,sans-serif}body{display:flex;justify-content:center;padding:14px}button,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}#app{width:min(1120px,100%)}
@@ -21,7 +22,7 @@
 <div class="title">PARALLELS <span>X</span><br>CLASH OF SOULS</div><div class="sub">Season 1 • Season 2 • OVA roster</div>
 <div class="panel">
 <div class="options">
-<div class="opt"><label>MODE</label><select id="mode"><option value="story">Story Mode</option><option value="cpu">VS CPU</option><option value="local">Local 2 Player</option></select></div>
+<div class="opt"><label>MODE</label><select id="mode"><option value="story">Story Mode</option><option value="cpu">VS CPU</option><option value="local">Local 2 Player</option><option value="training">Training Mode</option></select></div>
 <div class="opt"><label>CPU DIFFICULTY</label><select id="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></div>
 <div class="opt"><label>STAGE</label><select id="stage"><option value="dojo">Tangai Dojo</option><option value="tournament">Global Tournament</option><option value="asrylyte">Asrylyte Zone</option><option value="clonebase">Clone Organization Base</option><option value="hell">Hell Arena</option></select></div>
 <div class="opt"><label>ROUND TIME</label><select id="roundTime"><option value="60">60 seconds</option><option value="90" selected>90 seconds</option><option value="120">120 seconds</option></select></div>
@@ -36,7 +37,7 @@
 <div id="hud"><div class="hudrow"><div class="hudside"><div class="hname" id="p1name"></div><div class="barbox"><div class="bar hp1" id="p1hp"></div></div><div class="barbox energybox"><div class="bar energy" id="p1en"></div></div></div><div class="center"><div id="timer">90</div><div id="roundLabel">ROUND 1</div></div><div class="hudside r"><div class="hname" id="p2name"></div><div class="barbox"><div class="bar hp2" id="p2hp"></div></div><div class="barbox energybox"><div class="bar energy" id="p2en"></div></div></div></div><div id="pause" class="hidden">PAUSED</div></div>
 <div id="msg" class="hidden"><h2 id="msgTitle"></h2><p id="msgText"></p><button class="primary" id="msgButton">CONTINUE</button> <button class="secondary" id="backMenu">CHARACTER SELECT</button></div>
 </div>
-<div class="controls"><div><b>P1:</b> A/D move • W/Space jump • S block • F attack • G special • H ultimate • Q dash</div><div><b>P2:</b> ←/→ move • ↑ jump • ↓ block • J attack • K special • L ultimate • O dash</div></div>
+<div class="controls"><div><b>P1:</b> A/D move • W/Space jump • S block • F light • R heavy • T launcher • G special • H ultimate • Q dash</div><div><b>P2:</b> ←/→ move • ↑ jump • ↓ block • J light • I heavy • U launcher • K special • L ultimate • O dash</div></div>
 <div class="touch"><button data-t="left">◀</button><button data-t="right">▶</button><button data-t="jump">JUMP</button><button data-t="attack">HIT</button><button data-t="special">SPECIAL</button><button data-t="ult">ULT</button></div><div class="foot">Press P to pause • Standard controllers supported • Story progress saves in this browser.</div>
 </section></div>
 <script type="application/x-parallelsx-legacy">

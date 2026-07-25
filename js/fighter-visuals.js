@@ -6,16 +6,21 @@ import {SpriteRenderer} from './sprite-renderer.js';
 
 export const RRVVFO_VISUAL_SAVE_KEY='pxRrvvfoVisualsV1';
 export const RRVVFO_MANIFEST_URL=new URL('../assets/fighters/rrvvfo/rrvvfo-animations.json',import.meta.url).href;
+const RRVVFO_VISUAL_SCHEMA_VERSION=2;
 
 export function defaultRrvvfoVisualSettings(){
-  return{enabled:false,appearance:'down',quality:'full',developerViewer:false};
+  return{schemaVersion:RRVVFO_VISUAL_SCHEMA_VERSION,enabled:true,appearance:'down',quality:'full',developerViewer:false};
 }
 
 export function loadRrvvfoVisualSettings(storage=globalThis.localStorage){
   const defaults=defaultRrvvfoVisualSettings();
   try{
     const saved=JSON.parse(storage?.getItem(RRVVFO_VISUAL_SAVE_KEY)||'{}');
-    return{...defaults,...saved,enabled:!!saved.enabled,appearance:saved.appearance==='up'?'up':'down',quality:saved.quality==='reduced'?'reduced':'full',developerViewer:!!saved.developerViewer};
+    // Version 1 saved the original Off default whenever a match started, even
+    // when the player never chose it. Migrate that implicit value to the new
+    // sprite-first default once; explicit Version 2 choices still persist.
+    const enabled=saved.schemaVersion===RRVVFO_VISUAL_SCHEMA_VERSION?!!saved.enabled:defaults.enabled;
+    return{...defaults,...saved,schemaVersion:RRVVFO_VISUAL_SCHEMA_VERSION,enabled,appearance:saved.appearance==='up'?'up':'down',quality:saved.quality==='reduced'?'reduced':'full',developerViewer:!!saved.developerViewer};
   }catch{return defaults}
 }
 

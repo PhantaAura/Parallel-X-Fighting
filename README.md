@@ -160,7 +160,7 @@ In local multiplayer, both players share one canvas, so a human Rrvvfo’s blind
 
 ## Experimental Rrvvfo sprites
 
-Character Select includes **Experimental Rrvvfo Sprites: On/Off**. The sprite renderer now defaults to On so the published build immediately shows the new Rrvvfo visuals. Off remains available and preserves the original procedural Rrvvfo rendering exactly. On preloads a generated 1536 × 1920 atlas before any match containing Rrvvfo and maps existing combat state to 192 × 192 normalized frames. A loading failure or malformed manifest automatically restores the original visuals so Rrvvfo can never begin invisible. Older saved implicit Off values are migrated once to the new default; an Off choice made afterward remains saved.
+Character Select includes **Experimental Rrvvfo Sprites: On/Off**. Fresh saves default to Off while the concept-derived artwork awaits manual cleanup. Off preserves the original procedural Rrvvfo rendering exactly. On preloads a generated 1536 × 1920 atlas before any match containing Rrvvfo and maps existing combat state to 192 × 192 normalized frames. A loading failure or malformed manifest automatically restores the original visuals so Rrvvfo can never begin invisible. An explicit On or Off choice persists without rewriting untouched legacy Off values.
 
 **Rrvvfo Hood** selects Hood Down (default) or Hood Up (alternate). This choice is visual only and has identical movement, damage, hitboxes, cooldowns, AI, combos, defense, and abilities. Ultimate/fire-awakening presentation can use hood-up poses even with the default appearance. Sprite toggle, hood choice, quality, and developer-viewer preference are stored under the new `pxRrvvfoVisualsV1` key; existing story and touch keys are unchanged.
 

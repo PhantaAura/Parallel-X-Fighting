@@ -118,7 +118,7 @@ async function startGame(){
   fighterVisuals.configure({enabled:U.spriteToggle.value==='on',appearance:U.spriteHood.value,quality:U.spriteQuality.value,developerViewer:U.spriteDebug.checked});
   const fightButton=$('fight'),originalLabel=fightButton.textContent;fightButton.disabled=true;fightButton.textContent='LOADING…';
   const spriteResult=await fighterVisuals.preloadForMatch([p1id,p2id]);fightButton.disabled=false;fightButton.textContent=originalLabel;
-  if(fighterVisuals.settings.enabled&&!spriteResult.ready)U.notice.textContent='Sprite assets could not load. Legacy Rrvvfo visuals are active.';
+  if(fighterVisuals.settings.enabled&&spriteResult.reason==='load-failed')U.notice.textContent='Sprite assets could not load. Legacy Rrvvfo visuals are active.';
   mode=U.mode.value;trainingState.enabled=mode==='training';trainingHud.classList.toggle('hidden',!trainingState.enabled);if(trainingState.enabled)clearTraining();
   difficulty=U.diff.value;world.cinematicMode=U.cine.value;world.localMode=mode==='local';world.reducedShake=U.reduced.checked;limit=+U.rt.value;roundsToWin=mode==='story'?1:+U.rounds.value;currentRound=1;wins1=wins2=story=0;
   if(mode==='story'){p2id=STORY_ORDER[0];if(p2id===p1id){story++;p2id=STORY_ORDER[story]}stage=STORY_STAGES[story]}else stage=U.stage.value;

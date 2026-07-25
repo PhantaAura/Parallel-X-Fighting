@@ -1,5 +1,5 @@
 export const ROSTER = {
-  rrvvfo:{n:'Rrvvfo',o:'S1/S2',c:'#e63224',a:'#ff9d2f',h:'#7a120f',sp:5.2,j:13.5,p:1.02,d:1,s:'Fire Blast / Shots of Agony',u:'Flow State + Lens'},
+  rrvvfo:{n:'Rrvvfo',o:'S1/S2',c:'#e63224',a:'#ff9d2f',h:'#7a120f',sp:5.2,j:13.5,p:1.02,d:1,s:'Fire Blast / Shots of Agony',u:'Lens of Truth'},
   revvfo:{n:'Revvfo',o:'S1/S2',c:'#8b2cff',a:'#ff55c8',h:'#321047',sp:4.8,j:12.7,p:1.10,d:1.02,s:'Beam / Teleport Strike',u:'Perfected Astrylte'},
   wade:{n:'Wade',o:'S1',c:'#1677ff',a:'#82e8ff',h:'#0c2b6c',sp:6.7,j:14.2,p:.92,d:.94,s:'Flash Step / Barrage',u:'Thunderstorm'},
   bark:{n:'Bark',o:'S1',c:'#7d512d',a:'#c8a06a',h:'#2c2118',sp:3.9,j:11.8,p:1.12,d:1.18,s:'Rock Armor / Earth Wall',u:'Earthquake'},
@@ -16,3 +16,4 @@ export const ROSTER = {
 };
 
 export const ROSTER_IDS = Object.keys(ROSTER);
+export const isMirrorMatch=(playerOne,playerTwo)=>playerOne===playerTwo;

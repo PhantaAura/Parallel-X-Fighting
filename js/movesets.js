@@ -6,7 +6,7 @@ export const MOVESETS={
     heavy:normal('Flame Heavy',13,11,27,25,61,12),
     launcher:normal('Flame Launcher',9.5,15,30,31,52,4,12.5),
     air:normal('Air Fire Combo',6.4,4,12,19,50,5,3.5),
-    moves:['Fire light combo','Flame Heavy','Flame Launcher','Air Fire Combo','Fire Blast','Shots of Agony','Object Swap Dash','Lens of Truth','Flow State']
+    moves:['Fire light combo','Flame Heavy','Flame Launcher','Air Fire Combo','Fire Blast','Shots of Agony','Object Swap Dash','Lens of Truth']
   },
   revvfo:{
     style:'Aggressive Astrylte pressure and teleports',

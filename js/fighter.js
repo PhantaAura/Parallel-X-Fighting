@@ -9,7 +9,7 @@ import {beginCinematicUltimate,clearCinematic,ULTIMATES} from './ultimate-system
 const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 
 export class Fighter{
-  constructor(id,side,cpu,world){this.id=id;this.c=ROSTER[id];this.side=side;this.cpu=cpu;this.world=world;this.w=48;this.h=86;this.combo=createComboState();this.resetRuntime()}
+  constructor(id,side,cpu,world,{appearance='down'}={}){this.id=id;this.c=ROSTER[id];this.side=side;this.cpu=cpu;this.world=world;this.appearance=appearance==='up'?'up':'down';this.w=48;this.h=86;this.combo=createComboState();this.resetRuntime()}
   resetRuntime(){
     Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,hp:100,en:100,attackCd:0,specialCd:0,ultCd:0,ultimateRecovery:0,dashCd:0,clashCooldown:0,ultimateStartup:0,pendingUltimate:false,lensCooldown:0,agonyCooldown:0,agonyActiveVolley:false,agonyVolleyFired:false,agonyVolleyId:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,tick:0,visualAction:null,visualActionTimer:0,visualHitKind:null,visualPerfectTimer:0,visualBlockTimer:0,visualDashTimer:0,hitFlash:0});
     resetDefenseState(this);

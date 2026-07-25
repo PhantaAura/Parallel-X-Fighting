@@ -7,9 +7,24 @@ import {SpriteRenderer} from './sprite-renderer.js';
 export const RRVVFO_VISUAL_SAVE_KEY='pxRrvvfoVisualsV1';
 export const RRVVFO_MANIFEST_URL=new URL('../assets/fighters/rrvvfo/rrvvfo-animations.json',import.meta.url).href;
 const RRVVFO_VISUAL_SCHEMA_VERSION=3;
+export const RRVVFO_APPEARANCE_SLOTS=Object.freeze(['player1','player2','trainingPlayer1','trainingDummy']);
+export const RRVVFO_APPEARANCES=Object.freeze({
+  down:Object.freeze({id:'down',label:'Hood Down',prototype:false}),
+  up:Object.freeze({id:'up',label:'Hood Up — Prototype',prototype:true})
+});
+
+function defaultAppearances(){return Object.fromEntries(RRVVFO_APPEARANCE_SLOTS.map(slot=>[slot,'down']))}
+export function normalizeRrvvfoAppearance(value,{allowPrototype=true}={}){return value==='up'&&allowPrototype?'up':'down'}
+export function isDeveloperSpriteBuild(locationLike=globalThis.location){
+  const hostname=locationLike?.hostname||'',search=locationLike?.search||'';
+  return hostname==='localhost'||hostname==='127.0.0.1'||new URLSearchParams(search).get('developer')==='1';
+}
+export function availableRrvvfoAppearances({developerMode=false,exposePrototype=false}={}){
+  return developerMode&&exposePrototype?[RRVVFO_APPEARANCES.down,RRVVFO_APPEARANCES.up]:[RRVVFO_APPEARANCES.down];
+}
 
 export function defaultRrvvfoVisualSettings(){
-  return{schemaVersion:RRVVFO_VISUAL_SCHEMA_VERSION,enabled:false,appearance:'down',quality:'full',developerViewer:false};
+  return{schemaVersion:RRVVFO_VISUAL_SCHEMA_VERSION,enabled:false,quality:'full',developerViewer:false,exposePrototypeAppearances:false,appearances:defaultAppearances()};
 }
 
 export function loadRrvvfoVisualSettings(storage=globalThis.localStorage){
@@ -17,7 +32,10 @@ export function loadRrvvfoVisualSettings(storage=globalThis.localStorage){
   try{
     const saved=JSON.parse(storage?.getItem(RRVVFO_VISUAL_SAVE_KEY)||'{}');
     const enabled=typeof saved.enabled==='boolean'?saved.enabled:defaults.enabled;
-    return{...defaults,...saved,schemaVersion:RRVVFO_VISUAL_SCHEMA_VERSION,enabled,appearance:saved.appearance==='up'?'up':'down',quality:saved.quality==='reduced'?'reduced':'full',developerViewer:!!saved.developerViewer};
+    const legacyAppearance=normalizeRrvvfoAppearance(saved.appearance);
+    const appearances={...defaults.appearances};
+    for(const slot of RRVVFO_APPEARANCE_SLOTS)appearances[slot]=normalizeRrvvfoAppearance(saved.appearances?.[slot]??legacyAppearance);
+    return{...defaults,...saved,schemaVersion:RRVVFO_VISUAL_SCHEMA_VERSION,enabled,quality:saved.quality==='reduced'?'reduced':'full',developerViewer:!!saved.developerViewer,exposePrototypeAppearances:!!saved.exposePrototypeAppearances,appearances};
   }catch{return defaults}
 }
 
@@ -64,10 +82,28 @@ export class FighterVisuals{
   }
   configure(next,{persist=true}={}){
     Object.assign(this.settings,next);
-    this.settings.appearance=this.settings.appearance==='up'?'up':'down';
+    this.settings.appearances={...defaultAppearances(),...(this.settings.appearances||{})};
+    for(const slot of RRVVFO_APPEARANCE_SLOTS)this.settings.appearances[slot]=normalizeRrvvfoAppearance(this.settings.appearances[slot]);
     this.settings.quality=this.settings.quality==='reduced'?'reduced':'full';
     if(this.renderer)this.renderer.setQuality(this.settings.quality);
     if(persist)saveRrvvfoVisualSettings(this.settings);
+  }
+  async preloadPreview(){
+    if(this.atlas)return{ready:true,cached:true};
+    try{
+      this.atlas=await loadSpriteAtlas(this.manifestUrl);
+      this.renderer=new SpriteRenderer(this.atlas,{quality:this.settings.quality});
+      return{ready:true,cached:false};
+    }catch(error){this.error=error;return{ready:false,reason:'load-failed',error}}
+  }
+  drawPreview(canvas,appearance='down'){
+    if(!canvas||!this.atlas||!this.renderer)return false;
+    const ctx=canvas.getContext('2d'),resolved=normalizeRrvvfoAppearance(appearance),frameName=this.atlas.animationFrames('fightingStance',resolved)[0]||this.atlas.animationFrames('idle',resolved)[0],frame=this.atlas.frame(frameName);
+    if(!ctx||!frame)return false;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const gradient=ctx.createLinearGradient(0,0,0,canvas.height);gradient.addColorStop(0,'#252b43');gradient.addColorStop(1,'#090c15');ctx.fillStyle=gradient;ctx.fillRect(0,0,canvas.width,canvas.height);
+    this.renderer.drawFrame(ctx,frame,canvas.width/2,canvas.height-7,1,.48,1);
+    return true;
   }
   async preloadForMatch(fighterIds=[]){
     if(!this.settings.enabled||!fighterIds.includes('rrvvfo'))return{ready:false,reason:'disabled-or-unused'};
@@ -85,7 +121,7 @@ export class FighterVisuals{
   }
   animatorFor(fighter){
     let animator=this.animators.get(fighter);
-    if(!animator&&this.atlas){animator=new SpriteAnimator(this.atlas,{appearance:this.settings.appearance});this.animators.set(fighter,animator)}
+    if(!animator&&this.atlas){animator=new SpriteAnimator(this.atlas,{appearance:fighter.appearance});this.animators.set(fighter,animator)}
     return animator;
   }
   update(deltaMs,world){
@@ -93,8 +129,9 @@ export class FighterVisuals{
     for(const fighter of world.fighters||[]){
       if(fighter.id!=='rrvvfo')continue;
       const animator=this.animatorFor(fighter),state=resolveRrvvfoAnimation(fighter,world);
+      animator.setAppearance(fighter.appearance);
       fighter.spriteVisualFallback=!this.atlas.animation(state.name);
-      if(!fighter.spriteVisualFallback)animator.play(state.name,{priority:state.priority,appearance:this.settings.appearance});
+      if(!fighter.spriteVisualFallback)animator.play(state.name,{priority:state.priority,appearance:fighter.appearance});
       animator.update(deltaMs);
       if(['lensDodgeLeft','lensDodgeRight','objectSwapDisappear','dash'].includes(state.name)){
         const history=this.afterimages.get(fighter)||[];
@@ -107,7 +144,8 @@ export class FighterVisuals{
     if(!this.settings.enabled||fighter.id!=='rrvvfo'||!this.renderer||fighter.spriteVisualFallback)return false;
     const animator=this.animatorFor(fighter);if(!animator)return false;
     const state=resolveRrvvfoAnimation(fighter,fighter.world);
-    if(this.atlas.animation(state.name))animator.play(state.name,{priority:state.priority,appearance:this.settings.appearance});
+    animator.setAppearance(fighter.appearance);
+    if(this.atlas.animation(state.name))animator.play(state.name,{priority:state.priority,appearance:fighter.appearance});
     if(!animator.currentFrame())return false;
     try{
       const centerX=fighter.x+fighter.w/2,centerY=fighter.y+fighter.h/2;

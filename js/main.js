@@ -17,11 +17,11 @@ import {AudioManager} from './audio-manager.js';
 import {HapticsManager,MobilePlatformController,loadTouchSettings,saveTouchSettings} from './mobile-platform.js';
 import {TouchControls} from './touch-controls.js';
 import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js';
-import {FighterVisuals,loadRrvvfoVisualSettings} from './fighter-visuals.js?v=2.3-rrvvfo-default-on';
+import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance} from './fighter-visuals.js?v=2.3-rrvvfo-stabilization';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;
-const U={menu:$('menuScreen'),game:$('gameScreen'),mode:$('mode'),diff:$('difficulty'),stage:$('stage'),rt:$('roundTime'),rounds:$('rounds'),cine:$('cinematics'),reduced:$('reducedShake'),spriteToggle:$('rrvvfoSprites'),spriteHood:$('rrvvfoHood'),spriteQuality:$('rrvvfoQuality'),spriteDebug:$('rrvvfoSpriteDebug'),spriteLoading:$('spriteLoading'),controller1:$('controllerStyle1'),controller2:$('controllerStyle2'),controllerCustom:$('customController'),customSide:$('customSide'),customBindings:$('customBindings'),controllerGuide:$('controllerGuide'),roster:$('roster'),slot1:$('slot1'),slot2:$('slot2'),n1:$('name1'),n2:$('name2'),m1:$('moves1'),m2:$('moves2'),s2l:$('slot2label'),notice:$('notice'),p1n:$('p1name'),p2n:$('p2name'),p1h:$('p1hp'),p2h:$('p2hp'),p1e:$('p1en'),p2e:$('p2en'),p1g:$('p1guard'),p2g:$('p2guard'),p1d:$('p1defense'),p2d:$('p2defense'),timer:$('timer'),rl:$('roundLabel'),msg:$('msg'),mt:$('msgTitle'),mx:$('msgText'),mb:$('msgButton'),pause:$('pause')};
+const U={menu:$('menuScreen'),game:$('gameScreen'),mode:$('mode'),diff:$('difficulty'),stage:$('stage'),rt:$('roundTime'),rounds:$('rounds'),cine:$('cinematics'),reduced:$('reducedShake'),spriteToggle:$('rrvvfoSprites'),spriteQuality:$('rrvvfoQuality'),spriteDebug:$('rrvvfoSpriteDebug'),prototypeExpose:$('showPrototypeAppearances'),prototypeBuildNote:$('prototypeAppearanceBuildNote'),spriteLoading:$('spriteLoading'),appearancePanels:[$('rrvvfoAppearancePanel1'),$('rrvvfoAppearancePanel2')],appearanceSelects:[$('rrvvfoAppearance1'),$('rrvvfoAppearance2')],appearancePreviews:[$('rrvvfoPreview1'),$('rrvvfoPreview2')],controller1:$('controllerStyle1'),controller2:$('controllerStyle2'),controllerCustom:$('customController'),customSide:$('customSide'),customBindings:$('customBindings'),controllerGuide:$('controllerGuide'),roster:$('roster'),slot1:$('slot1'),slot2:$('slot2'),n1:$('name1'),n2:$('name2'),m1:$('moves1'),m2:$('moves2'),s2l:$('slot2label'),notice:$('notice'),p1n:$('p1name'),p2n:$('p2name'),p1h:$('p1hp'),p2h:$('p2hp'),p1e:$('p1en'),p2e:$('p2en'),p1g:$('p1guard'),p2g:$('p2guard'),p1d:$('p1defense'),p2d:$('p2defense'),timer:$('timer'),rl:$('roundLabel'),msg:$('msg'),mt:$('msgTitle'),mx:$('msgText'),mb:$('msgButton'),pause:$('pause')};
 const comboHud=[document.createElement('div'),document.createElement('div')];comboHud.forEach((element,index)=>{element.className=`comboHud c${index+1}`;$('gameWrap').appendChild(element)});
 const cooldownHud=[document.createElement('div'),document.createElement('div')];cooldownHud.forEach((element,index)=>{element.className='moveCooldown';(index?U.p2e:U.p1e).parentElement.parentElement.appendChild(element)});
 const clashHud=document.createElement('div');clashHud.className='clashHud hidden';clashHud.innerHTML='<strong id="clashLabel">CLASH!</strong><div class="clashTrack"><div class="clashFill" id="clashFill"></div></div>';$('gameWrap').appendChild(clashHud);
@@ -46,8 +46,9 @@ const touchSettingsPanel=new TouchSettingsPanel({
   onChange:persistTouchSettings
 });
 const world={width:WIDTH,height:HEIGHT,ground:GROUND,fighters:[],projectiles:[],effects:new EffectSystem(),timers:new TimerRegistry(),clash:createClashState(),camera:createCameraState(),cinematic:createCinematicState(),cinematicMode:'full',localMode:false,reducedShake:false,shake:0,hitstop:0,training:trainingState,sound,tryProjectileClash};
+const developerSpriteBuild=isDeveloperSpriteBuild();
 const savedVisuals=loadRrvvfoVisualSettings();
-U.spriteToggle.value=savedVisuals.enabled?'on':'off';U.spriteHood.value=savedVisuals.appearance;U.spriteQuality.value=savedVisuals.quality;U.spriteDebug.checked=savedVisuals.developerViewer;
+U.spriteToggle.value=savedVisuals.enabled?'on':'off';U.spriteQuality.value=savedVisuals.quality;U.spriteDebug.checked=savedVisuals.developerViewer;U.prototypeExpose.checked=savedVisuals.exposePrototypeAppearances;U.prototypeExpose.disabled=!developerSpriteBuild;U.prototypeBuildNote.textContent=developerSpriteBuild?'Developer build: opt in to inspect Hood Up.':'Unfinished appearances are hidden in production builds.';
 const fighterVisuals=new FighterVisuals({settings:savedVisuals,onStatus:({status})=>{U.spriteLoading.classList.toggle('hidden',status!=='loading')}});
 const spriteDebugViewer=new SpriteDebugViewer(fighterVisuals);world.fighterVisuals=fighterVisuals;world.effects.spriteVisuals=fighterVisuals;
 
@@ -83,7 +84,34 @@ function openTouchMoveList(){
 
 function buildRoster(){U.roster.innerHTML='';for(const id of ROSTER_IDS){const c=ROSTER[id],meta=FIGHTER_META[id],button=document.createElement('button');button.className='card';button.dataset.id=id;button.title=`${c.s} • ${c.u}`;button.innerHTML=`<div class="portrait"><div class="head" style="background:${c.h}"></div><div class="body" style="background:${c.c};box-shadow:0 0 12px ${c.a}66"></div></div><b>${c.n.toUpperCase()}</b><div class="origin">${c.o}</div><div class="style">${meta.style}</div><div class="rating">${'◆'.repeat(meta.difficulty)}${'◇'.repeat(5-meta.difficulty)}</div>`;button.onclick=()=>choose(id);U.roster.appendChild(button)}refreshSelection()}
 function choose(id){if(selectSlot===1){if(isMirrorMatch(id,p2id)){p2id=different(id);U.notice.textContent='Mirror matches are disabled, so Player 2 changed.'}p1id=id}else{if(isMirrorMatch(id,p1id)){U.notice.textContent='You cannot use the same character on both sides.';return}p2id=id}refreshSelection()}
-function refreshSelection(){const a=ROSTER[p1id],b=ROSTER[p2id];U.n1.textContent=a.n.toUpperCase();U.n2.textContent=b.n.toUpperCase();U.m1.textContent=`${FIGHTER_META[p1id].style} • ${a.s} • ${a.u}`;U.m2.textContent=`${FIGHTER_META[p2id].style} • ${b.s} • ${b.u}`;U.slot1.classList.toggle('active',selectSlot===1);U.slot2.classList.toggle('active',selectSlot===2);document.querySelectorAll('.card').forEach(card=>{card.classList.toggle('p1',card.dataset.id===p1id);card.classList.toggle('p2',card.dataset.id===p2id)})}
+function appearanceSlot(side,modeValue=U.mode.value){if(modeValue==='training')return side===1?'trainingPlayer1':'trainingDummy';return side===1?'player1':'player2'}
+function prototypeAppearanceAllowed(){return developerSpriteBuild&&fighterVisuals.settings.exposePrototypeAppearances}
+function selectedAppearance(side){
+  const saved=fighterVisuals.settings.appearances?.[appearanceSlot(side)]||'down';
+  return normalizeRrvvfoAppearance(saved,{allowPrototype:prototypeAppearanceAllowed()});
+}
+async function refreshAppearancePreview(side){
+  const index=side-1,canvas=U.appearancePreviews[index];
+  if(!(await fighterVisuals.preloadPreview()).ready){canvas.getContext('2d')?.clearRect(0,0,canvas.width,canvas.height);return}
+  fighterVisuals.drawPreview(canvas,U.appearanceSelects[index].value);
+}
+function refreshAppearancePanels(){
+  const ids=[p1id,p2id],options=availableRrvvfoAppearances({developerMode:developerSpriteBuild,exposePrototype:fighterVisuals.settings.exposePrototypeAppearances});
+  for(let side=1;side<=2;side++){
+    const index=side-1,panel=U.appearancePanels[index],select=U.appearanceSelects[index],visible=ids[index]==='rrvvfo';
+    panel.classList.toggle('hidden',!visible);if(!visible)continue;
+    const wanted=selectedAppearance(side);select.innerHTML='';
+    for(const appearance of options){const option=document.createElement('option');option.value=appearance.id;option.textContent=appearance.label;select.appendChild(option)}
+    select.value=options.some(option=>option.id===wanted)?wanted:'down';
+    panel.querySelector('.appearanceWarning').classList.toggle('hidden',select.value!=='up');
+    refreshAppearancePreview(side);
+  }
+}
+function setAppearance(side,value){
+  const appearances={...fighterVisuals.settings.appearances,[appearanceSlot(side)]:normalizeRrvvfoAppearance(value,{allowPrototype:prototypeAppearanceAllowed()})};
+  fighterVisuals.configure({appearances});refreshAppearancePanels();
+}
+function refreshSelection(){const a=ROSTER[p1id],b=ROSTER[p2id];U.n1.textContent=a.n.toUpperCase();U.n2.textContent=b.n.toUpperCase();U.m1.textContent=`${FIGHTER_META[p1id].style} • ${a.s} • ${a.u}`;U.m2.textContent=`${FIGHTER_META[p2id].style} • ${b.s} • ${b.u}`;U.slot1.classList.toggle('active',selectSlot===1);U.slot2.classList.toggle('active',selectSlot===2);document.querySelectorAll('.card').forEach(card=>{card.classList.toggle('p1',card.dataset.id===p1id);card.classList.toggle('p2',card.dataset.id===p2id)});refreshAppearancePanels()}
 
 function humanCommand(fighter){
   const side=fighter.side;
@@ -108,14 +136,14 @@ function commandFor(fighter){
 
 function setup(){
   if(p1id===p2id)p2id=different(p1id);clearTransient();touchControls.releaseAll();touchControls.setFighter(p1id);touchControls.setMatchUiVisible(true);input.clear();paused=false;touchControls.setPaused(false);time=limit;
-  world.fighters=[new Fighter(p1id,1,false,world),new Fighter(p2id,2,mode!=='local'&&mode!=='training',world)];
+  world.fighters=[new Fighter(p1id,1,false,world,{appearance:selectedAppearance(1)}),new Fighter(p2id,2,mode!=='local'&&mode!=='training',world,{appearance:selectedAppearance(2)})];
   U.p1n.textContent=`${ROSTER[p1id].n.toUpperCase()}  ${wins1}`;U.p2n.textContent=`${wins2}  ${ROSTER[p2id].n.toUpperCase()}`;
   U.rl.textContent=mode==='story'?`STORY ${story+1}/${STORY_ORDER.length} • ROUND ${currentRound}`:mode==='training'?'TRAINING':`ROUND ${currentRound}`;
   const finalRound=wins1===roundsToWin-1&&wins2===roundsToWin-1;roundIntro=120;roundBanner.textContent=finalRound?'FINAL ROUND':`ROUND ${currentRound}`;roundBanner.classList.remove('hidden');sound('roundStart');
   U.msg.classList.add('hidden');U.pause.classList.add('hidden');state='playing';last=performance.now();
 }
 async function startGame(){
-  fighterVisuals.configure({enabled:U.spriteToggle.value==='on',appearance:U.spriteHood.value,quality:U.spriteQuality.value,developerViewer:U.spriteDebug.checked});
+  fighterVisuals.configure({enabled:U.spriteToggle.value==='on',quality:U.spriteQuality.value,developerViewer:U.spriteDebug.checked,exposePrototypeAppearances:developerSpriteBuild&&U.prototypeExpose.checked});
   const fightButton=$('fight'),originalLabel=fightButton.textContent;fightButton.disabled=true;fightButton.textContent='LOADING…';
   const spriteResult=await fighterVisuals.preloadForMatch([p1id,p2id]);fightButton.disabled=false;fightButton.textContent=originalLabel;
   if(fighterVisuals.settings.enabled&&spriteResult.reason==='load-failed')U.notice.textContent='Sprite assets could not load. Legacy Rrvvfo visuals are active.';
@@ -188,7 +216,12 @@ function render(){
 function loop(timestamp){const delta=Math.min(.034,(timestamp-last)/1000||0);last=timestamp;acc+=delta;while(acc>=1/60){update(1/60);acc-=1/60}if(state!=='menu')render();requestAnimationFrame(loop)}
 
 U.slot1.onclick=()=>{selectSlot=1;refreshSelection()};U.slot2.onclick=()=>{selectSlot=2;refreshSelection()};
-U.mode.onchange=()=>{U.s2l.textContent=U.mode.value==='local'?'PLAYER 2 — CLICK TO SELECT':'CPU/DUMMY — CLICK TO SELECT';$('trainingOptions').classList.toggle('hidden',U.mode.value!=='training')};
+U.mode.onchange=()=>{U.s2l.textContent=U.mode.value==='local'?'PLAYER 2 — CLICK TO SELECT':'CPU/DUMMY — CLICK TO SELECT';$('trainingOptions').classList.toggle('hidden',U.mode.value!=='training');refreshAppearancePanels()};
+U.appearanceSelects.forEach((select,index)=>select.onchange=()=>setAppearance(index+1,select.value));
+U.spriteToggle.onchange=()=>fighterVisuals.configure({enabled:U.spriteToggle.value==='on'});
+U.spriteQuality.onchange=()=>fighterVisuals.configure({quality:U.spriteQuality.value});
+U.spriteDebug.onchange=()=>fighterVisuals.configure({developerViewer:U.spriteDebug.checked});
+U.prototypeExpose.onchange=()=>{fighterVisuals.configure({exposePrototypeAppearances:developerSpriteBuild&&U.prototypeExpose.checked});refreshAppearancePanels()};
 $('random').onclick=()=>{p1id=ROSTER_IDS[Math.floor(Math.random()*ROSTER_IDS.length)];p2id=different(p1id);refreshSelection()};$('reset').onclick=()=>{localStorage.removeItem(SAVE_KEY);U.notice.textContent='Saved progress reset.'};$('fight').onclick=startGame;
 $('backMenu').onclick=returnToCharacterSelect;
 addEventListener('keydown',event=>{if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code))event.preventDefault();if(event.code==='Escape'&&trainingState.enabled){event.preventDefault();returnToCharacterSelect();return}input.setKeyboard(event.code,true);if(event.code==='KeyY'&&trainingState.enabled)resetTrainingWorld(world,input);if(event.code==='KeyP'&&state==='playing')togglePause()});

@@ -59,9 +59,9 @@ export function beginCinematicUltimate(world,attacker,target){
     world.effects?.add({t:'ultimateMiss',x:attacker.x+24,y:attacker.y+35,c:data.color,l:24});
     return false;
   }
-  const duration=modeDuration(data,world.cinematicMode,world.localMode),impactFrame=Math.max(1,Math.round(duration*.42));
+  const duration=modeDuration(data,world.cinematicMode,world.localMode),impactFrame=world.cinematicMode==='off'?0:Math.max(1,Math.round(duration*.42));
   world.cinematic=Object.assign(createCinematicState(),{active:true,attacker,target,data,frame:duration,duration,impactFrame,mode:world.cinematicMode||'full'});
-  focusCamera(world,attacker,target,data.zoom);
+  if(world.cinematicMode!=='off')focusCamera(world,attacker,target,data.zoom);
   world.effects?.add({t:'ultimateAura',pattern:data.pattern,x:attacker.x+24,y:attacker.y+40,c:data.color,a:data.accent,l:duration});
   world.effects?.burst(attacker.x+24,attacker.y+40,data.color,42);
   world.sound?.('ultimateActivate');freezeFrame(world,8);

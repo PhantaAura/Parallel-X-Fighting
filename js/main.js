@@ -8,7 +8,7 @@ import {TimerRegistry,clamp,resetCombo} from './combat.js';
 import {EffectSystem} from './effects.js';
 import {Fighter} from './fighter.js';
 import {moveList} from './movesets.js';
-import {trainingState,recordInput,clearTraining,resetTrainingWorld,exitTrainingWorld,setTrainingSetting,dummyCommand} from './training.js';
+import {trainingState,recordInput,clearTraining,resetTrainingClash,resetTrainingWorld,exitTrainingWorld,setTrainingSetting,dummyCommand} from './training.js';
 import {byId as $} from './ui.js';
 import {clearClash,cpuClashContribution,createClashState,tryProjectileClash,updateClash} from './clash-system.js';
 import {applyCamera,createCameraState,updateCamera} from './camera-system.js';
@@ -130,6 +130,6 @@ bindSyncedCheckbox('trainHealth','liveHealth','infiniteHealth');bindSyncedCheckb
 bindSyncedCheckbox('trainGuard','liveGuard','infiniteGuard');bindSyncedCheckbox('trainGuardRegen','liveGuardRegen','guardRegen');bindSyncedCheckbox('trainPerfectPractice','livePerfectPractice','perfectBlockPractice');
 bindSyncedCheckbox('trainClash','liveClash','infiniteClash');
 function syncDummy(event){setTrainingSetting('dummy',event.target.value,$('dummyMode'),$('liveDummy'));trainingState.afterFirstHit=false}$('dummyMode').onchange=syncDummy;$('liveDummy').onchange=syncDummy;
-$('forceClash').onclick=()=>{trainingState.forceNextClash=true};$('resetClash').onclick=()=>clearClash(world);$('trainResetPos').onclick=()=>resetTrainingWorld(world);$('trainResetCombo').onclick=()=>{for(const fighter of world.fighters){resetCombo(fighter.combo);fighter.lightChain=0;fighter.lightChainTimer=0;fighter.chainLockout=0}trainingState.afterFirstHit=false};$('trainRestart').onclick=setup;$('exitTraining').onclick=returnToCharacterSelect;
+$('forceClash').onclick=()=>{trainingState.forceNextClash=true};$('resetClash').onclick=()=>resetTrainingClash(world);$('trainResetPos').onclick=()=>resetTrainingWorld(world);$('trainResetCombo').onclick=()=>{for(const fighter of world.fighters){resetCombo(fighter.combo);fighter.lightChain=0;fighter.lightChainTimer=0;fighter.chainLockout=0}trainingState.afterFirstHit=false};$('trainRestart').onclick=setup;$('exitTraining').onclick=returnToCharacterSelect;
 
 buildRoster();U.mode.dispatchEvent(new Event('change'));if(localStorage.getItem(SAVE_KEY))U.notice.textContent='Story clear detected on this browser.';requestAnimationFrame(loop);

@@ -2,11 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Parallels X: Clash of Souls</title>
 <link rel="stylesheet" href="css/game.css">
 <link rel="stylesheet" href="css/combat.css">
 <link rel="stylesheet" href="css/training.css">
+<link rel="stylesheet" href="css/mobile.css">
 </head>
 <body>
 <div id="app">
@@ -20,21 +24,116 @@
 <div class="opt"><label>ROUND TIME</label><select id="roundTime"><option value="60">60 seconds</option><option value="90" selected>90 seconds</option><option value="120">120 seconds</option></select></div>
 <div class="opt"><label>MATCH FORMAT</label><select id="rounds"><option value="1">One Round</option><option value="2" selected>Best of 3</option><option value="3">Best of 5</option></select></div>
 <div class="opt"><label>ULTIMATE CINEMATICS</label><select id="cinematics"><option value="full" selected>Full cinematics</option><option value="short">Short cinematics</option><option value="off">Cinematics off</option></select></div>
+<div class="opt"><label>PLAYER 1 CONTROLLER</label><select id="controllerStyle1"><option value="nintendo">Nintendo</option><option value="xbox" selected>Xbox</option><option value="playstation">PlayStation</option><option value="custom">Custom</option></select></div>
+<div class="opt"><label>PLAYER 2 CONTROLLER</label><select id="controllerStyle2"><option value="nintendo">Nintendo</option><option value="xbox" selected>Xbox</option><option value="playstation">PlayStation</option><option value="custom">Custom</option></select></div>
 <div class="opt"><label>ACCESSIBILITY</label><label class="checkline"><input id="reducedShake" type="checkbox"> Reduced screen shake</label></div>
 </div>
+<div id="customController" class="controllerCustom hidden"><label>EDIT CUSTOM MAPPING <select id="customSide"><option value="1">Player 1</option><option value="2">Player 2</option></select></label><div id="customBindings"></div><small>Launcher is Up + Heavy. Throw is Light + Heavy within the simultaneous-input window.</small></div>
 <div id="trainingOptions" class="trainingPanel hidden"><label><input id="trainHealth" type="checkbox" checked> Infinite health</label><label><input id="trainEnergy" type="checkbox" checked> Infinite energy</label><label><input id="trainGuard" type="checkbox"> Infinite guard</label><label><input id="trainGuardRegen" type="checkbox" checked> Guard regeneration</label><label><input id="trainPerfectPractice" type="checkbox"> Perfect-block practice</label><label><input id="trainClash" type="checkbox"> Infinite clash meter</label><label>Dummy <select id="dummyMode"><option value="never">Never block</option><option value="always">Always block</option><option value="after">Block after first hit</option><option value="perfect">Perfect block</option><option value="breaker">Use breaker</option><option value="stationary">Stationary</option><option value="cpu">CPU controlled</option></select></label><label><input id="preStationaryBlock" type="checkbox"> Stationary blocks</label></div>
 <div class="slots"><button class="slot active" id="slot1"><small>PLAYER 1 — CLICK TO SELECT</small><strong id="name1"></strong><em id="moves1"></em></button><button class="slot" id="slot2"><small id="slot2label">CPU — CLICK TO SELECT</small><strong id="name2"></strong><em id="moves2"></em></button></div>
 <div class="roster" id="roster"></div><div class="notice" id="notice"></div>
-<div class="buttons"><button class="primary" id="fight">FIGHT!</button><button class="secondary" id="random">RANDOM MATCH</button><button class="secondary" id="reset">RESET SAVE</button></div>
+<div class="buttons"><button class="primary" id="fight">FIGHT!</button><button class="secondary" id="random">RANDOM MATCH</button><button class="secondary" id="touchSettingsButton">TOUCH SETTINGS</button><button class="secondary" id="reset">RESET SAVE</button></div>
 </div></section>
 <section id="gameScreen" class="hidden">
 <div id="gameWrap"><canvas id="game" width="960" height="540"></canvas>
 <div id="hud"><div class="hudrow"><div class="hudside"><div class="hname" id="p1name"></div><div class="barbox"><div class="bar hp1" id="p1hp"></div></div><div class="barbox energybox"><div class="bar energy" id="p1en"></div></div><div class="barbox guardbox"><div class="bar guard" id="p1guard"></div></div><div class="defenseState" id="p1defense"></div></div><div class="center"><div id="timer">90</div><div id="roundLabel">ROUND 1</div></div><div class="hudside r"><div class="hname" id="p2name"></div><div class="barbox"><div class="bar hp2" id="p2hp"></div></div><div class="barbox energybox"><div class="bar energy" id="p2en"></div></div><div class="barbox guardbox"><div class="bar guard" id="p2guard"></div></div><div class="defenseState" id="p2defense"></div></div></div><div id="pause" class="hidden">PAUSED</div></div>
 <div id="msg" class="hidden"><h2 id="msgTitle"></h2><p id="msgText"></p><button class="primary" id="msgButton">CONTINUE</button> <button class="secondary" id="backMenu">CHARACTER SELECT</button></div>
 </div>
-<div class="controls"><div><b>P1:</b> A/D move • W/Space jump • S block • F light • R heavy • F+R throw • S+G breaker • T launcher • E Bark counter • G special • H ultimate • Z Lens • Q dash</div><div><b>P2:</b> ←/→ move • ↑ jump • ↓ block • J light • I heavy • J+I throw • ↓+K breaker • U launcher • ; Bark counter • K special • L ultimate • N Lens • O dash</div></div>
-<div class="touch"><button data-t="left">◀</button><button data-t="right">▶</button><button data-t="jump">JUMP</button><button data-t="block">BLOCK</button><button data-t="attack">LIGHT</button><button data-t="heavy">HEAVY</button><button data-t="throw">THROW</button><button data-t="breaker">BREAKER</button><button data-t="special">SPECIAL</button><button data-t="ult">ULT</button><button data-t="lens">LENS</button></div><div class="foot">Press P to pause • Standard controllers supported • Story progress saves in this browser.</div>
+<div class="controls"><div><b>P1:</b> A/D move • W/Space jump • S block • F light • R heavy • F+R throw • S+G breaker • T launcher • E Bark counter • G special • H ultimate • Z Lens • Q dash</div><div><b>P2:</b> ←/→ move • ↑ jump • ↓ block • J light • I heavy • J+I throw • ↓+K breaker • U launcher • ; Bark counter • K special • L ultimate • N Lens • O dash</div><div id="controllerGuide"></div></div>
+<div class="foot">Press P to pause • Nintendo, Xbox, PlayStation, custom controllers, and configurable touch controls supported • Story progress saves in this browser.</div>
 </section></div>
+
+<div id="touchLayer" class="touchLayer hidden" aria-label="Touch controls">
+  <div id="movementControl" class="touch-control movementControl" data-control-id="movement" aria-label="Movement control">
+    <div id="joystickBase" class="joystickBase"><div id="joystickKnob" class="joystickKnob"></div></div>
+    <div id="virtualDpad" class="virtualDpad">
+      <button class="dpadButton up" data-dpad-direction="up" aria-label="Up">▲</button>
+      <button class="dpadButton left" data-dpad-direction="left" aria-label="Left">◀</button>
+      <button class="dpadButton down" data-dpad-direction="down" aria-label="Down">▼</button>
+      <button class="dpadButton right" data-dpad-direction="right" aria-label="Right">▶</button>
+      <span class="dpadCenter"></span>
+    </div>
+  </div>
+  <button id="touchJump" class="touch-control combatTouch jump" data-control-id="jump" data-touch-action="jump">JUMP</button>
+  <button id="touchLight" class="touch-control combatTouch light" data-control-id="light" data-touch-action="light">LIGHT</button>
+  <button id="touchHeavy" class="touch-control combatTouch heavy" data-control-id="heavy" data-touch-action="heavy">HEAVY</button>
+  <button id="touchSpecial" class="touch-control combatTouch special" data-control-id="special" data-touch-action="special">SPECIAL</button>
+  <button id="touchBlock" class="touch-control combatTouch block" data-control-id="block" data-touch-action="block">BLOCK</button>
+  <button id="touchDash" class="touch-control combatTouch dash" data-control-id="dash" data-touch-action="dash">DASH</button>
+  <button id="touchUltimate" class="touch-control combatTouch ultimate" data-control-id="ultimate" data-touch-action="ultimate">ULT</button>
+  <button id="touchBreaker" class="touch-control combatTouch breaker" data-control-id="breaker" data-touch-action="breaker">BREAK</button>
+  <button id="touchLauncher" class="touch-control combatTouch launcher" data-control-id="launcher" data-touch-action="launcher">LAUNCH</button>
+  <button id="touchThrow" class="touch-control combatTouch throw" data-control-id="throw" data-touch-action="throw">THROW</button>
+  <button id="touchCounter" class="touch-control combatTouch counter" data-control-id="counter" data-touch-action="counter">COUNTER</button>
+  <button id="touchLens" class="touch-control combatTouch lens" data-control-id="lens" data-touch-action="lens">LENS</button>
+  <button id="touchMoveListButton" class="touch-control utilityTouch" data-control-id="moveList">MOVES</button>
+  <button id="touchTrainingReset" class="touch-control utilityTouch" data-control-id="trainingReset">RESET</button>
+  <button id="touchPause" class="touch-control utilityTouch" data-control-id="pause" aria-label="Pause">Ⅱ</button>
+  <button id="touchSettingsGame" class="touch-control utilityTouch" data-control-id="settings" aria-label="Touch settings">⚙</button>
+  <button id="touchClashButton" class="touchClashButton hidden" aria-label="Clash input"><span>CLASH!</span><small>REPEATED TAP</small></button>
+  <button id="finishLayoutEdit" class="finishLayoutEdit">FINISH LAYOUT EDIT</button>
+</div>
+
+<div id="rotateSuggestion" class="rotateSuggestion"><strong>TURN YOUR DEVICE SIDEWAYS</strong><span>Landscape gives the clearest combat view. Portrait play remains available.</span></div>
+
+<div id="touchChoice" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="touchChoiceTitle">
+  <div class="mobileModalCard choiceCard">
+    <h2 id="touchChoiceTitle">Choose your movement style</h2>
+    <p>You can change this anytime in Touch Settings.</p>
+    <button class="primary" data-touch-choice="joystick">VIRTUAL JOYSTICK</button>
+    <button class="primary" data-touch-choice="dpad">D-PAD</button>
+    <button class="secondary" data-touch-choice="later">DECIDE LATER</button>
+  </div>
+</div>
+
+<div id="touchSettingsModal" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="touchSettingsTitle">
+  <div class="mobileModalCard settingsCard">
+    <div class="mobileModalHead"><h2 id="touchSettingsTitle">Touch Settings</h2><button id="closeTouchSettings" aria-label="Close touch settings">×</button></div>
+    <div class="touchSettingsGrid">
+      <label>Touch controls<select id="touchEnabledMode"><option value="auto">Auto detect</option><option value="on">Always on</option><option value="off">Off</option></select></label>
+      <label>Movement<select id="touchMovementStyle"><option value="joystick">Virtual Joystick</option><option value="dpad">Virtual D-Pad</option></select></label>
+      <label>Preset<select id="touchPreset"></select></label>
+      <label>Joystick position<select id="touchJoystickMode"><option value="fixed">Fixed position</option><option value="floating">Follow finger</option></select></label>
+      <label>Dead zone <output id="touchDeadZoneValue"></output><input id="touchDeadZone" type="range" min=".08" max=".5" step=".01"></label>
+      <label>Stick size <output id="touchStickSizeValue"></output><input id="touchStickSize" type="range" min="105" max="220" step="1"></label>
+      <label>Stick sensitivity <output id="touchSensitivityValue"></output><input id="touchSensitivity" type="range" min=".6" max="1.7" step=".05"></label>
+      <label>D-Pad size <output id="touchDpadSizeValue"></output><input id="touchDpadSize" type="range" min="48" max="100" step="1"></label>
+      <label>Control spacing <output id="touchSpacingValue"></output><input id="touchSpacing" type="range" min=".7" max="1.35" step=".05"></label>
+      <label>Control opacity <output id="touchOpacityValue"></output><input id="touchOpacity" type="range" min=".35" max="1" step=".05"></label>
+      <label>Button scale <output id="touchScaleValue"></output><input id="touchScale" type="range" min=".7" max="1.4" step=".05"></label>
+      <label>Haptics<select id="touchHaptics"><option value="on">Haptics On</option><option value="reduced">Reduced Haptics</option><option value="off">Haptics Off</option></select></label>
+      <label>Clash input<select id="touchClashMethod"><option value="repeated">Repeated Tap</option><option value="timed">Timed Tap</option><option value="hold">Hold and Pulse</option></select></label>
+    </div>
+    <div class="touchChecks">
+      <label><input id="touchSwapSides" type="checkbox"> Swap left and right sides</label>
+      <label><input id="touchDedicatedThrow" type="checkbox"> Dedicated Throw button</label>
+      <label><input id="touchDedicatedLauncher" type="checkbox"> Dedicated Launcher button</label>
+      <label><input id="touchSimplified" type="checkbox"> Simplified three-light continuation</label>
+    </div>
+    <fieldset class="layoutEditorPanel">
+      <legend>Layout editor</legend>
+      <label><input id="touchEditLayout" type="checkbox"> Drag controls in the match view</label>
+      <label>Selected control<select id="touchSelectedControl"></select></label>
+      <label>X <input id="touchControlX" type="range" min="2" max="98" step="1"></label>
+      <label>Y <input id="touchControlY" type="range" min="4" max="96" step="1"></label>
+      <label>Size <input id="touchControlSize" type="range" min="38" max="220" step="1"></label>
+      <div class="savedLayoutRow"><input id="touchLayoutName" maxlength="30" placeholder="Custom layout name"><button id="saveTouchLayout">SAVE</button></div>
+      <div class="savedLayoutRow"><select id="savedTouchLayouts"></select><button id="loadTouchLayout">LOAD</button><button id="deleteTouchLayout">DELETE</button></div>
+    </fieldset>
+    <div class="mobileSettingsActions"><button id="touchTutorialButton">TUTORIAL</button><button id="touchFullscreenButton">FULLSCREEN</button><button id="resetTouchLayout">RESET DEFAULT</button><button id="doneTouchSettings" class="primary">DONE</button></div>
+  </div>
+</div>
+
+<div id="touchTutorial" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="touchTutorialTitle">
+  <div class="mobileModalCard tutorialCard">
+    <small id="touchTutorialCount"></small><h2 id="touchTutorialTitle"></h2><p id="touchTutorialText"></p>
+    <div><button id="touchTutorialBack">BACK</button><button id="touchTutorialNext" class="primary">NEXT</button><button id="touchTutorialClose">CLOSE</button></div>
+  </div>
+</div>
+
+<div id="touchMoveList" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="touchMoveListTitle">
+  <div class="mobileModalCard moveListCard"><h2 id="touchMoveListTitle">Move List</h2><div id="touchMoveListContent"></div><button id="closeTouchMoveList" class="primary">CLOSE</button></div>
+</div>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>

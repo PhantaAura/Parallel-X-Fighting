@@ -15,8 +15,8 @@ export const DEFENSE_BALANCE={
   breakerCooldown:600
 };
 
-const GUARD_DAMAGE={light:6,heavy:16,launcher:19,air:8,special:21,ultimate:32,counter:12,punishment:18};
-const CHIP={light:0,air:.01,heavy:.07,launcher:.08,special:.13,ultimate:.18,punishment:.1,counter:.04};
+const GUARD_DAMAGE={light:6,heavy:16,launcher:19,air:8,airHeavy:12,special:21,ultimate:32,counter:12,punishment:18};
+const CHIP={light:0,air:.01,airHeavy:.04,heavy:.07,launcher:.08,special:.13,ultimate:.18,punishment:.1,counter:.04};
 
 export function resetDefenseState(fighter){
   Object.assign(fighter,{

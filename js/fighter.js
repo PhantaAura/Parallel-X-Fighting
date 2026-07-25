@@ -43,10 +43,14 @@ export class Fighter{
       const speed=this.c.sp*(this.aura?1.2:1)*(this.armor?.78:1);
       if(command.down('l'))this.vx=-speed;else if(command.down('r'))this.vx=speed;else this.vx*=.65;
       if(command.pressed('j')&&this.grounded){this.vy=-this.c.j;this.grounded=0;this.world.sound(180)}
-      if(command.pressed('a'))this.attack(this.grounded?'light':'air');
-      if(command.pressed('h'))this.attack('heavy');
-      if(command.pressed('t'))this.throw();
-      if(command.pressed('x'))this.attack('launcher');
+      // Normal/throw buffers must survive hit-stop and the remaining recovery.
+      // Only consume them once a normal could legally begin.
+      if(!this.attackCd){
+        if(command.pressed('t'))this.throw();
+        else if(command.pressed('x'))this.attack('launcher');
+        else if(command.pressed('a'))this.attack(this.grounded?'light':'air');
+        else if(command.pressed('h'))this.attack(this.grounded?'heavy':'airHeavy');
+      }
       if(command.pressed('s'))this.special();
       if(command.pressed('u'))this.ultimate();
       if(command.pressed('n'))this.lensAbility();
@@ -62,7 +66,8 @@ export class Fighter{
   attack(kind){
     if(this.attackCd||this.windup||this.stun||this.knockdown||(kind==='light'&&this.chainLockout))return false;
     const move={...ATTACKS[kind],...moveFor(this.id,kind,this.lightChain)};
-    if(!move.kind||(kind!=='air'&&!this.grounded))return false;
+    const airAttack=kind==='air'||kind==='airHeavy';
+    if(!move.kind||(!airAttack&&!this.grounded)||(airAttack&&this.grounded))return false;
     this.pending=kind;this.pendingMove=move;this.windup=move.startup;this.attackCd=move.startup+move.recovery;
     if(this.id==='bark'&&kind==='heavy')this.armor=Math.max(this.armor,38);
     return true;
@@ -73,12 +78,13 @@ export class Fighter{
     const hitbox={x:this.face>0?this.x+this.w:this.x-move.range,y:this.y+(kind==='launcher'?30:14),w:move.range,h:kind==='launcher'?58:52};
     if(tryMeleeClash(this.world,this,foe,kind,hitbox))return true;
     this.world.effects.add({t:'slash',x:hitbox.x+move.range/2,y:hitbox.y+20,c:this.c.a,l:10});
-    if(!overlaps(hitbox,foe.box())){if(kind==='light')this.lightChain=0;return false}
+    if(!overlaps(hitbox,foe.box())){if(['light','heavy','launcher'].includes(kind)){this.lightChain=0;this.lightChainTimer=0}return false}
     const finalLight=kind==='light'&&this.lightChain===2,appliedKnockback=move.knockback*(finalLight?1.65:1);
     foe.hit(move.damage*this.c.p,this.face*appliedKnockback,kind,this,move);this.en=clamp(this.en+(move.energyGain||7),0,100);
-    this.world.sound(kind==='heavy'?'heavyHit':kind==='launcher'?'launcher':'lightHit');
+    this.world.sound(kind==='heavy'||kind==='airHeavy'?'heavyHit':kind==='launcher'?'launcher':'lightHit');
     if(kind==='launcher'){foe.vy=-move.launch;foe.grounded=0}
     if(kind==='light'){if(finalLight){this.lightChain=0;this.lightChainTimer=0;this.chainLockout=40;this.attackCd=Math.max(this.attackCd,40)}else{this.lightChain++;this.lightChainTimer=COMBO_RESET_FRAMES}}
+    if(kind==='heavy'||kind==='launcher'){this.lightChain=0;this.lightChainTimer=0}
     return true;
   }
   cancelStartup(){this.windup=0;this.pending=null;this.pendingMove=null;this.queuedAttack=null;if(this.ultimateStartup){this.ultimateStartup=0;this.pendingUltimate=false;this.ultimateRecovery=Math.max(this.ultimateRecovery,32)}if(this.throwStartup){this.throwStartup=0;this.pendingThrow=false;this.throwRecovery=Math.max(this.throwRecovery,18)}}
@@ -115,7 +121,7 @@ export class Fighter{
   beginShotsOfAgony(){
     if(this.agonyCooldown||this.agonyActiveVolley||this.en<40)return false;
     const foe=this.foe(),fx=this.world.effects,volleyId=++this.agonyVolleyId;
-    this.en-=40;this.agonyActiveVolley=true;this.agonyVolleyFired=false;
+    this.en-=40;this.agonyActiveVolley=true;this.agonyVolleyFired=false;this.lightChain=0;this.lightChainTimer=0;
     this.world.sound(260,.12,'sawtooth');this.world.shake=Math.max(this.world.shake,4);
     const spots=[{x:foe.x-90,y:foe.y+10},{x:foe.x+foe.w+90,y:foe.y+10},{x:foe.x-45,y:foe.y-70},{x:foe.x+foe.w+45,y:foe.y-70}];
     for(const spot of spots){fx.add({t:'agonyClone',x:spot.x,y:spot.y,c:'#25d9ff',l:70,face:spot.x<foe.x?1:-1,volleyOwner:this,volleyId});fx.burst(spot.x,spot.y+35,'#25d9ff',10)}
@@ -146,12 +152,12 @@ export class Fighter{
       case'jonathan':foe.trap=120;fx.add({t:'trap',x:foe.x+24,y:this.world.ground-8,c:'#ffd18f',l:120});break;
       case'rev':[0,1,2].forEach((_,i)=>this.later(()=>this.shot(6,8+i,9,'orb',(i-1)*.8,'#ff4e87'),i*70));break;
     }
-    this.world.shake=Math.max(this.world.shake,4);
+    this.lightChain=0;this.lightChainTimer=0;this.world.shake=Math.max(this.world.shake,4);
     return true;
   }
   ultimate(){
     const data=ULTIMATES[this.id];if(!data||this.ultCd||this.en<90||this.ultimateStartup||this.ultimateRecovery||this.world.clash?.active||this.world.cinematic?.active)return false;
-    this.en-=90;this.ultCd=300;
+    this.en-=90;this.ultCd=300;this.lightChain=0;this.lightChainTimer=0;
     this.pendingUltimate=true;this.ultimateStartup=data.startup;this.attackCd=Math.max(this.attackCd,data.startup+data.recovery);
     this.world.effects.burst(this.x+24,this.y+40,this.c.a,26);this.world.sound(90,.12,'sawtooth',.04);
     if(tryUltimateClash(this.world,this,this.foe(),data.damage))return true;
@@ -170,7 +176,7 @@ export class Fighter{
     if(this.world.cinematic?.active&&this.world.cinematic.attacker===this)clearCinematic(this.world);
     if(this.lens>0){const foe=this.foe(),oldX=this.x;this.x=clamp(foe.x-foe.face*72,15,this.world.width-this.w-15);if(Math.abs(this.x-foe.x)<45)this.x=clamp(oldX-this.face*105,15,this.world.width-this.w-15);this.inv=8;fx.burst(oldX+24,this.y+43,'#f7f7ff',18);fx.burst(this.x+24,this.y+43,'#f7f7ff',18);fx.add({t:'dodge',x:this.x+24,y:this.y+22,c:'#f7f7ff',l:20});this.world.sound(620,.06,'sine',.035);return 0}
     if(this.inv)return 0;
-    const meleeCounterKinds=new Set(['light','heavy','launcher','air']);
+    const meleeCounterKinds=new Set(['light','heavy','launcher','air','airHeavy']);
     if(this.id==='bark'&&this.counterActive>0&&attacker&&meleeCounterKinds.has(kind)&&Math.abs(attacker.x-this.x)<95){this.counterActive=0;this.counterRecovery=18;attacker.hit(13,-attacker.face*12,'counter',this,{hitstun:26});fx.burst(attacker.x+24,attacker.y+40,'#d9bb78',24);return 0}
     if(this.counterStartup||this.counterActive){this.counterStartup=this.counterActive=0;this.counterRecovery=Math.max(this.counterRecovery,30)}
     const intentionalStartupArmor=this.id==='bark'&&this.pending==='heavy'&&this.armor>0;
@@ -185,8 +191,9 @@ export class Fighter{
     if(this.block&&kind!=='seal'){knockback*=defense?.perfect?.08:.25;if(!defense?.perfect)this.en=clamp(this.en+4,0,100)}
     this.vx=knockback;this.stun=defense?.broken?Math.max(this.stun,this.guardBreakStun):this.block?(defense?.perfect?1:5):(move.hitstun||12);
     const sparkKind=defense?.perfect?'perfectBlock':kind;fx.add({t:'hitSpark',kind:sparkKind,x:this.x+24,y:this.y+43,c:defense?.perfect?'#bdfbff':kind==='ultimate'?'#fff7ba':kind==='special'?'#7de9ff':this.c.a,l:18});fx.burst(this.x+24,this.y+43,this.c.a,kind==='ultimate'?28:14);
-    this.world.sound(this.block?(defense?.perfect?'perfectBlock':'block'):kind==='heavy'?'heavyHit':kind==='launcher'?'launcher':kind==='ultimate'?'ultimateImpact':'lightHit');
-    const shake=this.block?2:kind==='ultimate'?12:kind==='heavy'||kind==='launcher'?7:kind==='special'?5:3;this.world.shake=Math.max(this.world.shake,this.world.reducedShake?shake*.35:shake);this.world.hitstop=Math.max(this.world.hitstop,defense?.perfect?5:kind==='ultimate'?9:kind==='heavy'||kind==='launcher'?5:kind==='special'?4:2);return actual;
+    this.world.sound(this.block?(defense?.perfect?'perfectBlock':'block'):kind==='heavy'||kind==='airHeavy'?'heavyHit':kind==='launcher'?'launcher':kind==='ultimate'?'ultimateImpact':'lightHit');
+    const strongNormal=kind==='heavy'||kind==='airHeavy'||kind==='launcher';
+    const shake=this.block?2:kind==='ultimate'?12:strongNormal?7:kind==='special'?5:3;this.world.shake=Math.max(this.world.shake,this.world.reducedShake?shake*.35:shake);this.world.hitstop=Math.max(this.world.hitstop,defense?.perfect?5:kind==='ultimate'?9:strongNormal?5:kind==='special'?4:2);return actual;
   }
   draw(ctx){
     const c=this.c,x=this.x,y=this.y,m=x+24;ctx.save();if(this.inv&&Math.floor(this.inv/2)%2===0)ctx.globalAlpha=.48;

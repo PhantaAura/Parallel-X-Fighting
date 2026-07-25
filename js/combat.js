@@ -7,7 +7,8 @@ export const ATTACKS={
   light:{kind:'light',damage:6.5,startup:4,recovery:13,hitstun:16,range:44,knockback:5,energyGain:7},
   heavy:{kind:'heavy',damage:12,startup:12,recovery:28,hitstun:24,range:58,knockback:11,energyGain:10},
   launcher:{kind:'launcher',damage:9,startup:15,recovery:30,hitstun:30,range:50,knockback:4,launch:12,energyGain:9},
-  air:{kind:'air',damage:6,startup:5,recovery:14,hitstun:18,range:48,knockback:5,launch:3,energyGain:6}
+  air:{kind:'air',damage:6,startup:5,recovery:14,hitstun:18,range:48,knockback:5,launch:3,energyGain:6},
+  airHeavy:{kind:'airHeavy',damage:8.5,startup:8,recovery:20,hitstun:22,range:52,knockback:8,launch:2,energyGain:8}
 };
 
 export const createComboState=()=>({hits:0,damage:0,scale:1,timer:0,attacker:null,juggles:0});

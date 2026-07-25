@@ -14,12 +14,17 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 - `css/game.css` — original presentation and responsive layout
 - `css/combat.css` — combo, cooldown, and clash HUD
 - `css/training.css` — Training Mode controls and diagnostics
+- `css/mobile.css` — phone/tablet safe areas, touch controls, mobile modals, and portrait fallback
 - `js/main.js` — initialization, match lifecycle, update loop, and render coordination
 - `js/roster.js` — all 15 character identities, base attributes, and select-screen metadata
 - `js/movesets.js` — Rrvvfo, Revvfo, Wade, and Bark move data
 - `js/fighter.js` — fighter state, attack resolution, specials, ultimates, and drawing
 - `js/combat.js` — projectile class, attack categories, final-damage calculation, combo rules, juggle rules, and managed delayed timers
-- `js/input.js` — separate keyboard/touch/controller state combined into one input stream
+- `js/input.js` — semantic keyboard/touch/controller actions, style translation, simultaneous-input detection, and hit-stop buffering
+- `js/touch-controls.js` — multi-pointer joystick/D-Pad and combat-action translation
+- `js/touch-layout-editor.js` — touch presets, per-control placement/sizing, and named custom layouts
+- `js/mobile-platform.js` — iOS/Android detection, match-only browser protection, Back handling, persistence, fullscreen, and haptics
+- `js/mobile-safe-area.js` — display-cutout, browser-bar, resize, and orientation tracking
 - `js/ai.js` — difficulty profiles and CPU decisions
 - `js/effects.js` — particle/effect state and rendering
 - `js/stages.js` — stage data and rendering
@@ -41,8 +46,8 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 | Move | A / D | Left / Right |
 | Jump | W or Space | Up |
 | Block | S | Down |
-| Light / air attack | F | J |
-| Heavy | R | I |
+| Light / air light | F | J |
+| Heavy / air heavy | R | I |
 | Throw | F + R | J + I |
 | Combo breaker | S + G | Down + K |
 | Launcher | T | U |
@@ -54,28 +59,51 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 | Pause | P | P |
 | Training position reset | Y | Y |
 
-Touch controls include movement, jump, block, light, heavy, throw, breaker, special, ultimate, and Lens access.
-
 ## Controller controls
 
-- Left stick/D-pad: move; left trigger/D-pad down: block
-- A / Cross: light
-- B / Circle: heavy
-- X / Square: launcher
-- Y / Triangle: special
-- Left bumper: ultimate
-- Right bumper: dash
-- Right trigger: jump
-- Left-stick click: Bark counter
-- Light + heavy buttons together: throw
-- Block + special together: combo breaker
-- Right-stick click: Lens of Truth when controlling Rrvvfo
+Select Nintendo, Xbox, PlayStation, or Custom for each player on Character Select. Controller styles translate physical buttons into the existing combat actions; they do not change combo timing, damage, scaling, cancels, or recovery.
 
-Two standard gamepads are supported in local multiplayer.
+| Action | Nintendo | Xbox | PlayStation |
+|---|---|---|---|
+| Jump | A | A | Cross |
+| Light / air light | B | X | Square |
+| Heavy / air heavy | Y | Y | Triangle |
+| Special | X | B | Circle |
+| Launcher | Up + Y | Up + Y | Up + Triangle |
+| Dash / movement ability | R | RB | R1 |
+| Block | L | LB | L1 |
+| Ultimate | ZR | RT | R2 |
+| Combo breaker | ZL | LT | L2 |
+| Throw | B + Y | X + Y | Square + Triangle |
+| Bark counter | Left-stick click | LS | L3 |
+| Lens of Truth | Right-stick click | RS | R3 |
+
+Move with the left stick or D-pad. Two standard gamepads are supported in local multiplayer. Custom mappings can reassign Jump, Light, Heavy, Special, Dash, Block, Ultimate, and Breaker; Launcher and Throw prompts automatically follow the selected Heavy and Light bindings.
+
+## iPhone, iPad, and Android touch controls
+
+Touch controls use the same semantic actions and combat engine as keyboard and controller input. They do not duplicate attacks or change combo timing, damage, scaling, range, startup, recovery, or cancels. On first touch use, the game asks **“Choose your movement style”** with Virtual Joystick, D-Pad, and Decide Later. The choice is stored under `pxTouchSettingsV1` and can be changed from **TOUCH SETTINGS** at any time. Choose Auto detect, Always on, or Off if device detection does not match your setup.
+
+- **Virtual Joystick:** fixed or follow-finger placement, adjustable dead zone, size, and sensitivity, with diagonal movement. Up is available for directional attacks, but Jump remains a separate button.
+- **Virtual D-Pad:** large independent Up, Down, Left, and Right targets. Two compatible directions create diagonals; the latest direction wins if opposites are touched.
+- **Combat buttons:** Jump, Light, Heavy, Special, Block, Dash, Ultimate, Combo Breaker, Launcher, and optional Throw. Rrvvfo receives a contextual Lens button, Bark receives Counter, and Training adds Reset.
+- **Throws:** press Light + Heavy at the same time or use the optional Throw button. Both paths send the same throw action with identical startup, range, damage, and recovery.
+- **Touch routes:** Light → Light → Light; Light → Light → Heavy; Light → Light → Launcher; Launcher → Jump → Air Light → Air Heavy; and legal special/ultimate cancels all use the normal combo rules.
+- **Clashes:** one large clash control replaces the combat cluster. Repeated Tap, Timed Tap, and Hold and Pulse are selectable and share the same attainable maximum strength. Accepted taps are rate-capped.
+
+Presets include Standard Joystick, Standard D-Pad, Compact Joystick, Compact D-Pad, Large Buttons, Left-Handed, Tablet, and Simplified. Settings can resize/reposition every control, change spacing and opacity, swap sides, enable or disable dedicated Throw/Launcher, reset defaults, and save up to eight named custom layouts. Enable **Drag controls in the match view** to place controls directly. Simplified mode can continue only the basic three-light chain; it never automates launchers, specials, ultimates, perfect blocks, throws, or breakers.
+
+The 12-step touch tutorial teaches the selected movement style, Jump, normals, Launcher and air combo, Special, Block/perfect block, Dash, Throw, Breaker, Ultimate, and clash input. Training Mode changes its route and input-history labels to Touch automatically.
+
+Mobile layout uses iOS safe-area insets and Android display-cutout space, tracks Safari/Chrome visual-viewport resizing and orientation changes, and keeps controls above the home indicator/navigation area. Landscape is recommended; portrait displays a rotate-device suggestion and keeps a playable fallback. During a match only, page scrolling, selection, callouts, gestures, and double-tap zoom are suppressed. Normal page behavior is restored after leaving the match. Android Back pauses first instead of immediately leaving the game. Fullscreen is available where the browser permits it.
+
+Optional Haptics On, Reduced Haptics, and Haptics Off modes cover heavy hits, perfect blocks, guard breaks, clashes, and ultimate activation. Vibration is never required for gameplay.
 
 ## Combo mechanics
 
-Lights chain into character-specific three-hit strings. The final ground-light hit adds pushback and a short light-chain lockout, so repeatedly cycling 1-2-3 cannot form an infinite wall loop. Heavy attacks are slower and more punishable. Launchers start air routes, and the light button performs air attacks while airborne. Connected hits build a counter and total-damage readout. Each successive hit scales down, with a non-zero damage floor and stronger minimum scaling for specials/ultimates. Six air juggles force knockdown; get-up frames are briefly invulnerable. Combos reset after recovery or a short no-hit window.
+Lights chain into character-specific three-hit strings. Light → Light → Heavy creates a heavy finisher, while Light → Light → Launcher or Special uses the same legal cancel path on every input device. The final ground-light hit adds pushback and a short light-chain lockout, so repeatedly cycling 1-2-3 cannot form an infinite wall loop. Heavy attacks are slower and more punishable. Launchers start air routes; Light and Heavy become distinct air normals while airborne. Connected hits build a counter and total-damage readout. Each successive hit scales down, with a non-zero damage floor and stronger minimum scaling for specials/ultimates. Six air juggles force knockdown; get-up frames are briefly invulnerable. Combos reset after recovery or a short no-hit window.
+
+The input manager distinguishes sequences, held Block, Up + Heavy launchers, and simultaneous Light + Heavy throws. Attack buttons use a three-frame simultaneous window: pressing them together throws, while an ordinary Light → Heavy sequence stays a combo. Legal inputs entered during hit-stop remain buffered for 12 simulation frames. Buffers expire naturally and are explicitly cleared on round transitions, clashes, cinematics, Training resets, pause changes, and return to Character Select.
 
 Taking a hit during unarmored attack startup cancels the pending attack. Bark’s intentionally armored heavy is the exception while its startup armor is active.
 
@@ -149,7 +177,7 @@ Choose Training Mode from the mode menu. Configure infinite health, energy, guar
 - **Stationary:** stationary and passive; the separate “Stationary blocks” checkbox controls blocking.
 - **CPU Dummy:** fully controlled by the selected CPU difficulty.
 
-Perfect-block practice makes the stationary dummy throw a slow heavy at a predictable interval. Player 2 keyboard and controller attacks are ignored for every other non-CPU behavior. The HUD shows combo count, actual post-defense combo damage, scaling, guard damage, perfect-block timing, clash state, move list, and ten recent inputs.
+Perfect-block practice makes the stationary dummy throw a slow heavy at a predictable interval. Player 2 keyboard and controller attacks are ignored for every other non-CPU behavior. The HUD shows combo count, actual post-defense combo damage, scaling, guard damage, perfect-block timing, clash state, move list, ten recent semantic inputs, and a launcher-to-air-combo route written for the most recently used Keyboard, Nintendo, Xbox, PlayStation, Touch, or Custom layout.
 
 Reset Training with Y or the on-screen button. A reset cancels delayed attacks and clears projectiles, particles, effects, clashes, cinematics, camera transforms, Lens, armor, aura, traps, freeze, invulnerability, hitstun, guard-break/get-up state, startup, throws, breakers, counters, cooldowns, air dashes, juggle count, light-chain position, combo state, guard values, and both fighter positions. Quick restart applies the same transient cleanup without returning to character select.
 
@@ -159,7 +187,7 @@ Use the always-visible **EXIT TRAINING** button or press Escape to return to cha
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The browser suite contains 61 checks covering all Prototype 2.2 regressions plus melee/beam/ultimate clashes, rivalry scenarios, clash lifecycle and safe damage, CPU/controller clash input, Training clash reset, guard damage/regeneration/breaks, perfect-block timing, throws and protection, breaker cost/lockout, chip floor, defensive AI, all 15 cinematic ultimates, miss recovery, damage bounds, camera restoration, Creed’s evasive window, and audio-hook coverage.
+The browser suite contains 87 checks covering all Prototype 2.2/2.3 regressions plus all three controller styles, three-hit chains, heavy finishers, directional launchers, simultaneous throws, launcher-to-air routes across keyboard/controller/touch, input-independent scaling, hit-stop buffering, custom remapping, adaptive Training prompts/history, safe simplified touch, virtual joystick/D-Pad directions, multi-touch holds, safe areas, browser resize/orientation, persisted layouts, mobile scrolling/Back behavior, haptics, clashes, guard, cinematic ultimates, AI, camera restoration, and audio-hook coverage.
 
 ## Save compatibility
 
@@ -173,4 +201,4 @@ Story completion continues to use the existing `pxSave` browser-storage key. Mir
 - Flow State is reserved for a later prototype and is not part of Lens of Truth.
 - Audio uses synthesized hooks until final sound and music assets are available.
 - Cinematics use procedural 2D canvas effects; full sprite animation remains future presentation work.
-- Automated browser checks can verify keyboard events and gamepad mapping code, but physical controller feel should also be tested on target hardware.
+- Automated browser checks verify semantic touch/controller behavior and mobile layout calculations, but physical controller feel, iOS Safari browser chrome, Android navigation modes, display cutouts, vibration support, and multi-finger ergonomics should also be tested on representative hardware.

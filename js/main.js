@@ -2,7 +2,7 @@
 import {FIGHTER_META,ROSTER,ROSTER_IDS,isMirrorMatch} from './roster.js';
 import {STAGES,drawStage} from './stages.js';
 import {STORY_ORDER,STORY_STAGES,SAVE_KEY} from './story.js';
-import {CUSTOM_CONTROLLER_ACTIONS,InputManager} from './input.js';
+import {CUSTOM_CONTROLLER_ACTIONS,InputManager} from './input.js?v=2.3-controller-stabilization';
 import {decideCPU} from './ai.js';
 import {TimerRegistry,clamp,resetCombo} from './combat.js';
 import {EffectSystem} from './effects.js';
@@ -17,8 +17,9 @@ import {AudioManager} from './audio-manager.js';
 import {HapticsManager,MobilePlatformController,loadTouchSettings,saveTouchSettings} from './mobile-platform.js';
 import {TouchControls} from './touch-controls.js';
 import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js';
-import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance} from './fighter-visuals.js?v=2.3-rrvvfo-stabilization';
+import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=2.3-rrvvfo-stabilization';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
+import {ControllerManager} from './controller-manager.js?v=2.3-controller-stabilization';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;
 const U={menu:$('menuScreen'),game:$('gameScreen'),mode:$('mode'),diff:$('difficulty'),stage:$('stage'),rt:$('roundTime'),rounds:$('rounds'),cine:$('cinematics'),reduced:$('reducedShake'),spriteToggle:$('rrvvfoSprites'),spriteQuality:$('rrvvfoQuality'),spriteDebug:$('rrvvfoSpriteDebug'),prototypeExpose:$('showPrototypeAppearances'),prototypeBuildNote:$('prototypeAppearanceBuildNote'),spriteLoading:$('spriteLoading'),appearancePanels:[$('rrvvfoAppearancePanel1'),$('rrvvfoAppearancePanel2')],appearanceSelects:[$('rrvvfoAppearance1'),$('rrvvfoAppearance2')],appearancePreviews:[$('rrvvfoPreview1'),$('rrvvfoPreview2')],controller1:$('controllerStyle1'),controller2:$('controllerStyle2'),controllerCustom:$('customController'),customSide:$('customSide'),customBindings:$('customBindings'),controllerGuide:$('controllerGuide'),roster:$('roster'),slot1:$('slot1'),slot2:$('slot2'),n1:$('name1'),n2:$('name2'),m1:$('moves1'),m2:$('moves2'),s2l:$('slot2label'),notice:$('notice'),p1n:$('p1name'),p2n:$('p2name'),p1h:$('p1hp'),p2h:$('p2hp'),p1e:$('p1en'),p2e:$('p2en'),p1g:$('p1guard'),p2g:$('p2guard'),p1d:$('p1defense'),p2d:$('p2defense'),timer:$('timer'),rl:$('roundLabel'),msg:$('msg'),mt:$('msgTitle'),mx:$('msgText'),mb:$('msgButton'),pause:$('pause')};
@@ -30,6 +31,8 @@ const trainingHud=document.createElement('div');trainingHud.className='trainingH
 
 let selectSlot=1,p1id='rrvvfo',p2id='revvfo',mode='story',difficulty='normal',stage='dojo',limit=90,roundsToWin=2,currentRound=1,wins1=0,wins2=0,state='menu',paused=false,story=0,time=90,last=0,acc=0,roundIntro=0,clashInputActive=false,cinematicInputActive=false;
 const input=new InputManager();
+const controllerManager=new ControllerManager({input,getState:()=>state,onPause:()=>togglePause(),onStyleChange:(side,style)=>syncControllerStyleUi(side,style)});
+U.controller1.value=controllerManager.settings.styles[0];U.controller2.value=controllerManager.settings.styles[1];
 const audio=new AudioManager();
 const touchSettings=loadTouchSettings(localStorage,createDefaultTouchSettings);
 const haptics=new HapticsManager({mode:()=>touchSettings.haptics});
@@ -146,7 +149,7 @@ async function startGame(){
   fighterVisuals.configure({enabled:U.spriteToggle.value==='on',quality:U.spriteQuality.value,developerViewer:U.spriteDebug.checked,exposePrototypeAppearances:developerSpriteBuild&&U.prototypeExpose.checked});
   const fightButton=$('fight'),originalLabel=fightButton.textContent;fightButton.disabled=true;fightButton.textContent='LOADING…';
   const spriteResult=await fighterVisuals.preloadForMatch([p1id,p2id]);fightButton.disabled=false;fightButton.textContent=originalLabel;
-  if(fighterVisuals.settings.enabled&&spriteResult.reason==='load-failed')U.notice.textContent='Sprite assets could not load. Legacy Rrvvfo visuals are active.';
+  if(shouldShowRrvvfoLoadFailure(spriteResult,fighterVisuals.settings.enabled))U.notice.textContent='Sprite assets could not load. Legacy Rrvvfo visuals are active.';
   mode=U.mode.value;trainingState.enabled=mode==='training';trainingHud.classList.toggle('hidden',!trainingState.enabled);if(trainingState.enabled)clearTraining();
   difficulty=U.diff.value;world.cinematicMode=U.cine.value;world.localMode=mode==='local';world.reducedShake=U.reduced.checked;limit=+U.rt.value;roundsToWin=mode==='story'?1:+U.rounds.value;currentRound=1;wins1=wins2=story=0;
   if(mode==='story'){p2id=STORY_ORDER[0];if(p2id===p1id){story++;p2id=STORY_ORDER[story]}stage=STORY_STAGES[story]}else stage=U.stage.value;
@@ -247,11 +250,12 @@ function renderCustomBindings(){
     label.className='customBinding';
     label.append(`${controllerActionNames[action]} `);
     for(let index=0;index<16;index++){const option=document.createElement('option');option.value=String(index);option.textContent=`Button ${index+1}`;option.selected=mapping.buttons[action]===index;select.appendChild(option)}
-    select.onchange=()=>{input.setCustomButton(side,action,Number(select.value));updateControllerGuide()};
+    select.onchange=()=>{input.setCustomButton(side,action,Number(select.value));controllerManager.saveCustomMapping(side,input.getCustomMapping(side));updateControllerGuide()};
     label.appendChild(select);U.customBindings.appendChild(label);
   }
 }
-function setControllerStyle(side,value){input.setControllerStyle(side,value);updateControllerGuide();renderCustomBindings()}
+function syncControllerStyleUi(side,value){const select=side===1?U.controller1:U.controller2;select.value=value;updateControllerGuide();renderCustomBindings()}
+function setControllerStyle(side,value){controllerManager.setStyle(side,value);syncControllerStyleUi(side,value)}
 U.controller1.onchange=()=>setControllerStyle(1,U.controller1.value);
 U.controller2.onchange=()=>setControllerStyle(2,U.controller2.value);
 U.customSide.onchange=renderCustomBindings;

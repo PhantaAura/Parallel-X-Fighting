@@ -112,6 +112,7 @@ export class InputManager {
   constructor(getGamepads = () => navigator.getGamepads?.() || []) {
     this.getGamepads = getGamepads;
     this.controllerStyles = ['xbox', 'xbox'];
+    this.controllerAssignments = [null, null];
     this.customMappings = emptySides(() => createCustomControllerMapping());
     this.simplifiedTouch = [false, false];
     this.lastInputDevice = ['keyboard', 'keyboard'];
@@ -170,6 +171,14 @@ export class InputManager {
   getControllerStyle(side) {
     return this.controllerStyles[side - 1];
   }
+
+  setControllerAssignment(side,gamepadIndex){
+    const resolved=gamepadIndex===null||gamepadIndex==='auto'?null:Number(gamepadIndex);
+    if(resolved!==null&&(!Number.isInteger(resolved)||resolved<0))return false;
+    this.controllerAssignments[side-1]=resolved;this.clearBuffers();return true;
+  }
+
+  getControllerAssignment(side){return this.controllerAssignments[side-1]}
 
   setCustomButton(side, action, buttonIndex) {
     if (!CUSTOMIZABLE_ACTIONS.includes(action) || !Number.isInteger(Number(buttonIndex))) return false;
@@ -349,7 +358,8 @@ export class InputManager {
       const keyboardQueued = this._queuedKeyboardActions(side);
       const touchState = { ...this.touchActions[index] };
       const touchQueued = { ...this.touchActionQueued[index] };
-      const controller = this._controllerState(side, pads[index]);
+      const assigned=this.controllerAssignments[index];
+      const controller = this._controllerState(side, pads[assigned===null?index:assigned]);
 
       sourceData[index] = {
         keyboard: { state: keyboardState, queued: keyboardQueued, up: false },

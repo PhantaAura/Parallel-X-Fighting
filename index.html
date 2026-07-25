@@ -30,6 +30,8 @@
 <div class="opt" id="prototypeAppearanceSetting"><label>PROTOTYPE APPEARANCES</label><label class="checkline"><input id="showPrototypeAppearances" type="checkbox"> Expose unfinished appearances</label><small id="prototypeAppearanceBuildNote">Developer builds only.</small></div>
 <div class="opt"><label>PLAYER 1 CONTROLLER</label><select id="controllerStyle1"><option value="nintendo">Nintendo</option><option value="xbox" selected>Xbox</option><option value="playstation">PlayStation</option><option value="custom">Custom</option></select></div>
 <div class="opt"><label>PLAYER 2 CONTROLLER</label><select id="controllerStyle2"><option value="nintendo">Nintendo</option><option value="xbox" selected>Xbox</option><option value="playstation">PlayStation</option><option value="custom">Custom</option></select></div>
+<div class="opt"><label>PLAYER 1 DEVICE</label><select id="controllerDevice1"><option value="auto">Auto assignment</option></select></div>
+<div class="opt"><label>PLAYER 2 DEVICE</label><select id="controllerDevice2"><option value="auto">Auto assignment</option></select></div>
 <div class="opt"><label>ACCESSIBILITY</label><label class="checkline"><input id="reducedShake" type="checkbox"> Reduced screen shake</label></div>
 </div>
 <div id="customController" class="controllerCustom hidden"><label>EDIT CUSTOM MAPPING <select id="customSide"><option value="1">Player 1</option><option value="2">Player 2</option></select></label><div id="customBindings"></div><small>Launcher is Up + Heavy. Throw is Light + Heavy within the simultaneous-input window.</small></div>
@@ -39,7 +41,7 @@
   <div class="slotWrap"><button class="slot" id="slot2"><small id="slot2label">CPU — CLICK TO SELECT</small><strong id="name2"></strong><em id="moves2"></em></button><div class="rrvvfoAppearance hidden" id="rrvvfoAppearancePanel2"><label for="rrvvfoAppearance2">RRVVFO APPEARANCE</label><select id="rrvvfoAppearance2"></select><canvas id="rrvvfoPreview2" width="140" height="112" aria-label="Player 2 Rrvvfo appearance preview"></canvas><small class="appearanceWarning hidden">Dedicated Hood Up animations are still in development.</small></div></div>
 </div>
 <div class="roster" id="roster"></div><div class="notice" id="notice"></div>
-<div class="buttons"><button class="primary" id="fight">FIGHT!</button><button class="secondary" id="random">RANDOM MATCH</button><button class="secondary" id="touchSettingsButton">TOUCH SETTINGS</button><button class="secondary" id="reset">RESET SAVE</button></div>
+<div class="buttons"><button class="primary" id="fight">FIGHT!</button><button class="secondary" id="random">RANDOM MATCH</button><button class="secondary" id="touchSettingsButton">TOUCH SETTINGS</button><button class="secondary" id="controllerTestButton">CONTROLLER TEST</button><button class="secondary" id="reset">RESET SAVE</button></div>
 </div></section>
 <section id="gameScreen" class="hidden">
 <div id="gameWrap"><canvas id="game" width="960" height="540"></canvas><div id="spriteLoading" class="spriteLoading hidden"><strong>LOADING RRVVFO SPRITES</strong><span>Preparing the experimental atlas…</span></div>
@@ -141,6 +143,12 @@
 <div id="touchMoveList" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="touchMoveListTitle">
   <div class="mobileModalCard moveListCard"><h2 id="touchMoveListTitle">Move List</h2><div id="touchMoveListContent"></div><button id="closeTouchMoveList" class="primary">CLOSE</button></div>
 </div>
-<script type="module" src="js/main.js?v=2.3-rrvvfo-stabilization"></script>
+<div id="controllerDetected" class="controllerDialog hidden" role="dialog" aria-modal="true" aria-labelledby="controllerDetectedTitle">
+  <div class="controllerDialogCard"><h2 id="controllerDetectedTitle">CONTROLLER DETECTED</h2><p id="controllerDetectedName"></p><label>Controller style<select id="controllerDetectedStyle"><option value="nintendo">Nintendo</option><option value="xbox">Xbox</option><option value="playstation">PlayStation</option><option value="custom">Custom</option></select></label><label>Assign to<select id="controllerDetectedPlayer"><option value="1">Player 1</option><option value="2">Player 2</option></select></label><div><button class="primary" id="useDetectedController">USE CONTROLLER</button><button class="secondary" id="controllerDecideLater">DECIDE LATER</button></div></div>
+</div>
+<div id="controllerTest" class="controllerDialog hidden" role="dialog" aria-modal="true" aria-labelledby="controllerTestTitle">
+  <div class="controllerDialogCard controllerTestCard"><h2 id="controllerTestTitle">CONTROLLER TEST</h2><p>Move sticks and press buttons to verify the browser receives them.</p><div id="controllerTestBody"></div><button class="primary" id="closeControllerTest">DONE</button></div>
+</div>
+<script type="module" src="js/main.js?v=2.3-rrvvfo-stabilization-2"></script>
 </body>
 </html>

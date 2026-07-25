@@ -42,6 +42,7 @@ export function loadRrvvfoVisualSettings(storage=globalThis.localStorage){
 export function saveRrvvfoVisualSettings(settings,storage=globalThis.localStorage){
   try{storage?.setItem(RRVVFO_VISUAL_SAVE_KEY,JSON.stringify(settings));return true}catch{return false}
 }
+export function shouldShowRrvvfoLoadFailure(result,enabled=true){return !!enabled&&result?.reason==='load-failed'}
 
 export function resolveRrvvfoAnimation(fighter,world={}){
   if(fighter.hp<=0)return{name:'defeated',priority:ANIMATION_PRIORITY.defeated};

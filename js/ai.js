@@ -4,7 +4,7 @@ export const difficultyProfile=level=>({
   hard:{quality:.86,reaction:12,aggression:.8,block:.52,combo:.76}
 }[level]||{quality:.68,reaction:18,aggression:.66,block:.34,combo:.58});
 
-const base={preferredRange:90,advance:1,retreat:.45,block:1,a:1,h:.75,x:.65,s:.85,u:.35,d:.4,j:.25,c:0};
+const base={preferredRange:90,advance:1,retreat:.45,block:1,a:1,h:.75,x:.65,s:.85,u:.35,d:.4,j:.25,c:0,t:.45,k:.5};
 export const CHARACTER_AI={
   rrvvfo:{preferredRange:155,advance:.7,retreat:.9,block:.8,a:.85,h:.7,x:.65,s:1.65,u:.4,d:1.05,j:.2,c:0,style:'fireball pressure, committed clone volleys, swap repositioning'},
   revvfo:{preferredRange:105,advance:1.25,retreat:.35,block:.7,a:1.15,h:.85,x:1.4,s:1.35,u:.5,d:1.15,j:.75,c:0,style:'teleport pressure, launchers, air follow-ups, ranged beams'},
@@ -33,6 +33,8 @@ export function availableAIActions(fighter,foe){
   if(!fighter.dashCd)actions.push('d');
   if(fighter.grounded)actions.push('j');
   if(fighter.id==='bark'&&fighter.en>=20&&!fighter.counterCd)actions.push('c');
+  if(distance<62&&foe.block&&!fighter.throwRecovery&&!foe.throwProtection)actions.push('t');
+  if(fighter.stun>0&&fighter.en>=85&&!fighter.breakerUsed&&!fighter.breakerCooldown)actions.push('k');
   return{actions:[...new Set(actions)],movements:[toward,away],canBlock:distance<130,distance,toward,away};
 }
 
@@ -44,8 +46,9 @@ export function selectAIAction(candidates,weights,roll=Math.random()){
 
 export function decideCPU(fighter,foe,difficulty,rng=Math.random){
   const settings=difficultyProfile(difficulty),profile=aiProfile(fighter.id),available=availableAIActions(fighter,foe),decision={move:null,block:false,actions:[]};
-  if(fighter.knockdown||fighter.getup||fighter.stun)return decision;
-  const shouldRetreat=fighter.id==='wade'&&fighter.combo.hits>=3||fighter.id==='shadow'&&fighter.hp<45||fighter.id==='robert'&&available.distance<110;
+  if(fighter.knockdown||fighter.getup)return decision;
+  if(fighter.stun){if(available.actions.includes('k')&&rng()<settings.quality*(fighter.id==='bark'||fighter.id==='creed'?1:.72))decision.actions.push('k');return decision}
+  const shouldRetreat=fighter.guard<28||fighter.id==='wade'&&fighter.combo.hits>=3||fighter.id==='shadow'&&fighter.hp<45||fighter.id==='robert'&&available.distance<110;
   if(shouldRetreat)decision.move=available.away;
   else if(fighter.id==='phanta')decision.move=rng()<.5?available.toward:available.away;
   else if(available.distance>profile.preferredRange)decision.move=available.toward;
@@ -63,6 +66,8 @@ export function decideCPU(fighter,foe,difficulty,rng=Math.random){
   if(fighter.id==='shadow'&&fighter.hp<70)weights.s*=1.8;
   if(fighter.id==='phanta'){weights.s*=1.5;weights.d*=1.4}
   if(fighter.id==='creed'&&foe.attackCd>0&&!foe.stun){weights.h*=1.8;weights.s*=1.6}
+  if(foe.block){weights.t*=1.7;weights.h*=1.35}
+  if(foe.guard<30){weights.h*=1.5;weights.x*=1.5;weights.s*=1.4}
   const selected=selectAIAction(available.actions,weights,rng());if(selected)decision.actions.push(selected);
   return decision;
 }

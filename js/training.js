@@ -1,7 +1,7 @@
 import {resetCombo} from './combat.js';
 import {clearClash} from './clash-system.js';
 
-export const trainingState={enabled:false,infiniteHealth:true,infiniteEnergy:true,infiniteClash:false,forceNextClash:false,dummy:'never',stationaryBlock:false,inputHistory:[],afterFirstHit:false};
+export const trainingState={enabled:false,infiniteHealth:true,infiniteEnergy:true,infiniteGuard:false,guardRegen:true,perfectBlockPractice:false,infiniteClash:false,forceNextClash:false,dummy:'never',stationaryBlock:false,inputHistory:[],afterFirstHit:false};
 export function recordInput(label){trainingState.inputHistory.unshift(label);trainingState.inputHistory.length=10}
 export function clearTraining(){trainingState.inputHistory.length=0;trainingState.afterFirstHit=false;trainingState.forceNextClash=false}
 export function resetTrainingWorld(world){
@@ -10,7 +10,10 @@ export function resetTrainingWorld(world){
 }
 export function exitTrainingWorld(world,input){resetTrainingWorld(world);input?.clear?.();trainingState.enabled=false;clearTraining()}
 export function setTrainingSetting(key,value,...controls){trainingState[key]=value;for(const control of controls){if(!control)continue;if('checked'in control&&typeof value==='boolean')control.checked=value;else control.value=value}}
-export function dummyCommand(){
-  const block=trainingState.dummy==='always'||(trainingState.dummy==='after'&&trainingState.afterFirstHit)||(trainingState.dummy==='stationary'&&trainingState.stationaryBlock);
-  return{down:action=>action==='b'&&block,pressed:()=>false};
+export function dummyCommand(fighter){
+  const block=['always','perfect'].includes(trainingState.dummy)||(trainingState.dummy==='after'&&trainingState.afterFirstHit)||(trainingState.dummy==='stationary'&&trainingState.stationaryBlock);
+  return{
+    down:action=>action==='b'&&block,
+    pressed:action=>action==='k'&&trainingState.dummy==='breaker'&&fighter?.stun>0||action==='h'&&trainingState.perfectBlockPractice&&fighter?.tick%120===0
+  };
 }

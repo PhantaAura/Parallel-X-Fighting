@@ -1,6 +1,6 @@
 export const CONTROL_MAPS=[
-  {l:'KeyA',r:'KeyD',j:'KeyW',b:'KeyS',a:'KeyF',h:'KeyR',x:'KeyT',s:'KeyG',u:'KeyH',d:'KeyQ',c:'KeyE'},
-  {l:'ArrowLeft',r:'ArrowRight',j:'ArrowUp',b:'ArrowDown',a:'KeyJ',h:'KeyI',x:'KeyU',s:'KeyK',u:'KeyL',d:'KeyO',c:'Semicolon'}
+  {l:'KeyA',r:'KeyD',j:'KeyW',b:'KeyS',a:'KeyF',h:'KeyR',x:'KeyT',s:'KeyG',u:'KeyH',d:'KeyQ',c:'KeyE',n:'KeyZ'},
+  {l:'ArrowLeft',r:'ArrowRight',j:'ArrowUp',b:'ArrowDown',a:'KeyJ',h:'KeyI',x:'KeyU',s:'KeyK',u:'KeyL',d:'KeyO',c:'Semicolon',n:'KeyN'}
 ];
 
 export class InputManager{
@@ -15,7 +15,7 @@ export class InputManager{
       if(!pad||i>1)return;
       const m=CONTROL_MAPS[i],set=(key,value)=>{nextController[key]=!!value};
       set(m.l,pad.axes?.[0]<-.35||pad.buttons?.[14]?.pressed);set(m.r,pad.axes?.[0]>.35||pad.buttons?.[15]?.pressed);set(m.b,pad.buttons?.[6]?.pressed||pad.buttons?.[13]?.pressed);
-      [[0,m.a],[1,m.h],[2,m.x],[3,m.s],[4,m.u],[5,m.d],[7,m.j],[10,m.c]].forEach(([button,key])=>set(key,pad.buttons?.[button]?.pressed));
+      [[0,m.a],[1,m.h],[2,m.x],[3,m.s],[4,m.u],[5,m.d],[7,m.j],[10,m.c],[11,m.n]].forEach(([button,key])=>set(key,pad.buttons?.[button]?.pressed));
     });
     this.controller=nextController;
     const all=new Set([...Object.keys(this.keyboard),...Object.keys(this.controller),...Object.keys(this.touch),...Object.keys(this.previous)]);

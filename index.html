@@ -11,12 +11,25 @@
 <link rel="stylesheet" href="css/combat.css">
 <link rel="stylesheet" href="css/training.css">
 <link rel="stylesheet" href="css/mobile.css">
+<link rel="stylesheet" href="css/qol.css">
 </head>
 <body>
 <div id="app">
-<section id="menuScreen">
+<section id="startScreen" class="qolScreen startScreen" aria-label="Start screen">
+  <div class="menuBackdrop" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span></div>
+  <div class="startCard"><div class="brandMark">PARALLELS <b>X</b><small>CLASH OF SOULS</small></div><p id="startPrompt">PRESS ANY BUTTON</p><span data-build-version></span></div>
+</section>
+<section id="mainMenuScreen" class="qolScreen mainMenuScreen hidden" aria-label="Main menu">
+  <div class="menuBackdrop" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><span></span></div>
+  <header><div class="brandMark">PARALLELS <b>X</b><small>CLASH OF SOULS</small></div><span class="buildLabel" data-build-version></span></header>
+  <div class="mainMenuLayout"><nav data-main-menu-list aria-label="Modes"></nav><aside data-main-menu-preview></aside></div>
+  <section id="quickContinue" class="quickContinue hidden"><small>QUICK CONTINUE</small><strong id="quickContinueTitle">Continue VS CPU</strong><span id="quickContinueDetails"></span><button id="quickContinueButton">OPEN SETUP</button></section>
+  <footer><span id="inputStatus">Keyboard connected</span><span id="touchStatus">Touch controls ready</span><span>Confirm: Enter / A • Back: Escape / B</span></footer>
+</section>
+<section id="menuScreen" class="hidden">
 <div class="title">PARALLELS <span>X</span><br>CLASH OF SOULS</div><div class="sub">Season 1 • Season 2 • OVA roster</div>
 <div class="panel">
+<div class="screenHeading"><button id="characterSelectBack" class="secondary">← MODE SELECT</button><div><small>FIGHTER SETUP</small><h1>CHARACTER SELECT</h1></div><button id="characterMoveList" class="secondary">MOVE LIST</button></div>
 <div class="options">
 <div class="opt"><label>MODE</label><select id="mode"><option value="story">Story Mode</option><option value="cpu">VS CPU</option><option value="local">Local 2 Player</option><option value="training">Training Mode</option></select></div>
 <div class="opt"><label>CPU DIFFICULTY</label><select id="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></div>
@@ -35,22 +48,34 @@
 <div class="opt"><label>ACCESSIBILITY</label><label class="checkline"><input id="reducedShake" type="checkbox"> Reduced screen shake</label></div>
 </div>
 <div id="customController" class="controllerCustom hidden"><label>EDIT CUSTOM MAPPING <select id="customSide"><option value="1">Player 1</option><option value="2">Player 2</option></select></label><div id="customBindings"></div><small>Launcher is Up + Heavy. Throw is Light + Heavy within the simultaneous-input window.</small></div>
-<div id="trainingOptions" class="trainingPanel hidden"><label><input id="trainHealth" type="checkbox" checked> Infinite health</label><label><input id="trainEnergy" type="checkbox" checked> Infinite energy</label><label><input id="trainGuard" type="checkbox"> Infinite guard</label><label><input id="trainGuardRegen" type="checkbox" checked> Guard regeneration</label><label><input id="trainPerfectPractice" type="checkbox"> Perfect-block practice</label><label><input id="trainClash" type="checkbox"> Infinite clash meter</label><label>Dummy <select id="dummyMode"><option value="never">Never block</option><option value="always">Always block</option><option value="after">Block after first hit</option><option value="perfect">Perfect block</option><option value="breaker">Use breaker</option><option value="stationary">Stationary</option><option value="cpu">CPU controlled</option></select></label><label><input id="preStationaryBlock" type="checkbox"> Stationary blocks</label></div>
+<div id="trainingOptions" class="trainingPanel hidden"><label><input id="trainHealth" type="checkbox" checked> Infinite health</label><label><input id="trainEnergy" type="checkbox" checked> Infinite energy</label><label><input id="trainGuard" type="checkbox"> Infinite guard</label><label><input id="trainGuardRegen" type="checkbox" checked> Guard regeneration</label><label><input id="trainPerfectPractice" type="checkbox"> Perfect-block practice</label><label><input id="trainClash" type="checkbox"> Infinite clash meter</label><label>Dummy <select id="dummyMode"><option value="never">Stand / Never block</option><option value="stationary">Stationary</option><option value="crouch">Crouch (future-ready)</option><option value="jump">Jump</option><option value="walk">Walk</option><option value="always">Block</option><option value="after">Block after first hit</option><option value="perfect">Perfect block attempt</option><option value="counterattack">Counterattack after hit</option><option value="throw">Throw attempt</option><option value="breaker">Use combo breaker</option><option value="random">Random defense</option><option value="cpu">CPU controlled</option></select></label><label><input id="preStationaryBlock" type="checkbox"> Stationary blocks</label></div>
 <div class="slots">
   <div class="slotWrap"><button class="slot active" id="slot1"><small>PLAYER 1 — CLICK TO SELECT</small><strong id="name1"></strong><em id="moves1"></em></button><div class="rrvvfoAppearance hidden" id="rrvvfoAppearancePanel1"><label for="rrvvfoAppearance1">RRVVFO APPEARANCE</label><select id="rrvvfoAppearance1"></select><canvas id="rrvvfoPreview1" width="140" height="112" aria-label="Player 1 Rrvvfo appearance preview"></canvas><small class="appearanceWarning hidden">Dedicated Hood Up animations are still in development.</small></div></div>
   <div class="slotWrap"><button class="slot" id="slot2"><small id="slot2label">CPU — CLICK TO SELECT</small><strong id="name2"></strong><em id="moves2"></em></button><div class="rrvvfoAppearance hidden" id="rrvvfoAppearancePanel2"><label for="rrvvfoAppearance2">RRVVFO APPEARANCE</label><select id="rrvvfoAppearance2"></select><canvas id="rrvvfoPreview2" width="140" height="112" aria-label="Player 2 Rrvvfo appearance preview"></canvas><small class="appearanceWarning hidden">Dedicated Hood Up animations are still in development.</small></div></div>
 </div>
 <div class="roster" id="roster"></div><div class="notice" id="notice"></div>
-<div class="buttons"><button class="primary" id="fight">FIGHT!</button><button class="secondary" id="random">RANDOM MATCH</button><button class="secondary" id="touchSettingsButton">TOUCH SETTINGS</button><button class="secondary" id="controllerTestButton">CONTROLLER TEST</button><button class="secondary" id="reset">RESET SAVE</button></div>
+<div class="buttons"><button class="primary" id="fight">FIGHT!</button><button class="secondary" id="random">RANDOM FIGHTERS</button><button class="secondary" id="chooseStage">CHOOSE STAGE</button><button class="secondary" id="touchSettingsButton">TOUCH SETTINGS</button><button class="secondary" id="controllerTestButton">CONTROLLER TEST</button><button class="secondary" id="reset">RESET SAVE</button></div>
 </div></section>
 <section id="gameScreen" class="hidden">
 <div id="gameWrap"><canvas id="game" width="960" height="540"></canvas><div id="spriteLoading" class="spriteLoading hidden"><strong>LOADING RRVVFO SPRITES</strong><span>Preparing the experimental atlas…</span></div>
-<div id="hud"><div class="hudrow"><div class="hudside"><div class="hname" id="p1name"></div><div class="barbox"><div class="bar hp1" id="p1hp"></div></div><div class="barbox energybox"><div class="bar energy" id="p1en"></div></div><div class="barbox guardbox"><div class="bar guard" id="p1guard"></div></div><div class="defenseState" id="p1defense"></div></div><div class="center"><div id="timer">90</div><div id="roundLabel">ROUND 1</div></div><div class="hudside r"><div class="hname" id="p2name"></div><div class="barbox"><div class="bar hp2" id="p2hp"></div></div><div class="barbox energybox"><div class="bar energy" id="p2en"></div></div><div class="barbox guardbox"><div class="bar guard" id="p2guard"></div></div><div class="defenseState" id="p2defense"></div></div></div><div id="pause" class="hidden">PAUSED</div></div>
+<div id="hud" data-hud-mode="full"><div class="hudrow"><div class="hudside"><div class="hname" id="p1name"></div><div class="barLabel"><span>HEALTH</span><span id="p1hpText">100</span></div><div class="barbox"><div class="bar hp1" id="p1hp"></div></div><div class="barLabel"><span>ENERGY</span><span id="p1enText">0</span></div><div class="barbox energybox"><div class="bar energy" id="p1en"></div></div><div class="barLabel"><span>GUARD</span><span id="p1guardText">100</span></div><div class="barbox guardbox"><div class="bar guard" id="p1guard"></div></div><div class="defenseState" id="p1defense"></div><div class="statusEffects" id="p1status"></div></div><div class="center"><div id="timer">90</div><div id="roundLabel">ROUND 1</div></div><div class="hudside r"><div class="hname" id="p2name"></div><div class="barLabel"><span id="p2hpText">100</span><span>HEALTH</span></div><div class="barbox"><div class="bar hp2" id="p2hp"></div></div><div class="barLabel"><span id="p2enText">0</span><span>ENERGY</span></div><div class="barbox energybox"><div class="bar energy" id="p2en"></div></div><div class="barLabel"><span id="p2guardText">100</span><span>GUARD</span></div><div class="barbox guardbox"><div class="bar guard" id="p2guard"></div></div><div class="defenseState" id="p2defense"></div><div class="statusEffects" id="p2status"></div></div></div><div id="pause" class="hidden">PAUSED</div></div>
+<div id="combatNotifications" class="combatNotifications" aria-live="polite"></div>
 <div id="msg" class="hidden"><h2 id="msgTitle"></h2><p id="msgText"></p><button class="primary" id="msgButton">CONTINUE</button> <button class="secondary" id="backMenu">CHARACTER SELECT</button></div>
 </div>
 <div class="controls"><div><b>P1:</b> A/D move • W/Space jump • S block • F light • R heavy • F+R throw • S+G breaker • T launcher • E Bark counter • G special • H ultimate • Z Lens • Q dash</div><div><b>P2:</b> ←/→ move • ↑ jump • ↓ block • J light • I heavy • J+I throw • ↓+K breaker • U launcher • ; Bark counter • K special • L ultimate • N Lens • O dash</div><div id="controllerGuide"></div></div>
 <div class="foot">Press P to pause • Nintendo, Xbox, PlayStation, custom controllers, and configurable touch controls supported • Story progress saves in this browser.</div>
 </section></div>
+
+<div id="pauseMenu" class="qolModal hidden" role="dialog" aria-modal="true" aria-labelledby="pauseMenuTitle"><div class="qolCard pauseCard"><small data-pause-owner>Combat paused</small><h2 id="pauseMenuTitle">PAUSED</h2><div class="qolActionGrid" data-pause-actions></div></div></div>
+<div id="resultsScreen" class="qolModal hidden" role="dialog" aria-modal="true" aria-labelledby="resultsTitle"><div class="qolCard resultsCard"><small>FINAL RESULT</small><h2 id="resultsTitle" data-results-title>MATCH COMPLETE</h2><p data-results-duration></p><div class="resultStats" data-results-stats></div><div class="qolActionGrid resultActions" data-results-actions></div></div></div>
+<div id="moveListPanel" class="qolModal hidden" role="dialog" aria-modal="true" aria-labelledby="moveListHeading"><div class="qolCard moveListQol"><header><div><small>ADAPTIVE INPUT GUIDE</small><h2 id="moveListHeading">MOVE LIST</h2></div><button id="closeMoveList" aria-label="Close move list">×</button></header><div id="adaptiveMoveList"></div></div></div>
+<div id="stageSelectPanel" class="qolModal hidden" role="dialog" aria-modal="true" aria-labelledby="stageSelectTitle"><div class="qolCard stageSelectCard"><small>MATCH SETUP</small><h2 id="stageSelectTitle">STAGE SELECT</h2><div id="stageCards" class="stageCards"></div><div class="qolActionGrid"><button id="stageSelectConfirm" class="primary">CONFIRM STAGE</button><button id="stageSelectCancel" class="secondary">BACK</button></div></div></div>
+<div id="settingsPanel" class="qolModal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle"><div class="qolCard settingsQol"><header><div><small>OPTIONS</small><h2 id="settingsTitle">SETTINGS</h2></div><button id="closeSettings" aria-label="Close settings">×</button></header><nav id="settingsCategories" class="settingsCategories" aria-label="Settings categories"></nav><div id="settingsContent" class="settingsContent"></div><div class="settingsActions"><button id="restoreCategory" class="secondary">RESTORE CATEGORY</button><button id="restoreAllSettings" class="secondary">RESTORE ALL DEFAULTS</button><button id="applySettings" class="primary">APPLY</button><button id="cancelSettings" class="secondary">CANCEL</button></div></div></div>
+<div id="extrasPanel" class="qolModal hidden" role="dialog" aria-modal="true" aria-labelledby="extrasTitle"><div class="qolCard"><header><div><small>PARALLELS X</small><h2 id="extrasTitle">EXTRAS</h2></div><button id="closeExtras" aria-label="Close extras">×</button></header><div class="extrasGrid"><button data-extra="moves">MOVE LISTS</button><button data-extra="profiles">CHARACTER PROFILES</button><button data-extra="stages">STAGE GALLERY</button><button data-extra="controls">CONTROLS</button><button data-extra="credits">CREDITS</button><button data-extra="version">VERSION INFORMATION</button></div><div id="extrasContent"></div></div></div>
+<div id="loadingScreen" class="qolModal hidden" role="status" aria-live="polite"><div class="qolCard loadingCard"><small id="loadingCategory">FIGHTER ASSETS</small><h2 id="loadingTitle">LOADING MATCH</h2><div class="loadingTrack"><div id="loadingProgress"></div></div><p id="loadingMessage">Preparing fighters…</p><div id="loadingActions" class="hidden"><button id="loadingRetry" class="primary">RETRY</button><button id="loadingReturn" class="secondary">RETURN TO MENU</button></div></div></div>
+<div id="confirmDialog" class="qolModal hidden" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle"><div class="qolCard confirmCard"><small>CONFIRM ACTION</small><h2 id="confirmTitle" data-confirm-title>ARE YOU SURE?</h2><p data-confirm-message></p><div><button class="primary" data-confirm-accept>CONFIRM</button><button class="secondary" data-confirm-cancel>CANCEL</button></div></div></div>
+<div id="audioEnableNotice" class="audioEnableNotice hidden">Tap or press a button to enable audio</div>
+<div id="fpsDisplay" class="fpsDisplay hidden">60 FPS</div>
 
 <div id="touchLayer" class="touchLayer hidden" aria-label="Touch controls">
   <div id="movementControl" class="touch-control movementControl" data-control-id="movement" aria-label="Movement control">
@@ -122,6 +147,7 @@
     <fieldset class="layoutEditorPanel">
       <legend>Layout editor</legend>
       <label><input id="touchEditLayout" type="checkbox"> Drag controls in the match view</label>
+      <label><input id="touchLayoutLocked" type="checkbox" checked> Lock layout</label>
       <label>Selected control<select id="touchSelectedControl"></select></label>
       <label>X <input id="touchControlX" type="range" min="2" max="98" step="1"></label>
       <label>Y <input id="touchControlY" type="range" min="4" max="96" step="1"></label>
@@ -149,6 +175,6 @@
 <div id="controllerTest" class="controllerDialog hidden" role="dialog" aria-modal="true" aria-labelledby="controllerTestTitle">
   <div class="controllerDialogCard controllerTestCard"><h2 id="controllerTestTitle">CONTROLLER TEST</h2><p>Move sticks and press buttons to verify the browser receives them.</p><div id="controllerTestBody"></div><button class="primary" id="closeControllerTest">DONE</button></div>
 </div>
-<script type="module" src="js/main.js?v=2.3-rrvvfo-stabilization-2"></script>
+<script type="module" src="js/main.js?v=2.3.5-qol"></script>
 </body>
 </html>

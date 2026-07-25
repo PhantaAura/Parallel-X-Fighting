@@ -110,7 +110,7 @@ export function finishClash(world,winner=0){
   }else{
     const victor=winner===1?first:second,loser=winner===1?second:first;
     loser.vx=victor.face*force;loser.stun=clash.type==='ultimate'?42:30;
-    safeClashDamage(loser,CLASH_BALANCE.damage[clash.type]||10);
+    const damage=safeClashDamage(loser,CLASH_BALANCE.damage[clash.type]||10);world.statistics?.add(victor.side,'clashes');world.statistics?.recordDamage(victor.side,damage);world.notifications?.push(`${clash.type.toUpperCase()} CLASH WON`,{important:true,key:`clash-${victor.side}`});
   }
   first.clashCooldown=second.clashCooldown=CLASH_BALANCE.cooldown;
   world.effects?.burst(clash.point.x,clash.point.y,winner===1?first.c.a:winner===2?second.c.a:'#ffffff',36);

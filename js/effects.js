@@ -7,9 +7,10 @@ export class Particle{
 }
 
 export class EffectSystem{
-  constructor(){this.effects=[];this.particles=[];this.spriteVisuals=null}
+  constructor(){this.effects=[];this.particles=[];this.spriteVisuals=null;this.particleCap=420}
+  configure({particleCap}={}){if(Number.isFinite(Number(particleCap)))this.particleCap=Math.max(40,Math.min(600,Number(particleCap)));return this}
   add(effect){this.effects.push(effect);return effect}
-  burst(x,y,color,count=14){const cap=this.spriteVisuals?.settings?.quality==='reduced'?160:420,available=Math.max(0,cap-this.particles.length);for(let i=0;i<Math.min(count,available);i++)this.particles.push(new Particle(x,y,color))}
+  burst(x,y,color,count=14){const cap=Math.min(this.particleCap,this.spriteVisuals?.settings?.quality==='reduced'?160:420),available=Math.max(0,cap-this.particles.length);for(let i=0;i<Math.min(count,available);i++)this.particles.push(new Particle(x,y,color))}
   update(){for(const p of this.particles)p.update();this.particles=this.particles.filter(p=>p.life>0)}
   clear(){this.effects.length=0;this.particles.length=0}
   draw(ctx){

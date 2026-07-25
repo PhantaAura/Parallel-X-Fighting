@@ -78,6 +78,7 @@ export function createDefaultTouchSettings(stored = {}) {
     haptics:'on',
     clashMethod:'repeated',
     simplified:false,
+    layoutLocked:true,
     tutorialComplete:false,
     positions:clonePositions(),
     savedLayouts:[]
@@ -258,7 +259,7 @@ export class TouchSettingsPanel {
       opacity:doc?.querySelector?.('#touchOpacity'),controlScale:doc?.querySelector?.('#touchScale'),
       haptics:doc?.querySelector?.('#touchHaptics'),clashMethod:doc?.querySelector?.('#touchClashMethod'),
       swapped:doc?.querySelector?.('#touchSwapSides'),dedicatedThrow:doc?.querySelector?.('#touchDedicatedThrow'),
-      dedicatedLauncher:doc?.querySelector?.('#touchDedicatedLauncher'),simplified:doc?.querySelector?.('#touchSimplified')
+      dedicatedLauncher:doc?.querySelector?.('#touchDedicatedLauncher'),simplified:doc?.querySelector?.('#touchSimplified'),layoutLocked:doc?.querySelector?.('#touchLayoutLocked')
     };
     this.selected=doc?.querySelector?.('#touchSelectedControl');
     this.saved=doc?.querySelector?.('#savedTouchLayouts');
@@ -295,6 +296,7 @@ export class TouchSettingsPanel {
       });
     }
     this.doc.querySelector('#touchEditLayout')?.addEventListener('change',event=>{
+      if(event.target.checked&&this.settings.layoutLocked){event.target.checked=false;return}
       if(event.target.checked&&this.touchControls.enabled){this.touchControls.layoutEditor.setEditing(true);this.modal?.classList.add('hidden')}
       else{event.target.checked=false;this.touchControls.layoutEditor.setEditing(false)}
     });

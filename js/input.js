@@ -113,6 +113,7 @@ export class InputManager {
     this.getGamepads = getGamepads;
     this.controllerStyles = ['xbox', 'xbox'];
     this.controllerAssignments = [null, null];
+    this.controllerDeadZones = [.24, .24];
     this.customMappings = emptySides(() => createCustomControllerMapping());
     this.simplifiedTouch = [false, false];
     this.lastInputDevice = ['keyboard', 'keyboard'];
@@ -179,6 +180,7 @@ export class InputManager {
   }
 
   getControllerAssignment(side){return this.controllerAssignments[side-1]}
+  setControllerDeadZone(side,value){const amount=Number(value);if(!Number.isFinite(amount))return false;this.controllerDeadZones[side-1]=Math.max(.1,Math.min(.6,amount));return true}
 
   setCustomButton(side, action, buttonIndex) {
     if (!CUSTOMIZABLE_ACTIONS.includes(action) || !Number.isInteger(Number(buttonIndex))) return false;
@@ -225,13 +227,13 @@ export class InputManager {
     const mapping = this.controllerMapping(side);
     const state = {};
     const horizontal = Number(pad?.axes?.[0] || 0);
-    const vertical = Number(pad?.axes?.[1] || 0);
-    state.l = horizontal < -0.35 || pressedButton(pad, 14);
-    state.r = horizontal > 0.35 || pressedButton(pad, 15);
+    const vertical = Number(pad?.axes?.[1] || 0),deadZone=this.controllerDeadZones[side-1];
+    state.l = horizontal < -deadZone || pressedButton(pad, 14);
+    state.r = horizontal > deadZone || pressedButton(pad, 15);
     for (const action of CONTROLLER_ACTIONS) state[action] = pressedButton(pad, mapping.buttons[action]);
     return {
       state,
-      up: vertical < -0.35 || pressedButton(pad, 12)
+      up: vertical < -deadZone || pressedButton(pad, 12)
     };
   }
 

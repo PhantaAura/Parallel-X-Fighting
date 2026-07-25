@@ -1,6 +1,6 @@
 # Parallels X: Clash of Souls — Prototype 2.3
 
-A dependency-free browser fighting game with Story Mode, VS CPU, local multiplayer, configurable rounds, five stages, 15 playable fighters, browser saves, keyboard/controller/touch input, clashes, advanced defense, cinematic ultimates, and Training Mode.
+A dependency-free browser fighting game with Story Mode, VS CPU, local multiplayer, configurable rounds, five stages, 15 playable fighters, browser saves, keyboard/controller/touch input, clashes, advanced defense, cinematic ultimates, Training Mode, and an optional experimental Rrvvfo sprite pipeline.
 
 ## Run
 
@@ -33,11 +33,18 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 - `js/ultimate-system.js` — character ultimate data and cinematic lifecycle
 - `js/camera-system.js` — focus, zoom, freeze, shake, and guaranteed camera restoration
 - `js/audio-manager.js` — organized combat and round audio hooks
+- `js/sprite-atlas.js` — cached relative-path atlas/manifest/effect loading
+- `js/sprite-animation.js` — reusable frame timing, looping, events, and animation priority
+- `js/sprite-renderer.js` — grounded, flipped, depth-ready sprite and effect drawing
+- `js/fighter-visuals.js` — combat-state-to-animation adapter and safe legacy fallback
+- `js/sprite-debug-viewer.js` — developer-only animation inspection panel
 - `js/story.js` — story ladder and compatible `pxSave` key
 - `js/training.js` — isolated Training Mode settings and reset behavior
 - `js/ui.js` — UI lookup boundary
 - `tests/smoke.html`, `tests/smoke.js` — dependency-free browser smoke tests
-- `assets/` — reserved portraits, sprites, sounds, and music
+- `assets/fighters/rrvvfo/` — generated Rrvvfo atlas, manifest, source archive, and layered effects
+- `tools/build-rrvvfo-atlas.py` — Pillow-based development-time atlas generator
+- `docs/RRVVFO-SPRITE-PIPELINE.md` — crop, anchor, rebuild, reuse, and cleanup documentation
 
 ## Keyboard controls
 
@@ -151,6 +158,16 @@ Flow State is not implemented in Prototype 2.3 and is intentionally separate fro
 
 In local multiplayer, both players share one canvas, so a human Rrvvfo’s blindness overlay obscures the shared screen.
 
+## Experimental Rrvvfo sprites
+
+Character Select includes **Experimental Rrvvfo Sprites: On/Off**. Off preserves the original procedural Rrvvfo rendering. On preloads a generated 1536 × 1920 atlas before any match containing Rrvvfo and maps existing combat state to 192 × 192 normalized frames. A loading failure or malformed manifest automatically restores the original visuals so Rrvvfo can never begin invisible.
+
+**Rrvvfo Hood** selects Hood Down (default) or Hood Up (alternate). This choice is visual only and has identical movement, damage, hitboxes, cooldowns, AI, combos, defense, and abilities. Ultimate/fire-awakening presentation can use hood-up poses even with the default appearance. Sprite toggle, hood choice, quality, and developer-viewer preference are stored under the new `pxRrvvfoVisualsV1` key; existing story and touch keys are unchanged.
+
+Full quality enables up to three visual afterimages and larger layered effects. Reduced quality keeps the same animation/combat behavior with fewer effects for mobile hardware. The atlas is cached after first load and all paths are relative for GitHub Pages deployment under `/Parallel-X-Fighting/`.
+
+The developer-only sprite viewer can play/pause animations, step frames, change speed/facing/background/mobile scale, and display ground pivots, projectile anchors, visual bounds, and combat boxes separately. See [the pipeline guide](docs/RRVVFO-SPRITE-PIPELINE.md) for source limitations and rebuild instructions.
+
 ## Shots of Agony
 
 Shots of Agony costs 40 energy and creates exactly four clones around the opponent. All four clones appear before the attack starts, then fire together after the visual tell. Rrvvfo cannot begin another volley—or regenerate the spent energy—while its clones or projectiles remain active. Once all four clones fire, a 300-frame (about five-second) cooldown begins. The energy HUD reports the active volley and its remaining cooldown together. CPU-controlled Rrvvfo follows the same restrictions. A full unblocked volley deals roughly 25–30 health to an average-defense fighter.
@@ -187,7 +204,7 @@ Use the always-visible **EXIT TRAINING** button or press Escape to return to cha
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The browser suite contains 87 checks covering all Prototype 2.2/2.3 regressions plus all three controller styles, three-hit chains, heavy finishers, directional launchers, simultaneous throws, launcher-to-air routes across keyboard/controller/touch, input-independent scaling, hit-stop buffering, custom remapping, adaptive Training prompts/history, safe simplified touch, virtual joystick/D-Pad directions, multi-touch holds, safe areas, browser resize/orientation, persisted layouts, mobile scrolling/Back behavior, haptics, clashes, guard, cinematic ultimates, AI, camera restoration, and audio-hook coverage.
+The browser suite contains 102 checks covering all Prototype 2.2/2.3 regressions plus all three controller styles, three-hit chains, heavy finishers, directional launchers, simultaneous throws, launcher-to-air routes across keyboard/controller/touch, input-independent scaling, hit-stop buffering, custom remapping, adaptive Training prompts/history, safe simplified touch, virtual joystick/D-Pad directions, multi-touch holds, safe areas, browser resize/orientation, persisted layouts, mobile scrolling/Back behavior, haptics, clashes, guard, cinematic ultimates, AI, camera restoration, audio hooks, sprite manifest validation, relative paths, animation looping/completion/priority, visual state mapping, anchors, clone visuals, Lens/Object Swap presentation, settings persistence, cleanup, and legacy fallback.
 
 ## Save compatibility
 
@@ -195,7 +212,8 @@ Story completion continues to use the existing `pxSave` browser-storage key. Mir
 
 ## Known limitations
 
-- Fighters use procedural canvas art; the asset folders are prepared for later sprite/audio production.
+- Rrvvfo has optional experimental sprites; all other fighters still use procedural canvas art.
+- The concept sheet is JPEG reference art, so a few frames retain compression halos and require manual edge cleanup before production use. Sparse hood-up poses are deliberately reused.
 - Detailed hitbox visualization is not implemented; the previous nonfunctional toggle has been removed.
 - Expanded fighters use contextual single-button specials rather than command motions.
 - Flow State is reserved for a later prototype and is not part of Lens of Truth.

@@ -64,7 +64,7 @@ export function resolveBlockedHit(defender,attacker,kind,baseDamage){
     if(attacker)attacker.vx=-attacker.face*5;
     defender.world.effects?.add({t:'perfectBlock',x:defender.x+defender.w/2,y:defender.y+38,c:'#bdfbff',l:18});
     defender.world.effects?.burst(defender.x+defender.w/2,defender.y+38,'#bdfbff',24);
-    defender.world.sound?.(760,.07,'sine',.035);
+    defender.world.sound?.('perfectBlock');
   }
   let broken=false;
   if(defender.guard<=0){
@@ -72,7 +72,7 @@ export function resolveBlockedHit(defender,attacker,kind,baseDamage){
     defender.guardRegenDelay=DEFENSE_BALANCE.guardBreakStun+DEFENSE_BALANCE.guardRegenDelay;
     defender.world.effects?.add({t:'guardBreak',x:defender.x+defender.w/2,y:defender.y+38,c:'#ffdd75',l:30});
     defender.world.effects?.burst(defender.x+defender.w/2,defender.y+38,'#ffdd75',38);
-    defender.world.shake=Math.max(defender.world.shake,9);defender.world.sound?.(105,.14,'square',.05);
+    defender.world.shake=Math.max(defender.world.shake,defender.world.reducedShake?3:9);defender.world.sound?.('guardBreak');
   }
   return{perfect,broken,guardDamage,chipFactor:perfect?.01:chipFactorFor(kind)};
 }

@@ -50,9 +50,9 @@ export function startClash(world,type,first,second,options={}){
   first.vx=-first.face*3;second.vx=-second.face*3;
   world.effects?.add({t:type==='beam'?'beamClash':'clash',x:world.clash.point.x,y:world.clash.point.y,c:'#ffffff',l:duration});
   world.effects?.burst(world.clash.point.x,world.clash.point.y,'#ffffff',type==='ultimate'?48:28);
-  world.shake=Math.max(world.shake,type==='ultimate'?12:8);
+  world.shake=Math.max(world.shake,world.reducedShake?(type==='ultimate'?4:3):type==='ultimate'?12:8);
   world.hitstop=type==='ultimate'?10:6;
-  world.sound?.(type==='beam'?105:72,.16,'sawtooth',.045);
+  world.sound?.(type==='beam'?'beamClash':'clash');
   return true;
 }
 
@@ -114,7 +114,7 @@ export function finishClash(world,winner=0){
   }
   first.clashCooldown=second.clashCooldown=CLASH_BALANCE.cooldown;
   world.effects?.burst(clash.point.x,clash.point.y,winner===1?first.c.a:winner===2?second.c.a:'#ffffff',36);
-  world.shake=Math.max(world.shake,clash.type==='ultimate'?14:9);
+  world.shake=Math.max(world.shake,world.reducedShake?(clash.type==='ultimate'?5:3):clash.type==='ultimate'?14:9);
   clash.winner=winner;
   clash.active=false;
 }

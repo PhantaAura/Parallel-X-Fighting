@@ -64,7 +64,7 @@ export function beginCinematicUltimate(world,attacker,target){
   focusCamera(world,attacker,target,data.zoom);
   world.effects?.add({t:'ultimateAura',pattern:data.pattern,x:attacker.x+24,y:attacker.y+40,c:data.color,a:data.accent,l:duration});
   world.effects?.burst(attacker.x+24,attacker.y+40,data.color,42);
-  world.sound?.(82,.22,'sawtooth',.05);freezeFrame(world,8);
+  world.sound?.('ultimateActivate');freezeFrame(world,8);
   return true;
 }
 
@@ -76,7 +76,7 @@ function applyImpact(world,cinematic){
   world.effects?.add({t:'ultimateImpact',pattern:data.pattern,x:target.x+24,y:target.y+40,c:data.color,a:data.accent,l:48});
   world.effects?.burst(target.x+24,target.y+40,data.accent,54);
   impactShake(world,data.damage>34?14:11,world.reducedShake);freezeFrame(world,10);
-  world.sound?.(58,.18,'square',.06);
+  world.sound?.('ultimateImpact');
   return actual;
 }
 

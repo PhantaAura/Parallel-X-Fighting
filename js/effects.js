@@ -41,6 +41,7 @@ export class EffectSystem{
         else{ctx.beginPath();ctx.arc(e.x,e.y,52,0,Math.PI*2);ctx.stroke()}
       }
       if(e.t==='ultimateMiss'){ctx.strokeStyle=e.c;ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(e.x-20,e.y-20);ctx.lineTo(e.x+20,e.y+20);ctx.moveTo(e.x+20,e.y-20);ctx.lineTo(e.x-20,e.y+20);ctx.stroke()}
+      if(e.t==='hitSpark'){const radius=e.kind==='ultimate'?34:e.kind==='heavy'||e.kind==='launcher'?25:e.kind==='special'?21:14;ctx.strokeStyle=e.c;ctx.fillStyle=e.c;ctx.shadowColor=e.c;ctx.shadowBlur=e.kind==='ultimate'?28:14;ctx.lineWidth=e.kind==='light'?3:6;for(let i=0;i<(e.kind==='light'?4:8);i++){ctx.save();ctx.translate(e.x,e.y);ctx.rotate(i*Math.PI/4);ctx.fillRect(radius*.25,-2,radius,4);ctx.restore()}if(e.kind==='launcher'){ctx.beginPath();ctx.moveTo(e.x-18,e.y+25);ctx.lineTo(e.x,e.y-35);ctx.lineTo(e.x+18,e.y+25);ctx.stroke()}}
       ctx.restore();e.l--;
     }
     this.effects=this.effects.filter(e=>e.l>0);

@@ -18,3 +18,21 @@ export const ROSTER = {
 
 export const ROSTER_IDS = Object.keys(ROSTER);
 export const isMirrorMatch=(playerOne,playerTwo)=>playerOne===playerTwo;
+
+export const FIGHTER_META={
+  rrvvfo:{style:'Adaptable fire pressure and risky foresight',difficulty:3},
+  revvfo:{style:'Teleport pressure and Astrylte power',difficulty:4},
+  wade:{style:'Lightning-fast rushdown',difficulty:3},
+  bark:{style:'Armored defense and guard pressure',difficulty:2},
+  alt:{style:'Rage-fueled close-range power',difficulty:2},
+  robert:{style:'Ice control and defensive spacing',difficulty:3},
+  virek:{style:'Balanced emerald rival',difficulty:3},
+  shadow:{style:'Disciplined spacing and recovery',difficulty:4},
+  phanta:{style:'Unpredictable clone pressure',difficulty:5},
+  creed:{style:'Evasive whiff punisher',difficulty:4},
+  sage:{style:'Patient, overwhelming technique',difficulty:3},
+  raggie:{style:'Unusual Paper World zoning',difficulty:4},
+  jimmy:{style:'Defensive sealing guardian',difficulty:3},
+  jonathan:{style:'Chaotic close-range pressure',difficulty:2},
+  rev:{style:'Cocky mechanical zoning',difficulty:3}
+};

@@ -17,7 +17,7 @@ import {AudioManager} from './audio-manager.js';
 import {HapticsManager,MobilePlatformController,loadTouchSettings,saveTouchSettings} from './mobile-platform.js';
 import {TouchControls} from './touch-controls.js';
 import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js';
-import {FighterVisuals,loadRrvvfoVisualSettings} from './fighter-visuals.js';
+import {FighterVisuals,loadRrvvfoVisualSettings} from './fighter-visuals.js?v=2.3-rrvvfo-default-on';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;

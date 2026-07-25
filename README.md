@@ -85,6 +85,16 @@ Flow State is not implemented in Prototype 2.2 and is intentionally separate fro
 
 In local multiplayer, both players share one canvas, so a human Rrvvfo’s blindness overlay obscures the shared screen.
 
+## Shots of Agony
+
+Shots of Agony costs 40 energy and creates exactly four clones around the opponent. All four clones appear before the attack starts, then fire together after the visual tell. Rrvvfo cannot begin another volley—or regenerate the spent energy—while its clones or projectiles remain active. Once all four clones fire, a 300-frame (about five-second) cooldown begins. The energy HUD reports the active volley and its remaining cooldown together. CPU-controlled Rrvvfo follows the same restrictions. A full unblocked volley deals roughly 25–30 health to an average-defense fighter.
+
+## CPU behavior
+
+Every fighter has character-specific priorities layered over the shared legal-action checks. Rrvvfo manages ranged fire pressure and Shots availability; Revvfo teleports into launcher routes; Wade rushes down and occasionally retreats after a string; Bark favors defense, armor, deliberate counters, and slow punishes; Alt pressures and spends rage aggressively; Robert controls range with ice; Virek shifts between melee and ranged play; Shadow spaces, fires projectiles, and heals when appropriate; Phanta uses unpredictable movement, clone pressure, and sudden punishes; Creed emphasizes evasion and whiff punishment. The remaining roster profiles select their existing specials and ultimates according to range and resources.
+
+Difficulty changes reaction delay, decision quality, blocking consistency, aggression, and combo completion. It never changes fighter damage and does not grant perfect input reading.
+
 ## Bark’s Seismic Counter
 
 Press E for Player 1, semicolon for Player 2, or click the left stick on a controller. The stance costs 20 energy and has six startup frames, a 12-frame active window, 30 recovery frames, and a 90-frame cooldown. It counters only nearby light, heavy, launcher, and air melee attacks. Ordinary blocking never counters. Projectiles and ranged specials hit Bark normally, and a missed counter leaves him in recovery.
@@ -109,7 +119,7 @@ Use the always-visible **EXIT TRAINING** button or press Escape to return to cha
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The suite covers roster loading, mirror prevention, mixed keyboard/gamepad state, quick keyboard taps, three-hit light chaining, Wade’s wall-loop termination, startup interruption, launcher-to-air follow-up, damage scaling/final damage, full Training reset and exit, dummy passivity, Training-setting synchronization, Bark counter range/projectile behavior, and Lens health sacrifice.
+The suite covers roster loading, mirror prevention, mixed keyboard/gamepad state, quick keyboard taps, three-hit light chaining, Wade’s wall-loop termination, startup interruption, launcher-to-air follow-up, damage scaling/final damage, full Training reset and exit, dummy passivity, Training-setting synchronization, Bark counter range/projectile behavior, Lens health sacrifice, Shots of Agony clone/cooldown/energy/damage rules, Phanta’s single-move survival, and legal action selection for every character-specific CPU profile.
 
 ## Save compatibility
 

@@ -7,7 +7,7 @@ export const ROSTER = {
   robert:{n:'Robert',o:'S1/S2',c:'#d8f3ff',a:'#7cdcff',h:'#718aa1',sp:4.7,j:12.9,p:1,d:1.05,s:'Ice Master',u:'Absolute Freeze'},
   virek:{n:'Virek',o:'S1/S2',c:'#00a97b',a:'#7dffbc',h:'#064f3c',sp:5.1,j:13,p:1.05,d:1,s:'Emerald Lance',u:'Island Sovereign'},
   shadow:{n:'Shadow',o:'S1/OVA',c:'#c9a7ff',a:'#eadcff',h:'#7965a0',sp:5,j:13.4,p:1.08,d:.96,s:'Sage Orb',u:'Cosmic Memory'},
-  phanta:{n:'Phanta',o:'OVA',c:'#2a0f45',a:'#a855f7',h:'#12061f',sp:5.6,j:14,p:1.14,d:.94,s:'Clone Barrage',u:'Terraform'},
+  phanta:{n:'Phanta',o:'OVA',c:'#2a0f45',a:'#a855f7',h:'#12061f',sp:5.6,j:14,p:1.14,d:1.10,s:'Clone Barrage',u:'Terraform'},
   creed:{n:'Creed',o:'S2',c:'#153e51',a:'#32ecff',h:'#061a22',sp:6,j:13.8,p:1.04,d:.97,s:'Time Slice',u:'Frozen Moment'},
   sage:{n:'The Sage',o:'S1/OVA',c:'#c9b7ff',a:'#fff38a',h:'#6b5b89',sp:4.5,j:12.5,p:1.12,d:1.05,s:'Lazy Palm',u:'Serious Mode'},
   raggie:{n:'Raggie',o:'S1/S2',c:'#ffd53d',a:'#fff7a8',h:'#e4e4e4',sp:5.8,j:14.6,p:.88,d:.9,s:'Paper Disc',u:'Time Stone'},

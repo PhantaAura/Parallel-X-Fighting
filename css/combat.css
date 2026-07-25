@@ -1,3 +1,4 @@
 .comboHud{position:absolute;top:86px;color:#fff09a;font-size:20px;font-weight:1000;text-shadow:0 2px 5px #000;z-index:3}
 .comboHud small{display:block;color:#fff;font-size:11px}
 .comboHud.c1{left:18px}.comboHud.c2{right:18px;text-align:right}
+.moveCooldown{min-height:14px;margin-top:3px;color:#67e8ff;font-size:10px;font-weight:900;letter-spacing:.4px;text-shadow:0 1px 4px #000}

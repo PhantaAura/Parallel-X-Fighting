@@ -35,7 +35,7 @@ export class TimerRegistry{
 }
 
 export class Projectile{
-  constructor(owner,x,y,vx,vy,color,damage,size=10,type='orb'){Object.assign(this,{owner,x,y,vx,vy,color,damage,size,type,life:180,dead:false})}
+  constructor(owner,x,y,vx,vy,color,damage,size=10,type='orb',metadata={}){Object.assign(this,{owner,x,y,vx,vy,color,damage,size,type,life:180,dead:false},metadata)}
   update(world){
     this.x+=this.vx;this.y+=this.vy;this.life--;
     const target=this.owner===world.fighters[0]?world.fighters[1]:world.fighters[0];

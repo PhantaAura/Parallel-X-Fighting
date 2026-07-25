@@ -35,3 +35,12 @@ export const MOVESETS={
 };
 export function moveFor(id,kind,chain=0){const set=MOVESETS[id];if(!set)return null;const value=set[kind];return Array.isArray(value)?value[chain%value.length]:value}
 export function moveList(id){return MOVESETS[id]?.moves||[]}
+
+// Conservative full-move damage totals used by balance tests. Multi-hit scaling
+// makes actual match damage equal or lower than these raw totals.
+export const MOVE_DAMAGE_TOTALS={
+  rrvvfo:{special:29.6,ultimate:0},revvfo:{special:19,ultimate:25},wade:{special:13.5,ultimate:21.6},bark:{special:12,ultimate:22},
+  alt:{special:14,ultimate:17},robert:{special:11,ultimate:12},virek:{special:14,ultimate:24},shadow:{special:13,ultimate:28},
+  phanta:{special:19.5,ultimate:20},creed:{special:12,ultimate:16},sage:{special:13,ultimate:20},raggie:{special:10,ultimate:0},
+  jimmy:{special:15,ultimate:18},jonathan:{special:0,ultimate:21}
+};

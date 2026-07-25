@@ -6,6 +6,7 @@
 <title>Parallels X: Clash of Souls</title>
 <link rel="stylesheet" href="css/game.css">
 <link rel="stylesheet" href="css/combat.css">
+<link rel="stylesheet" href="css/training.css">
 <style>
 :root{--orange:#ff5a1f;--bg:#080a11;--panel:#151a29;--line:#343b58;--text:#f5f7ff;--muted:#aeb6d1}
 *{box-sizing:border-box;margin:0;padding:0;user-select:none}html,body{min-height:100%;background:radial-gradient(circle at 20% 5%,#252b50,#0b0d16 42%,#05060a);color:var(--text);font-family:Segoe UI,Arial,sans-serif}body{display:flex;justify-content:center;padding:14px}button,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}#app{width:min(1120px,100%)}
@@ -28,6 +29,7 @@
 <div class="opt"><label>ROUND TIME</label><select id="roundTime"><option value="60">60 seconds</option><option value="90" selected>90 seconds</option><option value="120">120 seconds</option></select></div>
 <div class="opt"><label>MATCH FORMAT</label><select id="rounds"><option value="1">One Round</option><option value="2" selected>Best of 3</option><option value="3">Best of 5</option></select></div>
 </div>
+<div id="trainingOptions" class="trainingPanel hidden"><label><input id="trainHealth" type="checkbox" checked> Infinite health</label><label><input id="trainEnergy" type="checkbox" checked> Infinite energy</label><label>Dummy <select id="dummyMode"><option value="never">Never block</option><option value="always">Always block</option><option value="after">Block after first hit</option><option value="stationary">Stationary</option><option value="cpu">CPU controlled</option></select></label><label><input id="hitboxes" type="checkbox"> Show hitboxes</label></div>
 <div class="slots"><button class="slot active" id="slot1"><small>PLAYER 1 — CLICK TO SELECT</small><strong id="name1"></strong><em id="moves1"></em></button><button class="slot" id="slot2"><small id="slot2label">CPU — CLICK TO SELECT</small><strong id="name2"></strong><em id="moves2"></em></button></div>
 <div class="roster" id="roster"></div><div class="notice" id="notice"></div>
 <div class="buttons"><button class="primary" id="fight">FIGHT!</button><button class="secondary" id="random">RANDOM MATCH</button><button class="secondary" id="reset">RESET SAVE</button></div>

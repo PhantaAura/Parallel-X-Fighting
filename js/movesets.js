@@ -6,7 +6,7 @@ export const MOVESETS={
     heavy:normal('Flame Heavy',13,11,27,25,61,12),
     launcher:normal('Flame Launcher',9.5,15,30,31,52,4,12.5),
     air:normal('Air Fire Combo',6.4,4,12,19,50,5,3.5),
-    moves:['Fire light combo','Flame Heavy','Flame Launcher','Air Fire Combo','Fire Blast','Shots of Agony','Object Swap Dash','Lens of Truth']
+    moves:['Fire light combo','Flame Heavy','Flame Launcher','Air Fire Combo','Fire Blast','Shots of Agony','Object Swap Dash','Lens of Truth (Z / N)','Fire Awakening: Solar Weave']
   },
   revvfo:{
     style:'Aggressive Astrylte pressure and teleports',
@@ -39,8 +39,8 @@ export function moveList(id){return MOVESETS[id]?.moves||[]}
 // Conservative full-move damage totals used by balance tests. Multi-hit scaling
 // makes actual match damage equal or lower than these raw totals.
 export const MOVE_DAMAGE_TOTALS={
-  rrvvfo:{special:29.6,ultimate:0},revvfo:{special:19,ultimate:25},wade:{special:13.5,ultimate:21.6},bark:{special:12,ultimate:22},
+  rrvvfo:{special:29.6,ultimate:34},revvfo:{special:19,ultimate:35},wade:{special:13.5,ultimate:30},bark:{special:12,ultimate:36},
   alt:{special:14,ultimate:17},robert:{special:11,ultimate:12},virek:{special:14,ultimate:24},shadow:{special:13,ultimate:28},
   phanta:{special:19.5,ultimate:20},creed:{special:12,ultimate:16},sage:{special:13,ultimate:20},raggie:{special:10,ultimate:0},
-  jimmy:{special:15,ultimate:18},jonathan:{special:0,ultimate:21}
+  jimmy:{special:15,ultimate:18},jonathan:{special:0,ultimate:21},rev:{special:18,ultimate:32}
 };

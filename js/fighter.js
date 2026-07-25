@@ -4,13 +4,14 @@ import {ATTACKS,COMBO_RESET_FRAMES,JUGGLE_LIMIT,Projectile,calculateFinalDamage,
 import {tint} from './effects.js';
 import {tryMeleeClash,tryUltimateClash} from './clash-system.js';
 import {DEFENSE_BALANCE,defensiveDashFrames,resetDefenseState,resolveBlockedHit,updateDefenseState} from './guard-system.js';
+import {beginCinematicUltimate,clearCinematic,ULTIMATES} from './ultimate-system.js';
 
 const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 
 export class Fighter{
   constructor(id,side,cpu,world){this.id=id;this.c=ROSTER[id];this.side=side;this.cpu=cpu;this.world=world;this.w=48;this.h=86;this.combo=createComboState();this.resetRuntime()}
   resetRuntime(){
-    Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,hp:100,en:100,attackCd:0,specialCd:0,ultCd:0,dashCd:0,clashCooldown:0,ultimateStartup:0,pendingUltimate:false,agonyCooldown:0,agonyActiveVolley:false,agonyVolleyFired:false,agonyVolleyId:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,tick:0});
+    Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,hp:100,en:100,attackCd:0,specialCd:0,ultCd:0,ultimateRecovery:0,dashCd:0,clashCooldown:0,ultimateStartup:0,pendingUltimate:false,lensCooldown:0,agonyCooldown:0,agonyActiveVolley:false,agonyVolleyFired:false,agonyVolleyId:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,tick:0});
     resetDefenseState(this);
     resetCombo(this.combo);
   }
@@ -24,14 +25,14 @@ export class Fighter{
     if(command.pressed('k'))this.comboBreaker();
     if(this.combo.timer>0&&--this.combo.timer===0){resetCombo(this.combo);this.lightChain=0}
     if(this.lightChainTimer>0&&--this.lightChainTimer===0)this.lightChain=0;
-    if(this.chainLockout>0)this.chainLockout--;if(this.counterCd>0)this.counterCd--;if(this.clashCooldown>0)this.clashCooldown--;
+    if(this.chainLockout>0)this.chainLockout--;if(this.counterCd>0)this.counterCd--;if(this.clashCooldown>0)this.clashCooldown--;if(this.lensCooldown>0)this.lensCooldown--;if(this.ultimateRecovery>0)this.ultimateRecovery--;
     if(this.agonyCooldown>0)this.agonyCooldown--;
     if(this.agonyActiveVolley&&this.agonyVolleyFired){const projectilesRemain=this.world.projectiles.some(projectile=>projectile.volleyOwner===this&&projectile.volleyId===this.agonyVolleyId),clonesRemain=this.world.effects.effects.some(effect=>effect.volleyOwner===this&&effect.volleyId===this.agonyVolleyId);if(!projectilesRemain&&!clonesRemain)this.agonyActiveVolley=false}
     if(this.knockdown>0){this.knockdown--;this.vx*=.9;if(!this.knockdown){this.getup=28;this.inv=28}}
     else if(this.getup>0)this.getup--;
     if(this.guardBreakStun>0||this.grabbed>0){this.vx*=.7}
     else if(this.throwStartup>0){this.vx*=.45;if(!--this.throwStartup)this.resolveThrow()}
-    else if(this.dashRecovery>0){this.vx*=.75}
+    else if(this.dashRecovery>0||this.ultimateRecovery>0){this.vx*=.75}
     else if(this.ultimateStartup>0){this.vx*=.4;if(!--this.ultimateStartup&&this.pendingUltimate)this.resolveUltimate()}
     else if(this.counterStartup>0){this.vx*=.5;if(!--this.counterStartup)this.counterActive=12}
     else if(this.counterActive>0){this.vx*=.5;if(!--this.counterActive)this.counterRecovery=30}
@@ -48,6 +49,7 @@ export class Fighter{
       if(command.pressed('x'))this.attack('launcher');
       if(command.pressed('s'))this.special();
       if(command.pressed('u'))this.ultimate();
+      if(command.pressed('n'))this.lensAbility();
       if(command.pressed('d'))this.dash();
       if(command.pressed('c'))this.counter();
     }
@@ -78,7 +80,7 @@ export class Fighter{
     if(kind==='light'){if(finalLight){this.lightChain=0;this.lightChainTimer=0;this.chainLockout=40;this.attackCd=Math.max(this.attackCd,40)}else{this.lightChain++;this.lightChainTimer=COMBO_RESET_FRAMES}}
     return true;
   }
-  cancelStartup(){this.windup=0;this.pending=null;this.pendingMove=null;this.queuedAttack=null;if(this.throwStartup){this.throwStartup=0;this.pendingThrow=false;this.throwRecovery=Math.max(this.throwRecovery,18)}}
+  cancelStartup(){this.windup=0;this.pending=null;this.pendingMove=null;this.queuedAttack=null;if(this.ultimateStartup){this.ultimateStartup=0;this.pendingUltimate=false;this.ultimateRecovery=Math.max(this.ultimateRecovery,32)}if(this.throwStartup){this.throwStartup=0;this.pendingThrow=false;this.throwRecovery=Math.max(this.throwRecovery,18)}}
   throw(){
     if(this.throwStartup||this.throwRecovery||this.attackCd||this.windup||this.stun||this.knockdown||this.guardBreakStun||this.world.clash?.active)return false;
     this.throwStartup=DEFENSE_BALANCE.throwStartup;this.pendingThrow=true;this.attackCd=DEFENSE_BALANCE.throwStartup+DEFENSE_BALANCE.throwRecovery;return true;
@@ -141,48 +143,37 @@ export class Fighter{
       case'raggie':this.shot(10,11,14,'disc',0,'#fff7a8');this.inv=8;break;
       case'jimmy':Math.abs(foe.x-this.x)<150?(foe.hit(15,this.face*12,'special',this,{hitstun:24}),fx.burst(foe.x,foe.y+30,'#22130c',26)):this.shot(9,7,16,'orb',0,'#2b1b12');break;
       case'jonathan':foe.trap=120;fx.add({t:'trap',x:foe.x+24,y:this.world.ground-8,c:'#ffd18f',l:120});break;
+      case'rev':[0,1,2].forEach((_,i)=>this.later(()=>this.shot(6,8+i,9,'orb',(i-1)*.8,'#ff4e87'),i*70));break;
     }
     this.world.shake=Math.max(this.world.shake,4);
     return true;
   }
   ultimate(){
-    if(this.ultCd||this.en<90||this.ultimateStartup||this.world.clash?.active)return false;
+    const data=ULTIMATES[this.id];if(!data||this.ultCd||this.en<90||this.ultimateStartup||this.ultimateRecovery||this.world.clash?.active||this.world.cinematic?.active)return false;
     this.en-=90;this.ultCd=300;
-    if(this.id==='rrvvfo')return this.resolveUltimate();
-    this.pendingUltimate=true;this.ultimateStartup=18;this.attackCd=Math.max(this.attackCd,42);
+    this.pendingUltimate=true;this.ultimateStartup=data.startup;this.attackCd=Math.max(this.attackCd,data.startup+data.recovery);
     this.world.effects.burst(this.x+24,this.y+40,this.c.a,26);this.world.sound(90,.12,'sawtooth',.04);
-    if(tryUltimateClash(this.world,this,this.foe(),30))return true;
+    if(tryUltimateClash(this.world,this,this.foe(),data.damage))return true;
     return true;
   }
   resolveUltimate(){
-    this.pendingUltimate=false;const foe=this.foe(),fx=this.world.effects;this.world.sound(90,.22,'sawtooth',.05);this.world.shake=12;
-    switch(this.id){
-      case'rrvvfo':this.hp=Math.max(1,this.hp-50);this.lens=240;fx.burst(this.x+24,this.y+40,'#f7f7ff',45);fx.add({t:'lens',x:this.x+24,y:this.y+22,c:'#f7f7ff',l:240});break;
-      case'revvfo':this.aura=360;this.hp=clamp(this.hp+8,0,100);this.shot(25,7,28,'beam',0,'#ff4fd8');break;
-      case'wade':[0,1,2,3,4,5].forEach((_,i)=>this.later(()=>{foe.hit(3.6,this.face*2,'ultimate',this,{hitstun:12});fx.burst(foe.x+Math.random()*48,foe.y+Math.random()*86,'#82e8ff',8)},i*90));break;
-      case'bark':foe.hit(22,this.face*9,'ultimate',this,{hitstun:28});foe.vy=-10;this.armor=360;for(let x=50;x<this.world.width;x+=80)fx.burst(x,this.world.ground,'#c8a06a',8);break;
-      case'alt':this.aura=420;foe.hit(17,this.face*12,'ultimate',this,{hitstun:26});break;
-      case'robert':foe.freeze=150;foe.hit(12,0,'ultimate',this,{hitstun:20});fx.add({t:'freeze',x:foe.x,y:foe.y,c:'#b9f2ff',l:150});break;
-      case'virek':this.aura=330;this.shot(24,9,24,'beam',0,'#59ffc4');this.hp=clamp(this.hp+6,0,100);break;
-      case'shadow':this.aura=360;[0,1,2,3].forEach((_,i)=>this.later(()=>this.shot(7,8,14,'orb',(i-1.5)*1.8,'#fff28a'),i*80));break;
-      case'phanta':fx.add({t:'terra',x:0,y:0,c:'#ff2e78',l:150});foe.hit(20,this.face*7,'ultimate',this,{hitstun:28});this.aura=300;break;
-      case'creed':foe.freeze=105;this.inv=105;[0,1,2,3].forEach((_,i)=>this.later(()=>foe.hit(4,this.face*3,'ultimate',this,{hitstun:10}),i*80));break;
-      case'sage':this.aura=420;this.hp=clamp(this.hp+15,0,100);foe.hit(20,this.face*15,'ultimate',this,{hitstun:30});break;
-      case'raggie':this.inv=180;this.hp=clamp(this.hp+12,0,100);foe.freeze=75;fx.burst(this.x,this.y,'#fff7a8',40);break;
-      case'jimmy':foe.freeze=100;foe.hit(18,0,'ultimate',this,{hitstun:25});fx.add({t:'seal',x:foe.x,y:foe.y,c:'#ff8a24',l:100});break;
-      case'jonathan':[0,1,2,3,4].forEach((_,i)=>this.later(()=>{foe.hit(4.2,this.face*4,'ultimate',this,{hitstun:12});fx.burst(foe.x,foe.y+50,'#ffd18f',12)},i*90));break;
-    }
-    return true;
+    this.pendingUltimate=false;return beginCinematicUltimate(this.world,this,this.foe());
+  }
+  lensAbility(){
+    if(this.id!=='rrvvfo'||this.lens||this.lensCooldown||this.en<90||this.stun||this.knockdown||this.world.cinematic?.active)return false;
+    this.en-=90;this.hp=Math.max(1,this.hp-50);this.lens=240;this.lensCooldown=300;
+    const fx=this.world.effects;fx.burst(this.x+24,this.y+40,'#f7f7ff',45);fx.add({t:'lens',x:this.x+24,y:this.y+22,c:'#f7f7ff',l:240});this.world.sound(620,.1,'sine',.04);return true;
   }
   hit(baseDamage,knockback=0,kind='hit',attacker=null,move={}){
     const fx=this.world.effects;
+    if(this.world.cinematic?.active&&this.world.cinematic.attacker===this)clearCinematic(this.world);
     if(this.lens>0){const foe=this.foe(),oldX=this.x;this.x=clamp(foe.x-foe.face*72,15,this.world.width-this.w-15);if(Math.abs(this.x-foe.x)<45)this.x=clamp(oldX-this.face*105,15,this.world.width-this.w-15);this.inv=8;fx.burst(oldX+24,this.y+43,'#f7f7ff',18);fx.burst(this.x+24,this.y+43,'#f7f7ff',18);fx.add({t:'dodge',x:this.x+24,y:this.y+22,c:'#f7f7ff',l:20});this.world.sound(620,.06,'sine',.035);return 0}
     if(this.inv)return 0;
     const meleeCounterKinds=new Set(['light','heavy','launcher','air']);
     if(this.id==='bark'&&this.counterActive>0&&attacker&&meleeCounterKinds.has(kind)&&Math.abs(attacker.x-this.x)<95){this.counterActive=0;this.counterRecovery=18;attacker.hit(13,-attacker.face*12,'counter',this,{hitstun:26});fx.burst(attacker.x+24,attacker.y+40,'#d9bb78',24);return 0}
     if(this.counterStartup||this.counterActive){this.counterStartup=this.counterActive=0;this.counterRecovery=Math.max(this.counterRecovery,30)}
     const intentionalStartupArmor=this.id==='bark'&&this.pending==='heavy'&&this.armor>0;
-    if(this.windup>0&&!intentionalStartupArmor)this.cancelStartup();
+    if((this.windup>0||this.ultimateStartup>0||this.throwStartup>0)&&!intentionalStartupArmor)this.cancelStartup();
     const nextHit=attacker&&!this.block?attacker.combo.hits+1:1;
     const result=calculateFinalDamage({base:baseDamage,hit:nextHit,kind,defense:this.c.d,armor:!!this.armor,lowHealthAlt:this.id==='alt'&&this.hp<35,blocked:false,trapped:!!this.trap});
     const defense=this.block?resolveBlockedHit(this,attacker,kind,baseDamage):null;

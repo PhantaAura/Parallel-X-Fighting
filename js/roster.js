@@ -12,7 +12,8 @@ export const ROSTER = {
   sage:{n:'The Sage',o:'S1/OVA',c:'#c9b7ff',a:'#fff38a',h:'#6b5b89',sp:4.5,j:12.5,p:1.12,d:1.05,s:'Lazy Palm',u:'Serious Mode'},
   raggie:{n:'Raggie',o:'S1/S2',c:'#ffd53d',a:'#fff7a8',h:'#e4e4e4',sp:5.8,j:14.6,p:.88,d:.9,s:'Paper Disc',u:'Time Stone'},
   jimmy:{n:'Jimmy',o:'S1/S2',c:'#ff8a24',a:'#332519',h:'#3b2012',sp:4.6,j:12.3,p:1.13,d:1,s:'Dark Guardian',u:'Sealing Staff'},
-  jonathan:{n:'Jonathan',o:'S1/S2',c:'#b07847',a:'#ffd18f',h:'#49311f',sp:5,j:13.1,p:.98,d:1.04,s:'Oddball Trap',u:'Chain Reaction'}
+  jonathan:{n:'Jonathan',o:'S1/S2',c:'#b07847',a:'#ffd18f',h:'#49311f',sp:5,j:13.1,p:.98,d:1.04,s:'Oddball Trap',u:'Chain Reaction'},
+  rev:{n:'Rev',o:'S2',c:'#62778f',a:'#ff4e87',h:'#202936',sp:4.9,j:12.8,p:1.04,d:1.06,s:'Mechanical Barrage',u:'Maximum Ovation'}
 };
 
 export const ROSTER_IDS = Object.keys(ROSTER);

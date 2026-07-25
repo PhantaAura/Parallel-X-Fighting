@@ -19,7 +19,8 @@ export const CHARACTER_AI={
   sage:{preferredRange:100,advance:.7,retreat:.75,block:1.15,a:.8,h:.9,x:.6,s:1.15,u:.75,d:.25,j:.15,c:0,style:'patient palm control and selective ultimate use'},
   raggie:{preferredRange:150,advance:.6,retreat:1.1,block:.9,a:.75,h:.6,x:.55,s:1.55,u:.7,d:.85,j:.55,c:0,style:'mobile paper-disc zoning and evasive time use'},
   jimmy:{preferredRange:90,advance:.85,retreat:.65,block:1.2,a:.8,h:1.15,x:.65,s:1.25,u:.65,d:.3,j:.15,c:0,style:'guardian punishment and sealing control'},
-  jonathan:{preferredRange:130,advance:.7,retreat:.9,block:.85,a:.7,h:.75,x:.65,s:1.35,u:.65,d:.55,j:.3,c:0,style:'trap setup and chain-reaction pressure'}
+  jonathan:{preferredRange:130,advance:.7,retreat:.9,block:.85,a:.7,h:.75,x:.65,s:1.35,u:.65,d:.55,j:.3,c:0,style:'trap setup and chain-reaction pressure'},
+  rev:{preferredRange:165,advance:.65,retreat:1.05,block:.9,a:.7,h:.7,x:.6,s:1.65,u:.7,d:.6,j:.25,c:0,style:'mechanical zoning, cocky barrage pressure, ranged punishment'}
 };
 
 export function aiProfile(id){return{...base,...(CHARACTER_AI[id]||{})}}
@@ -33,6 +34,7 @@ export function availableAIActions(fighter,foe){
   if(!fighter.dashCd)actions.push('d');
   if(fighter.grounded)actions.push('j');
   if(fighter.id==='bark'&&fighter.en>=20&&!fighter.counterCd)actions.push('c');
+  if(fighter.id==='rrvvfo'&&fighter.en>=90&&fighter.hp>55&&!fighter.lensCooldown&&!fighter.lens)actions.push('n');
   if(distance<62&&foe.block&&!fighter.throwRecovery&&!foe.throwProtection)actions.push('t');
   if(fighter.stun>0&&fighter.en>=85&&!fighter.breakerUsed&&!fighter.breakerCooldown)actions.push('k');
   return{actions:[...new Set(actions)],movements:[toward,away],canBlock:distance<130,distance,toward,away};
@@ -60,6 +62,7 @@ export function decideCPU(fighter,foe,difficulty,rng=Math.random){
   if(foe.stun){weights.x*=1+settings.combo;weights.h*=1.35}
   if(!foe.grounded)weights.a*=1+settings.combo;
   if(fighter.id==='rrvvfo'){if(available.distance>190)weights.s*=2;else if(!fighter.agonyCooldown&&!fighter.agonyActiveVolley)weights.s*=1.7;weights.d*=available.distance<75?1.8:1}
+  if(fighter.id==='rrvvfo'&&available.actions.includes('n'))weights.n=fighter.guard<35?1.25:.3;
   if(fighter.id==='revvfo'){weights.x*=foe.grounded?1.8:.5;weights.a*=foe.grounded?.8:1.8}
   if(fighter.id==='bark'){weights.c*=available.distance<90?2.1:.2;weights.h*=foe.attackCd?1.7:1}
   if(fighter.id==='alt'&&fighter.en>=90)weights.u*=1.8;

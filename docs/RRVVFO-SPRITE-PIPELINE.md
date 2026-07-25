@@ -19,11 +19,17 @@ Neither design reference is loaded at runtime.
 - Black pants with red accents
 - Red-and-black shoes
 - Hood down by default
-- Selectable hood-up visual variant with identical gameplay
+- Hood Up — Prototype visual variant with identical gameplay
 - Confident, energetic fire-ninja silhouette
 
 The full concept sheet is retained as `rrvvfo-source-sheet.png` for development
 only. Runtime code never loads or draws it.
+
+The newer supplied Hood Up concept sheet is retained separately as
+`docs/reference/rrvvfo-hood-up-prototype-sheet.jpg`. It contains a broader set
+of hooded action references, but it remains a labeled JPEG concept sheet rather
+than normalized transparent art. This stabilization branch does not crop it
+into the active atlas or claim that Hood Up is complete.
 
 ## Source limitations
 
@@ -151,8 +157,10 @@ reuse source poses:
   marker are separate assets.
 - Ultimate uses the three clean hood-up reference poses while aura, fire, and
   impact are separate layers.
-- Hood-up is a selectable visual variant. Because the sheet has only three clean
-  hood-up views, those frames repeat across many animations.
+- Hood Up — Prototype is available only when unfinished appearances are exposed
+  in a developer build. The active atlas has only three clean hood-up views, so
+  those frames repeat across many animations. The newer Hood Up reference sheet
+  is deliberately not used to fabricate runtime motion in this branch.
 
 These repetitions change presentation only and never alter combat timing.
 
@@ -162,7 +170,7 @@ These repetitions change presentation only and never alter combat timing.
 - A few source frames have fire or shield highlights close to the body outline.
 - Side/back turnaround frames are reference-quality rather than final combat
   animation.
-- Hood-up motion needs dedicated hand-drawn frames for production-quality run,
+- Hood-up motion still needs reviewed, normalized frames for production-quality run,
   jump, normals, and hurt animations.
 - Some extreme fire trails are cropped conservatively to keep a predictable
   192-pixel cell.
@@ -177,9 +185,11 @@ These repetitions change presentation only and never alter combat timing.
 - `sprite-renderer.js` handles pivots, flipping, opacity, afterimages, scaling,
   optional Z/depth scale, ground shadow, and debug overlays.
 - `fighter-visuals.js` translates authoritative fighter state into visual state
-  and falls back to legacy rendering on every load/render failure.
+  and falls back to legacy rendering on every load/render failure. Appearance
+  is resolved from each `fighter.appearance`, never one global hood value.
 - `sprite-debug-viewer.js` is available only when the developer checkbox is
-  enabled.
+  enabled. It includes black, white, red, blue, and transparent-checkerboard
+  backgrounds for compression-halo and edge inspection.
 
 Priority is defeated, cinematic, clash, knockdown, hurt, guard break, perfect
 block, block hit, attack, dash, jump/fall, run, stance, idle.

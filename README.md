@@ -21,6 +21,7 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 - `js/fighter.js` — fighter state, attack resolution, specials, ultimates, and drawing
 - `js/combat.js` — projectile class, attack categories, final-damage calculation, combo rules, juggle rules, and managed delayed timers
 - `js/input.js` — semantic keyboard/touch/controller actions, style translation, simultaneous-input detection, and hit-stop buffering
+- `js/controller-manager.js` — controller detection, saved styles/assignments, menu navigation, pause, and test-screen coordination
 - `js/touch-controls.js` — multi-pointer joystick/D-Pad and combat-action translation
 - `js/touch-layout-editor.js` — touch presets, per-control placement/sizing, and named custom layouts
 - `js/mobile-platform.js` — iOS/Android detection, match-only browser protection, Back handling, persistence, fullscreen, and haptics
@@ -85,7 +86,7 @@ Select Nintendo, Xbox, PlayStation, or Custom for each player on Character Selec
 | Bark counter | Left-stick click | LS | L3 |
 | Lens of Truth | Right-stick click | RS | R3 |
 
-Move with the left stick or D-pad. Two standard gamepads are supported in local multiplayer. Custom mappings can reassign Jump, Light, Heavy, Special, Dash, Block, Ultimate, and Breaker; Launcher and Throw prompts automatically follow the selected Heavy and Light bindings.
+Move with the left stick or D-pad. The first detected controller opens a setup prompt for Nintendo, Xbox, PlayStation, or Custom style and Player 1/Player 2 assignment. Styles, custom buttons, and device assignments use the `pxControllerSettingsV1` save key. Connection and disconnection events update the assignment selectors without clearing keyboard or touch input. The controller can navigate Character Select, change focused selects, confirm buttons, pause with Start/Menu, and use the Controller Test screen. Two standard gamepads are supported in local multiplayer. Custom mappings can reassign Jump, Light, Heavy, Special, Dash, Block, Ultimate, and Breaker; Launcher and Throw prompts automatically follow the selected Heavy and Light bindings.
 
 ## iPhone, iPad, and Android touch controls
 
@@ -162,11 +163,13 @@ In local multiplayer, both players share one canvas, so a human Rrvvfo’s blind
 
 Character Select includes **Experimental Rrvvfo Sprites: On/Off**. Fresh saves default to Off while the concept-derived artwork awaits manual cleanup. Off preserves the original procedural Rrvvfo rendering exactly. On preloads a generated 1536 × 1920 atlas before any match containing Rrvvfo and maps existing combat state to 192 × 192 normalized frames. A loading failure or malformed manifest automatically restores the original visuals so Rrvvfo can never begin invisible. An explicit On or Off choice persists without rewriting untouched legacy Off values.
 
-**Rrvvfo Hood** selects Hood Down (default) or Hood Up (alternate). This choice is visual only and has identical movement, damage, hitboxes, cooldowns, AI, combos, defense, and abilities. Ultimate/fire-awakening presentation can use hood-up poses even with the default appearance. Sprite toggle, hood choice, quality, and developer-viewer preference are stored under the new `pxRrvvfoVisualsV1` key; existing story and touch keys are unchanged.
+When a player slot contains Rrvvfo, Character Select shows that slot’s **RRVVFO APPEARANCE** selector and live preview. Hood Down is the default. Player 1, Player 2, Training Player 1, and the Training dummy store separate appearance choices under `pxRrvvfoVisualsV1`; the choice is copied onto the individual `Fighter` instance. Appearance never changes movement, damage, hitboxes, cooldowns, AI, combos, defense, or abilities.
+
+**Hood Up — Prototype** is unfinished and hidden in production builds. On localhost or a URL with `?developer=1`, enable **Expose unfinished appearances** to inspect it. Character Select warns that dedicated Hood Up animations are still in development. The supplied Hood Up concept sheet is archived at `docs/reference/rrvvfo-hood-up-prototype-sheet.jpg` but is not loaded or cropped into gameplay on this stabilization branch. Current Hood Up runtime frames remain sparse and repeated; they are preserved only for future atlas work.
 
 Full quality enables up to three visual afterimages and larger layered effects. Reduced quality keeps the same animation/combat behavior with fewer effects for mobile hardware. The atlas is cached after first load and all paths are relative for GitHub Pages deployment under `/Parallel-X-Fighting/`.
 
-The developer-only sprite viewer can play/pause animations, step frames, change speed/facing/background/mobile scale, and display ground pivots, projectile anchors, visual bounds, and combat boxes separately. See [the pipeline guide](docs/RRVVFO-SPRITE-PIPELINE.md) for source limitations and rebuild instructions.
+The developer-only sprite viewer can play/pause animations, step frames, change speed/facing/appearance/mobile scale, and display ground pivots, projectile anchors, visual bounds, and combat boxes separately. Edge testing supports black, white, red, blue, and transparent-checkerboard backgrounds. See [the pipeline guide](docs/RRVVFO-SPRITE-PIPELINE.md) for source limitations and rebuild instructions.
 
 ## Shots of Agony
 
@@ -204,7 +207,7 @@ Use the always-visible **EXIT TRAINING** button or press Escape to return to cha
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The browser suite contains 102 checks covering all Prototype 2.2/2.3 regressions plus all three controller styles, three-hit chains, heavy finishers, directional launchers, simultaneous throws, launcher-to-air routes across keyboard/controller/touch, input-independent scaling, hit-stop buffering, custom remapping, adaptive Training prompts/history, safe simplified touch, virtual joystick/D-Pad directions, multi-touch holds, safe areas, browser resize/orientation, persisted layouts, mobile scrolling/Back behavior, haptics, clashes, guard, cinematic ultimates, AI, camera restoration, audio hooks, sprite manifest validation, relative paths, animation looping/completion/priority, visual state mapping, anchors, clone visuals, Lens/Object Swap presentation, settings persistence, cleanup, and legacy fallback.
+The browser suite contains **115 checks** covering all Prototype 2.2/2.3 regressions plus all three controller styles, controller detection/preferences/assignment, three-hit chains, heavy finishers, directional launchers, simultaneous throws, launcher-to-air routes across keyboard/controller/touch, input-independent scaling, hit-stop buffering, custom remapping, adaptive Training prompts/history, safe simplified touch, virtual joystick/D-Pad directions, multi-touch holds, safe areas, browser resize/orientation, persisted layouts, mobile scrolling/Back behavior, haptics, clashes, guard, cinematic ultimates, AI, camera restoration, audio hooks, sprite manifest validation, fresh-Off and explicit-On behavior, unused-versus-failed preloads, per-fighter appearances, production/developer visibility, animation looping/completion/priority, visual state mapping, anchors, clone visuals, Lens/Object Swap presentation, cleanup, and legacy fallback.
 
 ## Save compatibility
 
@@ -213,10 +216,10 @@ Story completion continues to use the existing `pxSave` browser-storage key. Mir
 ## Known limitations
 
 - Rrvvfo has optional experimental sprites; all other fighters still use procedural canvas art.
-- The concept sheet is JPEG reference art, so a few frames retain compression halos and require manual edge cleanup before production use. Sparse hood-up poses are deliberately reused.
+- The concept sheets are JPEG reference art, so frames retain compression halos and require manual edge cleanup before production use. The current Hood Up runtime variant still reuses sparse poses; the newer full Hood Up concept sheet is reference-only in this branch.
 - Detailed hitbox visualization is not implemented; the previous nonfunctional toggle has been removed.
 - Expanded fighters use contextual single-button specials rather than command motions.
 - Flow State is reserved for a later prototype and is not part of Lens of Truth.
 - Audio uses synthesized hooks until final sound and music assets are available.
 - Cinematics use procedural 2D canvas effects; full sprite animation remains future presentation work.
-- Automated browser checks verify semantic touch/controller behavior and mobile layout calculations, but physical controller feel, iOS Safari browser chrome, Android navigation modes, display cutouts, vibration support, and multi-finger ergonomics should also be tested on representative hardware.
+- Automated browser checks verify semantic touch/controller behavior, saved assignment logic, and mobile layout calculations, but hot-plug timing and menu feel across physical Nintendo/Xbox/PlayStation controllers, iOS Safari browser chrome, Android navigation modes, display cutouts, vibration support, and multi-finger ergonomics should also be tested on representative hardware.

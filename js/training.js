@@ -1,10 +1,11 @@
 import {resetCombo} from './combat.js';
+import {clearClash} from './clash-system.js';
 
-export const trainingState={enabled:false,infiniteHealth:true,infiniteEnergy:true,dummy:'never',stationaryBlock:false,inputHistory:[],afterFirstHit:false};
+export const trainingState={enabled:false,infiniteHealth:true,infiniteEnergy:true,infiniteClash:false,forceNextClash:false,dummy:'never',stationaryBlock:false,inputHistory:[],afterFirstHit:false};
 export function recordInput(label){trainingState.inputHistory.unshift(label);trainingState.inputHistory.length=10}
-export function clearTraining(){trainingState.inputHistory.length=0;trainingState.afterFirstHit=false}
+export function clearTraining(){trainingState.inputHistory.length=0;trainingState.afterFirstHit=false;trainingState.forceNextClash=false}
 export function resetTrainingWorld(world){
-  world.timers.cancelAll();world.projectiles.length=0;world.effects.clear();world.shake=0;world.hitstop=0;trainingState.afterFirstHit=false;
+  world.timers.cancelAll();world.projectiles.length=0;world.effects.clear();clearClash(world);world.shake=0;world.hitstop=0;trainingState.afterFirstHit=false;trainingState.forceNextClash=false;
   for(const fighter of world.fighters){fighter.resetRuntime();resetCombo(fighter.combo)}
 }
 export function exitTrainingWorld(world,input){resetTrainingWorld(world);input?.clear?.();trainingState.enabled=false;clearTraining()}

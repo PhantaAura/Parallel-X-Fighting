@@ -37,7 +37,9 @@ export class TimerRegistry{
 export class Projectile{
   constructor(owner,x,y,vx,vy,color,damage,size=10,type='orb',metadata={}){Object.assign(this,{owner,x,y,vx,vy,color,damage,size,type,life:180,dead:false},metadata)}
   update(world){
+    if(this.dead||world.clash?.active)return;
     this.x+=this.vx;this.y+=this.vy;this.life--;
+    if(world.tryProjectileClash?.(world,this))return;
     const target=this.owner===world.fighters[0]?world.fighters[1]:world.fighters[0];
     if(target&&overlaps({x:this.x-this.size,y:this.y-this.size,w:this.size*2,h:this.size*2},target.box())){
       target.hit(this.damage,this.owner.face*5,'special',this.owner,{hitstun:20});

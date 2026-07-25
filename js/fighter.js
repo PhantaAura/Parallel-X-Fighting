@@ -2,29 +2,32 @@ import {ROSTER} from './roster.js';
 import {moveFor} from './movesets.js';
 import {ATTACKS,COMBO_RESET_FRAMES,JUGGLE_LIMIT,Projectile,calculateFinalDamage,clamp,createComboState,overlaps,resetCombo} from './combat.js';
 import {tint} from './effects.js';
+import {tryMeleeClash,tryUltimateClash} from './clash-system.js';
 
 const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 
 export class Fighter{
   constructor(id,side,cpu,world){this.id=id;this.c=ROSTER[id];this.side=side;this.cpu=cpu;this.world=world;this.w=48;this.h=86;this.combo=createComboState();this.resetRuntime()}
   resetRuntime(){
-    Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,hp:100,en:100,attackCd:0,specialCd:0,ultCd:0,dashCd:0,agonyCooldown:0,agonyActiveVolley:false,agonyVolleyFired:false,agonyVolleyId:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,tick:0});
+    Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,hp:100,en:100,attackCd:0,specialCd:0,ultCd:0,dashCd:0,clashCooldown:0,ultimateStartup:0,pendingUltimate:false,agonyCooldown:0,agonyActiveVolley:false,agonyVolleyFired:false,agonyVolleyId:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,tick:0});
     resetCombo(this.combo);
   }
   box(){return{x:this.x,y:this.y,w:this.w,h:this.h}}
   foe(){return this===this.world.fighters[0]?this.world.fighters[1]:this.world.fighters[0]}
   update(command=ZERO_COMMAND){
+    if(this.world.clash?.active)return;
     if(this.freeze>0){this.freeze--;return}
     const foe=this.foe();if(!foe)return;this.tick++;this.face=foe.x>this.x?1:-1;
     if(this.combo.timer>0&&--this.combo.timer===0){resetCombo(this.combo);this.lightChain=0}
     if(this.lightChainTimer>0&&--this.lightChainTimer===0)this.lightChain=0;
-    if(this.chainLockout>0)this.chainLockout--;if(this.counterCd>0)this.counterCd--;
+    if(this.chainLockout>0)this.chainLockout--;if(this.counterCd>0)this.counterCd--;if(this.clashCooldown>0)this.clashCooldown--;
     if(this.agonyCooldown>0)this.agonyCooldown--;
     if(this.agonyActiveVolley&&this.agonyVolleyFired){const projectilesRemain=this.world.projectiles.some(projectile=>projectile.volleyOwner===this&&projectile.volleyId===this.agonyVolleyId),clonesRemain=this.world.effects.effects.some(effect=>effect.volleyOwner===this&&effect.volleyId===this.agonyVolleyId);if(!projectilesRemain&&!clonesRemain)this.agonyActiveVolley=false}
     if(this.knockdown>0){this.knockdown--;this.vx*=.9;if(!this.knockdown){this.getup=28;this.inv=28}}
     else if(this.getup>0)this.getup--;
     this.block=command.down('b')&&this.grounded&&this.stun<=0&&!this.knockdown&&!this.counterStartup&&!this.counterActive&&!this.counterRecovery;
-    if(this.counterStartup>0){this.vx*=.5;if(!--this.counterStartup)this.counterActive=12}
+    if(this.ultimateStartup>0){this.vx*=.4;if(!--this.ultimateStartup&&this.pendingUltimate)this.resolveUltimate()}
+    else if(this.counterStartup>0){this.vx*=.5;if(!--this.counterStartup)this.counterActive=12}
     else if(this.counterActive>0){this.vx*=.5;if(!--this.counterActive)this.counterRecovery=30}
     else if(this.counterRecovery>0){this.vx*=.65;this.counterRecovery--}
     else if(this.windup>0){this.windup--;if(!this.windup&&this.pending)this.resolveAttack()}
@@ -59,6 +62,7 @@ export class Fighter{
     const kind=this.pending,move=this.pendingMove;this.pending=this.pendingMove=null;if(!move)return false;
     const foe=this.foe();if(this.id==='revvfo'&&kind==='launcher'){this.x=clamp(foe.x-this.face*48,15,this.world.width-this.w-15);this.world.effects.burst(this.x,this.y,this.c.a,14)}
     const hitbox={x:this.face>0?this.x+this.w:this.x-move.range,y:this.y+(kind==='launcher'?30:14),w:move.range,h:kind==='launcher'?58:52};
+    if(tryMeleeClash(this.world,this,foe,kind,hitbox))return true;
     this.world.effects.add({t:'slash',x:hitbox.x+move.range/2,y:hitbox.y+20,c:this.c.a,l:10});this.world.sound(kind==='heavy'?110:170);
     if(!overlaps(hitbox,foe.box())){if(kind==='light')this.lightChain=0;return false}
     const finalLight=kind==='light'&&this.lightChain===2,appliedKnockback=move.knockback*(finalLight?1.65:1);
@@ -118,7 +122,16 @@ export class Fighter{
     return true;
   }
   ultimate(){
-    if(this.ultCd||this.en<90)return;this.en-=90;this.ultCd=300;const foe=this.foe(),fx=this.world.effects;this.world.sound(90,.22,'sawtooth',.05);this.world.shake=12;
+    if(this.ultCd||this.en<90||this.ultimateStartup||this.world.clash?.active)return false;
+    this.en-=90;this.ultCd=300;
+    if(this.id==='rrvvfo')return this.resolveUltimate();
+    this.pendingUltimate=true;this.ultimateStartup=18;this.attackCd=Math.max(this.attackCd,42);
+    this.world.effects.burst(this.x+24,this.y+40,this.c.a,26);this.world.sound(90,.12,'sawtooth',.04);
+    if(tryUltimateClash(this.world,this,this.foe(),30))return true;
+    return true;
+  }
+  resolveUltimate(){
+    this.pendingUltimate=false;const foe=this.foe(),fx=this.world.effects;this.world.sound(90,.22,'sawtooth',.05);this.world.shake=12;
     switch(this.id){
       case'rrvvfo':this.hp=Math.max(1,this.hp-50);this.lens=240;fx.burst(this.x+24,this.y+40,'#f7f7ff',45);fx.add({t:'lens',x:this.x+24,y:this.y+22,c:'#f7f7ff',l:240});break;
       case'revvfo':this.aura=360;this.hp=clamp(this.hp+8,0,100);this.shot(25,7,28,'beam',0,'#ff4fd8');break;
@@ -135,6 +148,7 @@ export class Fighter{
       case'jimmy':foe.freeze=100;foe.hit(18,0,'ultimate',this,{hitstun:25});fx.add({t:'seal',x:foe.x,y:foe.y,c:'#ff8a24',l:100});break;
       case'jonathan':[0,1,2,3,4].forEach((_,i)=>this.later(()=>{foe.hit(4.2,this.face*4,'ultimate',this,{hitstun:12});fx.burst(foe.x,foe.y+50,'#ffd18f',12)},i*90));break;
     }
+    return true;
   }
   hit(baseDamage,knockback=0,kind='hit',attacker=null,move={}){
     const fx=this.world.effects;

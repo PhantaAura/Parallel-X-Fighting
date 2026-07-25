@@ -24,6 +24,7 @@ export class EffectSystem{
       if(e.t==='dodge'){ctx.strokeStyle=e.c;ctx.lineWidth=4;ctx.beginPath();ctx.arc(e.x,e.y,26,0,Math.PI*2);ctx.stroke()}
       if(e.t==='counter'){ctx.strokeStyle=e.c;ctx.lineWidth=5;ctx.beginPath();ctx.arc(e.x,e.y,34,0,Math.PI*2);ctx.stroke()}
       if(e.t==='agonyClone'){ctx.globalAlpha=Math.min(.75,e.l/20);ctx.fillStyle=e.c+'55';ctx.shadowColor=e.c;ctx.shadowBlur=16;ctx.fillRect(e.x-14,e.y+20,28,48);ctx.beginPath();ctx.arc(e.x,e.y+10,14,0,Math.PI*2);ctx.fill();ctx.fillStyle=e.c;ctx.fillRect(e.x+(e.face>0?8:-12),e.y+30,18,7)}
+      if(e.t==='clash'||e.t==='beamClash'){const pulse=22+Math.sin(performance.now()/55)*8;ctx.globalAlpha=.88;ctx.strokeStyle=e.t==='beamClash'?'#7de9ff':'#fff6ae';ctx.lineWidth=e.t==='beamClash'?9:6;ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=24;ctx.beginPath();ctx.arc(e.x,e.y,pulse,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.moveTo(e.x-pulse*2,e.y);ctx.lineTo(e.x+pulse*2,e.y);ctx.stroke()}
       ctx.restore();e.l--;
     }
     this.effects=this.effects.filter(e=>e.l>0);

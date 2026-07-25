@@ -1,8 +1,8 @@
 export const ROSTER = {
-  rrvvfo:{n:'Rrvvfo',o:'S1/S2',c:'#e63224',a:'#ff9d2f',h:'#7a120f',sp:5.2,j:13.5,p:1.02,d:1,s:'Shots of Agony',u:'Flow State + Lens'},
-  revvfo:{n:'Revvfo',o:'S1/S2',c:'#8b2cff',a:'#ff55c8',h:'#321047',sp:4.8,j:12.7,p:1.10,d:1.02,s:'Asrylyte Beam',u:'Perfected State'},
-  wade:{n:'Wade',o:'S1',c:'#1677ff',a:'#82e8ff',h:'#0c2b6c',sp:6.4,j:14.2,p:.92,d:.94,s:'Flash Step',u:'Thunderstorm'},
-  bark:{n:'Bark',o:'S1',c:'#7d512d',a:'#c8a06a',h:'#2c2118',sp:4.2,j:11.8,p:1.05,d:1.18,s:'Rock Armor',u:'Earthquake'},
+  rrvvfo:{n:'Rrvvfo',o:'S1/S2',c:'#e63224',a:'#ff9d2f',h:'#7a120f',sp:5.2,j:13.5,p:1.02,d:1,s:'Fire Blast / Shots of Agony',u:'Flow State + Lens'},
+  revvfo:{n:'Revvfo',o:'S1/S2',c:'#8b2cff',a:'#ff55c8',h:'#321047',sp:4.8,j:12.7,p:1.10,d:1.02,s:'Beam / Teleport Strike',u:'Perfected Astrylte'},
+  wade:{n:'Wade',o:'S1',c:'#1677ff',a:'#82e8ff',h:'#0c2b6c',sp:6.7,j:14.2,p:.92,d:.94,s:'Flash Step / Barrage',u:'Thunderstorm'},
+  bark:{n:'Bark',o:'S1',c:'#7d512d',a:'#c8a06a',h:'#2c2118',sp:3.9,j:11.8,p:1.12,d:1.18,s:'Rock Armor / Earth Wall',u:'Earthquake'},
   alt:{n:'Alt',o:'S1/S2',c:'#2da857',a:'#a6ff6f',h:'#123d25',sp:4.9,j:13,p:1.10,d:1.02,s:'Fist of Punishment',u:'Rage Form'},
   robert:{n:'Robert',o:'S1/S2',c:'#d8f3ff',a:'#7cdcff',h:'#718aa1',sp:4.7,j:12.9,p:1,d:1.05,s:'Ice Master',u:'Absolute Freeze'},
   virek:{n:'Virek',o:'S1/S2',c:'#00a97b',a:'#7dffbc',h:'#064f3c',sp:5.1,j:13,p:1.05,d:1,s:'Emerald Lance',u:'Island Sovereign'},
@@ -16,4 +16,3 @@ export const ROSTER = {
 };
 
 export const ROSTER_IDS = Object.keys(ROSTER);
-

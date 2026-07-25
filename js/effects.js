@@ -22,6 +22,7 @@ export class EffectSystem{
       if(e.t==='terra'){ctx.fillStyle=e.c+'33';ctx.fillRect(0,0,960,540)}
       if(e.t==='lens'){ctx.strokeStyle=e.c;ctx.lineWidth=3;ctx.shadowColor=e.c;ctx.shadowBlur=14;ctx.beginPath();ctx.ellipse(e.x,e.y,28,13,0,0,Math.PI*2);ctx.stroke();ctx.beginPath();ctx.arc(e.x,e.y,6,0,Math.PI*2);ctx.fillStyle=e.c;ctx.fill()}
       if(e.t==='dodge'){ctx.strokeStyle=e.c;ctx.lineWidth=4;ctx.beginPath();ctx.arc(e.x,e.y,26,0,Math.PI*2);ctx.stroke()}
+      if(e.t==='counter'){ctx.strokeStyle=e.c;ctx.lineWidth=5;ctx.beginPath();ctx.arc(e.x,e.y,34,0,Math.PI*2);ctx.stroke()}
       if(e.t==='agonyClone'){ctx.globalAlpha=Math.min(.75,e.l/20);ctx.fillStyle=e.c+'55';ctx.shadowColor=e.c;ctx.shadowBlur=16;ctx.fillRect(e.x-14,e.y+20,28,48);ctx.beginPath();ctx.arc(e.x,e.y+10,14,0,Math.PI*2);ctx.fill();ctx.fillStyle=e.c;ctx.fillRect(e.x+(e.face>0?8:-12),e.y+30,18,7)}
       ctx.restore();e.l--;
     }

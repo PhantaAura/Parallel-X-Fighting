@@ -8,13 +8,13 @@ import {TimerRegistry,clamp,resetCombo} from './combat.js';
 import {EffectSystem} from './effects.js';
 import {Fighter} from './fighter.js';
 import {moveList} from './movesets.js';
-import {trainingState,recordInput,clearTraining,resetTrainingWorld,dummyCommand} from './training.js';
+import {trainingState,recordInput,clearTraining,resetTrainingWorld,exitTrainingWorld,setTrainingSetting,dummyCommand} from './training.js';
 import {byId as $} from './ui.js';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;
 const U={menu:$('menuScreen'),game:$('gameScreen'),mode:$('mode'),diff:$('difficulty'),stage:$('stage'),rt:$('roundTime'),rounds:$('rounds'),roster:$('roster'),slot1:$('slot1'),slot2:$('slot2'),n1:$('name1'),n2:$('name2'),m1:$('moves1'),m2:$('moves2'),s2l:$('slot2label'),notice:$('notice'),p1n:$('p1name'),p2n:$('p2name'),p1h:$('p1hp'),p2h:$('p2hp'),p1e:$('p1en'),p2e:$('p2en'),timer:$('timer'),rl:$('roundLabel'),msg:$('msg'),mt:$('msgTitle'),mx:$('msgText'),mb:$('msgButton'),pause:$('pause')};
 const comboHud=[document.createElement('div'),document.createElement('div')];comboHud.forEach((element,index)=>{element.className=`comboHud c${index+1}`;$('gameWrap').appendChild(element)});
-const trainingHud=document.createElement('div');trainingHud.className='trainingHud hidden';trainingHud.innerHTML='<div id="trainStats"></div><div id="trainMoves"></div><div><label><input id="liveHealth" type="checkbox" checked> ∞ HP</label> <label><input id="liveEnergy" type="checkbox" checked> ∞ ENERGY</label><br><select id="liveDummy"><option value="never">Never Block</option><option value="always">Always Block</option><option value="after">Block After First Hit</option><option value="stationary">Stationary</option><option value="cpu">CPU Dummy</option></select> <label><input id="stationaryBlock" type="checkbox"> Stationary blocks</label><br><button id="trainResetPos">RESET TRAINING (Y)</button><button id="trainResetCombo">RESET COMBO</button><button id="trainRestart">QUICK RESTART</button><div id="trainInputs"></div></div>';$('gameWrap').appendChild(trainingHud);
+const trainingHud=document.createElement('div');trainingHud.className='trainingHud hidden';trainingHud.innerHTML='<div id="trainStats"></div><div id="trainMoves"></div><div><label><input id="liveHealth" type="checkbox" checked> ∞ HP</label> <label><input id="liveEnergy" type="checkbox" checked> ∞ ENERGY</label><br><select id="liveDummy"><option value="never">Never Block</option><option value="always">Always Block</option><option value="after">Block After First Hit</option><option value="stationary">Stationary</option><option value="cpu">CPU Dummy</option></select> <label><input id="stationaryBlock" type="checkbox"> Stationary blocks</label><br><button id="trainResetPos">RESET TRAINING (Y)</button><button id="trainResetCombo">RESET COMBO</button><button id="trainRestart">QUICK RESTART</button><button id="exitTraining">EXIT TRAINING</button><div id="trainInputs"></div></div>';$('gameWrap').appendChild(trainingHud);
 
 let selectSlot=1,p1id='rrvvfo',p2id='revvfo',mode='story',difficulty='normal',stage='dojo',limit=90,roundsToWin=2,currentRound=1,wins1=0,wins2=0,state='menu',paused=false,story=0,time=90,last=0,acc=0,audio=null;
 const input=new InputManager();
@@ -44,7 +44,7 @@ function commandFor(fighter){
 }
 
 function setup(){
-  if(p1id===p2id)p2id=different(p1id);clearTransient();paused=false;time=limit;
+  if(p1id===p2id)p2id=different(p1id);clearTransient();input.clear();paused=false;time=limit;
   world.fighters=[new Fighter(p1id,1,false,world),new Fighter(p2id,2,mode!=='local'&&mode!=='training',world)];
   U.p1n.textContent=`${ROSTER[p1id].n.toUpperCase()}  ${wins1}`;U.p2n.textContent=`${wins2}  ${ROSTER[p2id].n.toUpperCase()}`;
   U.rl.textContent=mode==='story'?`STORY ${story+1}/${STORY_ORDER.length} • ROUND ${currentRound}`:mode==='training'?'TRAINING':`ROUND ${currentRound}`;
@@ -63,6 +63,10 @@ function over(winner){
   else show(p1win?`${ROSTER[p1id].n} WINS THE MATCH!`:`${ROSTER[p2id].n} WINS THE MATCH!`,mode==='story'?'Your story run ended. Try again.':`Final score: ${wins1}–${wins2}`,'REMATCH',()=>{currentRound=1;wins1=wins2=0;setup()});
 }
 function show(title,text,button,callback){U.mt.textContent=title;U.mx.textContent=text;U.mb.textContent=button;U.msg.classList.remove('hidden');U.mb.onclick=callback}
+function returnToCharacterSelect(){
+  if(trainingState.enabled)exitTrainingWorld(world,input);else{clearTransient();input.clear()}
+  trainingHud.classList.add('hidden');trainingState.enabled=false;paused=false;state='menu';U.msg.classList.add('hidden');U.pause.classList.add('hidden');U.game.classList.add('hidden');U.menu.classList.remove('hidden');refreshSelection();
+}
 
 function update(dt){
   if(state!=='playing'||paused)return;input.poll();if(world.hitstop>0){world.hitstop--;return}
@@ -86,12 +90,13 @@ function loop(timestamp){const delta=Math.min(.034,(timestamp-last)/1000||0);las
 U.slot1.onclick=()=>{selectSlot=1;refreshSelection()};U.slot2.onclick=()=>{selectSlot=2;refreshSelection()};
 U.mode.onchange=()=>{U.s2l.textContent=U.mode.value==='local'?'PLAYER 2 — CLICK TO SELECT':'CPU/DUMMY — CLICK TO SELECT';$('trainingOptions').classList.toggle('hidden',U.mode.value!=='training')};
 $('random').onclick=()=>{p1id=ROSTER_IDS[Math.floor(Math.random()*ROSTER_IDS.length)];p2id=different(p1id);refreshSelection()};$('reset').onclick=()=>{localStorage.removeItem(SAVE_KEY);U.notice.textContent='Saved progress reset.'};$('fight').onclick=startGame;
-$('backMenu').onclick=()=>{clearTransient();trainingState.enabled=false;state='menu';U.msg.classList.add('hidden');U.game.classList.add('hidden');U.menu.classList.remove('hidden');refreshSelection()};
-addEventListener('keydown',event=>{if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code))event.preventDefault();input.setKeyboard(event.code,true);if(trainingState.enabled)recordInput(event.code.replace('Key',''));if(event.code==='KeyY'&&trainingState.enabled)resetTrainingWorld(world);if(event.code==='KeyP'&&state==='playing'){paused=!paused;U.pause.classList.toggle('hidden',!paused)}});
+$('backMenu').onclick=returnToCharacterSelect;
+addEventListener('keydown',event=>{if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code))event.preventDefault();if(event.code==='Escape'&&trainingState.enabled){event.preventDefault();returnToCharacterSelect();return}input.setKeyboard(event.code,true);if(trainingState.enabled)recordInput(event.code.replace('Key',''));if(event.code==='KeyY'&&trainingState.enabled)resetTrainingWorld(world);if(event.code==='KeyP'&&state==='playing'){paused=!paused;U.pause.classList.toggle('hidden',!paused)}});
 addEventListener('keyup',event=>input.setKeyboard(event.code,false));
 document.querySelectorAll('[data-t]').forEach(button=>{const map={left:'KeyA',right:'KeyD',jump:'KeyW',attack:'KeyF',special:'KeyG',ult:'KeyH'},key=map[button.dataset.t],down=event=>{event.preventDefault();input.setTouch(key,true)},up=event=>{event.preventDefault();input.setTouch(key,false)};button.onpointerdown=down;button.onpointerup=up;button.onpointercancel=up;button.onpointerleave=up});
-function bindToggle(id,key){$(id).onchange=event=>trainingState[key]=event.target.checked}bindToggle('trainHealth','infiniteHealth');bindToggle('trainEnergy','infiniteEnergy');bindToggle('hitboxes','showHitboxes');bindToggle('liveHealth','infiniteHealth');bindToggle('liveEnergy','infiniteEnergy');bindToggle('stationaryBlock','stationaryBlock');
-$('dummyMode').onchange=event=>{trainingState.dummy=event.target.value;trainingState.afterFirstHit=false;$('liveDummy').value=event.target.value};$('liveDummy').onchange=event=>{trainingState.dummy=event.target.value;trainingState.afterFirstHit=false;$('dummyMode').value=event.target.value};
-$('trainResetPos').onclick=()=>resetTrainingWorld(world);$('trainResetCombo').onclick=()=>{for(const fighter of world.fighters){resetCombo(fighter.combo);fighter.lightChain=0;fighter.lightChainTimer=0}trainingState.afterFirstHit=false};$('trainRestart').onclick=setup;
+function bindSyncedCheckbox(preId,liveId,key){const pre=$(preId),live=$(liveId),apply=event=>setTrainingSetting(key,event.target.checked,pre,live);pre.onchange=apply;live.onchange=apply}
+bindSyncedCheckbox('trainHealth','liveHealth','infiniteHealth');bindSyncedCheckbox('trainEnergy','liveEnergy','infiniteEnergy');bindSyncedCheckbox('preStationaryBlock','stationaryBlock','stationaryBlock');
+function syncDummy(event){setTrainingSetting('dummy',event.target.value,$('dummyMode'),$('liveDummy'));trainingState.afterFirstHit=false}$('dummyMode').onchange=syncDummy;$('liveDummy').onchange=syncDummy;
+$('trainResetPos').onclick=()=>resetTrainingWorld(world);$('trainResetCombo').onclick=()=>{for(const fighter of world.fighters){resetCombo(fighter.combo);fighter.lightChain=0;fighter.lightChainTimer=0;fighter.chainLockout=0}trainingState.afterFirstHit=false};$('trainRestart').onclick=setup;$('exitTraining').onclick=returnToCharacterSelect;
 
 buildRoster();U.mode.dispatchEvent(new Event('change'));if(localStorage.getItem(SAVE_KEY))U.notice.textContent='Story clear detected on this browser.';requestAnimationFrame(loop);

@@ -39,6 +39,7 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 | Light / air attack | F | J |
 | Heavy | R | I |
 | Launcher | T | U |
+| Bark counter | E | Semicolon (;) |
 | Special | G | K |
 | Ultimate | H | L |
 | Dash | Q | O |
@@ -57,19 +58,22 @@ Touch controls preserve movement, jump, light attack, special, and ultimate acce
 - Left bumper: ultimate
 - Right bumper: dash
 - Right trigger: jump
+- Left-stick click: Bark counter
 
 Two standard gamepads are supported in local multiplayer.
 
 ## Combo mechanics
 
-Lights chain into character-specific strings. Heavy attacks are slower and more punishable. Launchers start air routes, and the light button performs air attacks while airborne. Connected hits build a counter and total-damage readout. Each successive hit scales down, with a non-zero damage floor and stronger minimum scaling for specials/ultimates. Six air juggles force knockdown; get-up frames are briefly invulnerable. Combos reset after recovery or a short no-hit window.
+Lights chain into character-specific three-hit strings. The final ground-light hit adds pushback and a short light-chain lockout, so repeatedly cycling 1-2-3 cannot form an infinite wall loop. Heavy attacks are slower and more punishable. Launchers start air routes, and the light button performs air attacks while airborne. Connected hits build a counter and total-damage readout. Each successive hit scales down, with a non-zero damage floor and stronger minimum scaling for specials/ultimates. Six air juggles force knockdown; get-up frames are briefly invulnerable. Combos reset after recovery or a short no-hit window.
+
+Taking a hit during unarmored attack startup cancels the pending attack. Bark’s intentionally armored heavy is the exception while its startup armor is active.
 
 ## Expanded fighters
 
 - **Rrvvfo:** fire light chain, Flame Heavy/Launcher, air fire attacks, Fire Blast, Shots of Agony, Object Swap Dash, and Lens of Truth
 - **Revvfo:** Astrylte blade chain, heavy/teleport launcher, air blade attacks, Beam, Teleport Strike, Astrylte Dragon behavior, and Perfected State
 - **Wade:** rapid low-damage normals, lightning launcher, fast air attacks, Flash Step, Barrage, one air dash per jump, and Thunderstorm
-- **Bark:** slow high-damage chain, armored heavy, Earth Launcher, Air Slam, temporary Rock Armor, Earth Wall, defensive counter, and Earthquake
+- **Bark:** slow high-damage chain, armored heavy, Earth Launcher, Air Slam, temporary Rock Armor, Earth Wall, deliberate Seismic Counter, and Earthquake
 
 Other roster members retain their legacy specials/ultimates and shared normal toolkit.
 
@@ -79,9 +83,15 @@ Rrvvfo needs 90 energy. Activation sacrifices exactly 50 health but never lowers
 
 Flow State is not implemented in Prototype 2.2 and is intentionally separate from Lens of Truth.
 
+In local multiplayer, both players share one canvas, so a human Rrvvfo’s blindness overlay obscures the shared screen.
+
+## Bark’s Seismic Counter
+
+Press E for Player 1, semicolon for Player 2, or click the left stick on a controller. The stance costs 20 energy and has six startup frames, a 12-frame active window, 30 recovery frames, and a 90-frame cooldown. It counters only nearby light, heavy, launcher, and air melee attacks. Ordinary blocking never counters. Projectiles and ranged specials hit Bark normally, and a missed counter leaves him in recovery.
+
 ## Training Mode
 
-Choose Training Mode from the mode menu. Configure infinite health/energy, optional hitbox display, and the starting dummy behavior. During training, live controls can switch the dummy among:
+Choose Training Mode from the mode menu. Configure infinite health/energy and the starting dummy behavior. Pre-match and live Training controls stay synchronized. During training, live controls can switch the dummy among:
 
 - **Never Block:** stationary, passive, and never blocks.
 - **Always Block:** stationary, passive, and always blocks.
@@ -91,13 +101,15 @@ Choose Training Mode from the mode menu. Configure infinite health/energy, optio
 
 Player 2 keyboard and controller attacks are ignored for every non-CPU dummy. The HUD shows combo count, actual post-defense combo damage, current scaling, move list, and ten recent inputs.
 
-Reset Training with Y or the on-screen button. A reset cancels delayed attacks and clears projectiles, particles, effects, Lens, armor, aura, traps, freeze, invulnerability, hitstun, knockdown/get-up state, startup, cooldowns, air dashes, juggle count, light-chain position, combo state, and both fighter positions. Quick restart applies the same transient cleanup without returning to character select. Training settings do not affect Story, VS CPU, or local multiplayer.
+Reset Training with Y or the on-screen button. A reset cancels delayed attacks and clears projectiles, particles, effects, Lens, armor, aura, traps, freeze, invulnerability, hitstun, knockdown/get-up state, startup, counter state, cooldowns, air dashes, juggle count, light-chain position, combo state, and both fighter positions. Quick restart applies the same transient cleanup without returning to character select.
+
+Use the always-visible **EXIT TRAINING** button or press Escape to return to character select. Exiting clears delayed attacks, projectiles, effects, input state, temporary abilities, and Training session state. Training settings do not affect Story, VS CPU, or local multiplayer.
 
 ## Smoke tests
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The suite covers roster loading, mirror prevention, mixed keyboard/gamepad state, quick keyboard taps, a three-hit light combo, launcher-to-air follow-up, damage scaling/final damage, full Training reset, dummy passivity, and Lens health sacrifice.
+The suite covers roster loading, mirror prevention, mixed keyboard/gamepad state, quick keyboard taps, three-hit light chaining, Wade’s wall-loop termination, startup interruption, launcher-to-air follow-up, damage scaling/final damage, full Training reset and exit, dummy passivity, Training-setting synchronization, Bark counter range/projectile behavior, and Lens health sacrifice.
 
 ## Save compatibility
 
@@ -106,7 +118,7 @@ Story completion continues to use the existing `pxSave` browser-storage key. Mir
 ## Known limitations
 
 - Fighters use procedural canvas art; the asset folders are prepared for later sprite/audio production.
-- Hitbox display is an optional training setting but detailed per-frame hitbox visualization is not yet rendered.
+- Detailed hitbox visualization is not implemented; the previous nonfunctional toggle has been removed.
 - Expanded fighters use contextual single-button specials rather than command motions.
 - Flow State is reserved for a later prototype and is not part of Lens of Truth.
 - Automated browser checks can verify keyboard events and gamepad mapping code, but physical controller feel should also be tested on target hardware.

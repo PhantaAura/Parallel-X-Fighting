@@ -30,7 +30,7 @@ export const MOVESETS={
     heavy:normal('Armored Heavy',17,16,38,31,68,17),
     launcher:normal('Earth Launcher',12,18,36,33,57,6,11),
     air:normal('Air Slam',11,8,25,25,55,10,1),
-    moves:['Heavy light chain','Armored Heavy','Earth Launcher','Air Slam','Rock Armor','Earth Wall','Defensive Counter','Earthquake']
+    moves:['Heavy light chain','Armored Heavy','Earth Launcher','Air Slam','Rock Armor','Earth Wall','Seismic Counter (E / ;)','Earthquake']
   }
 };
 export function moveFor(id,kind,chain=0){const set=MOVESETS[id];if(!set)return null;const value=set[kind];return Array.isArray(value)?value[chain%value.length]:value}

@@ -16,6 +16,7 @@ export function decideCPU(fighter,foe,difficulty){
   else if(distance<98&&Math.random()<p.quality*.34)decision.actions.push('h');
   else if(fighter.en>=28&&Math.random()<p.quality*.5)decision.actions.push('s');
   if(fighter.en>=90&&Math.random()<p.quality*.12)decision.actions.push('u');
+  if(fighter.id==='bark'&&fighter.en>=20&&distance<95&&Math.random()<p.quality*.14)decision.actions.push('c');
   if(Math.random()<p.quality*.12)decision.actions.push('d');
   if(Math.random()<p.quality*.08)decision.actions.push('j');
   return decision;

@@ -8,7 +8,7 @@ const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 export class Fighter{
   constructor(id,side,cpu,world){this.id=id;this.c=ROSTER[id];this.side=side;this.cpu=cpu;this.world=world;this.w=48;this.h=86;this.combo=createComboState();this.resetRuntime()}
   resetRuntime(){
-    Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,hp:100,en:100,attackCd:0,specialCd:0,ultCd:0,dashCd:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,airDashes:0,pending:null,pendingMove:null,tick:0});
+    Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,hp:100,en:100,attackCd:0,specialCd:0,ultCd:0,dashCd:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,tick:0});
     resetCombo(this.combo);
   }
   box(){return{x:this.x,y:this.y,w:this.w,h:this.h}}
@@ -18,10 +18,14 @@ export class Fighter{
     const foe=this.foe();if(!foe)return;this.tick++;this.face=foe.x>this.x?1:-1;
     if(this.combo.timer>0&&--this.combo.timer===0){resetCombo(this.combo);this.lightChain=0}
     if(this.lightChainTimer>0&&--this.lightChainTimer===0)this.lightChain=0;
+    if(this.chainLockout>0)this.chainLockout--;if(this.counterCd>0)this.counterCd--;
     if(this.knockdown>0){this.knockdown--;this.vx*=.9;if(!this.knockdown){this.getup=28;this.inv=28}}
     else if(this.getup>0)this.getup--;
-    this.block=command.down('b')&&this.grounded&&this.stun<=0&&!this.knockdown;
-    if(this.windup>0){this.windup--;if(!this.windup&&this.pending)this.resolveAttack()}
+    this.block=command.down('b')&&this.grounded&&this.stun<=0&&!this.knockdown&&!this.counterStartup&&!this.counterActive&&!this.counterRecovery;
+    if(this.counterStartup>0){this.vx*=.5;if(!--this.counterStartup)this.counterActive=12}
+    else if(this.counterActive>0){this.vx*=.5;if(!--this.counterActive)this.counterRecovery=30}
+    else if(this.counterRecovery>0){this.vx*=.65;this.counterRecovery--}
+    else if(this.windup>0){this.windup--;if(!this.windup&&this.pending)this.resolveAttack()}
     else if(this.stun>0)this.stun--;
     else if(!this.knockdown&&!this.getup){
       const speed=this.c.sp*(this.aura?1.2:1)*(this.armor?.78:1);
@@ -33,6 +37,7 @@ export class Fighter{
       if(command.pressed('s'))this.special();
       if(command.pressed('u'))this.ultimate();
       if(command.pressed('d'))this.dash();
+      if(command.pressed('c'))this.counter();
     }
     this.x+=this.vx;this.y+=this.vy;this.vy+=.72;
     if(this.y>=this.world.ground-this.h){this.y=this.world.ground-this.h;this.vy=0;if(!this.grounded&&this.stun>0){this.knockdown=35;this.stun=0}this.grounded=1;this.juggles=0;this.airDashes=0}else this.grounded=0;
@@ -41,7 +46,7 @@ export class Fighter{
     this.en=clamp(this.en+.12+(this.aura?.16:0),0,100);
   }
   attack(kind){
-    if(this.attackCd||this.windup||this.stun||this.knockdown)return false;
+    if(this.attackCd||this.windup||this.stun||this.knockdown||(kind==='light'&&this.chainLockout))return false;
     const move={...ATTACKS[kind],...moveFor(this.id,kind,this.lightChain)};
     if(!move.kind||(kind!=='air'&&!this.grounded))return false;
     this.pending=kind;this.pendingMove=move;this.windup=move.startup;this.attackCd=move.startup+move.recovery;
@@ -54,10 +59,16 @@ export class Fighter{
     const hitbox={x:this.face>0?this.x+this.w:this.x-move.range,y:this.y+(kind==='launcher'?30:14),w:move.range,h:kind==='launcher'?58:52};
     this.world.effects.add({t:'slash',x:hitbox.x+move.range/2,y:hitbox.y+20,c:this.c.a,l:10});this.world.sound(kind==='heavy'?110:170);
     if(!overlaps(hitbox,foe.box())){if(kind==='light')this.lightChain=0;return false}
-    foe.hit(move.damage*this.c.p,this.face*move.knockback,kind,this,move);this.en=clamp(this.en+(move.energyGain||7),0,100);
+    const finalLight=kind==='light'&&this.lightChain===2,appliedKnockback=move.knockback*(finalLight?1.65:1);
+    foe.hit(move.damage*this.c.p,this.face*appliedKnockback,kind,this,move);this.en=clamp(this.en+(move.energyGain||7),0,100);
     if(kind==='launcher'){foe.vy=-move.launch;foe.grounded=0}
-    if(kind==='light'){this.lightChain=(this.lightChain+1)%3;this.lightChainTimer=COMBO_RESET_FRAMES}
+    if(kind==='light'){if(finalLight){this.lightChain=0;this.lightChainTimer=0;this.chainLockout=40;this.attackCd=Math.max(this.attackCd,40)}else{this.lightChain++;this.lightChainTimer=COMBO_RESET_FRAMES}}
     return true;
+  }
+  cancelStartup(){this.windup=0;this.pending=null;this.pendingMove=null;this.queuedAttack=null}
+  counter(){
+    if(this.id!=='bark'||this.counterCd||this.counterStartup||this.counterActive||this.counterRecovery||this.attackCd||this.windup||this.en<20||this.stun||this.knockdown)return false;
+    this.en-=20;this.counterStartup=6;this.counterCd=90;this.attackCd=Math.max(this.attackCd,48);this.world.effects.add({t:'counter',x:this.x+24,y:this.y+42,c:'#d9bb78',l:18});return true;
   }
   dash(){
     if(this.dashCd||this.en<12||(!this.grounded&&this.id!=='wade')||(!this.grounded&&this.airDashes>=1))return;
@@ -112,7 +123,11 @@ export class Fighter{
     const fx=this.world.effects;
     if(this.lens>0){const foe=this.foe(),oldX=this.x;this.x=clamp(foe.x-foe.face*72,15,this.world.width-this.w-15);if(Math.abs(this.x-foe.x)<45)this.x=clamp(oldX-this.face*105,15,this.world.width-this.w-15);this.inv=8;fx.burst(oldX+24,this.y+43,'#f7f7ff',18);fx.burst(this.x+24,this.y+43,'#f7f7ff',18);fx.add({t:'dodge',x:this.x+24,y:this.y+22,c:'#f7f7ff',l:20});this.world.sound(620,.06,'sine',.035);return 0}
     if(this.inv)return 0;
-    if(this.id==='bark'&&this.block&&attacker&&kind!=='ultimate'){attacker.hp=clamp(attacker.hp-6,0,100);attacker.vx=-attacker.face*10;attacker.stun=20;fx.burst(attacker.x+24,attacker.y+40,'#c8a06a',18)}
+    const meleeCounterKinds=new Set(['light','heavy','launcher','air']);
+    if(this.id==='bark'&&this.counterActive>0&&attacker&&meleeCounterKinds.has(kind)&&Math.abs(attacker.x-this.x)<95){this.counterActive=0;this.counterRecovery=18;attacker.hit(13,-attacker.face*12,'counter',this,{hitstun:26});fx.burst(attacker.x+24,attacker.y+40,'#d9bb78',24);return 0}
+    if(this.counterStartup||this.counterActive){this.counterStartup=this.counterActive=0;this.counterRecovery=Math.max(this.counterRecovery,30)}
+    const intentionalStartupArmor=this.id==='bark'&&this.pending==='heavy'&&this.armor>0;
+    if(this.windup>0&&!intentionalStartupArmor)this.cancelStartup();
     const nextHit=attacker&&!this.block?attacker.combo.hits+1:1;
     const result=calculateFinalDamage({base:baseDamage,hit:nextHit,kind,defense:this.c.d,armor:!!this.armor,lowHealthAlt:this.id==='alt'&&this.hp<35,blocked:this.block,trapped:!!this.trap});
     const before=this.hp;this.hp=clamp(this.hp-result.final,0,100);const actual=before-this.hp;
@@ -123,7 +138,7 @@ export class Fighter{
   }
   draw(ctx){
     const c=this.c,x=this.x,y=this.y,m=x+24;ctx.save();if(this.inv&&Math.floor(this.inv/2)%2===0)ctx.globalAlpha=.48;
-    if(this.aura||this.armor){ctx.strokeStyle=this.armor?'#c8a06a':c.a;ctx.lineWidth=5;ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=16;ctx.beginPath();ctx.ellipse(m,y+45,38+Math.sin(performance.now()/90)*3,55,0,0,Math.PI*2);ctx.stroke()}
+    if(this.aura||this.armor||this.counterActive){ctx.strokeStyle=this.counterActive?'#ffe082':this.armor?'#c8a06a':c.a;ctx.lineWidth=5;ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=16;ctx.beginPath();ctx.ellipse(m,y+45,38+Math.sin(performance.now()/90)*3,55,0,0,Math.PI*2);ctx.stroke()}
     if(this.block){ctx.fillStyle='#9fe9ff55';ctx.beginPath();ctx.arc(m+this.face*18,y+42,36,-1.2,1.2);ctx.fill()}
     ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(m,this.world.ground+5,34,9,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=tint(c.c,-25,clamp);ctx.fillRect(x+7,y+61,13,25);ctx.fillRect(x+28,y+61,13,25);ctx.fillStyle=c.c;ctx.fillRect(x+5,y+28,38,38);ctx.fillStyle=tint(c.c,12,clamp);ctx.fillRect(x+(this.face>0?38:-2),y+33,12,31);ctx.fillRect(x+(this.face>0?-2:38),y+35,12,27);ctx.fillStyle='#d9a77c';ctx.beginPath();ctx.arc(m,y+20,18,0,Math.PI*2);ctx.fill();ctx.fillStyle=c.h;ctx.beginPath();ctx.arc(m,y+15,19,Math.PI,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(x+7,y+14);ctx.lineTo(x+15,y-2);ctx.lineTo(x+22,y+13);ctx.lineTo(x+30,y-5);ctx.lineTo(x+39,y+15);ctx.fill();ctx.fillStyle=c.a;ctx.fillRect(m+this.face*6-2,y+18,5,4);
     if(this.id==='raggie'){ctx.fillStyle='#f5f5f5';ctx.fillRect(x+9,y-18,10,24);ctx.fillRect(x+29,y-18,10,24)}if(this.id==='creed'){ctx.strokeStyle='#32ecff';ctx.lineWidth=3;ctx.strokeRect(x+8,y+7,32,22)}if(this.id==='sage'){ctx.strokeStyle='#fff38a';ctx.lineWidth=2;ctx.beginPath();ctx.arc(m,y+18,24,0,Math.PI*2);ctx.stroke()}if(this.id==='robert'){ctx.fillStyle='#d8f3ff';ctx.fillRect(x+5,y+25,38,5)}ctx.restore();

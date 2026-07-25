@@ -7,14 +7,15 @@ export class Particle{
 }
 
 export class EffectSystem{
-  constructor(){this.effects=[];this.particles=[]}
+  constructor(){this.effects=[];this.particles=[];this.spriteVisuals=null}
   add(effect){this.effects.push(effect);return effect}
-  burst(x,y,color,count=14){for(let i=0;i<count;i++)this.particles.push(new Particle(x,y,color))}
+  burst(x,y,color,count=14){const cap=this.spriteVisuals?.settings?.quality==='reduced'?160:420,available=Math.max(0,cap-this.particles.length);for(let i=0;i<Math.min(count,available);i++)this.particles.push(new Particle(x,y,color))}
   update(){for(const p of this.particles)p.update();this.particles=this.particles.filter(p=>p.life>0)}
   clear(){this.effects.length=0;this.particles.length=0}
   draw(ctx){
     for(const e of this.effects){
       ctx.save();ctx.globalAlpha=Math.max(0,e.l/120);
+      if(this.spriteVisuals?.drawEffect(ctx,e)){ctx.restore();e.l--;continue}
       if(e.t==='slash'){ctx.strokeStyle=e.c;ctx.lineWidth=8;ctx.beginPath();ctx.arc(e.x,e.y,30,-1,1);ctx.stroke()}
       if(e.t==='trap'){ctx.strokeStyle=e.c;ctx.lineWidth=4;ctx.beginPath();ctx.arc(e.x,e.y,35,0,Math.PI*2);ctx.stroke()}
       if(e.t==='freeze'){ctx.fillStyle=e.c+'66';ctx.fillRect(e.x-8,e.y-8,64,102)}

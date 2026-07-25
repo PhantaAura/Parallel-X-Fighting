@@ -49,6 +49,7 @@ export class Projectile{
     if(this.life<1||this.x<-60||this.x>world.width+60||this.y<-80||this.y>world.height+80)this.dead=true;
   }
   draw(ctx){
+    if(this.owner?.world?.fighterVisuals?.drawProjectile(ctx,this))return;
     ctx.save();ctx.fillStyle=this.color;ctx.shadowColor=this.color;ctx.shadowBlur=18;
     if(this.type==='beam')ctx.fillRect(this.x-this.size*1.6,this.y-this.size/2,this.size*3.2,this.size);
     else if(this.type==='disc'){ctx.translate(this.x,this.y);ctx.rotate(performance.now()/120);ctx.fillRect(-this.size,-3,this.size*2,6)}

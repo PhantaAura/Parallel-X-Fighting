@@ -24,6 +24,10 @@
 <div class="opt"><label>ROUND TIME</label><select id="roundTime"><option value="60">60 seconds</option><option value="90" selected>90 seconds</option><option value="120">120 seconds</option></select></div>
 <div class="opt"><label>MATCH FORMAT</label><select id="rounds"><option value="1">One Round</option><option value="2" selected>Best of 3</option><option value="3">Best of 5</option></select></div>
 <div class="opt"><label>ULTIMATE CINEMATICS</label><select id="cinematics"><option value="full" selected>Full cinematics</option><option value="short">Short cinematics</option><option value="off">Cinematics off</option></select></div>
+<div class="opt"><label>EXPERIMENTAL RRVVFO SPRITES</label><select id="rrvvfoSprites"><option value="off" selected>Off — legacy visuals</option><option value="on">On — animated sprites</option></select></div>
+<div class="opt"><label>RRVVFO HOOD</label><select id="rrvvfoHood"><option value="down" selected>Hood Down (default)</option><option value="up">Hood Up (alternate)</option></select></div>
+<div class="opt"><label>SPRITE EFFECT QUALITY</label><select id="rrvvfoQuality"><option value="full" selected>Full</option><option value="reduced">Reduced / mobile</option></select></div>
+<div class="opt"><label>DEVELOPER</label><label class="checkline"><input id="rrvvfoSpriteDebug" type="checkbox"> Sprite debug viewer</label></div>
 <div class="opt"><label>PLAYER 1 CONTROLLER</label><select id="controllerStyle1"><option value="nintendo">Nintendo</option><option value="xbox" selected>Xbox</option><option value="playstation">PlayStation</option><option value="custom">Custom</option></select></div>
 <div class="opt"><label>PLAYER 2 CONTROLLER</label><select id="controllerStyle2"><option value="nintendo">Nintendo</option><option value="xbox" selected>Xbox</option><option value="playstation">PlayStation</option><option value="custom">Custom</option></select></div>
 <div class="opt"><label>ACCESSIBILITY</label><label class="checkline"><input id="reducedShake" type="checkbox"> Reduced screen shake</label></div>
@@ -35,7 +39,7 @@
 <div class="buttons"><button class="primary" id="fight">FIGHT!</button><button class="secondary" id="random">RANDOM MATCH</button><button class="secondary" id="touchSettingsButton">TOUCH SETTINGS</button><button class="secondary" id="reset">RESET SAVE</button></div>
 </div></section>
 <section id="gameScreen" class="hidden">
-<div id="gameWrap"><canvas id="game" width="960" height="540"></canvas>
+<div id="gameWrap"><canvas id="game" width="960" height="540"></canvas><div id="spriteLoading" class="spriteLoading hidden"><strong>LOADING RRVVFO SPRITES</strong><span>Preparing the experimental atlas…</span></div>
 <div id="hud"><div class="hudrow"><div class="hudside"><div class="hname" id="p1name"></div><div class="barbox"><div class="bar hp1" id="p1hp"></div></div><div class="barbox energybox"><div class="bar energy" id="p1en"></div></div><div class="barbox guardbox"><div class="bar guard" id="p1guard"></div></div><div class="defenseState" id="p1defense"></div></div><div class="center"><div id="timer">90</div><div id="roundLabel">ROUND 1</div></div><div class="hudside r"><div class="hname" id="p2name"></div><div class="barbox"><div class="bar hp2" id="p2hp"></div></div><div class="barbox energybox"><div class="bar energy" id="p2en"></div></div><div class="barbox guardbox"><div class="bar guard" id="p2guard"></div></div><div class="defenseState" id="p2defense"></div></div></div><div id="pause" class="hidden">PAUSED</div></div>
 <div id="msg" class="hidden"><h2 id="msgTitle"></h2><p id="msgText"></p><button class="primary" id="msgButton">CONTINUE</button> <button class="secondary" id="backMenu">CHARACTER SELECT</button></div>
 </div>

@@ -1,0 +1,6 @@
+.comboHud{position:absolute;top:86px;color:#fff09a;font-size:20px;font-weight:1000;text-shadow:0 2px 5px #000;z-index:3}
+.comboHud small{display:block;color:#fff;font-size:11px}
+.comboHud.c1{left:18px}.comboHud.c2{right:18px;text-align:right}
+.moveCooldown{min-height:14px;margin-top:3px;color:#67e8ff;font-size:10px;font-weight:900;letter-spacing:.4px;text-shadow:0 1px 4px #000}
+.clashHud{position:absolute;left:50%;top:128px;transform:translateX(-50%);width:min(430px,68%);z-index:5;text-align:center;color:#fff;font-weight:1000;text-shadow:0 2px 6px #000}
+.clashHud strong{display:block;color:#fff2a6;letter-spacing:3px;margin-bottom:5px}.clashTrack{height:18px;border:2px solid #fff8;background:#08101dcc;border-radius:10px;overflow:hidden;position:relative}.clashTrack:after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:#fff}.clashFill{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,#ff5a1f,#fff7b2,#4fdcff)}

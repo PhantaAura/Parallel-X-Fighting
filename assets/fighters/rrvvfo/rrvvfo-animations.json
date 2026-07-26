@@ -1,0 +1,7849 @@
+{
+  "version": 2,
+  "fighter": "rrvvfo",
+  "image": "./rrvvfo-atlas.png",
+  "atlas": {
+    "width": 1728,
+    "height": 3840,
+    "frameCanvas": [
+      192,
+      192
+    ],
+    "columns": 9
+  },
+  "defaults": {
+    "appearance": "down",
+    "groundPivot": [
+      96,
+      178
+    ],
+    "scale": 0.62,
+    "pixelSmoothing": true,
+    "depthScale": 0.08,
+    "maxAfterimages": 3
+  },
+  "frames": {
+    "idle_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        59,
+        20,
+        74,
+        158
+      ],
+      "source": [
+        0,
+        0,
+        192,
+        192
+      ]
+    },
+    "idle_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        61,
+        21,
+        71,
+        157
+      ],
+      "source": [
+        192,
+        0,
+        192,
+        192
+      ]
+    },
+    "idle_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        59,
+        20,
+        75,
+        158
+      ],
+      "source": [
+        384,
+        0,
+        192,
+        192
+      ]
+    },
+    "idle_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        59,
+        20,
+        75,
+        158
+      ],
+      "source": [
+        576,
+        0,
+        192,
+        192
+      ]
+    },
+    "idle_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        60,
+        21,
+        72,
+        157
+      ],
+      "source": [
+        768,
+        0,
+        192,
+        192
+      ]
+    },
+    "idle_06": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        58,
+        21,
+        77,
+        157
+      ],
+      "source": [
+        960,
+        0,
+        192,
+        192
+      ]
+    },
+    "run_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        43,
+        96,
+        135
+      ],
+      "source": [
+        1152,
+        0,
+        192,
+        192
+      ]
+    },
+    "run_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        38,
+        43,
+        117,
+        135
+      ],
+      "source": [
+        1344,
+        0,
+        192,
+        192
+      ]
+    },
+    "run_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        43,
+        115,
+        135
+      ],
+      "source": [
+        1536,
+        0,
+        192,
+        192
+      ]
+    },
+    "run_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        45,
+        50,
+        102,
+        128
+      ],
+      "source": [
+        0,
+        192,
+        192,
+        192
+      ]
+    },
+    "stance_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        47,
+        42,
+        99,
+        136
+      ],
+      "source": [
+        192,
+        192,
+        192,
+        192
+      ]
+    },
+    "stance_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        46,
+        40,
+        100,
+        138
+      ],
+      "source": [
+        384,
+        192,
+        192,
+        192
+      ]
+    },
+    "stance_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        39,
+        97,
+        139
+      ],
+      "source": [
+        576,
+        192,
+        192,
+        192
+      ]
+    },
+    "stance_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        45,
+        43,
+        102,
+        135
+      ],
+      "source": [
+        768,
+        192,
+        192,
+        192
+      ]
+    },
+    "jump_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        53,
+        43,
+        86,
+        135
+      ],
+      "source": [
+        960,
+        192,
+        192,
+        192
+      ]
+    },
+    "jump_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        58,
+        72,
+        77,
+        106
+      ],
+      "source": [
+        1152,
+        192,
+        192,
+        192
+      ]
+    },
+    "jump_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        37,
+        50,
+        119,
+        128
+      ],
+      "source": [
+        1344,
+        192,
+        192,
+        192
+      ]
+    },
+    "jump_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        42,
+        66,
+        109,
+        112
+      ],
+      "source": [
+        1536,
+        192,
+        192,
+        192
+      ]
+    },
+    "jump_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        31,
+        61,
+        130,
+        117
+      ],
+      "source": [
+        0,
+        384,
+        192,
+        192
+      ]
+    },
+    "dash_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        59,
+        128,
+        119
+      ],
+      "source": [
+        192,
+        384,
+        192,
+        192
+      ]
+    },
+    "dash_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        38,
+        66,
+        116,
+        112
+      ],
+      "source": [
+        384,
+        384,
+        192,
+        192
+      ]
+    },
+    "dash_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        35,
+        59,
+        123,
+        119
+      ],
+      "source": [
+        576,
+        384,
+        192,
+        192
+      ]
+    },
+    "dash_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        12,
+        60,
+        168,
+        118
+      ],
+      "source": [
+        768,
+        384,
+        192,
+        192
+      ]
+    },
+    "light_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        41,
+        55,
+        110,
+        123
+      ],
+      "source": [
+        960,
+        384,
+        192,
+        192
+      ]
+    },
+    "light_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        45,
+        55,
+        102,
+        123
+      ],
+      "source": [
+        1152,
+        384,
+        192,
+        192
+      ]
+    },
+    "light_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        49,
+        50,
+        94,
+        128
+      ],
+      "source": [
+        1344,
+        384,
+        192,
+        192
+      ]
+    },
+    "light_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        26,
+        68,
+        141,
+        110
+      ],
+      "source": [
+        1536,
+        384,
+        192,
+        192
+      ]
+    },
+    "light_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        29,
+        52,
+        135,
+        126
+      ],
+      "source": [
+        0,
+        576,
+        192,
+        192
+      ]
+    },
+    "light_06": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        50,
+        129,
+        128
+      ],
+      "source": [
+        192,
+        576,
+        192,
+        192
+      ]
+    },
+    "heavy_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        26,
+        48,
+        141,
+        130
+      ],
+      "source": [
+        384,
+        576,
+        192,
+        192
+      ]
+    },
+    "heavy_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        22,
+        56,
+        149,
+        122
+      ],
+      "source": [
+        576,
+        576,
+        192,
+        192
+      ]
+    },
+    "heavy_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        19,
+        50,
+        154,
+        128
+      ],
+      "source": [
+        768,
+        576,
+        192,
+        192
+      ]
+    },
+    "heavy_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        12,
+        92,
+        168,
+        86
+      ],
+      "source": [
+        960,
+        576,
+        192,
+        192
+      ]
+    },
+    "launcher_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        30,
+        115,
+        148
+      ],
+      "source": [
+        1152,
+        576,
+        192,
+        192
+      ]
+    },
+    "launcher_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        50,
+        42,
+        93,
+        136
+      ],
+      "source": [
+        1344,
+        576,
+        192,
+        192
+      ]
+    },
+    "launcher_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        45,
+        32,
+        102,
+        146
+      ],
+      "source": [
+        1536,
+        576,
+        192,
+        192
+      ]
+    },
+    "launcher_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        38,
+        30,
+        116,
+        148
+      ],
+      "source": [
+        0,
+        768,
+        192,
+        192
+      ]
+    },
+    "air_light_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        49,
+        74,
+        94,
+        104
+      ],
+      "source": [
+        192,
+        768,
+        192,
+        192
+      ]
+    },
+    "air_light_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        33,
+        76,
+        126,
+        102
+      ],
+      "source": [
+        384,
+        768,
+        192,
+        192
+      ]
+    },
+    "air_light_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        43,
+        69,
+        106,
+        109
+      ],
+      "source": [
+        576,
+        768,
+        192,
+        192
+      ]
+    },
+    "air_heavy_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        78,
+        129,
+        100
+      ],
+      "source": [
+        768,
+        768,
+        192,
+        192
+      ]
+    },
+    "air_heavy_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        55,
+        128,
+        123
+      ],
+      "source": [
+        960,
+        768,
+        192,
+        192
+      ]
+    },
+    "air_heavy_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        49,
+        52,
+        94,
+        126
+      ],
+      "source": [
+        1152,
+        768,
+        192,
+        192
+      ]
+    },
+    "block_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        42,
+        46,
+        109,
+        132
+      ],
+      "source": [
+        1344,
+        768,
+        192,
+        192
+      ]
+    },
+    "block_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        46,
+        113,
+        132
+      ],
+      "source": [
+        1536,
+        768,
+        192,
+        192
+      ]
+    },
+    "perfect_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        49,
+        46,
+        94,
+        132
+      ],
+      "source": [
+        0,
+        960,
+        192,
+        192
+      ]
+    },
+    "perfect_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        38,
+        33,
+        117,
+        145
+      ],
+      "source": [
+        192,
+        960,
+        192,
+        192
+      ]
+    },
+    "hurt_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        50,
+        55,
+        93,
+        123
+      ],
+      "source": [
+        384,
+        960,
+        192,
+        192
+      ]
+    },
+    "hurt_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        41,
+        61,
+        110,
+        117
+      ],
+      "source": [
+        576,
+        960,
+        192,
+        192
+      ]
+    },
+    "hurt_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        47,
+        53,
+        99,
+        125
+      ],
+      "source": [
+        768,
+        960,
+        192,
+        192
+      ]
+    },
+    "hurt_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        41,
+        91,
+        110,
+        87
+      ],
+      "source": [
+        960,
+        960,
+        192,
+        192
+      ]
+    },
+    "hurt_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        51,
+        129,
+        90,
+        49
+      ],
+      "source": [
+        1152,
+        960,
+        192,
+        192
+      ]
+    },
+    "special_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        47,
+        53,
+        99,
+        125
+      ],
+      "source": [
+        1344,
+        960,
+        192,
+        192
+      ]
+    },
+    "special_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        43,
+        52,
+        107,
+        126
+      ],
+      "source": [
+        1536,
+        960,
+        192,
+        192
+      ]
+    },
+    "special_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        35,
+        65,
+        122,
+        113
+      ],
+      "source": [
+        0,
+        1152,
+        192,
+        192
+      ]
+    },
+    "special_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        38,
+        103,
+        117,
+        75
+      ],
+      "source": [
+        192,
+        1152,
+        192,
+        192
+      ]
+    },
+    "rush_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        41,
+        63,
+        110,
+        115
+      ],
+      "source": [
+        384,
+        1152,
+        192,
+        192
+      ]
+    },
+    "rush_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        58,
+        113,
+        120
+      ],
+      "source": [
+        576,
+        1152,
+        192,
+        192
+      ]
+    },
+    "rush_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        47,
+        58,
+        99,
+        120
+      ],
+      "source": [
+        768,
+        1152,
+        192,
+        192
+      ]
+    },
+    "rush_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        59,
+        113,
+        119
+      ],
+      "source": [
+        960,
+        1152,
+        192,
+        192
+      ]
+    },
+    "rush_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        12,
+        62,
+        168,
+        116
+      ],
+      "source": [
+        1152,
+        1152,
+        192,
+        192
+      ]
+    },
+    "rush_06": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        12,
+        110,
+        168,
+        68
+      ],
+      "source": [
+        1344,
+        1152,
+        192,
+        192
+      ]
+    },
+    "power_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        50,
+        69,
+        93,
+        109
+      ],
+      "source": [
+        1536,
+        1152,
+        192,
+        192
+      ]
+    },
+    "power_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        54,
+        71,
+        84,
+        107
+      ],
+      "source": [
+        0,
+        1344,
+        192,
+        192
+      ]
+    },
+    "power_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        30,
+        71,
+        132,
+        107
+      ],
+      "source": [
+        192,
+        1344,
+        192,
+        192
+      ]
+    },
+    "power_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        30,
+        69,
+        133,
+        109
+      ],
+      "source": [
+        384,
+        1344,
+        192,
+        192
+      ]
+    },
+    "power_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        71,
+        115,
+        107
+      ],
+      "source": [
+        576,
+        1344,
+        192,
+        192
+      ]
+    },
+    "beam_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        57,
+        62,
+        78,
+        116
+      ],
+      "source": [
+        768,
+        1344,
+        192,
+        192
+      ]
+    },
+    "beam_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        62,
+        61,
+        68,
+        117
+      ],
+      "source": [
+        960,
+        1344,
+        192,
+        192
+      ]
+    },
+    "beam_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        57,
+        75,
+        78,
+        103
+      ],
+      "source": [
+        1152,
+        1344,
+        192,
+        192
+      ]
+    },
+    "beam_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        67,
+        61,
+        59,
+        117
+      ],
+      "source": [
+        1344,
+        1344,
+        192,
+        192
+      ]
+    },
+    "ultimate_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        64,
+        108,
+        65,
+        70
+      ],
+      "source": [
+        1536,
+        1344,
+        192,
+        192
+      ]
+    },
+    "ultimate_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        53,
+        113,
+        125
+      ],
+      "source": [
+        0,
+        1536,
+        192,
+        192
+      ]
+    },
+    "ultimate_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        55,
+        113,
+        123
+      ],
+      "source": [
+        192,
+        1536,
+        192,
+        192
+      ]
+    },
+    "ultimate_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        52,
+        53,
+        88,
+        125
+      ],
+      "source": [
+        384,
+        1536,
+        192,
+        192
+      ]
+    },
+    "ultimate_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        26,
+        50,
+        141,
+        128
+      ],
+      "source": [
+        576,
+        1536,
+        192,
+        192
+      ]
+    },
+    "victory_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        54,
+        10,
+        84,
+        168
+      ],
+      "source": [
+        768,
+        1536,
+        192,
+        192
+      ]
+    },
+    "victory_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        34,
+        16,
+        125,
+        162
+      ],
+      "source": [
+        960,
+        1536,
+        192,
+        192
+      ]
+    },
+    "victory_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        33,
+        10,
+        127,
+        168
+      ],
+      "source": [
+        1152,
+        1536,
+        192,
+        192
+      ]
+    },
+    "victory_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        54,
+        10,
+        84,
+        168
+      ],
+      "source": [
+        1344,
+        1536,
+        192,
+        192
+      ]
+    },
+    "turn_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        59,
+        29,
+        74,
+        149
+      ],
+      "source": [
+        1536,
+        1536,
+        192,
+        192
+      ]
+    },
+    "turn_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        60,
+        29,
+        72,
+        149
+      ],
+      "source": [
+        0,
+        1728,
+        192,
+        192
+      ]
+    },
+    "turn_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        67,
+        29,
+        59,
+        149
+      ],
+      "source": [
+        192,
+        1728,
+        192,
+        192
+      ]
+    },
+    "turn_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        77,
+        29,
+        38,
+        149
+      ],
+      "source": [
+        384,
+        1728,
+        192,
+        192
+      ]
+    },
+    "turn_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        81,
+        30,
+        30,
+        148
+      ],
+      "source": [
+        576,
+        1728,
+        192,
+        192
+      ]
+    },
+    "look_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        57,
+        26,
+        78,
+        152
+      ],
+      "source": [
+        768,
+        1728,
+        192,
+        192
+      ]
+    },
+    "look_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        67,
+        26,
+        59,
+        152
+      ],
+      "source": [
+        960,
+        1728,
+        192,
+        192
+      ]
+    },
+    "look_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        61,
+        26,
+        71,
+        152
+      ],
+      "source": [
+        1152,
+        1728,
+        192,
+        192
+      ]
+    },
+    "up_idle_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        59,
+        21,
+        74,
+        157
+      ],
+      "source": [
+        1344,
+        1728,
+        192,
+        192
+      ]
+    },
+    "up_idle_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        61,
+        21,
+        71,
+        157
+      ],
+      "source": [
+        1536,
+        1728,
+        192,
+        192
+      ]
+    },
+    "up_idle_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        60,
+        21,
+        72,
+        157
+      ],
+      "source": [
+        0,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_idle_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        60,
+        21,
+        72,
+        157
+      ],
+      "source": [
+        192,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_idle_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        60,
+        23,
+        72,
+        155
+      ],
+      "source": [
+        384,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_idle_06": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        60,
+        21,
+        72,
+        157
+      ],
+      "source": [
+        576,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_run_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        49,
+        43,
+        94,
+        135
+      ],
+      "source": [
+        768,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_run_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        37,
+        43,
+        119,
+        135
+      ],
+      "source": [
+        960,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_run_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        56,
+        113,
+        122
+      ],
+      "source": [
+        1152,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_run_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        45,
+        48,
+        103,
+        130
+      ],
+      "source": [
+        1344,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_stance_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        46,
+        39,
+        100,
+        139
+      ],
+      "source": [
+        1536,
+        1920,
+        192,
+        192
+      ]
+    },
+    "up_stance_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        37,
+        97,
+        141
+      ],
+      "source": [
+        0,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_stance_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        39,
+        96,
+        139
+      ],
+      "source": [
+        192,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_stance_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        46,
+        40,
+        100,
+        138
+      ],
+      "source": [
+        384,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_jump_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        53,
+        43,
+        86,
+        135
+      ],
+      "source": [
+        576,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_jump_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        59,
+        74,
+        75,
+        104
+      ],
+      "source": [
+        768,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_jump_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        38,
+        52,
+        117,
+        126
+      ],
+      "source": [
+        960,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_jump_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        43,
+        66,
+        107,
+        112
+      ],
+      "source": [
+        1152,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_jump_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        61,
+        128,
+        117
+      ],
+      "source": [
+        1344,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_dash_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        61,
+        129,
+        117
+      ],
+      "source": [
+        1536,
+        2112,
+        192,
+        192
+      ]
+    },
+    "up_dash_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        37,
+        66,
+        119,
+        112
+      ],
+      "source": [
+        0,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_dash_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        34,
+        59,
+        125,
+        119
+      ],
+      "source": [
+        192,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_dash_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        20,
+        59,
+        152,
+        119
+      ],
+      "source": [
+        384,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_light_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        41,
+        55,
+        110,
+        123
+      ],
+      "source": [
+        576,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_light_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        45,
+        56,
+        103,
+        122
+      ],
+      "source": [
+        768,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_light_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        55,
+        96,
+        123
+      ],
+      "source": [
+        960,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_light_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        26,
+        68,
+        141,
+        110
+      ],
+      "source": [
+        1152,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_light_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        29,
+        53,
+        135,
+        125
+      ],
+      "source": [
+        1344,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_light_06": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        31,
+        49,
+        130,
+        129
+      ],
+      "source": [
+        1536,
+        2304,
+        192,
+        192
+      ]
+    },
+    "up_heavy_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        26,
+        48,
+        141,
+        130
+      ],
+      "source": [
+        0,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_heavy_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        22,
+        58,
+        149,
+        120
+      ],
+      "source": [
+        192,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_heavy_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        20,
+        53,
+        152,
+        125
+      ],
+      "source": [
+        384,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_heavy_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        12,
+        93,
+        168,
+        85
+      ],
+      "source": [
+        576,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_launcher_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        33,
+        115,
+        145
+      ],
+      "source": [
+        768,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_launcher_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        50,
+        43,
+        93,
+        135
+      ],
+      "source": [
+        960,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_launcher_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        46,
+        37,
+        100,
+        141
+      ],
+      "source": [
+        1152,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_launcher_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        30,
+        115,
+        148
+      ],
+      "source": [
+        1344,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_air_light_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        49,
+        75,
+        94,
+        103
+      ],
+      "source": [
+        1536,
+        2496,
+        192,
+        192
+      ]
+    },
+    "up_air_light_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        33,
+        78,
+        126,
+        100
+      ],
+      "source": [
+        0,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_air_light_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        43,
+        71,
+        106,
+        107
+      ],
+      "source": [
+        192,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_air_heavy_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        81,
+        129,
+        97
+      ],
+      "source": [
+        384,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_air_heavy_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        55,
+        128,
+        123
+      ],
+      "source": [
+        576,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_air_heavy_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        49,
+        53,
+        94,
+        125
+      ],
+      "source": [
+        768,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_block_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        43,
+        46,
+        107,
+        132
+      ],
+      "source": [
+        960,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_block_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        46,
+        115,
+        132
+      ],
+      "source": [
+        1152,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_perfect_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        51,
+        49,
+        91,
+        129
+      ],
+      "source": [
+        1344,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_perfect_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        34,
+        128,
+        144
+      ],
+      "source": [
+        1536,
+        2688,
+        192,
+        192
+      ]
+    },
+    "up_hurt_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        49,
+        59,
+        94,
+        119
+      ],
+      "source": [
+        0,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_hurt_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        43,
+        65,
+        107,
+        113
+      ],
+      "source": [
+        192,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_hurt_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        45,
+        53,
+        102,
+        125
+      ],
+      "source": [
+        384,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_hurt_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        41,
+        91,
+        110,
+        87
+      ],
+      "source": [
+        576,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_hurt_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        51,
+        129,
+        90,
+        49
+      ],
+      "source": [
+        768,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_special_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        46,
+        55,
+        100,
+        123
+      ],
+      "source": [
+        960,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_special_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        42,
+        56,
+        109,
+        122
+      ],
+      "source": [
+        1152,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_special_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        35,
+        66,
+        122,
+        112
+      ],
+      "source": [
+        1344,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_special_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        37,
+        107,
+        119,
+        71
+      ],
+      "source": [
+        1536,
+        2880,
+        192,
+        192
+      ]
+    },
+    "up_rush_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        41,
+        65,
+        110,
+        113
+      ],
+      "source": [
+        0,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_rush_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        59,
+        113,
+        119
+      ],
+      "source": [
+        192,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_rush_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        58,
+        97,
+        120
+      ],
+      "source": [
+        384,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_rush_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        58,
+        113,
+        120
+      ],
+      "source": [
+        576,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_rush_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        12,
+        63,
+        168,
+        115
+      ],
+      "source": [
+        768,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_rush_06": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        12,
+        110,
+        168,
+        68
+      ],
+      "source": [
+        960,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_power_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        51,
+        68,
+        91,
+        110
+      ],
+      "source": [
+        1152,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_power_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        56,
+        69,
+        81,
+        109
+      ],
+      "source": [
+        1344,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_power_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        69,
+        129,
+        109
+      ],
+      "source": [
+        1536,
+        3072,
+        192,
+        192
+      ]
+    },
+    "up_power_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        30,
+        68,
+        132,
+        110
+      ],
+      "source": [
+        0,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_power_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        23,
+        71,
+        146,
+        107
+      ],
+      "source": [
+        192,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_beam_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        57,
+        62,
+        78,
+        116
+      ],
+      "source": [
+        384,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_beam_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        61,
+        61,
+        70,
+        117
+      ],
+      "source": [
+        576,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_beam_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        55,
+        71,
+        83,
+        107
+      ],
+      "source": [
+        768,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_beam_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        67,
+        61,
+        58,
+        117
+      ],
+      "source": [
+        960,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_ultimate_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        63,
+        110,
+        67,
+        68
+      ],
+      "source": [
+        1152,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_ultimate_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        53,
+        113,
+        125
+      ],
+      "source": [
+        1344,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_ultimate_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        55,
+        113,
+        123
+      ],
+      "source": [
+        1536,
+        3264,
+        192,
+        192
+      ]
+    },
+    "up_ultimate_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        52,
+        53,
+        88,
+        125
+      ],
+      "source": [
+        0,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_ultimate_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        25,
+        50,
+        142,
+        128
+      ],
+      "source": [
+        192,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_victory_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        55,
+        10,
+        83,
+        168
+      ],
+      "source": [
+        384,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_victory_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        34,
+        16,
+        125,
+        162
+      ],
+      "source": [
+        576,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_victory_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        33,
+        10,
+        126,
+        168
+      ],
+      "source": [
+        768,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_victory_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        54,
+        10,
+        85,
+        168
+      ],
+      "source": [
+        960,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_turn_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        59,
+        29,
+        75,
+        149
+      ],
+      "source": [
+        1152,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_turn_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        60,
+        27,
+        72,
+        151
+      ],
+      "source": [
+        1344,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_turn_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        68,
+        29,
+        57,
+        149
+      ],
+      "source": [
+        1536,
+        3456,
+        192,
+        192
+      ]
+    },
+    "up_turn_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        78,
+        29,
+        36,
+        149
+      ],
+      "source": [
+        0,
+        3648,
+        192,
+        192
+      ]
+    },
+    "up_turn_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        80,
+        29,
+        32,
+        149
+      ],
+      "source": [
+        192,
+        3648,
+        192,
+        192
+      ]
+    },
+    "up_look_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        58,
+        24,
+        77,
+        154
+      ],
+      "source": [
+        384,
+        3648,
+        192,
+        192
+      ]
+    },
+    "up_look_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        66,
+        24,
+        61,
+        154
+      ],
+      "source": [
+        576,
+        3648,
+        192,
+        192
+      ]
+    },
+    "up_look_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        124,
+        96
+      ],
+      "handAnchor": [
+        130,
+        88
+      ],
+      "projectileOrigin": [
+        138,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        61,
+        24,
+        71,
+        154
+      ],
+      "source": [
+        768,
+        3648,
+        192,
+        192
+      ]
+    }
+  },
+  "animations": {
+    "idle": {
+      "frames": [
+        "idle_01",
+        "idle_02",
+        "idle_03",
+        "idle_04",
+        "idle_05",
+        "idle_06"
+      ],
+      "frameDuration": 125,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_idle_01",
+          "up_idle_02",
+          "up_idle_03",
+          "up_idle_04",
+          "up_idle_05",
+          "up_idle_06"
+        ]
+      }
+    },
+    "fightingStance": {
+      "frames": [
+        "stance_01",
+        "stance_02",
+        "stance_03",
+        "stance_04"
+      ],
+      "frameDuration": 105,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_stance_01",
+          "up_stance_02",
+          "up_stance_03",
+          "up_stance_04"
+        ]
+      }
+    },
+    "run": {
+      "frames": [
+        "run_01",
+        "run_02",
+        "run_03",
+        "run_04"
+      ],
+      "frameDuration": 82,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_run_01",
+          "up_run_02",
+          "up_run_03",
+          "up_run_04"
+        ]
+      }
+    },
+    "jumpStart": {
+      "frames": [
+        "jump_01",
+        "jump_02"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_jump_01",
+          "up_jump_02"
+        ]
+      }
+    },
+    "jumpRise": {
+      "frames": [
+        "jump_02",
+        "jump_03"
+      ],
+      "frameDuration": 110,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_jump_02",
+          "up_jump_03"
+        ]
+      }
+    },
+    "fall": {
+      "frames": [
+        "jump_03",
+        "jump_04"
+      ],
+      "frameDuration": 110,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_jump_03",
+          "up_jump_04"
+        ]
+      }
+    },
+    "land": {
+      "frames": [
+        "jump_05",
+        "stance_01"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_jump_05",
+          "up_stance_01"
+        ]
+      }
+    },
+    "dash": {
+      "frames": [
+        "dash_01",
+        "dash_02",
+        "dash_03",
+        "dash_04"
+      ],
+      "frameDuration": 60,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_dash_01",
+          "up_dash_02",
+          "up_dash_03",
+          "up_dash_04"
+        ]
+      }
+    },
+    "turn": {
+      "frames": [
+        "turn_01",
+        "turn_02",
+        "turn_03",
+        "turn_04",
+        "turn_05"
+      ],
+      "frameDuration": 55,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_turn_01",
+          "up_turn_02",
+          "up_turn_03",
+          "up_turn_04",
+          "up_turn_05"
+        ]
+      }
+    },
+    "light1": {
+      "frames": [
+        "light_01",
+        "light_02"
+      ],
+      "frameDuration": 58,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ],
+      "variants": {
+        "up": [
+          "up_light_01",
+          "up_light_02"
+        ]
+      }
+    },
+    "light2": {
+      "frames": [
+        "light_03",
+        "light_04"
+      ],
+      "frameDuration": 58,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ],
+      "variants": {
+        "up": [
+          "up_light_03",
+          "up_light_04"
+        ]
+      }
+    },
+    "light3": {
+      "frames": [
+        "light_05",
+        "light_06"
+      ],
+      "frameDuration": 64,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ],
+      "variants": {
+        "up": [
+          "up_light_05",
+          "up_light_06"
+        ]
+      }
+    },
+    "heavyStartup": {
+      "frames": [
+        "heavy_01"
+      ],
+      "frameDuration": 105,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_heavy_01"
+        ]
+      }
+    },
+    "heavyActive": {
+      "frames": [
+        "heavy_02",
+        "heavy_03"
+      ],
+      "frameDuration": 72,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 0,
+          "type": "attackActive"
+        }
+      ],
+      "variants": {
+        "up": [
+          "up_heavy_02",
+          "up_heavy_03"
+        ]
+      }
+    },
+    "heavyRecovery": {
+      "frames": [
+        "heavy_04",
+        "stance_01"
+      ],
+      "frameDuration": 92,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_heavy_04",
+          "up_stance_01"
+        ]
+      }
+    },
+    "launcherStartup": {
+      "frames": [
+        "launcher_01"
+      ],
+      "frameDuration": 110,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_launcher_01"
+        ]
+      }
+    },
+    "launcherActive": {
+      "frames": [
+        "launcher_02",
+        "launcher_03",
+        "launcher_04"
+      ],
+      "frameDuration": 70,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 0,
+          "type": "attackActive"
+        }
+      ],
+      "variants": {
+        "up": [
+          "up_launcher_02",
+          "up_launcher_03",
+          "up_launcher_04"
+        ]
+      }
+    },
+    "launcherRecovery": {
+      "frames": [
+        "launcher_02",
+        "stance_01"
+      ],
+      "frameDuration": 85,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_launcher_02",
+          "up_stance_01"
+        ]
+      }
+    },
+    "airLight": {
+      "frames": [
+        "air_light_01",
+        "air_light_02",
+        "air_light_03"
+      ],
+      "frameDuration": 70,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_air_light_01",
+          "up_air_light_02",
+          "up_air_light_03"
+        ]
+      }
+    },
+    "airHeavy": {
+      "frames": [
+        "air_heavy_01",
+        "air_heavy_02",
+        "air_heavy_03"
+      ],
+      "frameDuration": 80,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_air_heavy_01",
+          "up_air_heavy_02",
+          "up_air_heavy_03"
+        ]
+      }
+    },
+    "airHurt": {
+      "frames": [
+        "hurt_03"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_03"
+        ]
+      }
+    },
+    "airFall": {
+      "frames": [
+        "hurt_04",
+        "hurt_05"
+      ],
+      "frameDuration": 95,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_04",
+          "up_hurt_05"
+        ]
+      }
+    },
+    "blockStart": {
+      "frames": [
+        "block_01",
+        "block_02"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_block_01",
+          "up_block_02"
+        ]
+      }
+    },
+    "blockHold": {
+      "frames": [
+        "block_02"
+      ],
+      "frameDuration": 120,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_block_02"
+        ]
+      }
+    },
+    "blockHit": {
+      "frames": [
+        "block_01",
+        "block_02"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_block_01",
+          "up_block_02"
+        ]
+      }
+    },
+    "perfectBlock": {
+      "frames": [
+        "perfect_01",
+        "perfect_02"
+      ],
+      "frameDuration": 70,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_perfect_01",
+          "up_perfect_02"
+        ]
+      }
+    },
+    "guardBreak": {
+      "frames": [
+        "hurt_02",
+        "hurt_03"
+      ],
+      "frameDuration": 105,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_02",
+          "up_hurt_03"
+        ]
+      }
+    },
+    "breaker": {
+      "frames": [
+        "stance_01",
+        "heavy_02"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_stance_01",
+          "up_heavy_02"
+        ]
+      }
+    },
+    "hurtLight": {
+      "frames": [
+        "hurt_01"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_01"
+        ]
+      }
+    },
+    "hurtHeavy": {
+      "frames": [
+        "hurt_01",
+        "hurt_02"
+      ],
+      "frameDuration": 105,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_01",
+          "up_hurt_02"
+        ]
+      }
+    },
+    "knockback": {
+      "frames": [
+        "hurt_02",
+        "hurt_03"
+      ],
+      "frameDuration": 105,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_02",
+          "up_hurt_03"
+        ]
+      }
+    },
+    "knockdown": {
+      "frames": [
+        "hurt_03",
+        "hurt_04"
+      ],
+      "frameDuration": 120,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_03",
+          "up_hurt_04"
+        ]
+      }
+    },
+    "groundDown": {
+      "frames": [
+        "hurt_05"
+      ],
+      "frameDuration": 150,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_05"
+        ]
+      }
+    },
+    "getUp": {
+      "frames": [
+        "hurt_05",
+        "hurt_04",
+        "stance_01"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_05",
+          "up_hurt_04",
+          "up_stance_01"
+        ]
+      }
+    },
+    "defeated": {
+      "frames": [
+        "hurt_05"
+      ],
+      "frameDuration": 180,
+      "loop": true,
+      "cancelable": false,
+      "variants": {
+        "up": [
+          "up_hurt_05"
+        ]
+      }
+    },
+    "ultimateStartup": {
+      "frames": [
+        "ultimate_01",
+        "ultimate_02"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_ultimate_01",
+          "up_ultimate_02"
+        ]
+      }
+    },
+    "ultimateCharge": {
+      "frames": [
+        "ultimate_02",
+        "ultimate_03"
+      ],
+      "frameDuration": 90,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_ultimate_02",
+          "up_ultimate_03"
+        ]
+      }
+    },
+    "ultimateAttack": {
+      "frames": [
+        "ultimate_03",
+        "ultimate_04",
+        "ultimate_05"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_ultimate_03",
+          "up_ultimate_04",
+          "up_ultimate_05"
+        ]
+      }
+    },
+    "ultimateRecovery": {
+      "frames": [
+        "ultimate_05",
+        "stance_01"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_ultimate_05",
+          "up_stance_01"
+        ]
+      }
+    },
+    "victory": {
+      "frames": [
+        "victory_01",
+        "victory_02",
+        "victory_03",
+        "victory_04"
+      ],
+      "frameDuration": 140,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_victory_01",
+          "up_victory_02",
+          "up_victory_03",
+          "up_victory_04"
+        ]
+      }
+    },
+    "defeat": {
+      "frames": [
+        "hurt_03",
+        "hurt_04",
+        "hurt_05"
+      ],
+      "frameDuration": 150,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_hurt_03",
+          "up_hurt_04",
+          "up_hurt_05"
+        ]
+      }
+    },
+    "fireBlastStartup": {
+      "frames": [
+        "special_01"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_special_01"
+        ]
+      }
+    },
+    "fireBlastFire": {
+      "frames": [
+        "special_02",
+        "special_03",
+        "special_04"
+      ],
+      "frameDuration": 72,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "projectileSpawn"
+        }
+      ],
+      "variants": {
+        "up": [
+          "up_special_02",
+          "up_special_03",
+          "up_special_04"
+        ]
+      }
+    },
+    "fireBlastRecovery": {
+      "frames": [
+        "special_01",
+        "stance_01"
+      ],
+      "frameDuration": 85,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_special_01",
+          "up_stance_01"
+        ]
+      }
+    },
+    "shotsStartup": {
+      "frames": [
+        "rush_01"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_rush_01"
+        ]
+      }
+    },
+    "shotsSummon": {
+      "frames": [
+        "rush_01",
+        "special_01"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_rush_01",
+          "up_special_01"
+        ]
+      }
+    },
+    "shotsCommand": {
+      "frames": [
+        "special_02"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_special_02"
+        ]
+      }
+    },
+    "shotsFire": {
+      "frames": [
+        "special_02",
+        "special_03"
+      ],
+      "frameDuration": 70,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 0,
+          "type": "projectileSpawn"
+        }
+      ],
+      "variants": {
+        "up": [
+          "up_special_02",
+          "up_special_03"
+        ]
+      }
+    },
+    "shotsRecovery": {
+      "frames": [
+        "special_01",
+        "stance_01"
+      ],
+      "frameDuration": 85,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_special_01",
+          "up_stance_01"
+        ]
+      }
+    },
+    "lensActivate": {
+      "frames": [
+        "power_01",
+        "power_02",
+        "power_03"
+      ],
+      "frameDuration": 80,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_power_01",
+          "up_power_02",
+          "up_power_03"
+        ]
+      }
+    },
+    "lensActive": {
+      "frames": [
+        "power_03"
+      ],
+      "frameDuration": 100,
+      "loop": true,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_power_03"
+        ]
+      }
+    },
+    "lensDodgeLeft": {
+      "frames": [
+        "power_04",
+        "power_05"
+      ],
+      "frameDuration": 55,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_power_04",
+          "up_power_05"
+        ]
+      }
+    },
+    "lensDodgeRight": {
+      "frames": [
+        "power_05",
+        "power_04"
+      ],
+      "frameDuration": 55,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_power_05",
+          "up_power_04"
+        ]
+      }
+    },
+    "lensEnd": {
+      "frames": [
+        "power_03",
+        "power_01"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_power_03",
+          "up_power_01"
+        ]
+      }
+    },
+    "objectSwapStartup": {
+      "frames": [
+        "beam_01"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_beam_01"
+        ]
+      }
+    },
+    "objectSwapDisappear": {
+      "frames": [
+        "beam_02",
+        "beam_03"
+      ],
+      "frameDuration": 60,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_beam_02",
+          "up_beam_03"
+        ]
+      }
+    },
+    "objectSwapReappear": {
+      "frames": [
+        "beam_03",
+        "beam_04"
+      ],
+      "frameDuration": 60,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_beam_03",
+          "up_beam_04"
+        ]
+      }
+    },
+    "objectSwapRecovery": {
+      "frames": [
+        "beam_04",
+        "stance_01"
+      ],
+      "frameDuration": 80,
+      "loop": false,
+      "cancelable": true,
+      "variants": {
+        "up": [
+          "up_beam_04",
+          "up_stance_01"
+        ]
+      }
+    }
+  },
+  "effects": {
+    "energy-projectile": "./effects/energy-projectile.png",
+    "energy-trails": "./effects/energy-trails.png",
+    "impact-sparks": "./effects/impact-sparks.png",
+    "smoke-dust": "./effects/smoke-dust.png",
+    "ultimate-aura": "./effects/ultimate-aura.png",
+    "lens-eye": "./effects/lens-eye.png",
+    "lens-aura": "./effects/lens-aura.png",
+    "lens-afterimage": "./effects/lens-afterimage.png",
+    "shots-clone": "./effects/shots-clone.png",
+    "object-swap-object": "./effects/object-swap-object.png",
+    "object-swap-flash": "./effects/object-swap-flash.png",
+    "shots-projectile": "./effects/shots-projectile.png",
+    "shots-impact": "./effects/shots-impact.png"
+  },
+  "notes": {
+    "sourceRuntimeLoaded": false,
+    "combatAuthoritative": true,
+    "conceptSheetExtraction": true,
+    "gameplayDifference": false,
+    "fullAlternateAnimationCoverage": true
+  }
+}

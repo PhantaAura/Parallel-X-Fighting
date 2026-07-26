@@ -1,0 +1,4 @@
+.trainingPanel{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:12px;padding:10px;border:1px solid #4b5477;border-radius:10px;background:#0b0f1a;color:#dbe1f8;font-size:12px}
+.trainingPanel label{display:flex;gap:6px;align-items:center}.trainingPanel select{background:#070a12;color:#fff;border:1px solid #39405d;border-radius:6px;padding:5px}
+.trainingHud{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;gap:10px;pointer-events:none;color:#dff8ff;font:12px monospace;text-shadow:0 2px 4px #000}
+.trainingHud>div{background:#050811cc;border:1px solid #526080;padding:8px;border-radius:7px;max-width:46%}.trainingHud button,.trainingHud input,.trainingHud select,.trainingHud label{pointer-events:auto}.trainingHud button{margin:3px;padding:5px;background:#26304b;color:#fff;border:1px solid #61709b;border-radius:5px}

@@ -8,8 +8,16 @@ export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([
 ]);
 
 export function createDefaultControllerSettings(){
-  return{version:1,promptSeen:false,styles:['xbox','xbox'],assignments:[null,null],deadZones:[.24,.24],customMappings:[createCustomControllerMapping(),createCustomControllerMapping()]};
+  return{version:2,promptSeen:false,configuredControllerIds:[null,null],styles:['xbox','xbox'],assignments:[null,null],deadZones:[.24,.24],customMappings:[createCustomControllerMapping(),createCustomControllerMapping()]};
 }
+
+export function controllerMenuButtons(style='xbox',customMapping=null){
+  const normalized=validStyle(style);
+  if(normalized==='nintendo')return{confirm:1,cancel:0};
+  if(normalized==='custom'){const mapping=sanitizeCustom(customMapping);return{confirm:mapping.buttons.j,cancel:mapping.buttons.s}}
+  return{confirm:0,cancel:1};
+}
+
 
 function validStyle(value){return CONTROLLER_STYLE_IDS.includes(value)?value:'xbox'}
 function validAssignment(value){const number=Number(value);return value===null||value==='auto'?null:Number.isInteger(number)&&number>=0?number:null}
@@ -23,7 +31,7 @@ export function loadControllerSettings(storage=globalThis.localStorage){
   const defaults=createDefaultControllerSettings();
   try{
     const saved=JSON.parse(storage?.getItem(CONTROLLER_SETTINGS_KEY)||'{}');
-    return{version:1,promptSeen:!!saved.promptSeen,styles:[validStyle(saved.styles?.[0]),validStyle(saved.styles?.[1])],assignments:[validAssignment(saved.assignments?.[0]),validAssignment(saved.assignments?.[1])],deadZones:[Math.max(.1,Math.min(.6,Number(saved.deadZones?.[0])||.24)),Math.max(.1,Math.min(.6,Number(saved.deadZones?.[1])||.24))],customMappings:[sanitizeCustom(saved.customMappings?.[0]),sanitizeCustom(saved.customMappings?.[1])]};
+    return{version:2,promptSeen:!!saved.promptSeen,configuredControllerIds:[saved.configuredControllerIds?.[0]||null,saved.configuredControllerIds?.[1]||null],styles:[validStyle(saved.styles?.[0]),validStyle(saved.styles?.[1])],assignments:[validAssignment(saved.assignments?.[0]),validAssignment(saved.assignments?.[1])],deadZones:[Math.max(.1,Math.min(.6,Number(saved.deadZones?.[0])||.24)),Math.max(.1,Math.min(.6,Number(saved.deadZones?.[1])||.24))],customMappings:[sanitizeCustom(saved.customMappings?.[0]),sanitizeCustom(saved.customMappings?.[1])]};
   }catch{return defaults}
 }
 
@@ -46,13 +54,14 @@ export function assignConnectedControllers(gamepads=[],current=[null,null]){
 }
 
 export class ControllerManager{
-  constructor({input,doc=globalThis.document,win=globalThis.window,storage=globalThis.localStorage,getState=()=> 'menu',onPause=()=>{},onDisconnect=()=>{},onReconnect=()=>{},onStatus=()=>{},onStyleChange=()=>{}}={}){
-    this.input=input;this.doc=doc;this.win=win;this.storage=storage;this.getState=getState;this.onPause=onPause;this.onDisconnect=onDisconnect;this.onReconnect=onReconnect;this.onStatus=onStatus;this.onStyleChange=onStyleChange;
-    this.settings=loadControllerSettings(storage);this.connected=new Map();this.previous=new Map();this.disconnectedAssignments=new Map();this.frameHandle=0;this.active=true;
+  constructor({input,doc=globalThis.document,win=globalThis.window,storage=globalThis.localStorage,getState=()=> 'menu',onPause=()=>{},onDisconnect=()=>{},onReconnect=()=>{},onStatus=()=>{},onStyleChange=()=>{},onAssignmentClose=()=>{}}={}){
+    this.input=input;this.doc=doc;this.win=win;this.storage=storage;this.getState=getState;this.onPause=onPause;this.onDisconnect=onDisconnect;this.onReconnect=onReconnect;this.onStatus=onStatus;this.onStyleChange=onStyleChange;this.onAssignmentClose=onAssignmentClose;
+    this.settings=loadControllerSettings(storage);this.connected=new Map();this.previous=new Map();this.disconnectedAssignments=new Map();this.promptQueue=[];this.frameHandle=0;this.active=true;
     this.refs={
       prompt:doc?.querySelector?.('#controllerDetected'),promptName:doc?.querySelector?.('#controllerDetectedName'),promptStyle:doc?.querySelector?.('#controllerDetectedStyle'),promptPlayer:doc?.querySelector?.('#controllerDetectedPlayer'),
       use:doc?.querySelector?.('#useDetectedController'),later:doc?.querySelector?.('#controllerDecideLater'),devices:[doc?.querySelector?.('#controllerDevice1'),doc?.querySelector?.('#controllerDevice2')],
-      test:doc?.querySelector?.('#controllerTest'),testBody:doc?.querySelector?.('#controllerTestBody'),openTest:doc?.querySelector?.('#controllerTestButton'),closeTest:doc?.querySelector?.('#closeControllerTest')
+      test:doc?.querySelector?.('#controllerTest'),testBody:doc?.querySelector?.('#controllerTestBody'),openTest:doc?.querySelector?.('#controllerTestButton'),closeTest:doc?.querySelector?.('#closeControllerTest'),
+      assignments:doc?.querySelector?.('#controllerAssignments'),assignmentBody:doc?.querySelector?.('#controllerAssignmentStatus'),assignmentSelects:[doc?.querySelector?.('#controllerAssignP1'),doc?.querySelector?.('#controllerAssignP2')],closeAssignments:doc?.querySelector?.('#closeControllerAssignments'),testAssignments:doc?.querySelector?.('#testAssignedControllers'),clearAssignments:[doc?.querySelector?.('#clearControllerP1'),doc?.querySelector?.('#clearControllerP2')]
     };
     this.applySettings();this.bind();this.scan();this.loop();
   }
@@ -68,10 +77,14 @@ export class ControllerManager{
     this.win?.addEventListener?.('gamepadconnected',event=>this.connect(event.gamepad));
     this.win?.addEventListener?.('gamepaddisconnected',event=>this.disconnect(event.gamepad));
     this.refs.use?.addEventListener('click',()=>this.acceptPrompt());
-    this.refs.later?.addEventListener('click',()=>{this.settings.promptSeen=true;this.persist();this.refs.prompt?.classList.add('hidden')});
+    this.refs.later?.addEventListener('click',()=>this.deferPrompt());
     this.refs.openTest?.addEventListener('click',()=>{this.renderTest();this.refs.test?.classList.remove('hidden')});
     this.refs.closeTest?.addEventListener('click',()=>this.refs.test?.classList.add('hidden'));
-    this.refs.devices.forEach((select,index)=>select?.addEventListener('change',()=>{this.settings.assignments[index]=validAssignment(select.value);this.input.setControllerAssignment(index+1,this.settings.assignments[index]);this.persist()}));
+    this.refs.closeAssignments?.addEventListener('click',()=>this.closeAssignments());
+    this.refs.testAssignments?.addEventListener('click',()=>{this.renderTest();this.refs.test?.classList.remove('hidden')});
+    this.refs.clearAssignments.forEach((button,index)=>button?.addEventListener('click',()=>this.setAssignment(index+1,null)));
+    this.refs.assignmentSelects.forEach((select,index)=>select?.addEventListener('change',()=>this.setAssignment(index+1,validAssignment(select.value))));
+    this.refs.devices.forEach((select,index)=>select?.addEventListener('change',()=>this.setAssignment(index+1,validAssignment(select.value))));
   }
   persist(){saveControllerSettings(this.settings,this.storage)}
   setStyle(side,style){this.settings.styles[side-1]=validStyle(style);this.input.setControllerStyle(side,this.settings.styles[side-1]);this.persist()}
@@ -79,22 +92,45 @@ export class ControllerManager{
   scan(){
     const pads=[...(this.win?.navigator?.getGamepads?.()||[])].filter(Boolean);for(const pad of pads)this.connected.set(pad.index,pad);
     this.settings.assignments=assignConnectedControllers(pads,this.settings.assignments);this.applyAssignments();this.renderDevices();
-    if(!this.settings.promptSeen&&pads[0])this.showPrompt(pads[0]);
+    if(this.settings.promptSeen&&!this.settings.configuredControllerIds.some(Boolean)){const first=pads.find(pad=>this.settings.assignments.includes(pad.index));if(first){const side=this.settings.assignments.indexOf(first.index);this.settings.configuredControllerIds[side]=first.id||`Gamepad ${first.index}`;this.persist()}}
+    for(const pad of pads)this.requestPrompt(pad);
   }
   connect(pad){
     if(!pad)return;this.connected.set(pad.index,pad);const remembered=this.disconnectedAssignments.get(pad.id);if(remembered&&!this.settings.assignments.includes(pad.index)&&this.settings.assignments[remembered.side-1]===null)this.settings.assignments[remembered.side-1]=pad.index;else this.settings.assignments=assignConnectedControllers([...this.connected.values()],this.settings.assignments);this.applyAssignments();this.input?.clear?.();this.renderDevices();this.persist();this.onStatus({type:'connected',pad,side:this.settings.assignments.indexOf(pad.index)+1});if(remembered){this.disconnectedAssignments.delete(pad.id);this.onReconnect({pad,side:remembered.side})}
-    if(!this.settings.promptSeen)this.showPrompt(pad);
+    this.requestPrompt(pad);
   }
   disconnect(pad){if(!pad)return;const side=this.settings.assignments.indexOf(pad.index)+1;if(side)this.disconnectedAssignments.set(pad.id,{side,index:pad.index});this.connected.delete(pad.index);this.previous.delete(pad.index);this.settings.assignments=this.settings.assignments.map(value=>value===pad.index?null:value);this.input?.clear?.();this.applyAssignments();this.renderDevices();this.persist();this.onStatus({type:'disconnected',pad,side});if(this.getState()==='playing')this.onDisconnect({pad,side})}
   applyAssignments(){for(let side=1;side<=2;side++)this.input.setControllerAssignment(side,this.settings.assignments[side-1])}
-  showPrompt(pad){
-    if(!this.refs.prompt)return;if(!this.doc?.querySelector?.('#startScreen')?.classList.contains('hidden')){this.pendingPrompt=pad;return}this.refs.prompt.dataset.gamepadIndex=String(pad.index);this.refs.promptName.textContent=pad.id||`Gamepad ${pad.index+1}`;this.refs.promptStyle.value=detectControllerStyle(pad);
-    this.refs.promptPlayer.value=String(this.settings.assignments[0]===pad.index?1:2);this.refs.prompt.classList.remove('hidden');
+  setAssignment(side,index){
+    const other=side===1?2:1;if(index!==null&&this.settings.assignments[other-1]===index)this.settings.assignments[other-1]=null;this.settings.assignments[side-1]=index;this.applyAssignments();this.input?.clear?.();this.persist();this.renderDevices();this.renderAssignments();
   }
-  promptAfterStart(){if(this.pendingPrompt&&!this.settings.promptSeen){const pad=this.pendingPrompt;this.pendingPrompt=null;this.showPrompt(pad)}}
+  openAssignments(){this.renderAssignments();this.refs.assignments?.classList.remove('hidden');this.refs.assignmentSelects[0]?.focus()}
+  closeAssignments(){this.refs.assignments?.classList.add('hidden');this.onAssignmentClose()}
+  renderAssignments(){
+    const pads=[...this.connected.values()].sort((a,b)=>a.index-b.index),options='<option value="auto">Keyboard / Auto</option>'+pads.map(pad=>`<option value="${pad.index}">${pad.index+1}: ${pad.id||'Gamepad'}</option>`).join('');
+    this.refs.assignmentSelects.forEach((select,index)=>{if(!select)return;select.innerHTML=options;select.value=this.settings.assignments[index]===null?'auto':String(this.settings.assignments[index])});
+    if(this.refs.assignmentBody)this.refs.assignmentBody.innerHTML=pads.length?pads.map(pad=>{const side=this.settings.assignments.indexOf(pad.index)+1,style=side?this.settings.styles[side-1]:'unassigned';return`<section><strong>${pad.id||`Gamepad ${pad.index+1}`}</strong><span>${side?`Player ${side} • ${style}`:'Unassigned'}</span></section>`}).join(''):'<p>No controllers currently detected. Keyboard and touch remain available.</p>';
+  }
+  controllerIdentity(pad){return String(pad?.id||`Gamepad ${pad?.index??'unknown'}`)}
+  assignedSide(pad){return this.settings.assignments.indexOf(pad?.index)+1}
+  isConfigured(pad,side=this.assignedSide(pad)){return !!side&&this.settings.configuredControllerIds[side-1]===this.controllerIdentity(pad)}
+  requestPrompt(pad){
+    const side=this.assignedSide(pad);if(!pad||!side||this.isConfigured(pad,side))return;
+    if(this.promptQueue.some(item=>item.index===pad.index)||this.refs.prompt?.dataset.gamepadIndex===String(pad.index))return;
+    if(!this.doc?.querySelector?.('#startScreen')?.classList.contains('hidden')||!this.refs.prompt?.classList.contains('hidden')){this.promptQueue.push(pad);return}
+    this.showPrompt(pad);
+  }
+  showPrompt(pad){
+    if(!this.refs.prompt||!pad)return;this.refs.prompt.dataset.gamepadIndex=String(pad.index);this.refs.promptName.textContent=pad.id||`Gamepad ${pad.index+1}`;this.refs.promptStyle.value=detectControllerStyle(pad);
+    this.refs.promptPlayer.value=String(this.assignedSide(pad)||1);this.refs.prompt.classList.remove('hidden');
+  }
+  promptNext(){while(this.promptQueue.length){const pad=this.promptQueue.shift(),live=this.connected.get(pad.index);if(live&&!this.isConfigured(live)){this.showPrompt(live);return}}}
+  promptAfterStart(){this.promptNext()}
+  rememberPromptedController(index,side){const pad=this.connected.get(index);if(pad)this.settings.configuredControllerIds[side-1]=this.controllerIdentity(pad);this.settings.promptSeen=this.settings.configuredControllerIds.some(Boolean)}
+  deferPrompt(){const index=Number(this.refs.prompt?.dataset.gamepadIndex),side=Number(this.refs.promptPlayer?.value)||this.assignedSide(this.connected.get(index))||1;this.rememberPromptedController(index,side);this.persist();this.refs.prompt?.classList.add('hidden');this.promptNext()}
   acceptPrompt(){
     const index=Number(this.refs.prompt?.dataset.gamepadIndex),side=Number(this.refs.promptPlayer?.value)||1,style=validStyle(this.refs.promptStyle?.value);
-    this.settings.promptSeen=true;this.settings.assignments[side-1]=index;this.settings.styles[side-1]=style;this.input.setControllerAssignment(side,index);this.input.setControllerStyle(side,style);this.persist();this.renderDevices();this.refs.prompt?.classList.add('hidden');this.onStyleChange(side,style);
+    const other=side===1?2:1;if(this.settings.assignments[other-1]===index)this.settings.assignments[other-1]=null;this.settings.assignments[side-1]=index;this.settings.styles[side-1]=style;this.rememberPromptedController(index,side);this.input.setControllerAssignment(side,index);this.input.setControllerStyle(side,style);this.persist();this.renderDevices();this.refs.prompt?.classList.add('hidden');this.onStyleChange(side,style);this.promptNext();
   }
   renderDevices(){
     const pads=[...this.connected.values()].sort((a,b)=>a.index-b.index);
@@ -103,13 +139,14 @@ export class ControllerManager{
       for(const pad of pads){const option=this.doc.createElement('option');option.value=String(pad.index);option.textContent=`${pad.index+1}: ${pad.id||'Gamepad'}`;select.appendChild(option)}
       select.value=this.settings.assignments[side]===null?'auto':String(this.settings.assignments[side]);
     });
+    if(this.refs.assignments&&!this.refs.assignments.classList.contains('hidden'))this.renderAssignments();
   }
   renderTest(){
     if(!this.refs.testBody)return;const pads=[...(this.win?.navigator?.getGamepads?.()||[])].filter(Boolean);
     this.refs.testBody.innerHTML=pads.length?pads.map(pad=>`<section><strong>${pad.index+1}: ${pad.id}</strong><div>Axes: ${pad.axes.map(value=>Number(value).toFixed(2)).join(', ')}</div><div>Pressed: ${pad.buttons.map((button,index)=>button.pressed?index+1:null).filter(Boolean).join(', ')||'none'}</div></section>`).join(''):'<p>No controller currently detected.</p>';
   }
   menuFocusables(){
-    const selectors=['#controllerDetected','#controllerTest','#confirmDialog','#settingsPanel','#extrasPanel','#moveListPanel','#stageSelectPanel','#resultsScreen','#hotbarCustomizeModal','#fullscreenPrompt','#orientationPrompt','#pauseMenu','#menuScreen','#mainMenuScreen','#startScreen'],scope=selectors.map(selector=>this.doc?.querySelector?.(selector)).find(element=>element&&!element.classList.contains('hidden'));
+    const selectors=['#controllerDetected','#controllerTest','#controllerAssignments','#controlsPanel','#confirmDialog','#settingsPanel','#extrasPanel','#moveListPanel','#stageSelectPanel','#resultsScreen','#hotbarCustomizeModal','#fullscreenPrompt','#orientationPrompt','#pauseMenu','#menuScreen','#mainMenuScreen','#startScreen'],scope=selectors.map(selector=>this.doc?.querySelector?.(selector)).find(element=>element&&!element.classList.contains('hidden'));
     return[...(scope?.querySelectorAll?.('button:not([disabled]),select:not([disabled]),input:not([disabled])')||[])].filter(element=>element.offsetParent!==null&&!element.closest('.hidden'));
   }
   moveMenuFocus(direction){
@@ -128,8 +165,9 @@ export class ControllerManager{
       if(directional('up'))this.moveMenuFocus(-1);if(directional('down'))this.moveMenuFocus(1);
       if(directional('left')&&!this.adjustMenuSelect(-1))this.moveMenuFocus(-1);
       if(directional('right')&&!this.adjustMenuSelect(1))this.moveMenuFocus(1);
-      if(edge(0)){const active=this.doc.activeElement;if(active?.tagName==='BUTTON')active.click();else if(!active||active===this.doc.body)this.moveMenuFocus(1)}
-      if(edge(1))this.doc?.dispatchEvent?.(new CustomEvent('controllercancel'));
+      const side=this.settings.assignments.indexOf(pad.index)+1||1,menuButtons=controllerMenuButtons(this.settings.styles[side-1],this.settings.customMappings[side-1]);
+      if(edge(menuButtons.confirm)){const active=this.doc.activeElement;if(active?.tagName==='BUTTON')active.click();else if(active?.tagName==='SELECT')active.dispatchEvent(new Event('change',{bubbles:true}));else if(!active||active===this.doc.body)this.moveMenuFocus(1)}
+      if(edge(menuButtons.cancel))this.doc?.dispatchEvent?.(new CustomEvent('controllercancel'));
     }
     this.previous.set(pad.index,{...state,...Object.fromEntries(pad.buttons.map((button,index)=>[index,!!button.pressed]))});
   }

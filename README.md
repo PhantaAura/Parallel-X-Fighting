@@ -1,8 +1,12 @@
-# Parallels X: Clash of Souls — Prototype 2.3.5 QOL Build
+# Parallels X: Clash of Souls — Prototype 2.3.5b Rival Sprite Reimport
 
-A dependency-free browser fighting game with Story Mode, VS CPU, local multiplayer, configurable rounds, five stages, 15 playable fighters, browser saves, keyboard/controller/touch input, clashes, advanced defense, cinematic ultimates, Training Mode, an optional experimental Rrvvfo sprite pipeline, and a full quality-of-life shell for replay, pause, settings, accessibility, and save management.
+This hotfix corrects Nintendo menu confirmation, per-controller setup, controller assignment access, pause Controls, and hotbar move-info pause recovery.
+
+A dependency-free browser fighting game with Story Mode, VS CPU, local multiplayer, configurable rounds, five stages, 15 playable fighters, browser saves, keyboard/controller/touch input, clashes, advanced defense, cinematic ultimates, Training Mode, optional experimental Rrvvfo and Revvfo sprite pipelines, and a full quality-of-life shell for replay, pause, settings, accessibility, and save management.
 
 The public build is hosted at [https://phantaaura.github.io/Parallel-X-Fighting/](https://phantaaura.github.io/Parallel-X-Fighting/).
+
+See [Prototype 2.3.5b patch notes](PATCH-NOTES-2.3.5b.md) for the Rrvvfo/Revvfo sprite reimport details.
 
 ## Run
 
@@ -61,8 +65,10 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 - `js/training.js` — isolated Training Mode settings and reset behavior
 - `js/ui.js` — UI lookup boundary
 - `tests/smoke.html`, `tests/smoke.js` — dependency-free browser smoke tests
-- `assets/fighters/rrvvfo/` — generated Rrvvfo atlas, manifest, source archive, and layered effects
-- `tools/build-rrvvfo-atlas.py` — Pillow-based development-time atlas generator
+- `assets/fighters/rrvvfo/` — rebuilt Hood Down/Hood Up Rrvvfo atlas, manifest, source archives, and effects
+- `assets/fighters/revvfo/` — Revvfo atlas, manifest, source archive, and Astrylte effects
+- `tools/build-fighter-atlases.py` — unified Pillow-based Rrvvfo/Revvfo atlas generator
+- `tools/build-rrvvfo-atlas.py` — compatibility wrapper for older rebuild commands
 - `docs/RRVVFO-SPRITE-PIPELINE.md` — crop, anchor, rebuild, reuse, and cleanup documentation
 
 ## Keyboard controls
@@ -202,17 +208,17 @@ Flow State is not implemented in Prototype 2.3 and is intentionally separate fro
 
 In local multiplayer, both players share one canvas, so a human Rrvvfo’s blindness overlay obscures the shared screen.
 
-## Experimental Rrvvfo sprites
+## Experimental character sprites
 
-Character Select includes **Experimental Rrvvfo Sprites: On/Off**. Fresh saves default to Off while the concept-derived artwork awaits manual cleanup. Off preserves the original procedural Rrvvfo rendering exactly. On preloads a generated 1536 × 1920 atlas before any match containing Rrvvfo and maps existing combat state to 192 × 192 normalized frames. A loading failure or malformed manifest automatically restores the original visuals so Rrvvfo can never begin invisible. An explicit On or Off choice persists without rewriting untouched legacy Off values.
+Character Select includes **Experimental Character Sprites: On/Off**. Fresh saves still default to Off because the supplied images are concept sheets rather than hand-cleaned transparent production atlases. Off preserves the procedural visuals. On loads normalized 192 × 192 frames only for fighters that currently have sprite assets, with automatic legacy fallback if a manifest or image fails.
 
-When a player slot contains Rrvvfo, Character Select shows that slot’s **RRVVFO APPEARANCE** selector and live preview. Hood Down is the default. Player 1, Player 2, Training Player 1, and the Training dummy store separate appearance choices under `pxRrvvfoVisualsV1`; the choice is copied onto the individual `Fighter` instance. Appearance never changes movement, damage, hitboxes, cooldowns, AI, combos, defense, or abilities.
+Rrvvfo now uses a rebuilt **1728 × 3840 atlas with 176 normalized frames**. Hood Down and Hood Up are extracted from separate complete sheets. Every animation has matching Hood Up coverage instead of repeating one standing pose. Character Select exposes both appearances in normal builds, stores the selection separately for Player 1, Player 2, Training Player 1, and the Training dummy, and keeps both variants gameplay-identical.
 
-**Hood Up — Prototype** is unfinished and hidden in production builds. On localhost or a URL with `?developer=1`, enable **Expose unfinished appearances** to inspect it. Character Select warns that dedicated Hood Up animations are still in development. The supplied Hood Up concept sheet is archived at `docs/reference/rrvvfo-hood-up-prototype-sheet.jpg` but is not loaded or cropped into gameplay on this stabilization branch. Current Hood Up runtime frames remain sparse and repeated; they are preserved only for future atlas work.
+Revvfo now uses a **1728 × 1920 atlas with 88 normalized frames**. His sprites retain his original gameplay and move routing: ranged Astrylte Blast, aerial beam, close-range teleport strike, dash movement, normal combo routes, defense, clashes, and Astrylte ultimate behavior. The sprite import changes presentation only; it does not copy Rrvvfo’s Fire Blast, Shots of Agony, Object Swap, Lens of Truth, damage, cooldowns, or AI.
 
-Full quality enables up to three visual afterimages and larger layered effects. Reduced quality keeps the same animation/combat behavior with fewer effects for mobile hardware. The atlas is cached after first load and all paths are relative for GitHub Pages deployment under `/Parallel-X-Fighting/`.
+Full quality enables up to three afterimages and larger layered effects. Reduced quality keeps the same combat behavior with fewer effects for mobile hardware. Atlas and effect paths remain repository-relative for GitHub Pages.
 
-The developer-only sprite viewer can play/pause animations, step frames, change speed/facing/appearance/mobile scale, and display ground pivots, projectile anchors, visual bounds, and combat boxes separately. Edge testing supports black, white, red, blue, and transparent-checkerboard backgrounds. See [the pipeline guide](docs/RRVVFO-SPRITE-PIPELINE.md) for source limitations and rebuild instructions.
+The developer sprite viewer still focuses on Rrvvfo appearance comparison, frame stepping, facing, anchors, bounds, and backgrounds. See [the pipeline guide](docs/RRVVFO-SPRITE-PIPELINE.md) for extraction limitations and rebuild commands.
 
 ## Shots of Agony
 
@@ -274,7 +280,7 @@ Use the always-visible **EXIT TRAINING** button, or choose Character Select from
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The browser suite contains **175 checks** covering all Prototype 2.2/2.3 regressions plus controller/touch mappings, combat systems, sprite fallback/appearance, menu availability, pause simulation gating, post-match actions/statistics, adaptive move prompts, QOL setting persistence, accessibility balance isolation, notification throttling, versioned save export/import/rollback, Training presets/tools, controller drift filtering, loading recovery, HUD/audio modeling, mobile layout locking, orientation/fullscreen recovery, fixed-boundary widescreen profiles, the data-driven ability hotbar, exact Rrvvfo costs/status restrictions, hold-for-information behavior, unavailable-warning throttling, hotbar input buffering, visual-performance caps, and first-time hints.
+The regression suite contains **183 checks** covering all Prototype 2.2/2.3 regressions plus controller/touch mappings, combat systems, sprite fallback/appearance, menu availability, pause simulation gating, post-match actions/statistics, adaptive move prompts, QOL setting persistence, accessibility balance isolation, notification throttling, versioned save export/import/rollback, Training presets/tools, controller drift filtering, loading recovery, HUD/audio modeling, mobile layout locking, orientation/fullscreen recovery, fixed-boundary widescreen profiles, the data-driven ability hotbar, exact Rrvvfo costs/status restrictions, hold-for-information behavior, unavailable-warning throttling, hotbar input buffering, visual-performance caps, and first-time hints.
 
 ## Save compatibility
 
@@ -282,8 +288,8 @@ Story completion continues to use the existing `pxSave` browser-storage key. Con
 
 ## Known limitations
 
-- Rrvvfo has optional experimental sprites; all other fighters still use procedural canvas art.
-- The concept sheets are JPEG reference art, so frames retain compression halos and require manual edge cleanup before production use. The current Hood Up runtime variant still reuses sparse poses; the newer full Hood Up concept sheet is reference-only in this branch.
+- Rrvvfo and Revvfo have optional experimental sprites; the other 13 fighters still use procedural canvas art.
+- The sprite sources are AI-assisted concept sheets rather than true animation atlases. Automated extraction removes most background and label debris, but some pose-to-pose proportions, effects, compression halos, or edge artifacts still require manual art cleanup before a final release.
 - Detailed hitbox visualization is not implemented; the previous nonfunctional toggle has been removed.
 - Expanded fighters use contextual single-button specials rather than command motions.
 - Flow State is reserved for a later prototype and is not part of Lens of Truth.

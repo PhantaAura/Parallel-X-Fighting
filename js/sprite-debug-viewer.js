@@ -11,7 +11,7 @@ export class SpriteDebugViewer{
       <canvas width="384" height="260"></canvas>
       <div class="spriteDebugControls">
         <label>Animation <select data-debug="animation"></select></label>
-        <label>Appearance <select data-debug="appearance"><option value="down">Hood Down</option><option value="up">Hood Up — Prototype</option></select></label>
+        <label>Appearance <select data-debug="appearance"><option value="down">Hood Down</option><option value="up">Hood Up</option></select></label>
         <button data-debug="play">PLAY/PAUSE</button><button data-debug="previous">◀ FRAME</button><button data-debug="next">FRAME ▶</button>
         <label>Speed <input data-debug="speed" type="range" min=".2" max="2" step=".1" value="1"></label>
         <label><input data-debug="flip" type="checkbox"> Flip</label>
@@ -60,7 +60,7 @@ export class SpriteDebugViewer{
       const dummy={x:168,y:145,w:48,h:86,face:this.flip?-1:1,z:0,spriteScale:this.mobileScale,spriteOpacity:1,hitFlash:0};
       this.visuals.renderer.draw(ctx,dummy,this.animator);
       this.root.querySelector('[data-debug="readout"]').textContent=`${this.animator.name} • ${this.animator.currentFrameName()} • frame ${this.animator.index+1}/${this.animator.frames().length}`;
-    }else{ctx.fillStyle='#fff';ctx.fillText('Load Rrvvfo sprites by starting a match.',20,30)}
+    }else{ctx.fillStyle='#fff';ctx.fillText('Load character sprites by starting a match.',20,30)}
     this.frameHandle=requestAnimationFrame(timestamp=>this.loop(timestamp));
   }
 }

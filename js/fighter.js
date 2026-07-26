@@ -156,7 +156,7 @@ export class Fighter{
     if(this.id==='rrvvfo')return this.fireBlast();
     if(this.specialCd){this.world.notifications?.push('COOLDOWN ACTIVE',{key:`special-cooldown-${this.side}`});return false}if(this.en<28){this.world.notifications?.push('NOT ENOUGH ENERGY',{key:`energy-${this.side}`});return false}this.en-=28;this.specialCd=55;this.world.sound(300,.08,'sawtooth');
     switch(this.id){
-      case'revvfo':if(!this.grounded)this.shot(19,9,22,'beam',1,'#ff55c8');else if(Math.abs(foe.x-this.x)<150){this.inv=16;this.x=clamp(foe.x-this.face*50,15,this.world.width-this.w-15);foe.hit(13,this.face*9,'special',this,{hitstun:24})}else this.shot(16,8,18,'beam',0,'#d445ff');break;
+      case'revvfo':if(!this.grounded){this.visualAction='beamAttack';this.visualActionTimer=36;this.shot(19,9,22,'beam',1,'#ff55c8')}else if(Math.abs(foe.x-this.x)<150){this.visualAction='teleportRush';this.visualActionTimer=36;this.inv=16;this.x=clamp(foe.x-this.face*50,15,this.world.width-this.w-15);foe.hit(13,this.face*9,'special',this,{hitstun:24})}else{this.visualAction='astrylteBlast';this.visualActionTimer=36;this.shot(16,8,18,'beam',0,'#d445ff')}break;
       case'wade':if(!this.grounded)[0,1,2].forEach((_,i)=>this.later(()=>this.shot(4.5,10+i,9,'orb',(i-1)*1.2,'#82e8ff'),i*65));else{this.inv=18;this.x=clamp(foe.x-this.face*55,15,this.world.width-this.w-15);foe.hit(10,this.face*8,'special',this,{hitstun:21});fx.burst(foe.x,foe.y+30,'#82e8ff',22)}break;
       case'bark':if(this.armor){this.shot(12,5,24,'beam',0,'#c8a06a');this.armor=Math.max(this.armor,60)}else{this.armor=180;fx.burst(this.x+20,this.y+60,'#c8a06a',25)}break;
       case'alt':Math.abs(foe.x-this.x)<115?foe.hit(14,this.face*10,'punishment',this,{hitstun:20}):this.shot(10,7,13);break;

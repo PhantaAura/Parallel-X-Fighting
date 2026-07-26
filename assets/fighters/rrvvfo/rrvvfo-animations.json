@@ -1,7 +1,7 @@
 {
   "version": 2,
   "fighter": "rrvvfo",
-  "image": "./rrvvfo-atlas.png",
+  "image": "./rrvvfo-atlas-c4.png?v=25c4-retina",
   "atlas": {
     "width": 1728,
     "height": 3840,
@@ -7844,6 +7844,7 @@
     "combatAuthoritative": true,
     "conceptSheetExtraction": true,
     "gameplayDifference": false,
-    "fullAlternateAnimationCoverage": true
+    "fullAlternateAnimationCoverage": true,
+    "mission0WhiteGapCleanup": true
   }
 }

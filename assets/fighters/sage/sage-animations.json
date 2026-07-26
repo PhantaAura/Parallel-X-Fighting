@@ -1,0 +1,811 @@
+{
+  "version": 4,
+  "fighter": "sage",
+  "image": "./sage-mission0-c6-animated.png?v=25c6-curated-animation",
+  "atlas": {
+    "width": 1024,
+    "height": 768,
+    "frameCanvas": [
+      256,
+      256
+    ],
+    "columns": 4
+  },
+  "defaults": {
+    "appearance": "down",
+    "groundPivot": [
+      128,
+      236
+    ],
+    "scale": 0.62,
+    "pixelSmoothing": true,
+    "depthScale": 0.08,
+    "maxAfterimages": 4
+  },
+  "frames": {
+    "idle_01": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        79,
+        18,
+        98,
+        218
+      ],
+      "source": [
+        0,
+        0,
+        256,
+        256
+      ]
+    },
+    "idle_02": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        78,
+        18,
+        100,
+        218
+      ],
+      "source": [
+        256,
+        0,
+        256,
+        256
+      ]
+    },
+    "idle_03": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        76,
+        18,
+        103,
+        218
+      ],
+      "source": [
+        512,
+        0,
+        256,
+        256
+      ]
+    },
+    "idle_04": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        77,
+        18,
+        102,
+        218
+      ],
+      "source": [
+        768,
+        0,
+        256,
+        256
+      ]
+    },
+    "stance_01": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        56,
+        18,
+        144,
+        218
+      ],
+      "source": [
+        0,
+        256,
+        256,
+        256
+      ]
+    },
+    "stance_02": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        65,
+        18,
+        126,
+        218
+      ],
+      "source": [
+        256,
+        256,
+        256,
+        256
+      ]
+    },
+    "stance_03": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        69,
+        18,
+        118,
+        218
+      ],
+      "source": [
+        512,
+        256,
+        256,
+        256
+      ]
+    },
+    "stance_04": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        63,
+        18,
+        130,
+        218
+      ],
+      "source": [
+        768,
+        256,
+        256,
+        256
+      ]
+    },
+    "run_01": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        59,
+        18,
+        138,
+        218
+      ],
+      "source": [
+        0,
+        512,
+        256,
+        256
+      ]
+    },
+    "run_02": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        38,
+        18,
+        180,
+        218
+      ],
+      "source": [
+        256,
+        512,
+        256,
+        256
+      ]
+    },
+    "run_03": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        31,
+        18,
+        193,
+        218
+      ],
+      "source": [
+        512,
+        512,
+        256,
+        256
+      ]
+    },
+    "run_04": {
+      "width": 256,
+      "height": 256,
+      "groundPivot": [
+        128,
+        236
+      ],
+      "centerPivot": [
+        128,
+        128
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        166,
+        126
+      ],
+      "handAnchor": [
+        170,
+        122
+      ],
+      "projectileOrigin": [
+        184,
+        122
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        30,
+        27,
+        195,
+        209
+      ],
+      "source": [
+        768,
+        512,
+        256,
+        256
+      ]
+    }
+  },
+  "animations": {
+    "idle": {
+      "frames": [
+        "idle_01",
+        "idle_02",
+        "idle_03",
+        "idle_04"
+      ],
+      "frameDuration": 170,
+      "loop": true,
+      "cancelable": true
+    },
+    "fightingStance": {
+      "frames": [
+        "stance_01",
+        "stance_02",
+        "stance_03",
+        "stance_04"
+      ],
+      "frameDuration": 145,
+      "loop": true,
+      "cancelable": true
+    },
+    "run": {
+      "frames": [
+        "run_01",
+        "run_02",
+        "run_03",
+        "run_04"
+      ],
+      "frameDuration": 115,
+      "loop": true,
+      "cancelable": true
+    },
+    "jumpRise": {
+      "frames": [
+        "run_02",
+        "run_03"
+      ],
+      "frameDuration": 120,
+      "loop": true,
+      "cancelable": true
+    },
+    "fall": {
+      "frames": [
+        "run_03",
+        "run_04"
+      ],
+      "frameDuration": 130,
+      "loop": true,
+      "cancelable": true
+    },
+    "dash": {
+      "frames": [
+        "run_01",
+        "run_02",
+        "run_03",
+        "run_04"
+      ],
+      "frameDuration": 82,
+      "loop": false,
+      "cancelable": true
+    },
+    "light1": {
+      "frames": [
+        "stance_01",
+        "stance_02"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true
+    },
+    "light2": {
+      "frames": [
+        "stance_02",
+        "stance_03"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true
+    },
+    "light3": {
+      "frames": [
+        "stance_03",
+        "stance_04"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true
+    },
+    "heavyStartup": {
+      "frames": [
+        "stance_01",
+        "stance_02"
+      ],
+      "frameDuration": 120,
+      "loop": false,
+      "cancelable": true
+    },
+    "heavyActive": {
+      "frames": [
+        "stance_02",
+        "stance_03"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "heavyRecovery": {
+      "frames": [
+        "stance_03",
+        "stance_01"
+      ],
+      "frameDuration": 110,
+      "loop": false,
+      "cancelable": true
+    },
+    "launcherStartup": {
+      "frames": [
+        "stance_01",
+        "stance_02"
+      ],
+      "frameDuration": 120,
+      "loop": false,
+      "cancelable": true
+    },
+    "launcherActive": {
+      "frames": [
+        "stance_02",
+        "stance_03"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "launcherRecovery": {
+      "frames": [
+        "stance_03",
+        "stance_01"
+      ],
+      "frameDuration": 110,
+      "loop": false,
+      "cancelable": true
+    },
+    "airLight": {
+      "frames": [
+        "run_02",
+        "run_03"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "airHeavy": {
+      "frames": [
+        "run_03",
+        "run_04"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true
+    },
+    "blockStart": {
+      "frames": [
+        "stance_01",
+        "stance_02"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true
+    },
+    "blockHold": {
+      "frames": [
+        "stance_02",
+        "stance_03"
+      ],
+      "frameDuration": 150,
+      "loop": true,
+      "cancelable": true
+    },
+    "perfectBlock": {
+      "frames": [
+        "stance_03",
+        "stance_04"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true
+    },
+    "guardBreak": {
+      "frames": [
+        "stance_04",
+        "stance_03"
+      ],
+      "frameDuration": 120,
+      "loop": true,
+      "cancelable": true
+    },
+    "hurtLight": {
+      "frames": [
+        "stance_04",
+        "stance_03"
+      ],
+      "frameDuration": 110,
+      "loop": false,
+      "cancelable": true
+    },
+    "hurtHeavy": {
+      "frames": [
+        "stance_04",
+        "stance_03",
+        "stance_02"
+      ],
+      "frameDuration": 115,
+      "loop": false,
+      "cancelable": true
+    },
+    "knockdown": {
+      "frames": [
+        "stance_04"
+      ],
+      "frameDuration": 150,
+      "loop": false,
+      "cancelable": true
+    },
+    "predictionDodge": {
+      "frames": [
+        "run_01",
+        "run_02",
+        "run_03",
+        "run_04"
+      ],
+      "frameDuration": 78,
+      "loop": false,
+      "cancelable": true
+    },
+    "lensDodgeLeft": {
+      "frames": [
+        "run_01",
+        "run_02",
+        "run_03"
+      ],
+      "frameDuration": 78,
+      "loop": false,
+      "cancelable": true
+    },
+    "lensDodgeRight": {
+      "frames": [
+        "run_04",
+        "run_03",
+        "run_02"
+      ],
+      "frameDuration": 78,
+      "loop": false,
+      "cancelable": true
+    },
+    "mentorCounter": {
+      "frames": [
+        "stance_01",
+        "stance_02",
+        "stance_03"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true
+    },
+    "energyFocus": {
+      "frames": [
+        "idle_01",
+        "idle_02",
+        "idle_03",
+        "idle_04"
+      ],
+      "frameDuration": 145,
+      "loop": true,
+      "cancelable": true
+    },
+    "astrylteBlast": {
+      "frames": [
+        "stance_01",
+        "stance_02",
+        "stance_03"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true
+    },
+    "ultimateAttack": {
+      "frames": [
+        "idle_01",
+        "stance_01",
+        "stance_02",
+        "stance_03"
+      ],
+      "frameDuration": 110,
+      "loop": false,
+      "cancelable": true
+    },
+    "victory": {
+      "frames": [
+        "idle_01",
+        "idle_02",
+        "idle_03",
+        "idle_04"
+      ],
+      "frameDuration": 180,
+      "loop": true,
+      "cancelable": true
+    }
+  },
+  "notes": {
+    "mission0CuratedAnimation": true,
+    "singleFrameRemoved": true,
+    "alignedPaddedFrames": true,
+    "crossfadeInRenderer": true
+  }
+}

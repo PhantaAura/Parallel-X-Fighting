@@ -1,3 +1,3 @@
-export const BUILD_VERSION='Prototype 2.3.5b — Rival Sprite Reimport';
+export const BUILD_VERSION='Prototype 2.5C6 — Animated Sage Clipping Fix';
 export const SAVE_SCHEMA_VERSION=235;
-export const BUILD_FEATURES=Object.freeze(['combat-2.3','controller-mobile','rrvvfo-sprites-v2','revvfo-sprites','qol-2.3.5b']);
+export const BUILD_FEATURES=Object.freeze(['combat-2.3','controller-mobile','rrvvfo-sprites-v2','revvfo-sprites','sage-story-sprites','qol-2.3.5b','arena-2.5c','sonic-battle-inspired-movement','lost-year-story-foundation','rrvvfo-mission-0','story-select-hotfix','battle-style-dialogue','clean-sage-animation-frames','transparent-fighter-backgrounds','fixed-story-portraits','dynamic-opponent-hud-name','rrvvfo-white-gap-cleanup','sage-full-body-safe-animations','unique-sprite-atlas-cache-bust','retina-fighter-layer','sage-white-health-bar']);

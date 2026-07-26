@@ -246,7 +246,7 @@ Use the always-visible **EXIT TRAINING** button, or choose Character Select from
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The browser suite contains **134 checks** covering all Prototype 2.2/2.3 regressions plus controller/touch mappings, combat systems, sprite fallback/appearance, menu availability, pause simulation gating, post-match actions/statistics, adaptive move prompts, QOL setting persistence, accessibility balance isolation, notification throttling, versioned save export/import/rollback, Training presets/tools, controller drift filtering, and first-time hints.
+The browser suite contains **140 checks** covering all Prototype 2.2/2.3 regressions plus controller/touch mappings, combat systems, sprite fallback/appearance, menu availability, pause simulation gating, post-match actions/statistics, adaptive move prompts, QOL setting persistence, accessibility balance isolation, notification throttling, versioned save export/import/rollback, Training presets/tools, controller drift filtering, loading recovery, HUD/audio modeling, mobile layout locking, visual-performance caps, and first-time hints.
 
 ## Save compatibility
 

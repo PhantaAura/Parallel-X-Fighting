@@ -1,5 +1,5 @@
 export const QOL_SETTINGS_KEY='pxQolSettingsV1';
-export const SETTINGS_CATEGORIES=Object.freeze(['Gameplay','Controls','Touch Controls','Controller','Audio','Video','Accessibility','HUD','Save Data','Developer']);
+export const SETTINGS_CATEGORIES=Object.freeze(['Gameplay','Controls','Touch Controls','Controller','Audio','Video','Accessibility','HUD','Ability Hotbar','Save Data','Developer']);
 
 export const DEFAULT_QOL_SETTINGS=Object.freeze({
   version:1,
@@ -8,6 +8,7 @@ export const DEFAULT_QOL_SETTINGS=Object.freeze({
   video:{quality:'automatic',particleScale:1,afterimages:4,backgroundMotion:'full',distortion:true,shadows:true,fireQuality:'full',ultimateQuality:'full',spriteSmoothing:true,resolutionScale:1},
   accessibility:{cameraShake:'full',screenFlash:'full',hitFlash:'full',backgroundMotion:'full',ultimateEffects:'full',lensOverlay:'standard',highContrastHud:false,largerHudText:false,strongOutlines:false,playerLabels:true,colorIndependentIcons:true,simplifiedBackground:false,clashInput:'repeated',holdInsteadOfMash:false,inputBufferDisplay:false},
   hud:{mode:'full'},
+  hotbar:{desktop:'full',text:'full',size:'medium',customScale:1,cooldown:'both',activation:'tap',opacity:.92,locked:true,pauseForInfo:false},
   menu:{skipAnimations:false,reducedMotion:false,showQuickContinue:true},
   developer:{fps:false}
 });
@@ -25,11 +26,11 @@ export function sanitizeQolSettings(value={}){
   next.accessibility={...next.accessibility,...source.accessibility,cameraShake:enumValue(source.accessibility?.cameraShake,['full','reduced','off'],'full'),screenFlash:enumValue(source.accessibility?.screenFlash,['full','reduced','off'],'full'),hitFlash:enumValue(source.accessibility?.hitFlash,['full','reduced','off'],'full'),backgroundMotion:enumValue(source.accessibility?.backgroundMotion,['full','reduced','off'],'full'),ultimateEffects:enumValue(source.accessibility?.ultimateEffects,['full','reduced'],'full'),lensOverlay:enumValue(source.accessibility?.lensOverlay,['standard','reduced'],'standard'),clashInput:enumValue(source.accessibility?.clashInput,['repeated','timed','hold'],'repeated')};
   for(const key of ['highContrastHud','largerHudText','strongOutlines','playerLabels','colorIndependentIcons','simplifiedBackground','holdInsteadOfMash','inputBufferDisplay'])next.accessibility[key]=bool(source.accessibility?.[key],next.accessibility[key]);
   next.hud.mode=enumValue(source.hud?.mode,['full','compact','minimal','auto'],'full');
+  next.hotbar={...next.hotbar,...source.hotbar,desktop:enumValue(source.hotbar?.desktop,['full','compact','cooldowns','hidden'],'full'),text:enumValue(source.hotbar?.text,['full','short','icons'],'full'),size:enumValue(source.hotbar?.size,['small','medium','large','custom'],'medium'),customScale:numberValue(source.hotbar?.customScale,.7,1.45,1),cooldown:enumValue(source.hotbar?.cooldown,['number','fill','both'],'both'),activation:enumValue(source.hotbar?.activation,['tap','double','confirm-ultimate'],'tap'),opacity:numberValue(source.hotbar?.opacity,.35,1,.92),locked:bool(source.hotbar?.locked,true),pauseForInfo:bool(source.hotbar?.pauseForInfo,false)};
   next.menu={...next.menu,...source.menu,skipAnimations:bool(source.menu?.skipAnimations,false),reducedMotion:bool(source.menu?.reducedMotion,false),showQuickContinue:bool(source.menu?.showQuickContinue,true)};
   next.developer.fps=bool(source.developer?.fps,false);return next;
 }
 
 export function loadQolSettings(storage=globalThis.localStorage){try{return sanitizeQolSettings(JSON.parse(storage?.getItem(QOL_SETTINGS_KEY)||'{}'))}catch{return copy()}}
 export function saveQolSettings(settings,storage=globalThis.localStorage){try{storage?.setItem(QOL_SETTINGS_KEY,JSON.stringify(sanitizeQolSettings(settings)));return true}catch{return false}}
-export function categoryDefaults(category){const key=String(category).toLowerCase().replaceAll(' ','');const map={gameplay:'gameplay',audio:'audio',video:'video',accessibility:'accessibility',hud:'hud',developer:'developer'};return map[key]?JSON.parse(JSON.stringify(DEFAULT_QOL_SETTINGS[map[key]])):null}
-
+export function categoryDefaults(category){const key=String(category).toLowerCase().replaceAll(' ','');const map={gameplay:'gameplay',audio:'audio',video:'video',accessibility:'accessibility',hud:'hud',abilityhotbar:'hotbar',developer:'developer'};return map[key]?JSON.parse(JSON.stringify(DEFAULT_QOL_SETTINGS[map[key]])):null}

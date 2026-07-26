@@ -2,11 +2,11 @@
 import {FIGHTER_META,ROSTER,ROSTER_IDS,isMirrorMatch} from './roster.js';
 import {STAGES,drawStage} from './stages.js';
 import {STORY_ORDER,STORY_STAGES,SAVE_KEY} from './story.js';
-import {CUSTOM_CONTROLLER_ACTIONS,InputManager} from './input.js?v=2.3-controller-stabilization';
+import {CUSTOM_CONTROLLER_ACTIONS,InputManager} from './input.js?v=2.3.5-landscape-hotbar';
 import {decideCPU} from './ai.js';
 import {TimerRegistry,clamp,resetCombo} from './combat.js';
 import {EffectSystem} from './effects.js';
-import {Fighter} from './fighter.js';
+import {Fighter} from './fighter.js?v=2.3.5-landscape-hotbar';
 import {moveList} from './movesets.js';
 import {trainingState,recordInput,clearTraining,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from './training.js';
 import {byId as $} from './ui.js';
@@ -15,26 +15,31 @@ import {applyCamera,createCameraState,updateCamera} from './camera-system.js';
 import {clearCinematic,createCinematicState,drawCinematicOverlay,updateCinematic} from './ultimate-system.js';
 import {AudioManager} from './audio-manager.js';
 import {HapticsManager,MobilePlatformController,loadTouchSettings,saveTouchSettings} from './mobile-platform.js';
-import {TouchControls} from './touch-controls.js';
-import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js';
+import {TouchControls} from './touch-controls.js?v=2.3.5-landscape-hotbar-3';
+import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js?v=2.3.5-landscape-hotbar-x16';
 import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=2.3-rrvvfo-stabilization';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
-import {ControllerManager} from './controller-manager.js?v=2.3-controller-stabilization';
+import {ControllerManager} from './controller-manager.js?v=2.3.5-landscape-hotbar';
 import {BUILD_VERSION} from './build-info.js';
 import {ConfirmationDialog} from './confirmation-dialog.js';
 import {MainMenu} from './main-menu.js';
 import {MatchStatistics} from './match-statistics.js';
-import {PauseMenu,simulationCanAdvance} from './pause-menu.js';
+import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=2.3.5-landscape-hotbar';
 import {ResultsScreen} from './results-screen.js';
-import {loadQolSettings,saveQolSettings} from './qol-settings.js';
+import {loadQolSettings,saveQolSettings} from './qol-settings.js?v=2.3.5-landscape-hotbar';
 import {NotificationSystem} from './notification-system.js';
 import {adaptiveMoveList,renderAdaptiveMoveList} from './move-list.js';
-import {SettingsPanel} from './settings-panel.js';
-import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js';
+import {SettingsPanel} from './settings-panel.js?v=2.3.5-landscape-hotbar';
+import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=2.3.5-landscape-hotbar';
 import {LoadingManager} from './loading-manager.js';
 import {applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from './training-presets.js';
 import {FirstTimeHints} from './first-time-hints.js';
 import {cooldownText,fighterHudModel} from './hud-model.js';
+import {AbilityHotbar} from './ability-hotbar.js?v=2.3.5-landscape-hotbar';
+import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=2.3.5-landscape-hotbar';
+import {ResponsiveGameLayout} from './responsive-game-layout.js?v=2.3.5-landscape-hotbar';
+import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=2.3.5-landscape-hotbar-2';
+import {FullscreenManager} from './fullscreen-manager.js?v=2.3.5-landscape-hotbar';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;
 const U={start:$('startScreen'),main:$('mainMenuScreen'),menu:$('menuScreen'),game:$('gameScreen'),mode:$('mode'),diff:$('difficulty'),stage:$('stage'),rt:$('roundTime'),rounds:$('rounds'),cine:$('cinematics'),reduced:$('reducedShake'),spriteToggle:$('rrvvfoSprites'),spriteQuality:$('rrvvfoQuality'),spriteDebug:$('rrvvfoSpriteDebug'),prototypeExpose:$('showPrototypeAppearances'),prototypeBuildNote:$('prototypeAppearanceBuildNote'),spriteLoading:$('spriteLoading'),appearancePanels:[$('rrvvfoAppearancePanel1'),$('rrvvfoAppearancePanel2')],appearanceSelects:[$('rrvvfoAppearance1'),$('rrvvfoAppearance2')],appearancePreviews:[$('rrvvfoPreview1'),$('rrvvfoPreview2')],controller1:$('controllerStyle1'),controller2:$('controllerStyle2'),controllerCustom:$('customController'),customSide:$('customSide'),customBindings:$('customBindings'),controllerGuide:$('controllerGuide'),roster:$('roster'),slot1:$('slot1'),slot2:$('slot2'),n1:$('name1'),n2:$('name2'),m1:$('moves1'),m2:$('moves2'),s2l:$('slot2label'),notice:$('notice'),p1n:$('p1name'),p2n:$('p2name'),p1h:$('p1hp'),p2h:$('p2hp'),p1e:$('p1en'),p2e:$('p2en'),p1g:$('p1guard'),p2g:$('p2guard'),p1d:$('p1defense'),p2d:$('p2defense'),p1hpText:$('p1hpText'),p2hpText:$('p2hpText'),p1enText:$('p1enText'),p2enText:$('p2enText'),p1guardText:$('p1guardText'),p2guardText:$('p2guardText'),p1status:$('p1status'),p2status:$('p2status'),timer:$('timer'),rl:$('roundLabel'),msg:$('msg'),mt:$('msgTitle'),mx:$('msgText'),mb:$('msgButton'),pause:$('pause')};
@@ -46,13 +51,17 @@ const trainingHud=document.createElement('div');trainingHud.className='trainingH
 
 let selectSlot=1,p1id='rrvvfo',p2id='revvfo',mode='story',difficulty='normal',stage='dojo',limit=90,roundsToWin=2,currentRound=1,wins1=0,wins2=0,state='menu',paused=false,pauseOwner=1,story=0,time=90,last=0,acc=0,roundIntro=0,clashInputActive=false,cinematicInputActive=false;
 const input=new InputManager();
-const controllerManager=new ControllerManager({input,getState:()=>state,onPause:({side}={side:1})=>togglePause(side),onDisconnect:({side})=>{setPaused(true,side||1);notifications?.push(`PLAYER ${side||'?'} CONTROLLER DISCONNECTED`,{important:true,key:'controller-disconnected'})},onReconnect:({side})=>{setPaused(true,side);confirmation.open({title:'Controller Reconnected',message:`Controller restored to Player ${side}. Confirm when ready to resume.`,accept:'RESUME'}).then(ok=>{if(ok)setPaused(false)})},onStatus:({type,side})=>updateControllerStatus(type,side),onStyleChange:(side,style)=>syncControllerStyleUi(side,style)});
+const controllerManager=new ControllerManager({input,getState:()=>paused?'menu':state,onPause:({side}={side:1})=>togglePause(side),onDisconnect:({side})=>{setPaused(true,side||1);notifications?.push(`PLAYER ${side||'?'} CONTROLLER DISCONNECTED`,{important:true,key:'controller-disconnected'})},onReconnect:({side})=>{setPaused(true,side);confirmation.open({title:'Controller Reconnected',message:`Controller restored to Player ${side}. Confirm when ready to resume.`,accept:'RESUME'}).then(ok=>{if(ok)setPaused(false)})},onStatus:({type,side})=>updateControllerStatus(type,side),onStyleChange:(side,style)=>syncControllerStyleUi(side,style)});
 U.controller1.value=controllerManager.settings.styles[0];U.controller2.value=controllerManager.settings.styles[1];
 let qolSettings=loadQolSettings();
+let abilityHotbarSettings=loadAbilityHotbarSettings();
+const mobilePresentationSettings=loadMobilePresentationSettings();
 const audio=new AudioManager(qolSettings.audio);
 const touchSettings=loadTouchSettings(localStorage,createDefaultTouchSettings);
+saveTouchSettings(touchSettings);
 const haptics=new HapticsManager({mode:()=>touchSettings.haptics});
-const mobilePlatform=new MobilePlatformController({onBackPause:()=>setPaused(true),onViewportChange:()=>touchControls?.applySettings?.()});
+let orientationManager=null,fullscreenManager=null,abilityHotbar=null;
+const mobilePlatform=new MobilePlatformController({onBackPause:()=>setPaused(true),onViewportChange:metrics=>handleViewportChange(metrics)});
 const touchControls=new TouchControls({
   root:$('touchLayer'),input,settings:touchSettings,
   onSettingsChange:persistTouchSettings,
@@ -64,6 +73,7 @@ const touchSettingsPanel=new TouchSettingsPanel({
   settings:touchSettings,touchControls,platform:mobilePlatform,
   onChange:persistTouchSettings
 });
+const responsiveLayout=new ResponsiveGameLayout({doc:document,view:window,gameScreen:U.game,gameWrap:$('gameWrap'),canvas,touchRoot:$('touchLayer'),platform:()=>({...mobilePlatform.info,touch:wantsTouchControls(),desktopHotbar:!wantsTouchControls()&&qolSettings.hotbar.desktop!=='hidden'})});
 const world={width:WIDTH,height:HEIGHT,ground:GROUND,fighters:[],projectiles:[],effects:new EffectSystem(),timers:new TimerRegistry(),clash:createClashState(),camera:createCameraState(),cinematic:createCinematicState(),cinematicMode:'full',localMode:false,reducedShake:false,shake:0,hitstop:0,training:trainingState,sound,tryProjectileClash};
 const developerSpriteBuild=isDeveloperSpriteBuild();
 const savedVisuals=loadRrvvfoVisualSettings();
@@ -77,6 +87,9 @@ const resultsScreen=new ResultsScreen($('resultsScreen'),{onAction:handleResultA
 const mainMenu=new MainMenu(U.main,{onSelect:handleMainMenuSelection});
 U.main.addEventListener('menuselect',()=>sound('menuConfirm'));U.main.addEventListener('menuerror',()=>{sound('menuError');notifications?.push('COMING LATER',{important:true,key:'coming-later'})});
 const notifications=new NotificationSystem($('combatNotifications'),{mode:()=>qolSettings.gameplay.combatMessages});world.notifications=notifications;
+orientationManager=new OrientationManager({root:$('orientationPrompt'),settings:mobilePresentationSettings,onChange:saveMobilePresentationSettings,onLayout:metrics=>responsiveLayout.apply(metrics),onNotice:message=>notifications.push(message,{important:true,key:'orientation'}),onPrompt:()=>{if(state==='playing'){setPaused(true);pauseMenu.hide()}},onDismiss:()=>{if(state==='playing'&&wantsTouchControls()){fullscreenManager?.start({touch:true});if(!$('fullscreenPrompt').classList.contains('hidden')){setPaused(true);pauseMenu.hide()}else setPaused(false)}}});
+fullscreenManager=new FullscreenManager({root:$('fullscreenPrompt'),element:U.game,settings:mobilePresentationSettings,onChange:saveMobilePresentationSettings,onLayout:()=>responsiveLayout.apply(),onUnexpectedExit:()=>{if(state==='playing')setPaused(true)},onNotice:message=>notifications.push(message,{important:true,key:'fullscreen'}),onDismiss:()=>{if(state==='playing')setPaused(false)}});
+abilityHotbar=new AbilityHotbar({root:$('abilityHotbar'),input,settings:{...abilityHotbarSettings,...qolSettings.hotbar},getFighter:()=>world.fighters[0],getWorld:()=>world,getDevice:()=>input.lastInputDevice[0],notify:(message,options)=>notifications.push(message,options),onChange:settings=>{abilityHotbarSettings=settings;saveAbilityHotbarSettings(settings);syncHotbarCustomize()},onInfo:()=>{if(qolSettings.hotbar.pauseForInfo&&mode!=='local'&&state==='playing'){setPaused(true);pauseMenu.hide()}}});
 const loadingManager=new LoadingManager($('loadingScreen'),{onRetry:()=>startGame(),onReturn:()=>showMainMenu()});
 const settingsPanel=new SettingsPanel($('settingsPanel'),{settings:qolSettings,onApply:applyQolSettings,onAction:handleSettingsAction});
 const firstTimeHints=new FirstTimeHints({input,enabled:()=>qolSettings.gameplay.firstTimeHints});let hintTimer=360;
@@ -86,25 +99,35 @@ function updateControllerStatus(type,side){const connected=type==='connected';$(
 function different(id){const choices=ROSTER_IDS.filter(candidate=>candidate!==id);return choices[Math.floor(Math.random()*choices.length)]}
 function clearTransient(){world.timers.cancelAll();world.projectiles.length=0;world.effects.clear();clearClash(world);clearCinematic(world);world.fighterVisuals.resetAll();world.shake=0;world.hitstop=0;clashInputActive=false;cinematicInputActive=false;touchControls.setClashState(false);input.clearBuffers()}
 function wantsTouchControls(){return touchSettings.touchMode==='on'||(touchSettings.touchMode!=='off'&&mobilePlatform.shouldUseTouch())}
+function handleViewportChange(metrics){touchControls?.applySettings?.();responsiveLayout?.apply?.(metrics);orientationManager?.handleChange?.(metrics);abilityHotbar?.render?.(true)}
+function pauseOptions(){return{training:trainingState.enabled,touch:wantsTouchControls(),fullscreen:!!fullscreenManager?.isFullscreen?.(),owner:pauseOwner,local:mode==='local'}}
+function showPauseOverlay(){pauseMenu.show(pauseOptions())}
 function applyTouchAvailability(){
   if(state!=='playing')return;
   const wanted=wantsTouchControls();
   if(wanted){
     if(!touchControls.enabled)touchControls.startMatch({training:trainingState.enabled,show:true});
-    touchControls.setCombatControlsHidden(false);touchControls.applySettings();mobilePlatform.activateMatch();
+    touchControls.setCombatControlsHidden(false);touchControls.applySettings();$('touchLayer').classList.add('hotbar-enabled');abilityHotbar.setVisible(true,true);mobilePlatform.activateMatch();responsiveLayout.apply();
   }else if(touchControls.enabled){
     // Keep Settings and Pause reachable if touch is disabled in the middle of a match.
-    touchControls.setCombatControlsHidden(true);mobilePlatform.deactivateMatch();
+    touchControls.setCombatControlsHidden(true);$('touchLayer').classList.remove('hotbar-enabled');abilityHotbar.setVisible(true,false);mobilePlatform.deactivateMatch();responsiveLayout.apply();
   }
 }
-function persistTouchSettings(settings){saveTouchSettings(settings);applyTouchAvailability()}
+function mobileOnboardingVisible(){return['touchChoice','touchTutorial'].some(id=>!$(id)?.classList.contains('hidden'))}
+function beginMobilePresentation(){
+  if(state!=='playing'||!wantsTouchControls()||mobileOnboardingVisible())return;
+  orientationManager.start({touch:true});
+  if($('orientationPrompt').classList.contains('hidden'))fullscreenManager.start({touch:true});
+  if(!$('orientationPrompt').classList.contains('hidden')||!$('fullscreenPrompt').classList.contains('hidden')){setPaused(true);pauseMenu.hide()}else setPaused(false);
+}
+function persistTouchSettings(settings,meta={}){saveTouchSettings(settings);applyTouchAvailability();if(meta.choice||meta.tutorial)setTimeout(beginMobilePresentation,0)}
 
 function applyQolSettings(settings,{persist=true}={}){
   qolSettings=settings;audio.configure(settings.audio);if(persist)saveQolSettings(settings);
-  document.body.classList.toggle('skipMenuAnimations',settings.menu.skipAnimations);document.body.classList.toggle('reducedMotion',settings.menu.reducedMotion);document.body.classList.toggle('backgroundMotionOff',settings.accessibility.backgroundMotion==='off'||settings.video.backgroundMotion==='off');document.body.classList.toggle('highContrastHud',settings.accessibility.highContrastHud);document.body.classList.toggle('largeHudText',settings.accessibility.largerHudText);document.body.classList.toggle('smoothSprites',settings.video.spriteSmoothing);$('hud').dataset.hudMode=settings.hud.mode==='auto'&&mobilePlatform.info.touch?'compact':settings.hud.mode;world.reducedShake=settings.accessibility.cameraShake!=='full'||U.reduced.checked;world.shakeScale=settings.accessibility.cameraShake==='off'?0:settings.accessibility.cameraShake==='reduced'?0.35:1;world.flashScale=settings.accessibility.screenFlash==='off'?0:settings.accessibility.screenFlash==='reduced'?0.45:1;world.hitFlashScale=settings.accessibility.hitFlash==='off'?0:settings.accessibility.hitFlash==='reduced'?0.45:1;world.strongOutlines=settings.accessibility.strongOutlines;const particleCaps={low:100,medium:220,high:420,automatic:mobilePlatform.info.touch?160:320};world.effects.configure({particleCap:particleCaps[settings.video.quality]});$('fpsDisplay').classList.toggle('hidden',!settings.developer.fps);renderQuickContinue();
+  document.body.classList.toggle('skipMenuAnimations',settings.menu.skipAnimations);document.body.classList.toggle('reducedMotion',settings.menu.reducedMotion);document.body.classList.toggle('backgroundMotionOff',settings.accessibility.backgroundMotion==='off'||settings.video.backgroundMotion==='off');document.body.classList.toggle('highContrastHud',settings.accessibility.highContrastHud);document.body.classList.toggle('largeHudText',settings.accessibility.largerHudText);document.body.classList.toggle('smoothSprites',settings.video.spriteSmoothing);document.body.classList.toggle('desktop-hotbar-hidden',settings.hotbar.desktop==='hidden');$('hud').dataset.hudMode=settings.hud.mode==='auto'&&mobilePlatform.info.touch?'compact':settings.hud.mode;world.reducedShake=settings.accessibility.cameraShake!=='full'||U.reduced.checked;world.shakeScale=settings.accessibility.cameraShake==='off'?0:settings.accessibility.cameraShake==='reduced'?0.35:1;world.flashScale=settings.accessibility.screenFlash==='off'?0:settings.accessibility.screenFlash==='reduced'?0.45:1;world.hitFlashScale=settings.accessibility.hitFlash==='off'?0:settings.accessibility.hitFlash==='reduced'?0.45:1;world.strongOutlines=settings.accessibility.strongOutlines;const particleCaps={low:100,medium:220,high:420,automatic:mobilePlatform.info.touch?160:320};world.effects.configure({particleCap:particleCaps[settings.video.quality]});$('fpsDisplay').classList.toggle('hidden',!settings.developer.fps);abilityHotbarSettings={...abilityHotbarSettings,...settings.hotbar};saveAbilityHotbarSettings(abilityHotbarSettings);abilityHotbar?.configure(abilityHotbarSettings);responsiveLayout?.apply();renderQuickContinue();
 }
 function openSettingsPanel(category='Gameplay'){settingsPanel.open(category)}
-function closeSettingsPanel(){settingsPanel.close();$('settingsPanel').classList.add('hidden')}
+function closeSettingsPanel(){settingsPanel.close();$('settingsPanel').classList.add('hidden');if(paused)showPauseOverlay()}
 async function requestCloseSettings(){if(settingsPanel.dirty&&!await confirmation.open({title:'Discard Unsaved Changes?',message:'Changes not applied will be lost.',accept:'DISCARD'}))return;closeSettingsPanel()}
 function handleSettingsAction(action){
   if(action==='audioTest'){audio.test();return}
@@ -112,12 +135,13 @@ function handleSettingsAction(action){
   if(action==='touchPanel'){openTouchSettings();return}
   if(action==='controllerTest'){$('controllerTestButton').click();return}
   if(action==='controllerStyle'){closeSettingsPanel();openCharacterSelect(U.mode.value);U.controller1.focus();return}
+  if(action==='restoreHotbar'){abilityHotbar.restoreDefaults();notifications.push('HOTBAR DEFAULTS RESTORED',{important:true,key:'hotbar-restore'});return}
   if(action==='exportSave'){const blob=new Blob([stringifySave()],{type:'application/json'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='parallels-x-save.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),500);return}
   if(action==='importSave'){const text=prompt('Paste exported Parallels X save JSON. Your current save is preserved if validation fails.');if(text===null)return;confirmation.open({title:'Import Save?',message:'Validated settings and progress will replace matching saved data.',accept:'IMPORT'}).then(ok=>{if(!ok)return;const result=importSaveText(text);notifications.push(result.ok?'Save imported. Reload to apply all settings.':result.error,{important:true,key:'save-import'});if(result.ok)location.reload()});return}
   const group=action==='resetSettings'?'settings':action==='resetTraining'?'training':action==='resetAll'?'all':null;if(group)confirmation.open({title:group==='all'?'Reset All Save Data?':'Reset Saved Data?',message:'This action cannot be undone after confirmation.',accept:'RESET'}).then(ok=>{if(!ok)return;resetSaveGroup(group);if(group==='all'||group==='settings')location.reload();else notifications.push('Training presets reset.',{important:true})});
 }
 function openAdaptiveMoveList(fighterId=p1id,side=1,device){const model=adaptiveMoveList({fighterId,input,side,device});$('moveListHeading').textContent=`${model.name.toUpperCase()} MOVE LIST`;$('adaptiveMoveList').innerHTML=renderAdaptiveMoveList(model);$('moveListPanel').classList.remove('hidden');$('closeMoveList').focus()}
-function closeAdaptiveMoveList(){$('moveListPanel').classList.add('hidden');if(paused)pauseMenu.show({training:trainingState.enabled,touch:wantsTouchControls(),owner:pauseOwner,local:mode==='local'})}
+function closeAdaptiveMoveList(){$('moveListPanel').classList.add('hidden');if(paused)showPauseOverlay()}
 function openExtrasPanel(section='version'){$('extrasPanel').classList.remove('hidden');showExtra(section)}
 function showExtra(section){const content=$('extrasContent');if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style}</p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls')content.textContent='Keyboard, Nintendo, Xbox, PlayStation, custom controller, Virtual Joystick, and Virtual D-Pad are supported.';else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Combat 2.3 • Controller/mobile completion • Optional Rrvvfo sprite pipeline • QOL polish</p>`}
 
@@ -160,7 +184,7 @@ function renderQuickContinue(){
 }
 function cleanupMatchForNavigation(){
   if(trainingState.enabled)exitTrainingWorld(world,input);else{clearTransient();input.clear()}
-  touchControls.stopMatch();mobilePlatform.deactivateMatch();spriteDebugViewer.hide();trainingHud.classList.add('hidden');trainingState.enabled=false;paused=false;U.game.classList.add('hidden');U.msg.classList.add('hidden');pauseMenu.hide();resultsScreen.hide();
+  touchControls.stopMatch();mobilePlatform.deactivateMatch();orientationManager.stop();fullscreenManager.stop();fullscreenManager.exit();abilityHotbar.setVisible(false);document.body.classList.remove('gameplay-active');spriteDebugViewer.hide();trainingHud.classList.add('hidden');trainingState.enabled=false;paused=false;U.game.classList.add('hidden');U.msg.classList.add('hidden');pauseMenu.hide();resultsScreen.hide();
 }
 function openStageSelect(returnTarget='character'){
   stageReturnTarget=returnTarget;const cards=$('stageCards');cards.innerHTML=`<button class="stageCard" data-stage-card="random"><strong>RANDOM STAGE</strong><small>Choose any current stage</small></button>`+Object.entries(STAGES).map(([id,data])=>`<button class="stageCard ${id===stage?'selected':''}" data-stage-card="${id}"><strong>${data.n}</strong><small>${STAGE_DETAILS[id].description}</small><small>${STAGE_DETAILS[id].boundary} • Ring-out disabled</small><small>Performance: ${STAGE_DETAILS[id].performance}</small></button>`).join('');
@@ -169,7 +193,7 @@ function openStageSelect(returnTarget='character'){
 function closeStageSelect(confirm=false){
   if(confirm){const selected=$('stageCards').querySelector('[data-selected=true]')||$('stageCards').querySelector('.selected');let chosen=selected?.dataset.stageCard||stage;if(chosen==='random')chosen=Object.keys(STAGES)[Math.floor(Math.random()*Object.keys(STAGES).length)];stage=chosen;U.stage.value=chosen}
   $('stageSelectPanel').classList.add('hidden');
-  if(confirm&&['results','pause'].includes(stageReturnTarget)){resultsScreen.hide();currentRound=1;wins1=wins2=0;statistics.reset();setup()}else if(!confirm&&stageReturnTarget==='pause')pauseMenu.show({training:trainingState.enabled,touch:wantsTouchControls(),owner:pauseOwner,local:mode==='local'});
+  if(confirm&&['results','pause'].includes(stageReturnTarget)){resultsScreen.hide();currentRound=1;wins1=wins2=0;statistics.reset();setup()}else if(!confirm&&stageReturnTarget==='pause')showPauseOverlay();
 }
 
 async function handlePauseAction(action){
@@ -177,6 +201,7 @@ async function handlePauseAction(action){
   if(action==='moves'||action==='controls'){openAdaptiveMoveList(p1id,1);return}
   if(action==='training'){trainingHud.classList.remove('hidden');pauseMenu.hide();return}
   if(action==='touch'){pauseMenu.hide();openTouchSettings();return}
+  if(action==='exitFullscreen'){await fullscreenManager.exit();showPauseOverlay();return}
   if(action==='settings'){pauseMenu.hide();openSettingsPanel();return}
   if(action==='restart'){
     if(trainingState.enabled){resetTrainingWorld(world,input);setPaused(false);return}
@@ -199,13 +224,19 @@ function handleResultAction(action){
 
 function setPaused(next,owner=pauseOwner){
   if(state!=='playing')return;
-  paused=!!next;if(paused)pauseOwner=owner||1;input.clearBuffers();touchControls.releaseAll();touchControls.setPaused(paused);U.pause.classList.add('hidden');$('touchPause').textContent=paused?'▶':'Ⅱ';if(paused)pauseMenu.show({training:trainingState.enabled,touch:wantsTouchControls(),owner:pauseOwner,local:mode==='local'});else pauseMenu.hide();
+  paused=!!next;if(paused)pauseOwner=owner||1;input.clearBuffers();touchControls.releaseAll();touchControls.setPaused(paused);abilityHotbar.root?.classList.toggle('hotbar-paused',paused);U.pause.classList.add('hidden');$('touchPause').textContent=paused?'▶':'Ⅱ';if(paused)showPauseOverlay();else pauseMenu.hide();
 }
 function togglePause(owner=1){setPaused(!paused,owner)}
 function openTouchSettings(){if(state==='playing')setPaused(true);touchSettingsPanel.open()}
 function openTouchMoveList(){
   if(state==='playing')setPaused(true);openAdaptiveMoveList(p1id,1,'touch');
 }
+function syncHotbarCustomize(){
+  const select=$('hotbarAbilitySelect');if(!select||!abilityHotbar)return;const selected=select.value,entries=abilityHotbar.entries();select.innerHTML=entries.map((entry,index)=>`<option value="${entry.id}">Slot ${index+1} — ${entry.label}</option>`).join('');if(entries.some(entry=>entry.id===selected))select.value=selected;$('hotbarLayoutLocked').checked=abilityHotbar.settings.locked;
+}
+function openHotbarCustomize(){if(state==='playing'&&!paused)setPaused(true);pauseMenu.hide();syncHotbarCustomize();$('hotbarCustomizeModal').classList.remove('hidden');$('hotbarAbilitySelect').focus()}
+function closeHotbarCustomize(){$('hotbarCustomizeModal').classList.add('hidden');if(paused)showPauseOverlay()}
+function persistHotbarUi(){abilityHotbarSettings={...abilityHotbar.settings};qolSettings.hotbar={...qolSettings.hotbar,desktop:abilityHotbarSettings.desktop,text:abilityHotbarSettings.text,size:abilityHotbarSettings.size,customScale:abilityHotbarSettings.customScale,cooldown:abilityHotbarSettings.cooldown,activation:abilityHotbarSettings.activation,opacity:abilityHotbarSettings.opacity,locked:abilityHotbarSettings.locked,pauseForInfo:abilityHotbarSettings.pauseForInfo};saveAbilityHotbarSettings(abilityHotbarSettings);saveQolSettings(qolSettings);settingsPanel.settings=qolSettings;abilityHotbar.configure(abilityHotbarSettings);syncHotbarCustomize()}
 
 function buildRoster(){U.roster.innerHTML='';for(const id of ROSTER_IDS){const c=ROSTER[id],meta=FIGHTER_META[id],button=document.createElement('button');button.className='card';button.dataset.id=id;button.title=`${c.s} • ${c.u}`;button.innerHTML=`<div class="portrait"><div class="head" style="background:${c.h}"></div><div class="body" style="background:${c.c};box-shadow:0 0 12px ${c.a}66"></div></div><b>${c.n.toUpperCase()}</b><div class="origin">${c.o}</div><div class="style">${meta.style}</div><div class="rating">${'◆'.repeat(meta.difficulty)}${'◇'.repeat(5-meta.difficulty)}</div>`;button.onclick=()=>choose(id);U.roster.appendChild(button)}refreshSelection()}
 function choose(id){if(selectSlot===1){if(isMirrorMatch(id,p2id)){p2id=different(id);U.notice.textContent='Mirror matches are disabled, so Player 2 changed.'}p1id=id}else{if(isMirrorMatch(id,p1id)){U.notice.textContent='You cannot use the same character on both sides.';return}p2id=id}refreshSelection()}
@@ -262,6 +293,7 @@ function commandFor(fighter){
 function setup(){
   if(p1id===p2id)p2id=different(p1id);clearTransient();touchControls.releaseAll();touchControls.setFighter(p1id);touchControls.setMatchUiVisible(true);input.clear();paused=false;touchControls.setPaused(false);time=limit;
   world.fighters=[new Fighter(p1id,1,false,world,{appearance:selectedAppearance(1)}),new Fighter(p2id,2,mode!=='local'&&mode!=='training',world,{appearance:selectedAppearance(2)})];
+  abilityHotbar.setFighter(p1id);abilityHotbar.setVisible(true,touchControls.enabled);abilityHotbar.root?.classList.remove('hotbar-paused');$('touchLayer').classList.toggle('hotbar-enabled',touchControls.enabled);responsiveLayout.apply();
   U.p1n.textContent=`${ROSTER[p1id].n.toUpperCase()}  ${wins1}`;U.p2n.textContent=`${wins2}  ${ROSTER[p2id].n.toUpperCase()}`;
   U.rl.textContent=mode==='story'?`STORY ${story+1}/${STORY_ORDER.length} • ROUND ${currentRound}`:mode==='training'?'TRAINING':`ROUND ${currentRound}`;
   const finalRound=wins1===roundsToWin-1&&wins2===roundsToWin-1;roundIntro=120;roundBanner.textContent=finalRound?'FINAL ROUND':`ROUND ${currentRound}`;roundBanner.classList.remove('hidden');sound('roundStart');
@@ -276,16 +308,17 @@ async function startGame(){
   mode=U.mode.value;trainingState.enabled=mode==='training';trainingHud.classList.toggle('hidden',!trainingState.enabled);if(trainingState.enabled)clearTraining();
   difficulty=U.diff.value;world.cinematicMode=U.cine.value;world.localMode=mode==='local';world.reducedShake=U.reduced.checked;limit=+U.rt.value;roundsToWin=mode==='story'?1:+U.rounds.value;currentRound=1;wins1=wins2=story=0;
   if(mode==='story'){p2id=STORY_ORDER[0];if(p2id===p1id){story++;p2id=STORY_ORDER[story]}stage=STORY_STAGES[story]}else stage=U.stage.value;
-  hideMenuLayers();U.game.classList.remove('hidden');statistics.reset();saveLastActivity();
+  hideMenuLayers();U.game.classList.remove('hidden');document.body.classList.add('gameplay-active');window.scrollTo(0,0);statistics.reset();saveLastActivity();
   const touchEnabled=wantsTouchControls();
   touchControls.startMatch({training:trainingState.enabled,show:touchEnabled});
-  if(touchEnabled)mobilePlatform.activateMatch();else mobilePlatform.deactivateMatch();
+  if(touchEnabled){input.lastInputDevice[0]='touch';mobilePlatform.activateMatch()}else mobilePlatform.deactivateMatch();
   setup();
+  if(touchEnabled)beginMobilePresentation();else fullscreenManager.start({touch:false});
   if(fighterVisuals.settings.developerViewer)spriteDebugViewer.show();else spriteDebugViewer.hide();
-  if(touchEnabled&&(!touchSettings.chooserShown||!touchSettings.tutorialComplete))setPaused(true);
+  if(touchEnabled&&(!touchSettings.chooserShown||!touchSettings.tutorialComplete)){setPaused(true);pauseMenu.hide()}
 }
 function over(winner){
-  state='over';touchControls.releaseAll();touchControls.setMatchUiVisible(false);clearTransient();winner.victory=1;roundBanner.textContent='K.O.';roundBanner.classList.remove('hidden');sound('ko');const p1win=winner===world.fighters[0];if(p1win)wins1++;else wins2++;const matchWon=wins1>=roundsToWin||wins2>=roundsToWin;
+  state='over';touchControls.releaseAll();touchControls.setMatchUiVisible(false);abilityHotbar.setVisible(false);clearTransient();winner.victory=1;roundBanner.textContent='K.O.';roundBanner.classList.remove('hidden');sound('ko');const p1win=winner===world.fighters[0];if(p1win)wins1++;else wins2++;const matchWon=wins1>=roundsToWin||wins2>=roundsToWin;
   if(!matchWon){currentRound++;show(p1win?`${ROSTER[p1id].n} TAKES ROUND ${currentRound-1}`:`${ROSTER[p2id].n} TAKES ROUND ${currentRound-1}`,`Score: ${wins1}–${wins2}`,'NEXT ROUND',setup);return}
   if(mode==='story'&&p1win){story++;currentRound=1;wins1=wins2=0;if(story>=STORY_ORDER.length){localStorage.setItem(SAVE_KEY,JSON.stringify({cleared:true,date:Date.now()}));show('STORY CLEARED!','You defeated the full Clash of Souls roster. Your victory is saved in this browser.','PLAY AGAIN',()=>{story=0;p2id=STORY_ORDER[0];stage=STORY_STAGES[0];setup()});return}p2id=STORY_ORDER[story];if(p2id===p1id){story++;if(story>=STORY_ORDER.length){localStorage.setItem(SAVE_KEY,JSON.stringify({cleared:true,date:Date.now()}));show('STORY CLEARED!','You defeated the full Clash of Souls roster.','PLAY AGAIN',startGame);return}p2id=STORY_ORDER[story]}stage=STORY_STAGES[story];show('NEXT FIGHT',`${ROSTER[p2id].n} enters ${STAGES[stage].n}.`,'CONTINUE',setup)}
   else{sound('victory');const summary=statistics.finish(world.fighters);resultsScreen.show({winner:p1win?`${ROSTER[p1id].n} WINS THE MATCH!`:`${ROSTER[p2id].n} WINS THE MATCH!`,durationMs:summary.durationMs,players:summary.players,local:mode==='local'})}
@@ -301,6 +334,7 @@ function update(dt){
   if(clashNow&&!clashInputActive){input.clearBuffers();clashInputActive=true}
   if(cinematicNow&&!cinematicInputActive){input.clearBuffers();cinematicInputActive=true}
   touchControls.tick({clashActive:clashNow,clashFrame:world.clash.frame});input.poll({clash:clashNow});
+  abilityHotbar.update();
   if(world.hitstop>0){world.hitstop--;return}
   world.fighterVisuals.update(1000/60,world);
   if(roundIntro>0){roundIntro--;if(roundIntro===48){roundBanner.textContent='FIGHT!';sound('fight')}if(!roundIntro){roundBanner.classList.add('hidden');touchControls.releaseAll();input.clear()}return}
@@ -331,6 +365,7 @@ function render(){
   if(blinded){ctx.save();ctx.fillStyle=qolSettings.accessibility.lensOverlay==='reduced'?'rgba(0,0,0,.72)':'rgba(0,0,0,.96)';ctx.fillRect(0,0,WIDTH,HEIGHT);ctx.textAlign='center';ctx.fillStyle='#f7f7ff';ctx.font='900 30px Segoe UI';ctx.fillText('LENS OF TRUTH',WIDTH/2,HEIGHT/2-8);ctx.font='bold 16px Segoe UI';ctx.fillStyle='#cfd6ff';ctx.fillText(blinded.lens<60?'WARNING • LENS ENDING':'VISION LOST • AUTO-DODGE ACTIVE',WIDTH/2,HEIGHT/2+24);ctx.restore()}
   world.fighters.forEach((fighter,index)=>comboHud[index].innerHTML=fighter.combo.hits>1?`${fighter.combo.hits} HIT COMBO<small>${fighter.combo.damage.toFixed(1)} DAMAGE • ${Math.round(fighter.combo.scale*100)}% SCALE</small>`:'');
   const hudModels=world.fighters.map(fighterHudModel);hudModels.forEach((model,index)=>{cooldownHud[index].textContent=cooldownText(model)});
+  abilityHotbar.update();
   clashHud.classList.toggle('hidden',!world.clash.active);
   if(world.clash.active){$('clashLabel').textContent=world.clash.type==='beam'?'BEAM CLASH!':world.clash.type==='ultimate'?'ULTIMATE CLASH!':'CLASH!';const amount=(world.clash.meter+100)/2;$('clashFill').style.left=`${Math.min(50,amount)}%`;$('clashFill').style.width=`${Math.abs(amount-50)}%`}
   if(trainingState.enabled){$('trainStats').innerHTML=`COMBO ${world.fighters[0].combo.hits}<br>DAMAGE ${world.fighters[0].combo.damage.toFixed(1)}<br>SCALING ${Math.round(world.fighters[0].combo.scale*100)}%<br>GUARD DMG ${world.fighters[1].guardDamageLast.toFixed(1)}<br>PB WINDOW ${world.fighters[0].perfectBlockWindow}<br>DUMMY ${trainingState.dummy.toUpperCase()}<br>CLASH ${world.clash.active?`${world.clash.type.toUpperCase()} ${world.clash.meter.toFixed(1)}`:trainingState.forceNextClash?'ARMED':'READY'}`;$('trainMoves').innerHTML=`<b>${ROSTER[p1id].n} MOVE LIST</b><br>${moveList(p1id).join('<br>')||'Legacy light • heavy • launcher • air • special • ultimate'}`;$('trainComboPrompt').textContent=`${input.inputStyleName(1)} ROUTE: ${input.comboPrompt(1)}`;$('trainInputs').textContent=`INPUTS: ${trainingState.inputHistory.join(' › ')}`}
@@ -353,15 +388,17 @@ addEventListener('keydown',event=>{
   if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code))event.preventDefault();
   if(!U.start.classList.contains('hidden')){event.preventDefault();activateStart();audio.enable().then(enabled=>$('audioEnableNotice').classList.toggle('hidden',enabled));return}
   if(!U.main.classList.contains('hidden')){if(event.code==='ArrowUp'){mainMenu.move(-1);sound('menuMove');event.preventDefault();return}if(event.code==='ArrowDown'){mainMenu.move(1);sound('menuMove');event.preventDefault();return}if(['Enter','Space'].includes(event.code)){mainMenu.confirm();event.preventDefault();return}}
-  if(event.code==='Escape'){event.preventDefault();if(!$('confirmDialog').classList.contains('hidden')){confirmation.close();return}if(!$('moveListPanel').classList.contains('hidden')){closeAdaptiveMoveList();return}if(!$('settingsPanel').classList.contains('hidden')){requestCloseSettings();return}if(!$('extrasPanel').classList.contains('hidden')){$('extrasPanel').classList.add('hidden');return}if(!$('stageSelectPanel').classList.contains('hidden')){closeStageSelect(false);return}if(state==='playing'){togglePause();return}if(!U.menu.classList.contains('hidden')){showMainMenu();return}}
+  if(event.code==='Escape'){event.preventDefault();if(!$('confirmDialog').classList.contains('hidden')){confirmation.close();return}if(!$('hotbarCustomizeModal').classList.contains('hidden')){closeHotbarCustomize();return}if(!$('fullscreenPrompt').classList.contains('hidden')){fullscreenManager.finish();return}if(!$('orientationPrompt').classList.contains('hidden')){orientationManager.finish();return}if(!$('moveListPanel').classList.contains('hidden')){closeAdaptiveMoveList();return}if(!$('settingsPanel').classList.contains('hidden')){requestCloseSettings();return}if(!$('extrasPanel').classList.contains('hidden')){$('extrasPanel').classList.add('hidden');return}if(!$('stageSelectPanel').classList.contains('hidden')){closeStageSelect(false);return}if(state==='playing'){togglePause();return}if(!U.menu.classList.contains('hidden')){showMainMenu();return}}
+  const abilitySlot=/^Digit([1-5])$/.exec(event.code);if(abilitySlot&&state==='playing'&&!paused&&!event.repeat){event.preventDefault();abilityHotbar.activateSlot(Number(abilitySlot[1]),'keyboard');return}
   input.setKeyboard(event.code,true);if(event.code==='KeyY'&&trainingState.enabled)resetTrainingWorld(world,input);if(event.code==='KeyP'&&state==='playing')togglePause();if(event.code===qolSettings.gameplay.quickRestartKey&&state==='playing'&&!quickRestartHeldAt)quickRestartHeldAt=performance.now();
 });
 addEventListener('keyup',event=>{input.setKeyboard(event.code,false);if(event.code===qolSettings.gameplay.quickRestartKey&&quickRestartHeldAt){const held=performance.now()-quickRestartHeldAt;quickRestartHeldAt=0;if(trainingState.enabled){resetTrainingWorld(world,input);notifications.push('TRAINING RESET',{important:true,key:'quick-reset'})}else if(held>=600)confirmation.open({title:'Restart Match?',message:'Keep fighters, stage, rules, appearances, and devices?',accept:'RESTART'}).then(ok=>{if(ok){currentRound=1;wins1=wins2=0;statistics.reset();setup()}});else notifications.push('HOLD QUICK RESTART',{key:'hold-restart'})}});
-document.addEventListener('controllercancel',()=>{if(!$('confirmDialog').classList.contains('hidden'))confirmation.close();else if(!$('moveListPanel').classList.contains('hidden'))closeAdaptiveMoveList();else if(!$('settingsPanel').classList.contains('hidden'))requestCloseSettings();else if(state==='playing')togglePause();else if(!U.menu.classList.contains('hidden'))showMainMenu()});
+document.addEventListener('controllercancel',()=>{if(!$('confirmDialog').classList.contains('hidden'))confirmation.close();else if(!$('hotbarCustomizeModal').classList.contains('hidden'))closeHotbarCustomize();else if(!$('fullscreenPrompt').classList.contains('hidden'))fullscreenManager.finish();else if(!$('orientationPrompt').classList.contains('hidden'))orientationManager.finish();else if(!$('moveListPanel').classList.contains('hidden'))closeAdaptiveMoveList();else if(!$('settingsPanel').classList.contains('hidden'))requestCloseSettings();else if(state==='playing')togglePause();else if(!U.menu.classList.contains('hidden'))showMainMenu()});
 document.addEventListener('controllerinput',()=>{if(!U.start.classList.contains('hidden')){activateStart();audio.enable().then(enabled=>$('audioEnableNotice').classList.toggle('hidden',enabled))}});
 $('touchSettingsButton').onclick=openTouchSettings;
 $('closeTouchMoveList').onclick=()=>$('touchMoveList').classList.add('hidden');
 $('finishLayoutEdit').onclick=()=>{touchControls.layoutEditor.setEditing(false);const selected=$('touchLayer').dataset.selectedControl;if(selected)$('touchSelectedControl').value=selected;touchSettingsPanel.open()};
+$('abilityHotbar').addEventListener('hotbarcustomize',openHotbarCustomize);$('closeHotbarCustomize').onclick=closeHotbarCustomize;$('doneHotbarCustomize').onclick=closeHotbarCustomize;$('hotbarMoveLeft').onclick=()=>{abilityHotbar.moveSelected($('hotbarAbilitySelect').value,-1);syncHotbarCustomize()};$('hotbarMoveRight').onclick=()=>{abilityHotbar.moveSelected($('hotbarAbilitySelect').value,1);syncHotbarCustomize()};$('hotbarRestoreDefaults').onclick=()=>{abilityHotbar.restoreDefaults();syncHotbarCustomize()};$('hotbarLayoutLocked').onchange=()=>{abilityHotbar.settings.locked=$('hotbarLayoutLocked').checked;persistHotbarUi()};
 $('characterSelectBack').onclick=showMainMenu;$('characterMoveList').onclick=()=>openAdaptiveMoveList(p1id,1);$('closeMoveList').onclick=closeAdaptiveMoveList;$('stageSelectConfirm').onclick=()=>closeStageSelect(true);$('stageSelectCancel').onclick=()=>closeStageSelect(false);$('closeSettings').onclick=requestCloseSettings;$('cancelSettings').onclick=requestCloseSettings;$('applySettings').onclick=()=>{settingsPanel.apply();settingsPanel.close({discard:false})};$('restoreCategory').onclick=()=>settingsPanel.resetCategory();$('restoreAllSettings').onclick=()=>confirmation.open({title:'Restore All Settings?',message:'All QOL categories will return to defaults after Apply.',accept:'RESTORE'}).then(ok=>{if(ok)settingsPanel.resetAll()});$('closeExtras').onclick=()=>$('extrasPanel').classList.add('hidden');document.querySelectorAll('[data-extra]').forEach(button=>button.onclick=()=>showExtra(button.dataset.extra));$('loadingRetry').onclick=()=>startGame();$('loadingReturn').onclick=showMainMenu;
 
 const controllerActionNames={j:'Jump',a:'Light',h:'Heavy',s:'Special',d:'Dash',b:'Block',u:'Ultimate',k:'Breaker'};

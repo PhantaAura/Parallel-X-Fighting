@@ -109,7 +109,7 @@ export class ControllerManager{
     this.refs.testBody.innerHTML=pads.length?pads.map(pad=>`<section><strong>${pad.index+1}: ${pad.id}</strong><div>Axes: ${pad.axes.map(value=>Number(value).toFixed(2)).join(', ')}</div><div>Pressed: ${pad.buttons.map((button,index)=>button.pressed?index+1:null).filter(Boolean).join(', ')||'none'}</div></section>`).join(''):'<p>No controller currently detected.</p>';
   }
   menuFocusables(){
-    const selectors=['#controllerDetected','#controllerTest','#confirmDialog','#settingsPanel','#extrasPanel','#moveListPanel','#stageSelectPanel','#resultsScreen','#pauseMenu','#menuScreen','#mainMenuScreen','#startScreen'],scope=selectors.map(selector=>this.doc?.querySelector?.(selector)).find(element=>element&&!element.classList.contains('hidden'));
+    const selectors=['#controllerDetected','#controllerTest','#confirmDialog','#settingsPanel','#extrasPanel','#moveListPanel','#stageSelectPanel','#resultsScreen','#hotbarCustomizeModal','#fullscreenPrompt','#orientationPrompt','#pauseMenu','#menuScreen','#mainMenuScreen','#startScreen'],scope=selectors.map(selector=>this.doc?.querySelector?.(selector)).find(element=>element&&!element.classList.contains('hidden'));
     return[...(scope?.querySelectorAll?.('button:not([disabled]),select:not([disabled]),input:not([disabled])')||[])].filter(element=>element.offsetParent!==null&&!element.closest('.hidden'));
   }
   moveMenuFocus(direction){

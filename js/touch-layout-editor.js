@@ -5,23 +5,26 @@ export const TOUCH_CONTROL_IDS = Object.freeze([
 ]);
 
 const BASE_POSITIONS = Object.freeze({
-  movement:{x:13,y:70,size:150},
-  jump:{x:88,y:41,size:64},
-  light:{x:83,y:68,size:68},
-  heavy:{x:93,y:65,size:68},
-  special:{x:89,y:86,size:62},
-  block:{x:70,y:76,size:62},
-  dash:{x:69,y:52,size:58},
+  movement:{x:13,y:69,size:144},
+  jump:{x:88,y:39,size:62},
+  light:{x:84,y:59,size:66},
+  heavy:{x:94,y:57,size:66},
+  special:{x:89,y:88,size:58},
+  block:{x:75,y:68,size:58},
+  dash:{x:74,y:42,size:56},
   ultimate:{x:94,y:22,size:58},
-  breaker:{x:80,y:22,size:56},
-  launcher:{x:59,y:66,size:60},
-  throw:{x:57,y:86,size:54},
+  breaker:{x:66,y:64,size:48},
+  launcher:{x:65,y:45,size:52},
+  throw:{x:66,y:72,size:46},
   moveList:{x:52,y:18,size:46},
-  trainingReset:{x:47,y:86,size:46},
+  trainingReset:{x:16,y:34,size:42},
   counter:{x:63,y:34,size:52},
   lens:{x:63,y:34,size:52},
   pause:{x:48,y:10,size:42},
   settings:{x:54,y:10,size:42}
+});
+const LEGACY_HOTBAR_POSITIONS=Object.freeze({
+  movement:{x:13,y:70,size:150},jump:{x:88,y:41,size:64},light:{x:83,y:68,size:68},heavy:{x:93,y:65,size:68},special:{x:89,y:86,size:62},block:{x:70,y:76,size:62},dash:{x:69,y:52,size:58},ultimate:{x:94,y:22,size:58},breaker:{x:80,y:22,size:56},launcher:{x:59,y:66,size:60},throw:{x:57,y:86,size:54},moveList:{x:52,y:18,size:46},trainingReset:{x:47,y:86,size:46},counter:{x:63,y:34,size:52},lens:{x:63,y:34,size:52},pause:{x:48,y:10,size:42},settings:{x:54,y:10,size:42}
 });
 
 function clonePositions(source = BASE_POSITIONS) {
@@ -29,6 +32,24 @@ function clonePositions(source = BASE_POSITIONS) {
 }
 
 export const TOUCH_PRESETS = Object.freeze({
+  'mobile-standard-hotbar':{
+    name:'Mobile Standard Hotbar',movement:'joystick',stickSize:144,controlScale:1,spacing:1,opacity:.84,swapped:false,simplified:false
+  },
+  'mobile-compact-hotbar':{
+    name:'Mobile Compact Hotbar',movement:'joystick',stickSize:120,controlScale:.82,spacing:.82,opacity:.78,swapped:false,simplified:false
+  },
+  'mobile-large-buttons':{
+    name:'Mobile Large Buttons',movement:'joystick',stickSize:174,controlScale:1.2,spacing:1.08,opacity:.92,swapped:false,simplified:false
+  },
+  'mobile-left-handed':{
+    name:'Mobile Left-Handed',movement:'joystick',stickSize:144,controlScale:1,spacing:1,opacity:.86,swapped:true,simplified:false
+  },
+  'desktop-hotbar':{
+    name:'Desktop Hotbar',movement:'joystick',stickSize:128,controlScale:.84,spacing:.9,opacity:.72,swapped:false,simplified:false
+  },
+  'minimal-hud':{
+    name:'Minimal HUD',movement:'joystick',stickSize:126,controlScale:.78,spacing:.82,opacity:.62,swapped:false,simplified:false
+  },
   'standard-joystick':{
     name:'Standard Joystick',movement:'joystick',stickSize:150,controlScale:1,spacing:1,opacity:.82,swapped:false,simplified:false
   },
@@ -57,12 +78,12 @@ export const TOUCH_PRESETS = Object.freeze({
 
 export function createDefaultTouchSettings(stored = {}) {
   const defaults = {
-    version:1,
+    version:2,
     touchMode:'auto',
     movement:'joystick',
     movementChosen:false,
     chooserShown:false,
-    preset:'standard-joystick',
+    preset:'mobile-standard-hotbar',
     joystickMode:'fixed',
     deadZone:.22,
     stickSize:150,
@@ -85,6 +106,7 @@ export function createDefaultTouchSettings(stored = {}) {
   };
   const merged = { ...defaults, ...(stored || {}) };
   merged.positions = clonePositions(stored?.positions);
+  if(Number(stored?.version||1)<2){for(const id of TOUCH_CONTROL_IDS){const saved=stored?.positions?.[id],legacy=LEGACY_HOTBAR_POSITIONS[id];if(saved&&legacy&&saved.x===legacy.x&&saved.y===legacy.y&&saved.size===legacy.size)merged.positions[id]={...BASE_POSITIONS[id]}}merged.version=2}
   merged.savedLayouts = Array.isArray(stored?.savedLayouts) ? stored.savedLayouts.slice(0,8) : [];
   if (!['joystick','dpad'].includes(merged.movement)) merged.movement='joystick';
   if (!['auto','on','off'].includes(merged.touchMode)) merged.touchMode='auto';
@@ -95,19 +117,20 @@ export function createDefaultTouchSettings(stored = {}) {
 }
 
 export function applyTouchPreset(settings, presetId) {
-  const preset = TOUCH_PRESETS[presetId] || TOUCH_PRESETS['standard-joystick'];
+  const preset = TOUCH_PRESETS[presetId] || TOUCH_PRESETS['mobile-standard-hotbar'];
   Object.assign(settings, preset, { preset:presetId });
   settings.positions = clonePositions();
-  if (presetId==='compact-joystick'||presetId==='compact-dpad') {
+  if (presetId==='compact-joystick'||presetId==='compact-dpad'||presetId==='mobile-compact-hotbar') {
     settings.positions.movement.y=73;
   }
-  if (presetId==='large-buttons') {
+  if (presetId==='large-buttons'||presetId==='mobile-large-buttons') {
     settings.positions.light.x=81;settings.positions.heavy.x=92;settings.positions.launcher.x=57;
   }
   if (presetId==='tablet') {
     settings.positions.movement.x=15;settings.positions.movement.y=72;
     for(const id of ['jump','light','heavy','special','block','dash','ultimate','breaker'])settings.positions[id].x=Math.min(95,settings.positions[id].x+1);
   }
+  if(presetId==='mobile-left-handed')settings.swapped=true;
   return settings;
 }
 

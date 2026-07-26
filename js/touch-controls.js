@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,displayedControlPosition} from './touch-layout-editor.js';
+import {TouchLayoutEditor,displayedControlPosition} from './touch-layout-editor.js?v=2.3.5-landscape-hotbar-x16';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',special:'s',block:'b',dash:'d',
@@ -41,7 +41,7 @@ export function touchTutorialSteps(movement='joystick') {
     {title:'Light attacks',text:'Tap Light three times for the full light chain. The final hit locks the chain to prevent loops.'},
     {title:'Heavy attacks',text:'Heavy is slower and stronger. Light, Light, Heavy creates a grounded finisher.'},
     {title:'Launcher and air combo',text:'Tap Launcher—or hold Up and tap Heavy—then Jump, Air Light, and Air Heavy.'},
-    {title:'Special attacks',text:'Tap Special for the fighter’s current special. Supported routes can cancel into it.'},
+    {title:'Special attacks',text:'Use the numbered bottom hotbar for character abilities. Supported routes can still cancel into them.'},
     {title:'Block and perfect block',text:'Hold Block without losing movement or other touches. Start blocking just before impact for a perfect block.'},
     {title:'Dash',text:'Tap Dash for the fighter’s movement ability. Poorly timed dashes remain punishable.'},
     {title:'Throw',text:'Press Light and Heavy together, or use the optional Throw button. Both trigger the exact same throw.'},
@@ -135,7 +135,7 @@ export class TouchControls {
   chooseMovement(choice) {
     if(choice==='joystick'||choice==='dpad'){
       this.settings.movement=choice;this.settings.movementChosen=true;
-      this.settings.preset=choice==='dpad'?'standard-dpad':'standard-joystick';
+      this.settings.preset=choice==='dpad'?'standard-dpad':'mobile-standard-hotbar';
     }else{
       this.settings.movement=this.settings.movement||'joystick';
       this.settings.movementChosen=false;
@@ -177,7 +177,8 @@ export class TouchControls {
   previousTutorial(){if(this.tutorialIndex>0){this.tutorialIndex--;this._renderTutorial()}}
   closeTutorial(complete=false){
     document.querySelector('#touchTutorial')?.classList.add('hidden');
-    if(complete){this.settings.tutorialComplete=true;this._changed(this.settings,{tutorial:true})}
+    if(complete)this.settings.tutorialComplete=true;
+    this._changed(this.settings,{tutorial:true,dismissed:!complete});
   }
 
   _setAction(action,down) {
@@ -311,7 +312,7 @@ export class TouchControls {
     this.releaseAll();this.enabled=false;this.root?.classList?.add('hidden');this.root?.classList?.remove('touch-controls-disabled');
     this.layoutEditor.setEditing(false);this.setClashState(false);
     const doc=this.root?.ownerDocument||globalThis.document;
-    for(const id of ['touchChoice','touchSettingsModal','touchTutorial','touchMoveList'])doc?.querySelector?.(`#${id}`)?.classList?.add('hidden');
+    for(const id of ['touchChoice','touchSettingsModal','touchTutorial','touchMoveList','hotbarCustomizeModal'])doc?.querySelector?.(`#${id}`)?.classList?.add('hidden');
   }
   setMatchUiVisible(visible){this.root?.classList?.toggle('hidden',!this.enabled||!visible)}
   setCombatControlsHidden(hidden){if(hidden)this.releaseAll();this.root?.classList?.toggle('touch-controls-disabled',!!hidden)}

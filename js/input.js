@@ -23,7 +23,12 @@ const ACTION_NAMES = {
   x: 'Launcher',
   t: 'Throw',
   c: 'Counter',
-  n: 'Lens'
+  n: 'Lens',
+  fireBlast:'Fire Blast',
+  shotsOfAgony:'Shots of Agony',
+  objectSwap:'Object Swap',
+  lensOfTruth:'Lens of Truth',
+  ultimate:'Ultimate'
 };
 
 export const CONTROLLER_STYLES = Object.freeze({
@@ -159,6 +164,14 @@ export class InputManager {
       }
     }
     this.touchActions[index][action] = !!down;
+  }
+
+  // UI surfaces such as the ability hotbar emit the same buffered semantic
+  // actions consumed by Fighter. No damage, timing, or cooldown data lives here.
+  queueGameplayAction(side,action,device='keyboard') {
+    if(!Number.isInteger(side)||side<1||side>2||!action)return false;
+    this._queueAction(side,String(action),device);
+    return true;
   }
 
   setControllerStyle(side, style) {

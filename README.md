@@ -18,6 +18,7 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 - `css/training.css` — Training Mode controls and diagnostics
 - `css/mobile.css` — phone/tablet safe areas, touch controls, mobile modals, and portrait fallback
 - `css/qol.css` — start/main menu, pause/results, settings, accessibility, loading, and HUD polish
+- `css/ability-hotbar.css` — responsive five-slot ability bar, cooldown/status states, and customization presentation
 - `js/main.js` — initialization, match lifecycle, update loop, and render coordination
 - `js/roster.js` — all 15 character identities, base attributes, and select-screen metadata
 - `js/movesets.js` — Rrvvfo, Revvfo, Wade, and Bark move data
@@ -27,6 +28,11 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 - `js/controller-manager.js` — controller detection, saved styles/assignments, menu navigation, pause, and test-screen coordination
 - `js/touch-controls.js` — multi-pointer joystick/D-Pad and combat-action translation
 - `js/touch-layout-editor.js` — touch presets, per-control placement/sizing, and named custom layouts
+- `js/ability-hotbar-data.js` — data-driven fighter slot definitions, costs, restrictions, and saved per-fighter orders
+- `js/ability-hotbar.js` — touch/keyboard/controller hotbar rendering, activation, prompts, move info, and customization
+- `js/responsive-game-layout.js` — fixed-authority canvas sizing for phones, tablets, widescreen, and ultrawide displays
+- `js/orientation-manager.js` — landscape recommendation, rotation persistence, and layout refresh coordination
+- `js/fullscreen-manager.js` — user-initiated fullscreen prompts, safe fallback, exit handling, and persistence
 - `js/mobile-platform.js` — iOS/Android detection, match-only browser protection, Back handling, persistence, fullscreen, and haptics
 - `js/mobile-safe-area.js` — display-cutout, browser-bar, resize, and orientation tracking
 - `js/ai.js` — difficulty profiles and CPU decisions
@@ -79,6 +85,9 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 | Pause | P | P |
 | Training position reset | Y | Y |
 | Quick Restart | Hold Backspace outside Training; immediate in Training | Same |
+| Ability slots | 1–5 (additional bindings) | Existing Player 2 controls remain unchanged |
+
+Number keys 1–5 activate the current fighter’s five ability slots for Player 1. They are additional bindings: the original Special, Ultimate, Lens, and movement-ability keys continue to work. Reordering a fighter’s hotbar changes only the slot/display order and the corresponding number key; combat timing and balance data remain authoritative in the fighter/combat modules.
 
 ## Controller controls
 
@@ -109,18 +118,37 @@ Touch controls use the same semantic actions and combat engine as keyboard and c
 
 - **Virtual Joystick:** fixed or follow-finger placement, adjustable dead zone, size, and sensitivity, with diagonal movement. Up is available for directional attacks, but Jump remains a separate button.
 - **Virtual D-Pad:** large independent Up, Down, Left, and Right targets. Two compatible directions create diagonals; the latest direction wins if opposites are touched.
-- **Combat buttons:** Jump, Light, Heavy, Special, Block, Dash, Ultimate, Combo Breaker, Launcher, and optional Throw. Rrvvfo receives a contextual Lens button, Bark receives Counter, and Training adds Reset.
+- **Core combat buttons:** Jump, Light, Heavy, Block, and Dash remain in a reachable thumb cluster. Optional compact Throw, Launcher, and Combo Breaker buttons use the same semantic actions as every other input method. Training adds Reset.
+- **Ability hotbar:** up to five character-specific specials and the ultimate appear in a bottom-center bar. Tapping a slot sends the existing gameplay action; holding it opens move information without activating it. Costs, cooldowns, active states, and invalid-target states are visible without relying only on color.
 - **Throws:** press Light + Heavy at the same time or use the optional Throw button. Both paths send the same throw action with identical startup, range, damage, and recovery.
 - **Touch routes:** Light → Light → Light; Light → Light → Heavy; Light → Light → Launcher; Launcher → Jump → Air Light → Air Heavy; and legal special/ultimate cancels all use the normal combo rules.
 - **Clashes:** one large clash control replaces the combat cluster. Repeated Tap, Timed Tap, and Hold and Pulse are selectable and share the same attainable maximum strength. Accepted taps are rate-capped.
 
-Presets include Standard Joystick, Standard D-Pad, Compact Joystick, Compact D-Pad, Large Buttons, Left-Handed, Tablet, and Simplified. Settings can resize/reposition every control, change spacing and opacity, swap sides, enable or disable dedicated Throw/Launcher, lock the layout, reset defaults, and save up to eight named custom layouts. The same quick panel is available from Pause. Unlock **Drag controls in the match view** to place controls directly. Simplified mode can continue only the basic three-light chain; it never automates launchers, specials, ultimates, perfect blocks, throws, or breakers.
+Hotbar-aware presets include Mobile Standard Hotbar, Mobile Compact Hotbar, Mobile Large Buttons, Mobile Left-Handed, Tablet, Desktop Hotbar, and Minimal HUD; the previous joystick/D-Pad presets remain available. Settings can resize/reposition every control, change spacing and opacity, swap sides, enable or disable dedicated Throw/Launcher, lock the layout, reset defaults, and save up to eight named custom layouts. The same quick panel is available from Pause. Unlock **Drag controls in the match view** to place controls directly. Simplified mode can continue only the basic three-light chain; it never automates launchers, specials, ultimates, perfect blocks, throws, or breakers.
 
 The 12-step touch tutorial teaches the selected movement style, Jump, normals, Launcher and air combo, Special, Block/perfect block, Dash, Throw, Breaker, Ultimate, and clash input. Training Mode changes its route and input-history labels to Touch automatically.
 
-Mobile layout uses iOS safe-area insets and Android display-cutout space, tracks Safari/Chrome visual-viewport resizing and orientation changes, and keeps controls above the home indicator/navigation area. Landscape is recommended; portrait displays a rotate-device suggestion and keeps a playable fallback. During a match only, page scrolling, selection, callouts, gestures, and double-tap zoom are suppressed. Normal page behavior is restored after leaving the match. Android Back pauses first instead of immediately leaving the game. Fullscreen is available where the browser permits it.
+Mobile layout uses iOS safe-area insets and Android display-cutout space, tracks Safari/Chrome visual-viewport resizing and orientation changes, and keeps controls above the home indicator/navigation area. Landscape is recommended; portrait displays a three-choice rotate-device suggestion and keeps a playable fallback. Rotation recalculates the canvas, HUD, controls, and hotbar without restarting the match or round. During a match only, page scrolling, selection, callouts, gestures, and double-tap zoom are suppressed. Normal page behavior is restored after leaving the match. Android Back pauses first instead of immediately leaving the game.
+
+Fullscreen is requested only after a deliberate interaction. The first mobile match can Enter Fullscreen, defer it, keep asking, or stop future prompts. Unsupported browsers fall back to the maximum safe visual viewport and continue normally. Pause contains **Exit Fullscreen** only while fullscreen is active; an unexpected fullscreen exit pauses the match and recalculates the layout.
 
 Optional Haptics On, Reduced Haptics, and Haptics Off modes cover heavy hits, perfect blocks, guard breaks, clashes, and ultimate activation. Vibration is never required for gameplay.
+
+## Landscape, widescreen, and ability hotbar
+
+Active mobile matches are landscape-first. The responsive coordinator supports portrait fallback, 16:9, 16:10, 18:9, 19.5:9, 20:9, tablets, narrow windows, and ultrawide desktop monitors. The combat canvas always keeps its authoritative 960 × 540 logical space and aspect ratio: wider displays can reveal side-stage decoration, but never expand attack range or gameplay boundaries. Fighters remain at the same readable scale, and letterboxing is used only when required.
+
+Rrvvfo’s default slots are:
+
+1. **Fire Blast** — 28 Energy; rejects activation when energy is insufficient.
+2. **Shots of Agony** — 40 Energy; reports ACTIVE during the four-clone volley, then shows its unchanged 300-frame/five-second cooldown.
+3. **Object Swap** — 12 Energy; rejects activation when no legal destination exists and shows its cooldown.
+4. **Lens of Truth** — 90 Energy and exactly 50 HP with the existing 1-HP floor; reports active duration, cooldown, and unsafe-HP state.
+5. **Solar Weave** — 90 Energy; reports ready/disabled state and preserves ultimate/cinematic/clash restrictions.
+
+Every roster member receives a data-driven five-slot definition. The renderer does not contain fighter combat rules; it emits the same buffered semantic actions used by keyboard, controller, AI, and legacy touch controls. The active controller style and actual saved bindings replace number-key prompts when a controller is being used.
+
+Hold a slot briefly for its description, cost, cooldown, restriction, and active binding. When unlocked, touch drag or the keyboard/controller customization dialog can reorder a fighter’s saved layout. Settings → **Ability Hotbar** controls desktop visibility (Full, Compact, Cooldowns Only, or Hidden), text density, size, opacity, cooldown display, activation behavior, information-panel pausing, lock state, and restore-defaults behavior. Reordering never changes damage, startup, recovery, costs, cooldowns, AI, or combo rules.
 
 ## Combo mechanics
 
@@ -212,7 +240,7 @@ The results panel reports actual post-defense damage, match duration, highest co
 
 ## Settings, accessibility, audio, and saves
 
-Settings are grouped into Gameplay, Controls, Touch Controls, Controller, Audio, Video, Accessibility, HUD, Save Data, and a localhost/developer-only category. Apply commits a sanitized draft; Cancel or close warns before discarding unsaved edits. Restore Category and Restore All Defaults are separate confirmed actions.
+Settings are grouped into Gameplay, Controls, Touch Controls, Controller, Audio, Video, Accessibility, HUD, Ability Hotbar, Save Data, and a localhost/developer-only category. Apply commits a sanitized draft; Cancel or close warns before discarding unsaved edits. Restore Category and Restore All Defaults are separate confirmed actions.
 
 - **Audio:** Master, Music, Sound Effects, UI, and future Voice volume; Mute All; and Audio Test. Menu/controller cues use UI Volume while combat uses Sound Effects Volume. Browser autoplay suspension is treated as a normal interaction requirement.
 - **Accessibility:** Full/Reduced/Off camera shake, screen flash, hit flash, and background motion; reduced ultimate effects; reduced Lens-overlay intensity; high-contrast HUD; larger text; stronger sprite outlines; and selectable clash methods. These settings never alter damage, hitboxes, timing, AI, or cooldowns. Because Local 2 Player shares one canvas, Lens still affects the shared view; Reduced Intensity is the supported accessibility option.
@@ -246,11 +274,11 @@ Use the always-visible **EXIT TRAINING** button, or choose Character Select from
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The browser suite contains **140 checks** covering all Prototype 2.2/2.3 regressions plus controller/touch mappings, combat systems, sprite fallback/appearance, menu availability, pause simulation gating, post-match actions/statistics, adaptive move prompts, QOL setting persistence, accessibility balance isolation, notification throttling, versioned save export/import/rollback, Training presets/tools, controller drift filtering, loading recovery, HUD/audio modeling, mobile layout locking, visual-performance caps, and first-time hints.
+The browser suite contains **175 checks** covering all Prototype 2.2/2.3 regressions plus controller/touch mappings, combat systems, sprite fallback/appearance, menu availability, pause simulation gating, post-match actions/statistics, adaptive move prompts, QOL setting persistence, accessibility balance isolation, notification throttling, versioned save export/import/rollback, Training presets/tools, controller drift filtering, loading recovery, HUD/audio modeling, mobile layout locking, orientation/fullscreen recovery, fixed-boundary widescreen profiles, the data-driven ability hotbar, exact Rrvvfo costs/status restrictions, hold-for-information behavior, unavailable-warning throttling, hotbar input buffering, visual-performance caps, and first-time hints.
 
 ## Save compatibility
 
-Story completion continues to use the existing `pxSave` browser-storage key. Controller, touch, and Rrvvfo visual keys are preserved. QOL settings use `pxQolSettingsV1`; Training presets use `pxTrainingPresetsV1`; exported saves declare schema 235. Mirror matches remain disabled.
+Story completion continues to use the existing `pxSave` browser-storage key. Controller, touch, and Rrvvfo visual keys are preserved. QOL settings use `pxQolSettingsV1`; per-fighter hotbar layouts use `pxAbilityHotbarV1`; mobile orientation/fullscreen choices use `pxMobilePresentationV1`; Training presets use `pxTrainingPresetsV1`; exported saves declare schema 235. Mirror matches remain disabled.
 
 ## Known limitations
 
@@ -262,4 +290,5 @@ Story completion continues to use the existing `pxSave` browser-storage key. Con
 - Audio uses synthesized hooks until final sound and music assets are available.
 - Music and voice sliders are saved and routed for future files, but this build has no final music or voice library.
 - Cinematics use procedural 2D canvas effects; full sprite animation remains future presentation work.
+- Browser fullscreen support varies. iPhone Safari may use the maximum safe viewport rather than true fullscreen; leaving fullscreen through browser UI pauses safely, but browser chrome behavior still needs representative-device verification.
 - Automated browser checks verify semantic touch/controller behavior, saved assignment logic, and mobile layout calculations, but hot-plug timing and menu feel across physical Nintendo/Xbox/PlayStation controllers, iOS Safari browser chrome, Android navigation modes, display cutouts, vibration support, and multi-finger ergonomics should also be tested on representative hardware.

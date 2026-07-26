@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="css/training.css">
 <link rel="stylesheet" href="css/mobile.css">
 <link rel="stylesheet" href="css/qol.css">
+<link rel="stylesheet" href="css/ability-hotbar.css">
 </head>
 <body>
 <div id="app">
@@ -62,6 +63,7 @@
 <div id="combatNotifications" class="combatNotifications" aria-live="polite"></div>
 <div id="msg" class="hidden"><h2 id="msgTitle"></h2><p id="msgText"></p><button class="primary" id="msgButton">CONTINUE</button> <button class="secondary" id="backMenu">CHARACTER SELECT</button></div>
 </div>
+<div id="abilityHotbar" class="abilityHotbar hidden" aria-label="Ability hotbar"><button class="hotbarCustomize" data-hotbar-customize aria-label="Customize ability hotbar">⚙</button><div class="abilitySlots" data-hotbar-slots></div><div class="abilityInfo hidden" data-hotbar-info></div></div>
 <div class="controls"><div><b>P1:</b> A/D move • W/Space jump • S block • F light • R heavy • F+R throw • S+G breaker • T launcher • E Bark counter • G special • H ultimate • Z Lens • Q dash</div><div><b>P2:</b> ←/→ move • ↑ jump • ↓ block • J light • I heavy • J+I throw • ↓+K breaker • U launcher • ; Bark counter • K special • L ultimate • N Lens • O dash</div><div id="controllerGuide"></div></div>
 <div class="foot">Press P to pause • Nintendo, Xbox, PlayStation, custom controllers, and configurable touch controls supported • Story progress saves in this browser.</div>
 </section></div>
@@ -108,7 +110,9 @@
   <button id="finishLayoutEdit" class="finishLayoutEdit">FINISH LAYOUT EDIT</button>
 </div>
 
-<div id="rotateSuggestion" class="rotateSuggestion"><strong>TURN YOUR DEVICE SIDEWAYS</strong><span>Landscape gives the clearest combat view. Portrait play remains available.</span></div>
+<div id="orientationPrompt" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="orientationPromptTitle"><div class="mobileModalCard choiceCard"><h2 id="orientationPromptTitle">Rotate your phone for the best experience.</h2><p>Landscape keeps the HUD, action hotbar, movement control, and combat buttons clear. Portrait remains playable.</p><button class="primary" data-orientation-rotate>ROTATE DEVICE</button><button class="secondary" data-orientation-continue>CONTINUE IN PORTRAIT</button><button class="secondary" data-orientation-never>DON’T SHOW AGAIN</button></div></div>
+
+<div id="fullscreenPrompt" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="fullscreenPromptTitle"><div class="mobileModalCard choiceCard"><h2 id="fullscreenPromptTitle">Enter Fullscreen?</h2><p>Fullscreen can provide a cleaner landscape combat view.</p><p data-fullscreen-fallback class="hidden">This browser does not expose true fullscreen. The game will use the maximum safe viewport; adding it to your Home Screen may provide a cleaner view.</p><button class="primary" data-fullscreen-enter>ENTER FULLSCREEN</button><button class="secondary" data-fullscreen-not-now>NOT NOW</button><button class="secondary" data-fullscreen-always>ALWAYS ASK</button><button class="secondary" data-fullscreen-never>DON’T ASK AGAIN</button></div></div>
 
 <div id="touchChoice" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="touchChoiceTitle">
   <div class="mobileModalCard choiceCard">
@@ -169,12 +173,13 @@
 <div id="touchMoveList" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="touchMoveListTitle">
   <div class="mobileModalCard moveListCard"><h2 id="touchMoveListTitle">Move List</h2><div id="touchMoveListContent"></div><button id="closeTouchMoveList" class="primary">CLOSE</button></div>
 </div>
+<div id="hotbarCustomizeModal" class="mobileModal hidden" role="dialog" aria-modal="true" aria-labelledby="hotbarCustomizeTitle"><div class="mobileModalCard hotbarCustomizeCard"><div class="mobileModalHead"><h2 id="hotbarCustomizeTitle">Ability Hotbar</h2><button id="closeHotbarCustomize" aria-label="Close hotbar customization">×</button></div><p>Choose an ability and move it between slots. Unlocking also enables drag-to-reorder on the live hotbar.</p><label>Ability<select id="hotbarAbilitySelect"></select></label><div class="mobileSettingsActions"><button id="hotbarMoveLeft">MOVE LEFT</button><button id="hotbarMoveRight">MOVE RIGHT</button><button id="hotbarRestoreDefaults">RESTORE CHARACTER DEFAULTS</button></div><label class="checkline"><input id="hotbarLayoutLocked" type="checkbox" checked> Lock hotbar order</label><p>Text, size, cooldown style, activation method, and desktop visibility are available under Settings → Ability Hotbar.</p><button id="doneHotbarCustomize" class="primary">DONE</button></div></div>
 <div id="controllerDetected" class="controllerDialog hidden" role="dialog" aria-modal="true" aria-labelledby="controllerDetectedTitle">
   <div class="controllerDialogCard"><h2 id="controllerDetectedTitle">CONTROLLER DETECTED</h2><p id="controllerDetectedName"></p><label>Controller style<select id="controllerDetectedStyle"><option value="nintendo">Nintendo</option><option value="xbox">Xbox</option><option value="playstation">PlayStation</option><option value="custom">Custom</option></select></label><label>Assign to<select id="controllerDetectedPlayer"><option value="1">Player 1</option><option value="2">Player 2</option></select></label><div><button class="primary" id="useDetectedController">USE CONTROLLER</button><button class="secondary" id="controllerDecideLater">DECIDE LATER</button></div></div>
 </div>
 <div id="controllerTest" class="controllerDialog hidden" role="dialog" aria-modal="true" aria-labelledby="controllerTestTitle">
   <div class="controllerDialogCard controllerTestCard"><h2 id="controllerTestTitle">CONTROLLER TEST</h2><p>Move sticks and press buttons to verify the browser receives them.</p><div id="controllerTestBody"></div><button class="primary" id="closeControllerTest">DONE</button></div>
 </div>
-<script type="module" src="js/main.js?v=2.3.5-qol"></script>
+<script type="module" src="js/main.js?v=2.3.5-landscape-hotbar-10"></script>
 </body>
 </html>

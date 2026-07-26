@@ -23,8 +23,9 @@ export function clearTrainingState(world,type='all'){
   if(type==='all'||type==='cooldowns')for(const fighter of world.fighters)for(const key of ['attackCd','specialCd','ultCd','dashCd','clashCooldown','lensCooldown','agonyCooldown','breakerCooldown','counterCd'])fighter[key]=0;
   if(type==='all'||type==='projectiles'){world.timers.cancelAll();world.projectiles.length=0}
   if(type==='all'||type==='effects')world.effects.clear();
-  if(type==='all'||type==='lens')for(const fighter of world.fighters)fighter.lens=0;
-  if(type==='all'||type==='agony')for(const fighter of world.fighters){fighter.agonyActiveVolley=false;fighter.agonyVolleyFired=false}
+  if(type==='all'||type==='lens'){for(const fighter of world.fighters)fighter.lens=0;world.effects.effects=world.effects.effects.filter(effect=>!['lens','dodge'].includes(effect.t))}
+  if(type==='all'||type==='agony'){world.timers.cancelAll();world.projectiles=world.projectiles.filter(projectile=>!projectile.volleyId);world.effects.effects=world.effects.effects.filter(effect=>effect.t!=='agonyClone');for(const fighter of world.fighters){fighter.agonyActiveVolley=false;fighter.agonyVolleyFired=false}}
+  if(type==='all'||type==='swap'){for(const fighter of world.fighters)if(String(fighter.visualAction||'').startsWith('objectSwap')){fighter.visualAction=null;fighter.visualActionTimer=0}world.effects.effects=world.effects.effects.filter(effect=>!String(effect.t).toLowerCase().includes('swap'))}
   if(type==='all'||type==='combo')for(const fighter of world.fighters){resetCombo(fighter.combo);fighter.lightChain=0;fighter.lightChainTimer=0;fighter.chainLockout=0}
   trainingState.afterFirstHit=false;return true;
 }
@@ -34,6 +35,6 @@ export function dummyCommand(fighter){
   const mode=trainingState.dummy,block=['always','perfect'].includes(mode)||(mode==='after'&&trainingState.afterFirstHit)||(mode==='stationary'&&trainingState.stationaryBlock)||(mode==='random'&&fighter?.tick%180<55);
   return{
     down:action=>action==='b'&&block||action==='l'&&mode==='walk'&&fighter?.tick%160<80||action==='r'&&mode==='walk'&&fighter?.tick%160>=80,
-    pressed:action=>action==='k'&&(mode==='breaker'||mode==='random')&&fighter?.stun>0||action==='h'&&trainingState.perfectBlockPractice&&fighter?.tick%120===0||action==='j'&&mode==='jump'&&fighter?.grounded&&fighter?.tick%120===0||action==='a'&&mode==='counterattack'&&trainingState.afterFirstHit||action==='t'&&mode==='throw'&&fighter?.tick%90===0
+    pressed:action=>{if(action==='k'&&(mode==='breaker'||mode==='random')&&fighter?.stun>0)return true;if(action==='h'&&trainingState.perfectBlockPractice&&fighter?.tick%120===0)return true;if(action==='j'&&mode==='jump'&&fighter?.grounded&&fighter?.tick%120===0)return true;if(action==='a'&&mode==='counterattack'&&trainingState.afterFirstHit){trainingState.afterFirstHit=false;return true}return action==='t'&&mode==='throw'&&fighter?.tick%90===0}
   };
 }

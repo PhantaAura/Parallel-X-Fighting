@@ -196,7 +196,7 @@ export class Fighter{
     if(defense?.broken)this.visualAction='guardBreak',this.visualActionTimer=Math.max(this.visualActionTimer,this.guardBreakStun||45);
     const damage=defense?result.final*defense.chipFactor:result.final,before=this.hp,minimum=defense?1:0;
     this.hp=clamp(Math.max(minimum,this.hp-damage),0,100);const actual=before-this.hp;
-    if(actual>0&&this.world.training.enabled&&this.side===2&&this.world.training.dummy==='after')this.world.training.afterFirstHit=true;
+    if(actual>0&&this.world.training.enabled&&this.side===2&&['after','counterattack'].includes(this.world.training.dummy))this.world.training.afterFirstHit=true;
     if(attacker&&!this.block&&actual>0){attacker.combo.hits=nextHit;attacker.combo.damage+=actual;attacker.combo.scale=result.scale;attacker.combo.timer=COMBO_RESET_FRAMES;attacker.combo.attacker=attacker.side;if(!this.grounded&&++this.juggles>=JUGGLE_LIMIT){this.knockdown=42;this.vy=9;knockback*=.45}}
     if(attacker&&actual>0)this.world.statistics?.recordDamage(attacker.side,actual,attacker.combo.hits,attacker.combo.damage);
     if(defense?.perfect){this.world.statistics?.add(this.side,'perfectBlocks');this.world.notifications?.push('PERFECT BLOCK',{important:true,key:`perfect-${this.side}`})}

@@ -1,6 +1,8 @@
-# Parallels X: Clash of Souls — Prototype 2.3
+# Parallels X: Clash of Souls — Prototype 2.3.5 QOL Build
 
-A dependency-free browser fighting game with Story Mode, VS CPU, local multiplayer, configurable rounds, five stages, 15 playable fighters, browser saves, keyboard/controller/touch input, clashes, advanced defense, cinematic ultimates, Training Mode, and an optional experimental Rrvvfo sprite pipeline.
+A dependency-free browser fighting game with Story Mode, VS CPU, local multiplayer, configurable rounds, five stages, 15 playable fighters, browser saves, keyboard/controller/touch input, clashes, advanced defense, cinematic ultimates, Training Mode, an optional experimental Rrvvfo sprite pipeline, and a full quality-of-life shell for replay, pause, settings, accessibility, and save management.
+
+The public build is hosted at [https://phantaaura.github.io/Parallel-X-Fighting/](https://phantaaura.github.io/Parallel-X-Fighting/).
 
 ## Run
 
@@ -15,6 +17,7 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 - `css/combat.css` — combo, cooldown, and clash HUD
 - `css/training.css` — Training Mode controls and diagnostics
 - `css/mobile.css` — phone/tablet safe areas, touch controls, mobile modals, and portrait fallback
+- `css/qol.css` — start/main menu, pause/results, settings, accessibility, loading, and HUD polish
 - `js/main.js` — initialization, match lifecycle, update loop, and render coordination
 - `js/roster.js` — all 15 character identities, base attributes, and select-screen metadata
 - `js/movesets.js` — Rrvvfo, Revvfo, Wade, and Bark move data
@@ -33,7 +36,16 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 - `js/guard-system.js` — guard, perfect-block, throw, breaker, chip, and dash-defense rules
 - `js/ultimate-system.js` — character ultimate data and cinematic lifecycle
 - `js/camera-system.js` — focus, zoom, freeze, shake, and guaranteed camera restoration
-- `js/audio-manager.js` — organized combat and round audio hooks
+- `js/audio-manager.js` — organized combat/menu audio hooks and independent volume routing
+- `js/build-info.js` — centralized Prototype 2.3.5 build label and save-schema version
+- `js/main-menu.js` — main-menu data, mode previews, duplicate-confirm protection, and Coming Later states
+- `js/pause-menu.js`, `js/results-screen.js` — unified pause actions and post-match replay navigation
+- `js/match-statistics.js`, `js/hud-model.js` — actual-damage match summaries and readable fighter HUD state
+- `js/move-list.js` — adaptive Keyboard/Nintendo/Xbox/PlayStation/Touch/Custom move prompts
+- `js/qol-settings.js`, `js/settings-panel.js` — persistent categorized settings and sanitization
+- `js/save-manager.js` — versioned safe export/import and scoped reset operations
+- `js/loading-manager.js`, `js/notification-system.js`, `js/confirmation-dialog.js` — recoverable loading, rate-limited feedback, and protected destructive actions
+- `js/training-presets.js`, `js/first-time-hints.js` — named Training setups and optional input-aware guidance
 - `js/sprite-atlas.js` — cached relative-path atlas/manifest/effect loading
 - `js/sprite-animation.js` — reusable frame timing, looping, events, and animation priority
 - `js/sprite-renderer.js` — grounded, flipped, depth-ready sprite and effect drawing
@@ -66,6 +78,7 @@ Example: `python3 -m http.server 4173`, then visit `http://127.0.0.1:4173/`.
 | Dash | Q | O |
 | Pause | P | P |
 | Training position reset | Y | Y |
+| Quick Restart | Hold Backspace outside Training; immediate in Training | Same |
 
 ## Controller controls
 
@@ -88,6 +101,8 @@ Select Nintendo, Xbox, PlayStation, or Custom for each player on Character Selec
 
 Move with the left stick or D-pad. The first detected controller opens a setup prompt for Nintendo, Xbox, PlayStation, or Custom style and Player 1/Player 2 assignment. Styles, custom buttons, and device assignments use the `pxControllerSettingsV1` save key. Connection and disconnection events update the assignment selectors without clearing keyboard or touch input. The controller can navigate Character Select, change focused selects, confirm buttons, pause with Start/Menu, and use the Controller Test screen. Two standard gamepads are supported in local multiplayer. Custom mappings can reassign Jump, Light, Heavy, Special, Dash, Block, Ultimate, and Breaker; Launcher and Throw prompts automatically follow the selected Heavy and Light bindings.
 
+Start/Menu pauses. Minus/View/Create/Touchpad is the suggested remappable Quick Restart control; outside Training, restart still requires a hold/confirmation so it cannot happen accidentally. A disconnected assigned controller pauses the match, clears held state, reports the affected player, and restores its prior assignment where the browser exposes a stable reconnect identity. The match stays paused until reconnection is confirmed. Saved dead zones prevent an idle stick from moving menus or fighters while keyboard input remains active.
+
 ## iPhone, iPad, and Android touch controls
 
 Touch controls use the same semantic actions and combat engine as keyboard and controller input. They do not duplicate attacks or change combo timing, damage, scaling, range, startup, recovery, or cancels. On first touch use, the game asks **“Choose your movement style”** with Virtual Joystick, D-Pad, and Decide Later. The choice is stored under `pxTouchSettingsV1` and can be changed from **TOUCH SETTINGS** at any time. Choose Auto detect, Always on, or Off if device detection does not match your setup.
@@ -99,7 +114,7 @@ Touch controls use the same semantic actions and combat engine as keyboard and c
 - **Touch routes:** Light → Light → Light; Light → Light → Heavy; Light → Light → Launcher; Launcher → Jump → Air Light → Air Heavy; and legal special/ultimate cancels all use the normal combo rules.
 - **Clashes:** one large clash control replaces the combat cluster. Repeated Tap, Timed Tap, and Hold and Pulse are selectable and share the same attainable maximum strength. Accepted taps are rate-capped.
 
-Presets include Standard Joystick, Standard D-Pad, Compact Joystick, Compact D-Pad, Large Buttons, Left-Handed, Tablet, and Simplified. Settings can resize/reposition every control, change spacing and opacity, swap sides, enable or disable dedicated Throw/Launcher, reset defaults, and save up to eight named custom layouts. Enable **Drag controls in the match view** to place controls directly. Simplified mode can continue only the basic three-light chain; it never automates launchers, specials, ultimates, perfect blocks, throws, or breakers.
+Presets include Standard Joystick, Standard D-Pad, Compact Joystick, Compact D-Pad, Large Buttons, Left-Handed, Tablet, and Simplified. Settings can resize/reposition every control, change spacing and opacity, swap sides, enable or disable dedicated Throw/Launcher, lock the layout, reset defaults, and save up to eight named custom layouts. The same quick panel is available from Pause. Unlock **Drag controls in the match view** to place controls directly. Simplified mode can continue only the basic three-light chain; it never automates launchers, specials, ultimates, perfect blocks, throws, or breakers.
 
 The 12-step touch tutorial teaches the selected movement style, Jump, normals, Launcher and air combo, Special, Block/perfect block, Dash, Throw, Breaker, Ultimate, and clash input. Training Mode changes its route and input-history labels to Touch automatically.
 
@@ -185,6 +200,28 @@ Difficulty changes reaction delay, decision quality, blocking consistency, aggre
 
 Press E for Player 1, semicolon for Player 2, or click the left stick on a controller. The stance costs 20 energy and has six startup frames, a 12-frame active window, 30 recovery frames, and a 90-frame cooldown. It counters only nearby light, heavy, launcher, and air melee attacks. Ordinary blocking never counters. Projectiles and ranged specials hit Bark normally, and a missed counter leaves him in recovery.
 
+## Prototype 2.3.5 match flow and menus
+
+The first launch uses a **Press Any Button / Tap to Start** screen, then opens a lightweight Parallels X main menu. Story, VS CPU, Local 2 Player, and Training open the existing playable setup. Arcade is visibly marked **Coming Later** and cannot open a broken screen. Mode previews show player count, input notes, availability, and honest story status. Quick Continue restores the last setup page but never starts a match without confirmation. The displayed build label comes only from `js/build-info.js`.
+
+Every completed non-Training match provides **Rematch**, **Change Character**, **Change Stage**, **Return to Mode Select**, and **Return to Main Menu**. Rematch keeps fighters, per-player appearances, stage, rules, difficulty, controller styles, and assigned devices while rebuilding all runtime fighter and transient state without reloading the page. Change Character preserves rules and stage; Change Stage preserves fighters and appearances.
+
+The shared Pause menu freezes simulation, AI, round time, cooldowns, cinematics, and delayed decisions. It offers Resume, Move List, Controls, conditional Training/Mobile settings, Restart, Character Select, Stage Select, Settings, and Quit. Resume clears menu-only buffered input without altering legitimate combat state. Local 2 Player identifies which assigned player opened Pause. Quit, restart outside Training, and in-match navigation use confirmations.
+
+The results panel reports actual post-defense damage, match duration, highest combo/count, perfect blocks, guard breaks, throws, breakers, clashes, special/ultimate use, and remaining resources for both players. Training intentionally skips normal results.
+
+## Settings, accessibility, audio, and saves
+
+Settings are grouped into Gameplay, Controls, Touch Controls, Controller, Audio, Video, Accessibility, HUD, Save Data, and a localhost/developer-only category. Apply commits a sanitized draft; Cancel or close warns before discarding unsaved edits. Restore Category and Restore All Defaults are separate confirmed actions.
+
+- **Audio:** Master, Music, Sound Effects, UI, and future Voice volume; Mute All; and Audio Test. Menu/controller cues use UI Volume while combat uses Sound Effects Volume. Browser autoplay suspension is treated as a normal interaction requirement.
+- **Accessibility:** Full/Reduced/Off camera shake, screen flash, hit flash, and background motion; reduced ultimate effects; reduced Lens-overlay intensity; high-contrast HUD; larger text; stronger sprite outlines; and selectable clash methods. These settings never alter damage, hitboxes, timing, AI, or cooldowns. Because Local 2 Player shares one canvas, Lens still affects the shared view; Reduced Intensity is the supported accessibility option.
+- **HUD:** Full, Compact, Minimal, or automatic mobile layout. Health, energy, guard, breaker/ultimate availability, status text, combo/damage, cooldown icons, and Rrvvfo’s Shots/Lens/Object Swap information do not rely on color alone.
+- **Video:** Low, Medium, High, and Automatic presets cap particles and optional visual complexity only. Sprite smoothing, reduced menu motion, and an opt-in developer FPS counter do not affect simulation.
+- **Save Data:** Export produces inert JSON with schema `235`; import accepts only known string keys, validates nested JSON, and rolls back if writing fails. Settings-only, Training-preset, and full reset paths are scoped and confirmed. Existing `pxSave`, controller, touch, and Rrvvfo visual keys remain compatible.
+
+Combat messages can be Full, Important Only, or Off. Feedback is rate-limited so a held button cannot repeat warnings every frame. Optional hints use the active input style and wait until no combo, clash, or cinematic is active.
+
 ## Training Mode
 
 Choose Training Mode from the mode menu. Configure infinite health, energy, guard, guard regeneration, perfect-block practice, clash testing, and dummy behavior. Pre-match and live Training controls stay synchronized. During training, live controls can switch the dummy among:
@@ -197,21 +234,23 @@ Choose Training Mode from the mode menu. Configure infinite health, energy, guar
 - **Stationary:** stationary and passive; the separate “Stationary blocks” checkbox controls blocking.
 - **CPU Dummy:** fully controlled by the selected CPU difficulty.
 
-Perfect-block practice makes the stationary dummy throw a slow heavy at a predictable interval. Player 2 keyboard and controller attacks are ignored for every other non-CPU behavior. The HUD shows combo count, actual post-defense combo damage, scaling, guard damage, perfect-block timing, clash state, move list, ten recent semantic inputs, and a launcher-to-air-combo route written for the most recently used Keyboard, Nintendo, Xbox, PlayStation, Touch, or Custom layout.
+Additional future-ready choices include Crouch, Jump, Walk, Counterattack After Hit, Throw Attempt, and Random Defense. They use the same semantic gameplay actions as players and do not duplicate attacks.
 
-Reset Training with Y or the on-screen button. A reset cancels delayed attacks and clears projectiles, particles, effects, clashes, cinematics, camera transforms, Lens, armor, aura, traps, freeze, invulnerability, hitstun, guard-break/get-up state, startup, throws, breakers, counters, cooldowns, air dashes, juggle count, light-chain position, combo state, guard values, and both fighter positions. Quick restart applies the same transient cleanup without returning to character select.
+Perfect-block practice makes the stationary dummy throw a slow heavy at a predictable interval. Player 2 keyboard and controller attacks are ignored for every other non-CPU behavior. The HUD shows combo count, actual post-defense combo damage, scaling, guard damage, perfect-block timing, clash state, move list, the last 20 semantic actions, and a launcher-to-air-combo route written for the most recently used Keyboard, Nintendo, Xbox, PlayStation, Touch, or Custom layout.
 
-Use the always-visible **EXIT TRAINING** button or press Escape to return to character select. Exiting clears delayed attacks, projectiles, effects, input state, temporary abilities, and Training session state. Training settings do not affect Story, VS CPU, or local multiplayer.
+Reset Training with Y, Backspace, the touch Reset control, or the on-screen button. A reset cancels delayed attacks and clears projectiles, particles, effects, clashes, cinematics, camera transforms, Lens, armor, aura, traps, freeze, invulnerability, hitstun, guard-break/get-up state, startup, throws, breakers, counters, cooldowns, air dashes, juggle count, light-chain position, combo state, guard values, and both fighter positions. Quick tools can reset center/near either wall, swap sides, refill one resource, clear cooldowns/projectiles/clones/Lens/Object Swap/combo state, and save or load named Training presets.
+
+Use the always-visible **EXIT TRAINING** button, or choose Character Select from Pause. Escape opens/closes the consistent Pause flow. Exiting clears delayed attacks, projectiles, effects, input state, temporary abilities, and Training session state. Training settings do not affect Story, VS CPU, or local multiplayer.
 
 ## Smoke tests
 
 With the local server running, open `http://127.0.0.1:4173/tests/smoke.html`.
 
-The browser suite contains **115 checks** covering all Prototype 2.2/2.3 regressions plus all three controller styles, controller detection/preferences/assignment, three-hit chains, heavy finishers, directional launchers, simultaneous throws, launcher-to-air routes across keyboard/controller/touch, input-independent scaling, hit-stop buffering, custom remapping, adaptive Training prompts/history, safe simplified touch, virtual joystick/D-Pad directions, multi-touch holds, safe areas, browser resize/orientation, persisted layouts, mobile scrolling/Back behavior, haptics, clashes, guard, cinematic ultimates, AI, camera restoration, audio hooks, sprite manifest validation, fresh-Off and explicit-On behavior, unused-versus-failed preloads, per-fighter appearances, production/developer visibility, animation looping/completion/priority, visual state mapping, anchors, clone visuals, Lens/Object Swap presentation, cleanup, and legacy fallback.
+The browser suite contains **134 checks** covering all Prototype 2.2/2.3 regressions plus controller/touch mappings, combat systems, sprite fallback/appearance, menu availability, pause simulation gating, post-match actions/statistics, adaptive move prompts, QOL setting persistence, accessibility balance isolation, notification throttling, versioned save export/import/rollback, Training presets/tools, controller drift filtering, and first-time hints.
 
 ## Save compatibility
 
-Story completion continues to use the existing `pxSave` browser-storage key. Mirror matches remain disabled.
+Story completion continues to use the existing `pxSave` browser-storage key. Controller, touch, and Rrvvfo visual keys are preserved. QOL settings use `pxQolSettingsV1`; Training presets use `pxTrainingPresetsV1`; exported saves declare schema 235. Mirror matches remain disabled.
 
 ## Known limitations
 
@@ -221,5 +260,6 @@ Story completion continues to use the existing `pxSave` browser-storage key. Mir
 - Expanded fighters use contextual single-button specials rather than command motions.
 - Flow State is reserved for a later prototype and is not part of Lens of Truth.
 - Audio uses synthesized hooks until final sound and music assets are available.
+- Music and voice sliders are saved and routed for future files, but this build has no final music or voice library.
 - Cinematics use procedural 2D canvas effects; full sprite animation remains future presentation work.
 - Automated browser checks verify semantic touch/controller behavior, saved assignment logic, and mobile layout calculations, but hot-plug timing and menu feel across physical Nintendo/Xbox/PlayStation controllers, iOS Safari browser chrome, Android navigation modes, display cutouts, vibration support, and multi-finger ergonomics should also be tested on representative hardware.

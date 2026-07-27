@@ -13,17 +13,17 @@ export const LOST_YEAR_ROUTES=Object.freeze([
     color:'#e94b3c',
     missions:[
       {
-        id:'rrvvfo-01',
-        number:1,
-        title:'NO PEACE',
+        id:'rrvvfo-00',
+        number:0,
+        title:'NO MAXIMUMS',
         available:true,
-        status:'FOUNDATION READY',
-        description:'Opening Lost Year mission slot. The route framework, mission briefing, saving, and overlapping-story timeline are ready; the playable mission sequence is the next checkpoint.',
-        objectives:['Begin Rrvvfo’s Lost Year route','Establish his recovery and training period','Set up the first event that other routes will revisit'],
-        stage:'Tangai Dojo → Global Tournament area',
-        note:'The exact dialogue and cause of the first disturbance are intentionally not locked in this checkpoint.'
+        status:'PLAYABLE',
+        description:'The Sage trains Rrvvfo in an open field. Direct attacks cannot touch the Sage; Rrvvfo must develop four coordinated energy copies and catch him outside his prediction dodge.',
+        objectives:['Try to hit the Sage with normal attacks','Build Shots of Agony from one clone to four','Land the complete four-clone volley'],
+        stage:'Sage Training Field',
+        note:'The Sage is a story-only mentor opponent. He is not added to the standard playable roster.'
       },
-      {id:'rrvvfo-02',number:2,title:'LOCKED MISSION',available:false,status:'COMING NEXT',description:'Unlocks after Mission 1 is implemented.'}
+      {id:'rrvvfo-01',number:1,title:'NO PEACE',available:false,status:'NEXT MISSION',description:'The first post-training disturbance in Rrvvfo’s Lost Year route.'}
     ]
   },
   {

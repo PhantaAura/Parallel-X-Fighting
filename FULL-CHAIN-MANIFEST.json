@@ -1,0 +1,24 @@
+{
+  "name": "PX 2.5C1 Known Working Full Chain",
+  "base": "Parallel-X-Fighting prototype 2.3.5b rival sprite reimport",
+  "overlays": [
+    "PX_2_4A_Checkpoint_1.zip",
+    "PX_2_4A_Checkpoint_2_True_Isometric.zip",
+    "PX_2_4A_Checkpoint_3_WebGL_3D_Arena.zip",
+    "PX_2_4A_Checkpoint_4_WebGL_Hotbar_Restored.zip",
+    "PX_2_4B_Checkpoint_1_Depth_Combat.zip",
+    "PX_2_4B_Checkpoint_2_Control_Layouts.zip",
+    "PX_2_4B_Checkpoint_2_1_Mouse_Shift_Controls.zip",
+    "PX_2_4C_Checkpoint_1_Reusable_Arena_Pipeline.zip",
+    "PX_2_4C_Checkpoint_2_Global_Tournament.zip",
+    "PX_2_4C_Stage_Select_Hotfix.zip",
+    "PX_2_4C_Fighter_Visibility_Hotfix.zip",
+    "PX_2_4C_Lens_of_Truth_Blindness_Hotfix.zip",
+    "PX_2_4C_Lens_Blindness_Hotfix_2.zip",
+    "PX_2_5A_Lost_Year_Foundation.zip",
+    "PX_2_5B_Sonic_Battle_Movement.zip",
+    "PX_2_5C_Mission_0_No_Maximums.zip",
+    "PX_2_5C1_Story_Select_Battle_Dialogue_Hotfix.zip"
+  ],
+  "cache_tag": "25c1-known-working-full-chain"
+}

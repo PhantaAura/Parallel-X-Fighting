@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parallels X — Sonic Battle Theme Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:linear-gradient(180deg,#0055cc 0%,#003388 100%);
+  font-family:'Chakra Petch',Segoe UI,Arial,sans-serif;
+  color:#111122;
+  min-height:100vh;
+  padding:30px 20px;
+}
+.preview-title{
+  text-align:center;
+  color:#fff;
+  font-size:clamp(24px,4vw,40px);
+  font-weight:800;
+  text-shadow:0 4px 0 #111;
+  margin-bottom:8px;
+}
+.preview-sub{
+  text-align:center;
+  color:#ccddee;
+  font-size:14px;
+  font-weight:600;
+  margin-bottom:40px;
+}
+.preview-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:24px;
+  max-width:1200px;
+  margin:0 auto;
+}
+.preview-section{
+  background:#f0f4ff;
+  border:4px solid #111;
+  padding:20px;
+  box-shadow:0 8px 0 rgba(0,0,0,0.25);
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+}
+.preview-section h3{
+  color:#e62020;
+  font-size:14px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  margin-bottom:16px;
+}
+
+/* Menu buttons */
+.sb-btn{
+  display:block;
+  width:100%;
+  padding:14px 18px;
+  margin-bottom:8px;
+  border:3px solid #111;
+  background:#fff;
+  color:#111;
+  font-family:inherit;
+  font-size:16px;
+  font-weight:700;
+  text-transform:uppercase;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:0 4px 0 #888;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+  transition:transform .1s,background .1s;
+}
+.sb-btn:hover{
+  transform:translateX(6px) translateY(-2px);
+  background:#ffcc00;
+  box-shadow:0 6px 0 #cc9900;
+}
+.sb-btn.selected{
+  background:#ffcc00;
+  box-shadow:0 6px 0 #cc9900;
+}
+.sb-btn small{
+  float:right;
+  padding:2px 6px;
+  background:#e62020;
+  color:#fff;
+  font-size:9px;
+  font-weight:800;
+}
+
+/* Character cards */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.sb-card{
+  background:#fff;
+  border:3px solid #111;
+  padding:10px;
+  min-height:100px;
+  box-shadow:0 3px 0 #888;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+  transition:transform .12s;
+  cursor:pointer;
+}
+.sb-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 6px 0 #888;
+}
+.sb-card.p1{
+  border-color:#e62020;
+  background:#ffcc00;
+  box-shadow:0 4px 0 #cc9900;
+}
+.sb-card .card-portrait{
+  width:36px;height:36px;border:2px solid #111;background:#ccddee;border-radius:50%;margin:0 auto 6px;
+}
+.sb-card b{display:block;font-size:11px;font-weight:800;text-transform:uppercase;text-align:center;}
+.sb-card .origin{font-size:9px;color:#445577;text-align:center;font-weight:600;}
+
+/* Dialogue box */
+.dia-wrap{
+  display:flex;
+  align-items:flex-end;
+  gap:14px;
+}
+.dia-portrait{
+  width:80px;height:80px;border:4px solid #111;background:#fff;box-shadow:0 6px 0 rgba(0,0,0,0.2);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:10px;color:#888;font-weight:700;text-align:center;
+}
+.dia-box{
+  flex:1;
+  position:relative;
+  background:#fff;
+  border:4px solid #111;
+  padding:16px 18px;
+  box-shadow:0 8px 0 rgba(0,0,0,0.25);
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+}
+.dia-speaker{
+  position:absolute;
+  top:-16px;
+  left:12px;
+  padding:4px 12px;
+  background:#e62020;
+  border:3px solid #111;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  text-transform:uppercase;
+  box-shadow:0 4px 0 rgba(0,0,0,0.2);
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.dia-speaker.blue{background:#0055cc;}
+.dia-text{
+  font-size:15px;
+  font-weight:600;
+  line-height:1.6;
+  color:#111;
+}
+.dia-tail{
+  position:absolute;
+  top:100%;
+  left:32px;
+  width:0;height:0;
+  border-style:solid;
+  border-width:12px 10px 0 10px;
+  border-color:#111 transparent transparent transparent;
+}
+.dia-tail::after{
+  content:"";
+  position:absolute;
+  top:-16px;
+  left:-8px;
+  border-width:10px 8px 0 8px;
+  border-style:solid;
+  border-color:#fff transparent transparent transparent;
+}
+.dia-prompt{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:6px;
+  margin-top:10px;
+  padding-top:8px;
+  border-top:2px dashed #ccddee;
+}
+.dia-prompt span{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;}
+.dia-key{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:20px;padding:0 5px;background:#fff;border:2px solid #111;font-size:10px;font-weight:800;box-shadow:0 2px 0 #888;}
+
+/* HUD bars */
+.hud-demo{display:grid;gap:8px;}
+.hud-barbox{height:18px;background:rgba(0,0,0,0.5);border:2px solid #fff;padding:2px;}
+.hud-bar{height:100%;}
+.hud-hp{background:linear-gradient(90deg,#e62020,#ffcc00);}
+.hud-en{background:linear-gradient(90deg,#00aaff,#88ddff);}
+.hud-guard{background:linear-gradient(90deg,#ffcc00,#ff8800);}
+.hud-label{display:flex;justify-content:space-between;color:#fff;font-size:9px;font-weight:800;text-shadow:0 1px 2px #000;}
+
+/* Settings panel */
+.set-row{display:flex;gap:8px;margin-bottom:8px;}
+.set-btn{flex:1;padding:8px;border:3px solid #111;background:#fff;color:#111;font-family:inherit;font-size:12px;font-weight:700;text-transform:uppercase;box-shadow:0 3px 0 #888;cursor:pointer;}
+.set-btn.active{background:#ffcc00;box-shadow:0 3px 0 #cc9900;}
+.set-opt{padding:10px;border:3px solid #111;background:#fff;box-shadow:0 3px 0 #888;margin-bottom:8px;}
+.set-opt label{display:block;font-size:10px;font-weight:800;color:#445577;text-transform:uppercase;margin-bottom:4px;}
+.set-opt select{width:100%;padding:6px;background:#f0f4ff;border:2px solid #111;font-family:inherit;font-weight:600;}
+
+@media(max-width:600px){
+  .card-grid{grid-template-columns:repeat(2,1fr);}
+  .dia-portrait{display:none;}
+  body{padding:16px 12px;}
+}
+</style>
+</head>
+<body>
+
+<h1 class="preview-title">PARALLELS <span style="color:#ffcc00">X</span> — SONIC BATTLE THEME</h1>
+<p class="preview-sub">Visual preview of the UI overhaul. Scroll to see all components.</p>
+
+<div class="preview-grid">
+
+  <!-- MAIN MENU -->
+  <div class="preview-section">
+    <h3>Main Menu</h3>
+    <button class="sb-btn selected">STORY MODE — THE LOST YEAR <small>NEW</small></button>
+    <button class="sb-btn">CLASSIC VS CPU</button>
+    <button class="sb-btn">CLASSIC LOCAL 2 PLAYER</button>
+    <button class="sb-btn">CLASSIC TRAINING</button>
+    <button class="sb-btn">SETTINGS</button>
+    <button class="sb-btn" style="opacity:.45;background:#ccddee;">ARCADE MODE <small>SOON</small></button>
+  </div>
+
+  <!-- CHARACTER SELECT -->
+  <div class="preview-section">
+    <h3>Character Select</h3>
+    <div class="card-grid">
+      <div class="sb-card p1">
+        <div class="card-portrait"></div>
+        <b>Rrvvfo</b>
+        <div class="origin">Season 1</div>
+      </div>
+      <div class="sb-card">
+        <div class="card-portrait"></div>
+        <b>Revvfo</b>
+        <div class="origin">Season 2</div>
+      </div>
+      <div class="sb-card">
+        <div class="card-portrait"></div>
+        <b>Wade</b>
+        <div class="origin">Season 1</div>
+      </div>
+      <div class="sb-card">
+        <div class="card-portrait"></div>
+        <b>Bark</b>
+        <div class="origin">Season 1</div>
+      </div>
+      <div class="sb-card">
+        <div class="card-portrait"></div>
+        <b>Alt</b>
+        <div class="origin">OVA</div>
+      </div>
+      <div class="sb-card">
+        <div class="card-portrait"></div>
+        <b>Robert</b>
+        <div class="origin">Season 2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIALOGUE BOX -->
+  <div class="preview-section">
+    <h3>Dialogue Box</h3>
+    <div class="dia-wrap">
+      <div class="dia-portrait">Portrait<br>96×96</div>
+      <div class="dia-box">
+        <div class="dia-speaker">Rrvvfo</div>
+        <div class="dia-text">The Lost Year... that's what they call it. But we know the truth. We were there when everything burned.</div>
+        <div class="dia-tail"></div>
+        <div class="dia-prompt">
+          <span>Press</span><span class="dia-key">A</span><span>to continue</span>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="dia-wrap">
+      <div class="dia-portrait" style="display:none;"></div>
+      <div class="dia-box">
+        <div class="dia-speaker blue">Revvfo</div>
+        <div class="dia-text">Heh... let's see if your flames can match my blade. This ends now!</div>
+        <div class="dia-tail" style="left:auto;right:32px;"></div>
+        <div class="dia-prompt">
+          <span>Press</span><span class="dia-key">A</span><span>to continue</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div class="preview-section">
+    <h3>In-Game HUD</h3>
+    <div class="hud-demo">
+      <div class="hud-label"><span>RRVVFO</span><span>100 / 100</span></div>
+      <div class="hud-barbox"><div class="hud-bar hud-hp" style="width:78%"></div></div>
+      <div class="hud-label"><span>ENERGY</span><span>45</span></div>
+      <div class="hud-barbox" style="height:12px"><div class="hud-bar hud-en" style="width:45%"></div></div>
+      <div class="hud-label"><span>GUARD</span><span>62</span></div>
+      <div class="hud-barbox" style="height:10px"><div class="hud-bar hud-guard" style="width:62%"></div></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="preview-section">
+    <h3>Settings Panel</h3>
+    <div class="set-row">
+      <button class="set-btn active">Gameplay</button>
+      <button class="set-btn">Controls</button>
+      <button class="set-btn">Audio</button>
+    </div>
+    <div class="set-opt">
+      <label>CPU Difficulty</label>
+      <select><option>Easy</option><option selected>Normal</option><option>Hard</option><option>Insane</option></select>
+    </div>
+    <div class="set-opt">
+      <label>Round Time</label>
+      <select><option>60s</option><option selected>90s</option><option>120s</option><option>Infinite</option></select>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="preview-section">
+    <h3>Buttons</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button class="sb-btn" style="width:auto;display:inline-block;">CONFIRM</button>
+      <button class="sb-btn" style="width:auto;display:inline-block;background:#e62020;color:#fff;">DELETE SAVE</button>
+      <button class="sb-btn" style="width:auto;display:inline-block;background:#ffcc00;">START MATCH</button>
+    </div>
+    <br>
+    <div class="set-opt" style="background:#ffcc00;border-color:#111;">
+      <b style="font-size:14px;">Notice Box</b>
+      <p style="font-size:13px;margin-top:6px;font-weight:600;">This is how warnings and important notices appear. High contrast, impossible to miss.</p>
+    </div>
+  </div>
+
+</div>
+
+<p style="text-align:center;color:#ccddee;margin-top:40px;font-size:12px;font-weight:600;">
+  Preview generated for Parallels X: Clash of Souls — Sonic Battle Theme
+</p>
+
+</body>
+</html>

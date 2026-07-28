@@ -1,0 +1,95 @@
+/* Prototype 2.8B — Chapter 2 open tournament hub and full bracket */
+#rrvvfoMission2UI{position:fixed;inset:0;z-index:2100;pointer-events:none;font-family:Inter,Segoe UI,Arial,sans-serif;color:#080808}
+#rrvvfoMission2UI[hidden]{display:none!important}
+#rrvvfoMission2UI button{border:4px solid #080808;background:#fff;color:#080808;padding:10px 14px;font:1000 12px inherit;box-shadow:5px 5px 0 #080808;cursor:pointer}
+#rrvvfoMission2UI button:hover,#rrvvfoMission2UI button:focus-visible{background:#ffd557;outline:3px solid #1a79d2}
+#rrvvfoMission2UI button.primary{background:#d9232f;color:#fff}
+#rrvvfoMission2UI .chapter2Hud{position:absolute;inset:14px 14px auto;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+#rrvvfoMission2UI .chapter2Objective{width:min(560px,calc(100vw - 30px));padding:12px 15px;border:5px solid #080808;background:#fff;color:#080808;box-shadow:7px 7px 0 #080808;clip-path:polygon(0 0,97% 0,100% 16%,100% 100%,3% 100%,0 84%)}
+#rrvvfoMission2UI .chapter2Objective small,#rrvvfoMission2UI .chapter2Objective strong,#rrvvfoMission2UI .chapter2Objective span{display:block}
+#rrvvfoMission2UI .chapter2Objective small{color:#d51e2a;font-size:10px;font-weight:1000;letter-spacing:.13em}
+#rrvvfoMission2UI .chapter2Objective strong{margin-top:4px;font-size:clamp(19px,3vw,31px);line-height:.92;font-style:italic}
+#rrvvfoMission2UI .chapter2Objective span{margin-top:7px;font-size:12px;font-weight:850;line-height:1.35}
+#rrvvfoMission2UI .chapter2Stats{display:flex;gap:8px;align-items:stretch;pointer-events:auto}
+#rrvvfoMission2UI .chapter2Stats>span{min-width:100px;padding:8px 10px;border:4px solid #080808;background:#fff;box-shadow:5px 5px 0 #080808;text-align:center}
+#rrvvfoMission2UI .chapter2Stats small,#rrvvfoMission2UI .chapter2Stats strong{display:block}
+#rrvvfoMission2UI .chapter2Stats small{font-size:8px;color:#c81724;font-weight:1000;letter-spacing:.08em}
+#rrvvfoMission2UI .chapter2Stats strong{margin-top:2px;font-size:18px}
+#rrvvfoMission2UI .chapter2AreaTitle{position:absolute;left:50%;top:23%;transform:translate(-50%,-50%);min-width:min(720px,92vw);padding:18px 28px;border-block:6px solid #080808;background:#fffffff0;color:#080808;text-align:center;box-shadow:0 8px 0 #080808;animation:c2TitleIn .24s ease-out}
+#rrvvfoMission2UI .chapter2AreaTitle[hidden]{display:none!important}
+#rrvvfoMission2UI .chapter2AreaTitle small,#rrvvfoMission2UI .chapter2AreaTitle strong{display:block}
+#rrvvfoMission2UI .chapter2AreaTitle small{color:#d51e2a;font-weight:1000;letter-spacing:.18em}
+#rrvvfoMission2UI .chapter2AreaTitle strong{font-size:clamp(35px,7vw,76px);line-height:.88;font-style:italic}
+@keyframes c2TitleIn{from{opacity:0;transform:translate(-50%,-42%)}to{opacity:1;transform:translate(-50%,-50%)}}
+#rrvvfoMission2UI .chapter2Prompt{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);min-width:280px;padding:9px 15px;border:4px solid #080808;background:#ffd557;color:#080808;box-shadow:6px 6px 0 #080808;text-align:center}
+#rrvvfoMission2UI .chapter2Prompt[hidden]{display:none!important}
+#rrvvfoMission2UI .chapter2Prompt strong,#rrvvfoMission2UI .chapter2Prompt span{display:block}
+#rrvvfoMission2UI .chapter2Prompt span{margin-top:2px;font-size:9px;font-weight:1000;letter-spacing:.08em}
+#rrvvfoMission2UI .tournamentRunButton{position:absolute;right:18px;bottom:108px;min-width:120px;background:#fff0a8;pointer-events:auto;animation:runPulse .8s steps(2,end) infinite}
+#rrvvfoMission2UI .tournamentRunButton[hidden]{display:none!important}
+@keyframes runPulse{50%{transform:translateY(-2px)}}
+#rrvvfoMission2UI .chapter2Choice,
+#rrvvfoMission2UI .chapter2Qte,
+#rrvvfoMission2UI .levelUpOverlay,
+#rrvvfoMission2UI .tournamentCard,
+#rrvvfoMission2UI .beamClashOverlay,
+#rrvvfoMission2UI .routeEndOverlay{position:absolute;inset:0;display:grid;place-items:center;padding:18px;background:rgba(0,27,69,.9);pointer-events:auto}
+#rrvvfoMission2UI .chapter2Choice[hidden],
+#rrvvfoMission2UI .chapter2Qte[hidden],
+#rrvvfoMission2UI .levelUpOverlay[hidden],
+#rrvvfoMission2UI .tournamentCard[hidden],
+#rrvvfoMission2UI .beamClashOverlay[hidden],
+#rrvvfoMission2UI .routeEndOverlay[hidden]{display:none!important}
+#rrvvfoMission2UI .chapter2Choice article,
+#rrvvfoMission2UI .chapter2Qte article,
+#rrvvfoMission2UI .levelUpOverlay article,
+#rrvvfoMission2UI .tournamentCard article,
+#rrvvfoMission2UI .beamClashOverlay article,
+#rrvvfoMission2UI .routeEndCard{width:min(760px,95vw);padding:26px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:13px 13px 0 #080808;text-align:center}
+#rrvvfoMission2UI article>small{color:#d51e2a;font-weight:1000;letter-spacing:.14em}
+#rrvvfoMission2UI article h2{margin:6px 0 10px;font-size:clamp(38px,7vw,72px);line-height:.86;font-style:italic}
+#rrvvfoMission2UI article p{font-weight:850;line-height:1.5}
+#rrvvfoMission2UI [data-c2-choice-buttons]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+#rrvvfoMission2UI [data-c2-choice-buttons] button{min-height:64px;font-size:15px}
+#rrvvfoMission2UI .qteSequence{display:flex;justify-content:center;gap:12px;margin:20px 0}
+#rrvvfoMission2UI .qteSequence span{display:grid;place-items:center;min-width:86px;height:62px;border:4px solid #080808;background:#fff;font-size:20px;font-weight:1000}
+#rrvvfoMission2UI .qteSequence span.current{background:#ffd557;transform:translateY(-4px)}
+#rrvvfoMission2UI .qteSequence span.done{background:#90de8b}
+#rrvvfoMission2UI .qteButtons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#rrvvfoMission2UI .qteTimer,#rrvvfoMission2UI .clashMeter{height:18px;margin-top:16px;border:4px solid #080808;background:#dfe6ef;overflow:hidden}
+#rrvvfoMission2UI .qteTimer i{display:block;height:100%;width:100%;background:#e52b2f}
+#rrvvfoMission2UI .levelRewards,#rrvvfoMission2UI .routeEndRewards{display:grid;gap:8px;margin:18px 0;text-align:left}
+#rrvvfoMission2UI .levelRewards span,#rrvvfoMission2UI .routeEndRewards span{display:flex;justify-content:space-between;gap:12px;padding:11px 13px;border:3px solid #080808;background:#eef7ff;font-weight:1000}
+#rrvvfoMission2UI .tournamentCard article{background:linear-gradient(145deg,#fff 0 64%,#ffe6ef 64% 100%)}
+#rrvvfoMission2UI .tournamentCard button,#rrvvfoMission2UI .levelUpOverlay button,#rrvvfoMission2UI .routeEndOverlay button{min-width:250px;min-height:60px;margin-top:8px}
+#rrvvfoMission2UI .beamClashOverlay{background:rgba(20,5,28,.96)}
+#rrvvfoMission2UI .beamClashVisual{position:relative;height:110px;margin:22px 0;border:5px solid #080808;background:#130c1d;overflow:hidden}
+#rrvvfoMission2UI .beamClashVisual .rrBeam,#rrvvfoMission2UI .beamClashVisual .ploukeBeam{position:absolute;top:34px;height:36px}
+#rrvvfoMission2UI .beamClashVisual .rrBeam{left:0;width:55%;background:linear-gradient(90deg,#ff3d25,#ffba45)}
+#rrvvfoMission2UI .beamClashVisual .ploukeBeam{right:0;width:55%;background:linear-gradient(90deg,#e8e2d4,#8d75d7)}
+#rrvvfoMission2UI .beamClashVisual b{position:absolute;left:18%;top:15px;width:26px;height:74px;border:4px solid #fff;background:#ffd877;box-shadow:0 0 28px #fff;transform:translateX(-50%)}
+#rrvvfoMission2UI .clashMeter i{display:block;height:100%;width:18%;background:#ff7b31}
+#rrvvfoMission2UI .beamClashOverlay [data-clash-input]{min-width:220px;min-height:66px;background:#d9232f;color:#fff;font-size:20px}
+#rrvvfoMission2UI .beamClashOverlay [data-clash-time]{display:block;margin-top:12px;color:#080808;font-size:18px}
+#arenaModeScreen.chapter2HubMode .top,
+#arenaModeScreen.chapter2HubMode .arenaHotbar,
+#arenaModeScreen.chapter2HubMode .bottom,
+#arenaModeScreen.chapter2HubMode .arenaTouchControls,
+#arenaModeScreen.chapter2HubMode .arenaTouchUtilities,
+#arenaModeScreen.chapter2HubMode .clock{opacity:0!important;pointer-events:none!important}
+#arenaModeScreen.chapter2HubMode .badge{top:auto;bottom:15px;right:15px;opacity:.82}
+@media(max-width:900px){
+  #rrvvfoMission2UI .chapter2Hud{display:grid}
+  #rrvvfoMission2UI .chapter2Stats{justify-content:flex-end}
+  #rrvvfoMission2UI .chapter2Stats>span{min-width:82px}
+}
+@media(max-width:620px){
+  #rrvvfoMission2UI .chapter2Hud{inset:8px 8px auto}
+  #rrvvfoMission2UI .chapter2Objective{padding:9px 11px;box-shadow:4px 4px 0 #080808}
+  #rrvvfoMission2UI .chapter2Stats>span{display:none}
+  #rrvvfoMission2UI .chapter2Stats button{padding:8px 10px;font-size:9px}
+  #rrvvfoMission2UI .chapter2Prompt{bottom:82px;min-width:230px}
+  #rrvvfoMission2UI [data-c2-choice-buttons],#rrvvfoMission2UI .qteButtons{grid-template-columns:1fr}
+  #rrvvfoMission2UI .qteSequence span{min-width:64px;height:54px}
+  #rrvvfoMission2UI .chapter2Choice article,#rrvvfoMission2UI .chapter2Qte article,#rrvvfoMission2UI .levelUpOverlay article,#rrvvfoMission2UI .tournamentCard article,#rrvvfoMission2UI .beamClashOverlay article,#rrvvfoMission2UI .routeEndCard{padding:18px;box-shadow:7px 7px 0 #080808}
+}

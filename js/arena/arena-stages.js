@@ -26,6 +26,30 @@ function trainingRoadScenery(){
   }
   return boxes;
 }
+
+function expandedTrainingRegionScenery(){
+  const boxes=[];
+  const treeColors=['#2d5b34','#3d7240','#274f2e','#4a7b44'];
+  const trunk='#5a3c28';
+  const addTree=(x,z,scale=1,index=0)=>{
+    boxes.push({x,y:48*scale,z,sx:23*scale,sy:96*scale,sz:23*scale,color:trunk});
+    boxes.push({x,y:120*scale,z,sx:96*scale,sy:100*scale,sz:96*scale,color:treeColors[index%treeColors.length]});
+  };
+  for(let x=-1900,index=0;x<=1900;x+=145,index++){
+    addTree(x,-1320,.9+(index%3)*.08,index);
+    addTree(x,1320,.94+((index+1)%3)*.07,index+2);
+  }
+  for(let z=-1180,index=0;z<=1180;z+=145,index++){
+    addTree(-1900,z,.9+(index%2)*.08,index+1);
+    addTree(1900,z,.9+((index+1)%2)*.08,index+3);
+  }
+  for(let x=-1650,index=0;x<=1650;x+=220,index++){
+    if(Math.abs(x)<360)continue;
+    addTree(x,-980,.72+(index%2)*.08,index+1);
+    addTree(x,980,.74+((index+1)%2)*.08,index+3);
+  }
+  return boxes;
+}
 function tournamentCrowd(){
   const boxes=[];
   const colors=['#e0577f','#4db5d7','#f4b85a','#7659c7','#66b979','#d76d4d'];
@@ -320,13 +344,183 @@ const TRAINING_ROAD={
   }
 };
 
+
+const EXPANDED_TRAINING_REGION={
+  schema:ARENA_STAGE_SCHEMA_VERSION,
+  id:'expanded-training-region',
+  name:'Expanded Training Region',
+  subtitle:'Non-linear Chapter 3 investigation hub',
+  available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.75},
+  bounds:{minX:-2000,maxX:2000,minZ:-1400,maxZ:1400},
+  spawnPoints:[{x:-260,z:110},{x:-420,z:-40}],
+  projectileLimits:{padding:280,minY:-40,maxY:760},
+  ai:{wallMargin:140},
+  camera:{
+    yawDeg:38,
+    fov:45,
+    clear:'#7fc5eb',
+    fogColor:'#b5d9e8',
+    fogRange:[1150,3600],
+    focusClampX:1900,
+    focusClampZ:1300,
+    baseDistance:1080,
+    separationScale:.15,
+    minDistance:1040,
+    maxDistance:1240,
+    heightBase:470,
+    heightDistanceScale:.15,
+    horizontalDistanceScale:.8,
+    targetHeight:45,
+    jumpTargetScale:.16,
+    focusSmoothing:.08,
+    zoomSmoothing:.06
+  },
+  floor:{
+    base:{x:0,y:-30,z:0,sx:4200,sy:60,sz:3000,color:'#3b6036'},
+    surface:{x:0,y:1,z:0,sx:4080,sy:5,sz:2880,color:'#6da153'},
+    grid:{stepX:290,stepZ:250,y:4,widthX:1,widthZ:1,height:.8,color:'#d5edba',alphaX:.035,alphaZ:.03},
+    centerMark:{x:-40,y:5,z:80,radius:170,segments:44,width:3,height:1.4,color:'#e9f3bc',alpha:.32,crossRadius:200,crossWidth:2,crossAlpha:.16}
+  },
+  scenery:{
+    boxes:[
+      {x:0,y:-43,z:0,sx:4420,sy:30,sz:3220,color:'#31522e'},
+      ...expandedTrainingRegionScenery(),
+
+      // Central plaza and readable road network.
+      {x:-40,y:6,z:80,sx:760,sy:8,sz:620,color:'#c7aa75'},
+      {x:680,y:6,z:110,sx:1260,sy:8,sz:190,color:'#c7aa75'},
+      {x:-750,y:6,z:120,sx:1320,sy:8,sz:190,color:'#c7aa75'},
+      {x:210,y:6,z:-590,sx:190,sy:8,sz:1280,color:'#c7aa75'},
+      {x:-360,y:6,z:650,sx:190,sy:8,sz:1220,color:'#c7aa75'},
+      {x:1040,y:6,z:-470,sx:850,sy:8,sz:170,color:'#c7aa75'},
+      {x:-1180,y:6,z:650,sx:760,sy:8,sz:170,color:'#c7aa75'},
+
+      // Dojo district.
+      {x:-200,y:95,z:-335,sx:640,sy:190,sz:330,color:'#3a2637'},
+      {x:-200,y:202,z:-335,sx:720,sy:30,sz:390,color:'#a32938'},
+      {x:-200,y:240,z:-335,sx:800,sy:22,sz:450,color:'#281a29'},
+      {x:-460,y:72,z:-120,sx:36,sy:144,sz:36,color:'#6c4930'},
+      {x:60,y:72,z:-120,sx:36,sy:144,sz:36,color:'#6c4930'},
+
+      // Northern hall / training annex.
+      {x:930,y:86,z:-770,sx:500,sy:172,sz:280,color:'#3c4f69'},
+      {x:930,y:183,z:-770,sx:565,sy:28,sz:335,color:'#d1a64e'},
+      {x:930,y:218,z:-770,sx:630,sy:20,sz:380,color:'#243044'},
+
+      // South market buildings.
+      {x:-850,y:62,z:690,sx:390,sy:124,sz:250,color:'#b45b3f'},
+      {x:-850,y:135,z:690,sx:440,sy:22,sz:300,color:'#572d2d'},
+      {x:-440,y:58,z:730,sx:280,sy:116,sz:220,color:'#3f78b0'},
+      {x:-440,y:126,z:730,sx:320,sy:22,sz:260,color:'#243f5a'},
+
+      // East service structures and observation tower.
+      {x:1180,y:58,z:410,sx:330,sy:116,sz:240,color:'#6b4aa7'},
+      {x:1180,y:128,z:410,sx:380,sy:24,sz:285,color:'#352448'},
+      {x:1510,y:120,z:-520,sx:90,sy:240,sz:90,color:'#4b4f58'},
+      {x:1510,y:270,z:-520,sx:180,sy:32,sz:180,color:'#c84a43'},
+
+      // Smaller props to break up long sightlines without creating dead ends.
+      {x:500,y:28,z:430,sx:120,sy:56,sz:80,color:'#8f7759'},
+      {x:760,y:24,z:650,sx:95,sy:48,sz:72,color:'#806e54'},
+      {x:-1210,y:24,z:120,sx:95,sy:48,sz:72,color:'#8b775c'},
+      {x:-1450,y:28,z:-420,sx:120,sy:56,sz:80,color:'#806e54'},
+      {x:1280,y:26,z:780,sx:108,sy:52,sz:76,color:'#8f7959'}
+    ],
+    lamps:[
+      {x:-420,z:250},{x:360,z:250},{x:-420,z:-70},{x:360,z:-70},
+      {x:720,z:90},{x:-840,z:105},{x:210,z:-640},{x:-350,z:690}
+    ],
+    lamp:{post:{y:68,sx:12,sy:136,sz:12,color:'#463224'},light:{y:146,sx:35,sy:35,sz:35,color:'#fff0a3',alpha:.9,lit:false}}
+  }
+};
+
+
+
+const LOCAL_TOURNAMENT_HUB={
+  schema:ARENA_STAGE_SCHEMA_VERSION,
+  id:'tournament-hub',
+  name:'Local Tournament Grounds',
+  subtitle:'Open Chapter 2 story hub',
+  available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.75},
+  bounds:{minX:-1800,maxX:1800,minZ:-1120,maxZ:1120},
+  spawnPoints:[{x:-1510,z:80},{x:-1380,z:-80}],
+  projectileLimits:{padding:280,minY:-40,maxY:760},
+  ai:{wallMargin:135},
+  camera:{
+    yawDeg:37,fov:45,clear:'#8cccf1',fogColor:'#c5dfec',fogRange:[1100,3400],
+    focusClampX:1710,focusClampZ:1030,baseDistance:1040,separationScale:.15,
+    minDistance:1000,maxDistance:1240,heightBase:455,heightDistanceScale:.15,
+    horizontalDistanceScale:.8,targetHeight:44,jumpTargetScale:.16,
+    focusSmoothing:.08,zoomSmoothing:.06
+  },
+  floor:{
+    base:{x:0,y:-30,z:0,sx:3820,sy:60,sz:2440,color:'#415f39'},
+    surface:{x:0,y:1,z:0,sx:3700,sy:5,sz:2320,color:'#75a95b'},
+    grid:{stepX:280,stepZ:240,y:4,widthX:1,widthZ:1,height:.8,color:'#e2f1c9',alphaX:.035,alphaZ:.03},
+    centerMark:{x:-310,y:5,z:40,radius:180,segments:44,width:4,height:1.5,color:'#f4d25b',alpha:.48,crossRadius:215,crossWidth:2,crossAlpha:.22}
+  },
+  scenery:{
+    boxes:[
+      {x:0,y:-43,z:0,sx:4050,sy:30,sz:2700,color:'#34522f'},
+      // Main road and plaza.
+      {x:-640,y:6,z:40,sx:2200,sy:8,sz:210,color:'#c8aa76'},
+      {x:-310,y:6,z:40,sx:980,sy:9,sz:760,color:'#d7bb85'},
+      {x:520,y:6,z:40,sx:800,sy:8,sz:230,color:'#c8aa76'},
+      {x:1060,y:6,z:40,sx:460,sy:8,sz:260,color:'#c8aa76'},
+      // Stadium and fighter gate at the east landmark.
+      {x:1490,y:205,z:40,sx:470,sy:410,sz:1420,color:'#2c1c38'},
+      {x:1410,y:430,z:40,sx:520,sy:42,sz:1530,color:'#d54682'},
+      {x:1350,y:490,z:40,sx:575,sy:32,sz:1640,color:'#f1c85a'},
+      {x:1250,y:104,z:40,sx:90,sy:208,sz:480,color:'#1a1023'},
+      {x:1200,y:235,z:-300,sx:38,sy:450,sz:38,color:'#5c3267'},
+      {x:1200,y:235,z:380,sx:38,sy:450,sz:38,color:'#5c3267'},
+      // Registration district north of plaza.
+      {x:-120,y:58,z:-560,sx:430,sy:116,sz:250,color:'#3f78b2'},
+      {x:-120,y:130,z:-560,sx:490,sy:28,sz:310,color:'#263e5a'},
+      {x:-520,y:48,z:-610,sx:260,sy:96,sz:210,color:'#b45c42'},
+      {x:-520,y:108,z:-610,sx:300,sy:24,sz:250,color:'#5a2d2b'},
+      // Food street and rest area south of plaza.
+      {x:-680,y:52,z:620,sx:330,sy:104,sz:230,color:'#c45e3f'},
+      {x:-680,y:116,z:620,sx:380,sy:24,sz:275,color:'#602e29'},
+      {x:-300,y:48,z:650,sx:280,sy:96,sz:210,color:'#5d4aa8'},
+      {x:-300,y:108,z:650,sx:330,sy:24,sz:250,color:'#30264e'},
+      // Practice ring west/south-west.
+      {x:-1120,y:7,z:560,sx:540,sy:12,sz:430,color:'#d8ca9e'},
+      {x:-1120,y:10,z:560,sx:440,sy:8,sz:330,color:'#efe4bd'},
+      {x:-1385,y:42,z:560,sx:18,sy:84,sz:460,color:'#5e3b2f'},
+      {x:-855,y:42,z:560,sx:18,sy:84,sz:460,color:'#5e3b2f'},
+      {x:-1120,y:42,z:330,sx:540,sy:84,sz:18,color:'#5e3b2f'},
+      {x:-1120,y:42,z:790,sx:540,sy:84,sz:18,color:'#5e3b2f'},
+      // Waiting tent and bracket board.
+      {x:640,y:66,z:-520,sx:420,sy:132,sz:300,color:'#9e3457'},
+      {x:640,y:146,z:-520,sx:490,sy:28,sz:360,color:'#f0c85d'},
+      {x:930,y:94,z:-540,sx:38,sy:188,sz:260,color:'#2e2338'},
+      // Trees and carts create readable districts without invisible walls.
+      {x:-1540,y:58,z:-760,sx:28,sy:116,sz:28,color:'#5d3d29'},
+      {x:-1540,y:145,z:-760,sx:130,sy:120,sz:130,color:'#397442'},
+      {x:-1540,y:58,z:820,sx:28,sy:116,sz:28,color:'#5d3d29'},
+      {x:-1540,y:145,z:820,sx:130,sy:120,sz:130,color:'#397442'},
+      {x:-980,y:26,z:-650,sx:110,sy:52,sz:78,color:'#887258'},
+      {x:260,y:24,z:670,sx:96,sy:48,sz:72,color:'#806c54'},
+      {x:830,y:28,z:670,sx:118,sy:56,sz:82,color:'#90795a'}
+    ],
+    lamps:[
+      {x:-900,z:-120},{x:-420,z:-120},{x:80,z:-120},{x:560,z:-120},
+      {x:-900,z:220},{x:-420,z:220},{x:80,z:220},{x:560,z:220}
+    ],
+    lamp:{post:{y:70,sx:12,sy:140,sz:12,color:'#463224'},light:{y:150,sx:36,sy:36,sz:36,color:'#fff0a3',alpha:.9,lit:false}}
+  }
+};
+
 export const ARENA_STAGE_CATALOG=deepFreeze([
   {id:'dojo',name:'Tangai Dojo',status:'Playable',available:true,role:'Medium closed arena'},
   {id:'tournament',name:'Global Tournament',status:'Playable',available:true,role:'Large long-range arena • 1500 × 900'},
   {id:'asrylyte',name:'Asrylyte Zone',status:'Next effects checkpoint',available:false,role:'Small effects-heavy arena'}
 ]);
 
-export const ARENA_STAGES=deepFreeze({dojo:TANGAI_DOJO,tournament:GLOBAL_TOURNAMENT,'training-field':TRAINING_FIELD,'training-road':TRAINING_ROAD});
+export const ARENA_STAGES=deepFreeze({dojo:TANGAI_DOJO,tournament:GLOBAL_TOURNAMENT,'training-field':TRAINING_FIELD,'training-road':TRAINING_ROAD,'expanded-training-region':EXPANDED_TRAINING_REGION,'tournament-hub':LOCAL_TOURNAMENT_HUB});
 
 export function validateArenaStage(stage){
   const errors=[];

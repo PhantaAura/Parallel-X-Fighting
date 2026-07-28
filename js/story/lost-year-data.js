@@ -57,11 +57,24 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         available:true,
         playable:true,
         unlockAfter:'rrvvfo-road',
-        status:'PLAYABLE STORY SCENE',
-        description:'Rrvvfo enters the tournament grounds, insults the arena design, completes registration, checks the bracket, and heads toward his first match.',
-        objectives:['Enter the tournament grounds','Complete registration','Inspect the bracket board','Reach the fighter entrance'],
-        stage:'Global Tournament — Entrance Hub',
-        note:'This is Chapter 2. The tournament matches and living 3D hub expansion continue in later updates.'
+        status:'PLAYABLE OPEN HUB + TOURNAMENT',
+        description:'Rrvvfo explores an open tournament hub, witnesses the Sage vanish, unlocks Story Training Levels, meets Bark and Wade, enters the bracket, reaches the final, and discovers Plouke was the Sage in disguise.',
+        objectives:['Explore the open tournament hub','Win the first brawl and unlock Training Levels','Meet Bark and Wade; optionally spar with Bark','Defeat two random tournament entrants and Wade','Watch Pouki overwhelm Bark','Survive the programmed final loss against Plouke and reveal the Sage'],
+        stage:'Local Tournament Grounds + Tournament Ring',
+        note:'This is the complete Chapter 2 tournament structure. Non-story grunts and Bark’s pre-tournament spar remain optional.'
+      },
+      {
+        id:'rrvvfo-03-preview',
+        number:3,
+        title:'CLOSED OFF',
+        available:true,
+        playable:true,
+        unlockAfter:'rrvvfo-02',
+        status:'DEVELOPMENT PREVIEW',
+        description:'After the tournament, Rrvvfo returns to a much larger Training Region and finds several routes exploded, barricaded, or sealed. He questions locals until a strange man offers a lead into an underground teleporter base.',
+        objectives:['Explore the expanded Training Region in any order','Inspect at least two blocked routes','Question local NPCs','Meet the strange man in the central plaza','Find the underground base entrance'],
+        stage:'Expanded Training Region',
+        note:'This preview begins Chapter 3 without pretending the unfinished tournament is already implemented. The finished release will unlock it only after the full Chapter 2 tournament.'
       }
     ]
   },
@@ -135,8 +148,13 @@ export const RRVVFO_CHAPTERS=Object.freeze([
   },
   {
     id:'rrvvfo-chapter-2',number:2,title:'DEFINITELY NOT THE WORLD TOURNAMENT',
-    description:'Arrival, registration, bracket inspection, and the fighter entrance.',
+    description:'Open tournament hub, Sage’s strange disappearance, Training Levels, optional fights, the full bracket, Pouki defeating Bark, and the final against Plouke.',
     missions:['rrvvfo-02']
+  },
+  {
+    id:'rrvvfo-chapter-3',number:3,title:'CLOSED OFF',
+    description:'Development preview: a larger non-linear Training Region, several destroyed routes, NPC investigation, the strange man, and the underground-base lead.',
+    missions:['rrvvfo-03-preview'],preview:true
   }
 ]);
 

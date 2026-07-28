@@ -7,12 +7,13 @@ import {
   rrvvfoNextMission,
   rrvvfoRouteStarted,
   saveLostYearProgress
-} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=27b-living-training-road-20260727-232814';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=27b-living-training-road-20260727-232814';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=27b-living-training-road-20260727-232814';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=27b1-road-rebuild-20260727-235117';
-import {combatManualOwned,openCombatManual} from './combat-manual.js?v=27b1-road-rebuild-20260727-235117';
+} from './lost-year-data.js?v=28b1-chapter2-compat-20260728-022318';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=28b1-chapter2-compat-20260728-022318';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=28b1-chapter2-compat-20260728-022318';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=28b1-chapter2-compat-20260728-022318';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=28b1-chapter2-compat-20260728-022318';
+import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=28b1-chapter2-compat-20260728-022318';
+import {combatManualOwned,openCombatManual} from './combat-manual.js?v=28b1-chapter2-compat-20260728-022318';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -39,7 +40,7 @@ function buildScreen(){
         <span class="lyChip">CHARACTER ROUTES</span>
         <span class="lyChip">CONTINUOUS CHAPTERS</span>
         <span class="lyChip">LOCAL SAVE</span>
-        <span class="lyChip">RRVVFO CHAPTERS 1–2</span>
+        <span class="lyChip">FULL CHAPTER 2 TOURNAMENT</span>
       </div>
       <div class="lyLayout" data-ly-layout>
         <main class="routeView" data-route-view><div class="routeGrid" data-route-grid></div></main>
@@ -225,10 +226,10 @@ class LostYearStoryScreen{
         <div class="routeHomeHero">
           <small>THE LOST YEAR • CONTINUOUS ROUTE</small>
           <h2>${complete?'CURRENT STORY COMPLETE':'CONTINUE THE ROUTE'}</h2>
-          <p>${complete?'Rrvvfo has crossed the living Training Grounds road and entered the tournament. The tournament matches and full tournament hub expansion continue in later overhaul phases.':'Sage training, the manual refresher, the living Training Grounds road, and tournament arrival now run as one connected story without returning to Mission Select.'}</p>
+          <p>${complete?'Rrvvfo completed the local tournament and exposed Plouke as the Sage in disguise. Chapter 3 now follows the finished tournament as a separate development preview.':'Sage training, the manual refresher, the living road, the open tournament hub, and the complete bracket now run as one connected story without returning to Mission Select.'}</p>
           <div class="routeProgressTrack" style="--route-progress:${percent}%"><i></i></div>
           <strong>${percent}% OF CURRENT RRVVFO CONTENT COMPLETE</strong>
-          ${complete?'<div class="routeCompleteNote">CHAPTER 2 COMPLETE • THE TRAINING ROAD IS PLAYABLE. TOURNAMENT MATCHES AND THE FULL TOURNAMENT HUB ARE IN DEVELOPMENT.</div>':''}
+          ${complete?'<div class="routeCompleteNote">CHAPTER 2 TOURNAMENT COMPLETE • CHAPTER 3 OPENING PREVIEW AVAILABLE FOR TESTING.</div>':''}
           <div class="routeHomeActions">
             <button type="button" class="primary" data-continue-route ${complete?'disabled':''}><strong>${complete?'CURRENT CONTENT COMPLETE':'CONTINUE STORY'}</strong><span>${complete?'Use Chapter Select to replay.':'Loads the next unfinished checkpoint.'}</span></button>
             <button type="button" data-open-manual ${manualReady?'':'disabled'}><strong>COMBAT MANUAL</strong><span>${manualReady?'Review every unlocked page.':'Sage has not given it to Rrvvfo yet.'}</span></button>
@@ -240,9 +241,10 @@ class LostYearStoryScreen{
           ${RRVVFO_CHAPTERS.map(chapter=>{
             const chapterComplete=rrvvfoChapterComplete(chapter,this.progress);
             const unlocked=chapter.number===1||this.progress.completedMissions.includes('rrvvfo-road')||this.progress.completedMissions.includes('rrvvfo-02');
+            const status=chapterComplete?'COMPLETE':chapter.preview&&unlocked?'DEVELOPMENT PREVIEW':unlocked?'PLAYABLE':'LOCKED';
             return `<button type="button" class="chapterCard" data-chapter-number="${chapter.number}" ${unlocked?'':'disabled'}>
               <span class="chapterNumber">${chapter.number}</span>
-              <span><small>${chapterComplete?'COMPLETE':unlocked?'PLAYABLE':'LOCKED'}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span>
+              <span><small>${status}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span>
             </button>`;
           }).join('')}
         </div>
@@ -269,6 +271,8 @@ class LostYearStoryScreen{
       this.startStep(firstIncomplete||'rrvvfo-00','chapter1');
     }else if(number===2&&(this.progress.completedMissions.includes('rrvvfo-road')||this.progress.completedMissions.includes('rrvvfo-02'))){
       this.startStep('rrvvfo-02','chapter2');
+    }else if(number===3&&this.progress.completedMissions.includes('rrvvfo-02')){
+      this.startStep('rrvvfo-03-preview','chapter3-preview');
     }
   }
 
@@ -277,7 +281,8 @@ class LostYearStoryScreen{
       'rrvvfo-00':startRrvvfoMission0,
       'rrvvfo-01':startRrvvfoMission1,
       'rrvvfo-road':startRrvvfoRoadHub,
-      'rrvvfo-02':startRrvvfoMission2
+      'rrvvfo-02':startRrvvfoMission2,
+      'rrvvfo-03-preview':startRrvvfoChapter3Preview
     };
     const starter=starters[stepId];
     if(!starter)return;

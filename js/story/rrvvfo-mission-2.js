@@ -1,6 +1,6 @@
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27a-continuous-route-20260727-225332';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27a-continuous-route-20260727-225332';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=27a-continuous-route-20260727-225332';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b-living-training-road-20260727-232814';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=27b-living-training-road-20260727-232814';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -37,7 +37,7 @@ function buildUI(){
       <article class="routeEndCard">
         <small>RRVVFO ROUTE • CHAPTER 2 COMPLETE</small>
         <h2>TOURNAMENT ENTRY CONFIRMED</h2>
-        <p>Rrvvfo has officially entered the tournament. The remaining tournament matches, roaming challengers, side stories, and fully explorable living 3D hubs continue in future overhaul phases.</p>
+        <p>Rrvvfo has officially entered the tournament. The remaining tournament matches, roaming challengers, side stories, and the full tournament hub continue in future overhaul phases.</p>
         <div class="routeEndActions">
           <button class="tournamentAction" type="button" data-end-manual>OPEN COMBAT MANUAL</button>
           <button class="tournamentAction" type="button" data-end-route>RETURN TO RRVVFO ROUTE</button>

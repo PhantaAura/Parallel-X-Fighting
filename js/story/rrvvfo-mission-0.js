@@ -1,6 +1,6 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27a-continuous-route-20260727-225332';
-import {clampToStage} from '../arena/arena-stages.js?v=27a-continuous-route-20260727-225332';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27a-continuous-route-20260727-225332';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27b-living-training-road-20260727-232814';
+import {clampToStage} from '../arena/arena-stages.js?v=27b-living-training-road-20260727-232814';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

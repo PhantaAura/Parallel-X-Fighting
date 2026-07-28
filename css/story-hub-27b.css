@@ -1,0 +1,94 @@
+/* Prototype 2.7B — playable living Training Grounds and road */
+#arenaModeScreen.storyRoadHub .top,
+#arenaModeScreen.storyRoadHub .clock,
+#arenaModeScreen.storyRoadHub .bottom,
+#arenaModeScreen.storyRoadHub .comboCallout,
+#arenaModeScreen.storyRoadHub .lensBlindness,
+#arenaModeScreen.storyRoadHub .arenaNotice{transition:opacity .16s}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .top,
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .clock,
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .bottom{opacity:0;pointer-events:none}
+#arenaModeScreen.storyRoadHub .badge{top:auto;right:14px;bottom:104px;max-width:320px}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaHotbar{width:min(520px,76vw)}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaSlots{grid-template-columns:repeat(5,minmax(58px,1fr))}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbility{height:64px}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbility:nth-child(1),
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbility:nth-child(5){opacity:.34;filter:grayscale(1)}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaIcon{font-size:19px;line-height:20px}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbilityName{font-size:9px}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaCost{display:none}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaState{font-size:7px}
+#arenaModeScreen.storyRoadHub.storyRoadFight .badge{bottom:118px}
+
+#rrvvfoRoadHubUI{position:fixed;inset:0;z-index:1760;pointer-events:none;color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif}
+#rrvvfoRoadHubUI[hidden]{display:none!important}
+#rrvvfoRoadHubUI *{box-sizing:border-box}
+#rrvvfoRoadHubUI .roadHud{position:absolute;inset:16px 16px auto;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+#rrvvfoRoadHubUI .roadObjective{width:min(520px,calc(100vw - 32px));padding:12px 15px;border:4px solid #080808;background:#fff;color:#080808;box-shadow:7px 7px 0 #080808;clip-path:polygon(0 0,97% 0,100% 15%,100% 100%,3% 100%,0 85%)}
+#rrvvfoRoadHubUI .roadObjective small,#rrvvfoRoadHubUI .roadObjective strong,#rrvvfoRoadHubUI .roadObjective span{display:block}
+#rrvvfoRoadHubUI .roadObjective small{color:#d51f2b;font-size:10px;font-weight:1000;letter-spacing:.12em}
+#rrvvfoRoadHubUI .roadObjective strong{margin-top:4px;font-size:clamp(19px,3vw,31px);line-height:.95;font-style:italic}
+#rrvvfoRoadHubUI .roadObjective span{margin-top:7px;font-size:12px;font-weight:850}
+#rrvvfoRoadHubUI .roadHudActions{display:flex;gap:8px;pointer-events:auto}
+#rrvvfoRoadHubUI button{border:4px solid #080808;background:#fff;color:#080808;padding:10px 13px;font:1000 12px inherit;box-shadow:5px 5px 0 #080808;cursor:pointer}
+#rrvvfoRoadHubUI button:hover,#rrvvfoRoadHubUI button:focus-visible{background:#ffd557;outline:3px solid #187bdb;outline-offset:2px}
+#rrvvfoRoadHubUI .roadAreaTitle{position:absolute;left:50%;top:22%;transform:translate(-50%,-50%);min-width:min(680px,90vw);padding:17px 26px;border-block:6px solid #080808;background:#ffffffe8;color:#080808;text-align:center;box-shadow:0 8px 0 #080808;animation:roadTitleIn .26s ease-out}
+#rrvvfoRoadHubUI .roadAreaTitle[hidden]{display:none!important}
+#rrvvfoRoadHubUI .roadAreaTitle small,#rrvvfoRoadHubUI .roadAreaTitle strong{display:block}
+#rrvvfoRoadHubUI .roadAreaTitle small{color:#d51f2b;font-weight:1000;letter-spacing:.18em}
+#rrvvfoRoadHubUI .roadAreaTitle strong{font-size:clamp(33px,7vw,72px);line-height:.9;font-style:italic}
+@keyframes roadTitleIn{from{opacity:0;transform:translate(-50%,-42%)}to{opacity:1;transform:translate(-50%,-50%)}}
+#rrvvfoRoadHubUI .roadPrompt{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);min-width:260px;padding:8px 14px;border:4px solid #080808;background:#ffd557;color:#080808;box-shadow:6px 6px 0 #080808;text-align:center}
+#rrvvfoRoadHubUI .roadPrompt[hidden]{display:none!important}
+#rrvvfoRoadHubUI .roadPrompt strong,#rrvvfoRoadHubUI .roadPrompt span{display:block}
+#rrvvfoRoadHubUI .roadPrompt strong{font-size:14px}
+#rrvvfoRoadHubUI .roadPrompt span{margin-top:2px;font-size:10px;font-weight:900;letter-spacing:.08em}
+
+#rrvvfoRoadHubUI .roadChoice,
+#rrvvfoRoadHubUI .roadQte,
+#rrvvfoRoadHubUI .roadComplete{position:absolute;inset:0;display:grid;place-items:center;padding:18px;background:rgba(0,28,75,.88);pointer-events:auto}
+#rrvvfoRoadHubUI .roadChoice[hidden],
+#rrvvfoRoadHubUI .roadQte[hidden],
+#rrvvfoRoadHubUI .roadComplete[hidden]{display:none!important}
+#rrvvfoRoadHubUI .roadChoice article,
+#rrvvfoRoadHubUI .roadQte article,
+#rrvvfoRoadHubUI .roadComplete article{width:min(720px,95vw);padding:25px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:12px 12px 0 #080808;text-align:center}
+#rrvvfoRoadHubUI .roadChoice small,
+#rrvvfoRoadHubUI .roadQte small,
+#rrvvfoRoadHubUI .roadComplete small{color:#d51f2b;font-weight:1000;letter-spacing:.14em}
+#rrvvfoRoadHubUI .roadChoice h2,
+#rrvvfoRoadHubUI .roadQte h2,
+#rrvvfoRoadHubUI .roadComplete h2{margin:5px 0 10px;font-size:clamp(38px,7vw,70px);line-height:.88;font-style:italic}
+#rrvvfoRoadHubUI .roadChoice p,
+#rrvvfoRoadHubUI .roadComplete p{font-weight:850;line-height:1.5}
+#rrvvfoRoadHubUI .roadChoice article>div{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+#rrvvfoRoadHubUI .roadChoice button,#rrvvfoRoadHubUI .roadComplete button{min-height:64px;font-size:16px}
+#rrvvfoRoadHubUI .qteSequence{display:flex;justify-content:center;gap:12px;margin:22px 0}
+#rrvvfoRoadHubUI .qteSequence span{display:grid;place-items:center;min-width:82px;height:74px;border:5px solid #080808;background:#e9eef5;font-size:24px;font-weight:1000;box-shadow:4px 4px 0 #080808}
+#rrvvfoRoadHubUI .qteSequence span.current{background:#ffd557;transform:translateY(-5px)}
+#rrvvfoRoadHubUI .qteSequence span.done{background:#79dc8e}
+#rrvvfoRoadHubUI .qteButtons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#rrvvfoRoadHubUI .qteButtons button{min-height:58px;font-size:18px}
+#rrvvfoRoadHubUI .qteTimer{height:17px;margin-top:18px;border:4px solid #080808;background:#dfe6ef;overflow:hidden}
+#rrvvfoRoadHubUI .qteTimer i{display:block;height:100%;width:100%;background:#e52b2f;transition:width .05s linear}
+#rrvvfoRoadHubUI .roadRewards{display:grid;gap:8px;margin:18px 0;text-align:left}
+#rrvvfoRoadHubUI .roadRewards span{padding:10px 12px;border:3px solid #080808;background:#eef7ff;font-weight:1000}
+
+@media(max-width:760px){
+  #rrvvfoRoadHubUI .roadHud{display:grid}
+  #rrvvfoRoadHubUI .roadHudActions{justify-content:flex-end}
+  #rrvvfoRoadHubUI .roadHudActions button{padding:8px 10px;font-size:10px}
+  #rrvvfoRoadHubUI .roadObjective{max-width:calc(100vw - 32px)}
+  #rrvvfoRoadHubUI .qteSequence span{min-width:64px;height:60px}
+}
+@media(max-width:520px){
+  #rrvvfoRoadHubUI .roadHud{inset:8px 8px auto}
+  #rrvvfoRoadHubUI .roadObjective{padding:9px 11px;box-shadow:4px 4px 0 #080808}
+  #rrvvfoRoadHubUI .roadHudActions{display:none}
+  #rrvvfoRoadHubUI .roadPrompt{bottom:82px;min-width:220px}
+  #rrvvfoRoadHubUI .roadChoice article,
+  #rrvvfoRoadHubUI .roadQte article,
+  #rrvvfoRoadHubUI .roadComplete article{padding:18px;box-shadow:7px 7px 0 #080808}
+  #rrvvfoRoadHubUI .roadChoice article>div{grid-template-columns:1fr}
+  #rrvvfoRoadHubUI .qteButtons{grid-template-columns:1fr 1fr 1fr}
+}

@@ -8,7 +8,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
     availability:'AVAILABLE',
     available:true,
     unlock:'Available from the start',
-    description:'Follow one continuous Rrvvfo chapter route through the Lost Year: Sage training, the Combat Manual, and the local tournament that follows.',
+    description:'Follow one continuous Rrvvfo chapter route through the Lost Year: Sage training, the Combat Manual, a playable living road, and the local tournament that follows.',
     perspective:'Main combat route',
     color:'#e94b3c',
     missions:[
@@ -38,12 +38,25 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         note:'This is the second half of Chapter 1. The Combat Manual remains available and gains new pages as later systems are discovered.'
       },
       {
+        id:'rrvvfo-road',
+        number:1.5,
+        title:'ROAD TO THE TOURNAMENT',
+        available:true,
+        playable:true,
+        unlockAfter:'rrvvfo-01',
+        status:'PLAYABLE 3D HUB',
+        description:'Rrvvfo leaves the Training Grounds and follows a lively road toward the tournament, learning field uses for Object Swap, Shots of Agony, Lens of Truth, and the Fight-or-Run encounter system.',
+        objectives:['Explore the Training Grounds road','Cross the river with Object Swap','Open the four-target gate with Shots of Agony','Handle a roaming challenger','Reveal the final roadblock with Lens of Truth'],
+        stage:'Training Grounds and Tournament Road',
+        note:'The Sage still personally teaches Shots of Agony earlier. The manual only teaches new field uses after he leaves.'
+      },
+      {
         id:'rrvvfo-02',
         number:2,
         title:'DEFINITELY NOT THE WORLD TOURNAMENT',
         available:true,
         playable:true,
-        unlockAfter:'rrvvfo-01',
+        unlockAfter:'rrvvfo-road',
         status:'PLAYABLE STORY SCENE',
         description:'Rrvvfo enters the tournament grounds, insults the arena design, completes registration, checks the bracket, and heads toward his first match.',
         objectives:['Enter the tournament grounds','Complete registration','Inspect the bracket board','Reach the fighter entrance'],
@@ -117,8 +130,8 @@ export function routeProgress(route,progress){
 export const RRVVFO_CHAPTERS=Object.freeze([
   {
     id:'rrvvfo-chapter-1',number:1,title:'NO MAXIMUMS',
-    description:'Shots of Agony training, the Sage’s Combat Manual, and the full fighting refresher.',
-    missions:['rrvvfo-00','rrvvfo-01']
+    description:'Shots of Agony training, the Sage’s Combat Manual, the full fighting refresher, and the playable road to the tournament.',
+    missions:['rrvvfo-00','rrvvfo-01','rrvvfo-road']
   },
   {
     id:'rrvvfo-chapter-2',number:2,title:'DEFINITELY NOT THE WORLD TOURNAMENT',
@@ -135,6 +148,7 @@ export function rrvvfoNextMission(progress){
   const completed=new Set(progress?.completedMissions||[]);
   if(!completed.has('rrvvfo-00'))return'rrvvfo-00';
   if(!completed.has('rrvvfo-01'))return'rrvvfo-01';
+  if(!completed.has('rrvvfo-road'))return'rrvvfo-road';
   if(!completed.has('rrvvfo-02'))return'rrvvfo-02';
   return null;
 }

@@ -1,8 +1,8 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27a-continuous-route-20260727-225332';
-import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=27a-continuous-route-20260727-225332';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27a-continuous-route-20260727-225332';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27a-continuous-route-20260727-225332';
-import {grantCombatManual} from './combat-manual.js?v=27a-continuous-route-20260727-225332';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27b-living-training-road-20260727-232814';
+import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=27b-living-training-road-20260727-232814';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b-living-training-road-20260727-232814';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
+import {grantCombatManual} from './combat-manual.js?v=27b-living-training-road-20260727-232814';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
@@ -31,7 +31,7 @@ function buildUI(){
       </article>
     </div>
     <div class="storyCompleteOverlay" data-mission-complete hidden>
-      <article class="storyCompleteCard"><small>CHAPTER 1 COMPLETE</small><h2>NO MAXIMUMS</h2><p>Combat Manual unlocked. Lens of Truth refreshed. Tournament entry unlocked.</p><button type="button" class="primary" data-return-story>TRAVEL TO THE TOURNAMENT</button></article>
+      <article class="storyCompleteCard"><small>CHAPTER 1 COMPLETE</small><h2>NO MAXIMUMS</h2><p>Combat Manual unlocked. Lens of Truth refreshed. Tournament entry unlocked.</p><button type="button" class="primary" data-return-story>TAKE THE TOURNAMENT ROAD</button></article>
     </div>`;
   document.body.appendChild(root);
   return root;
@@ -168,7 +168,7 @@ class RrvvfoMission1{
       {speaker:'THE SAGE',speakerClass:'neutral',text:'I just did. But first, you have gotten rusty.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'I beat Revvfo.',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'And apparently forgot how to block afterward. Here. Take the manual.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'It updates itself whenever you find a mechanic I knew you would ignore.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'It updates itself whenever you find a mechanic I knew you would ignore. I taught you Shots of Agony myself; the manual handles the field uses after I leave.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'That sentence somehow made it less trustworthy.',tail:'down'}
     ],()=>this.showManual());
   }

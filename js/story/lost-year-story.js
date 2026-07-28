@@ -7,11 +7,12 @@ import {
   rrvvfoNextMission,
   rrvvfoRouteStarted,
   saveLostYearProgress
-} from './lost-year-data.js?v=27a-continuous-route-20260727-225332';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=27a-continuous-route-20260727-225332';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=27a-continuous-route-20260727-225332';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=27a-continuous-route-20260727-225332';
-import {combatManualOwned,openCombatManual} from './combat-manual.js?v=27a-continuous-route-20260727-225332';
+} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=27b-living-training-road-20260727-232814';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=27b-living-training-road-20260727-232814';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=27b-living-training-road-20260727-232814';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=27b-living-training-road-20260727-232814';
+import {combatManualOwned,openCombatManual} from './combat-manual.js?v=27b-living-training-road-20260727-232814';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -224,21 +225,21 @@ class LostYearStoryScreen{
         <div class="routeHomeHero">
           <small>THE LOST YEAR • CONTINUOUS ROUTE</small>
           <h2>${complete?'CURRENT STORY COMPLETE':'CONTINUE THE ROUTE'}</h2>
-          <p>${complete?'Rrvvfo has entered the tournament. The tournament matches and fully explorable living hubs continue in later overhaul phases.':'The old Missions 0–2 now run as one connected story. Continue loads the next unfinished checkpoint without returning to Mission Select.'}</p>
+          <p>${complete?'Rrvvfo has crossed the living Training Grounds road and entered the tournament. The tournament matches and full tournament hub expansion continue in later overhaul phases.':'Sage training, the manual refresher, the living Training Grounds road, and tournament arrival now run as one connected story without returning to Mission Select.'}</p>
           <div class="routeProgressTrack" style="--route-progress:${percent}%"><i></i></div>
           <strong>${percent}% OF CURRENT RRVVFO CONTENT COMPLETE</strong>
-          ${complete?'<div class="routeCompleteNote">CHAPTER 2 COMPLETE • TOURNAMENT MATCHES AND THE LIVING 3D HUB EXPANSION ARE IN DEVELOPMENT.</div>':''}
+          ${complete?'<div class="routeCompleteNote">CHAPTER 2 COMPLETE • THE TRAINING ROAD IS PLAYABLE. TOURNAMENT MATCHES AND THE FULL TOURNAMENT HUB ARE IN DEVELOPMENT.</div>':''}
           <div class="routeHomeActions">
             <button type="button" class="primary" data-continue-route ${complete?'disabled':''}><strong>${complete?'CURRENT CONTENT COMPLETE':'CONTINUE STORY'}</strong><span>${complete?'Use Chapter Select to replay.':'Loads the next unfinished checkpoint.'}</span></button>
             <button type="button" data-open-manual ${manualReady?'':'disabled'}><strong>COMBAT MANUAL</strong><span>${manualReady?'Review every unlocked page.':'Sage has not given it to Rrvvfo yet.'}</span></button>
-            <button type="button" data-free-explore disabled><strong>FREE EXPLORE</strong><span>Unlocks with the living hub phase.</span></button>
+            <button type="button" data-free-explore ${this.progress.completedMissions.includes('rrvvfo-road')?'':'disabled'}><strong>FREE EXPLORE</strong><span>${this.progress.completedMissions.includes('rrvvfo-road')?'Replay the Training Grounds road.':'Complete the living road first.'}</span></button>
             <button type="button" data-route-home-back-2><strong>CHARACTER ROUTES</strong><span>Return to the shared Lost Year timeline.</span></button>
           </div>
         </div>
         <div class="chapterRail">
           ${RRVVFO_CHAPTERS.map(chapter=>{
             const chapterComplete=rrvvfoChapterComplete(chapter,this.progress);
-            const unlocked=chapter.number===1||this.progress.completedMissions.includes('rrvvfo-01');
+            const unlocked=chapter.number===1||this.progress.completedMissions.includes('rrvvfo-road')||this.progress.completedMissions.includes('rrvvfo-02');
             return `<button type="button" class="chapterCard" data-chapter-number="${chapter.number}" ${unlocked?'':'disabled'}>
               <span class="chapterNumber">${chapter.number}</span>
               <span><small>${chapterComplete?'COMPLETE':unlocked?'PLAYABLE':'LOCKED'}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span>
@@ -249,6 +250,7 @@ class LostYearStoryScreen{
     this.routeHome.querySelectorAll('[data-route-home-back],[data-route-home-back-2]').forEach(button=>button.addEventListener('click',()=>this.showRoutes({focus:true})));
     this.routeHome.querySelector('[data-continue-route]')?.addEventListener('click',()=>this.continueRoute());
     this.routeHome.querySelector('[data-open-manual]')?.addEventListener('click',()=>openCombatManual());
+    this.routeHome.querySelector('[data-free-explore]:not(:disabled)')?.addEventListener('click',()=>this.startStep('rrvvfo-road','freeExplore'));
     this.routeHome.querySelectorAll('[data-chapter-number]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.chapterNumber))));
     if(focus)(this.routeHome.querySelector('[data-continue-route]:not(:disabled)')||this.routeHome.querySelector('[data-chapter-number]:not(:disabled)'))?.focus();
   }
@@ -265,7 +267,7 @@ class LostYearStoryScreen{
       const chapter=RRVVFO_CHAPTERS[0];
       const firstIncomplete=chapter.missions.find(id=>!this.progress.completedMissions.includes(id));
       this.startStep(firstIncomplete||'rrvvfo-00','chapter1');
-    }else if(number===2&&this.progress.completedMissions.includes('rrvvfo-01')){
+    }else if(number===2&&(this.progress.completedMissions.includes('rrvvfo-road')||this.progress.completedMissions.includes('rrvvfo-02'))){
       this.startStep('rrvvfo-02','chapter2');
     }
   }
@@ -274,6 +276,7 @@ class LostYearStoryScreen{
     const starters={
       'rrvvfo-00':startRrvvfoMission0,
       'rrvvfo-01':startRrvvfoMission1,
+      'rrvvfo-road':startRrvvfoRoadHub,
       'rrvvfo-02':startRrvvfoMission2
     };
     const starter=starters[stepId];
@@ -293,7 +296,11 @@ class LostYearStoryScreen{
             this.startStep('rrvvfo-01',chainMode);
             return;
           }
-          if(stepId==='rrvvfo-01'&&chainMode==='route'){
+          if(stepId==='rrvvfo-01'&&(chainMode==='route'||chainMode==='chapter1')){
+            this.startStep('rrvvfo-road',chainMode);
+            return;
+          }
+          if(stepId==='rrvvfo-road'&&chainMode==='route'){
             this.startStep('rrvvfo-02',chainMode);
             return;
           }

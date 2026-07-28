@@ -1,6 +1,6 @@
-import {BUILD_VERSION} from './build-info.js?v=27a-continuous-route-20260727-225332';
+import {BUILD_VERSION} from './build-info.js?v=27b-living-training-road-20260727-232814';
 
-const MENU_MODULE_CACHE='27a-continuous-route-20260727-225332';
+const MENU_MODULE_CACHE='27b-living-training-road-20260727-232814';
 
 export const MAIN_MENU_MODES=Object.freeze([
   {id:'story',label:'STORY',glyph:'ST',kicker:'THE LOST YEAR',description:'Choose a character route and play it as continuous chapters. Rrvvfo Chapters 1–2 now flow without returning to Mission Select.',players:'1',availability:'Rrvvfo continuous route available — Chapters 1 and 2'},

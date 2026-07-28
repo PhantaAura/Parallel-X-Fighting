@@ -44,6 +44,26 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     ]
   },
   {
+    id:'field-object-swap',category:'FIELD',title:'OBJECT SWAP POINTS',kicker:'THE WORLD COUNTS TOO',
+    summary:'Marked field objects can replace Rrvvfo’s position outside battle. Use them to cross gaps and open routes without turning the hub into a walking detour.',
+    entries:[
+      ['Marked object','Look for the gold swap shimmer'],
+      ['Field input','Use hotbar slot 3 near the marked point'],
+      ['Destination','Rrvvfo trades places with the selected object'],
+      ['Route rule','Field swaps never consume story combat health']
+    ]
+  },
+  {
+    id:'field-shots',category:'FIELD',title:'SHOTS OF AGONY SWITCHES',kicker:'ONE RRVVFO IS APPARENTLY NOT ENOUGH',
+    summary:'The technique Sage personally taught Rrvvfo can strike several field targets at once. The manual only explains the overworld use; it does not replace the training scene.',
+    entries:[
+      ['Target group','Find switches carrying the same glow'],
+      ['Field input','Use hotbar slot 2 inside the target zone'],
+      ['Timing','All copies fire together'],
+      ['Result','Multi-lock gates and machines activate at once']
+    ]
+  },
+  {
     id:'tournament-rules',category:'TOURNAMENT',title:'TOURNAMENT RULES',kicker:'READ BEFORE COMPLAINING',
     summary:'Registration, bracket order, fighter entrances, and ring rules control tournament progression.',
     entries:[
@@ -219,7 +239,7 @@ export function openCombatManual({pageId=null,reactionLines=null,onClose=()=>{},
   return true;
 }
 
-export function discoverCombatManualPage(pageId,{onClose=()=>{},storage=localStorage}={}){
+export function discoverCombatManualPage(pageId,{onClose=()=>{},storage=localStorage,reactionLines=null}={}){
   const page=pageById(pageId);
   if(!page){onClose();return false}
   let state=loadCombatManualState(storage);
@@ -228,7 +248,7 @@ export function discoverCombatManualPage(pageId,{onClose=()=>{},storage=localSto
     onClose();
     return false;
   }
-  const reaction=DISCOVERY_REACTIONS[Math.min(state.discoveryCount,DISCOVERY_REACTIONS.length-1)]||null;
+  const reaction=Array.isArray(reactionLines)&&reactionLines.length?reactionLines:(DISCOVERY_REACTIONS[Math.min(state.discoveryCount,DISCOVERY_REACTIONS.length-1)]||null);
   state=saveCombatManualState({
     ...state,
     unlocked:[...state.unlocked,pageId],

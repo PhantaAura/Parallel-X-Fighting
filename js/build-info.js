@@ -1,4 +1,4 @@
-export const BUILD_VERSION='Prototype 2.7A — Continuous Chapters Foundation';
+export const BUILD_VERSION='Prototype 2.7B — Living Training Road';
 export const SAVE_SCHEMA_VERSION=235;
 export const BUILD_FEATURES=Object.freeze([
   'combat-2.3','controller-mobile','rrvvfo-sprites-v2','revvfo-sprites','qol-2.3.5b',
@@ -6,5 +6,6 @@ export const BUILD_FEATURES=Object.freeze([
   'sonic-battle-dialogue','sprite-on-top-dialogue','scoped-menu-theme','horizontal-mode-select',
   'character-route-select','continuous-chapter-route','automatic-story-chaining','chapter-select',
   'persistent-combat-manual','manual-page-discovery','rrvvfo-manual-reactions',
-  'chapter-2-end-of-content-note','living-hub-foundation'
+  'living-training-grounds','playable-tournament-road','field-object-swap','field-shots-of-agony',
+  'roaming-fight-choice','escape-qte','field-lens-of-truth','free-explore-road-replay'
 ]);

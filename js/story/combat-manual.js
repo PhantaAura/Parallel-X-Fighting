@@ -78,8 +78,10 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     summary:'Registration, bracket order, fighter entrances, and ring rules control tournament progression.',
     entries:[
       ['Registration','Confirm the entry before checking the bracket'],
-      ['Bracket','Shows the next opponent and match order'],
-      ['Fighter gate','Story progression begins beyond the entrance'],
+      ['Win condition','Score three KOs or ring-outs before the opponent'],
+      ['Ring edge','Crossing the warning boundary counts as a ring-out, so camping at the edge is dangerous'],
+      ['Respawns','Only the defeated fighter respawns; the winner keeps health, energy, and position'],
+      ['Final exception','Plouke’s scripted final disables ring-outs so the story sequence cannot be skipped'],
       ['Running','Official tournament story fights cannot be abandoned']
     ]
   },

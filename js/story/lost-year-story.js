@@ -10,10 +10,10 @@ import {
 } from './lost-year-data.js?v=28b1-chapter2-compat-20260728-022318';
 import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=28b1-chapter2-compat-20260728-022318';
 import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=28b1-chapter2-compat-20260728-022318';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=28b3-replay-button-bluefix-20260728';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a-combat-depth-20260728';
 import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=28b1-chapter2-compat-20260728-022318';
 import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=28b1-chapter2-compat-20260728-022318';
-import {combatManualOwned,openCombatManual} from './combat-manual.js?v=28b1-chapter2-compat-20260728-022318';
+import {combatManualOwned,openCombatManual} from './combat-manual.js?v=29a-combat-depth-20260728';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

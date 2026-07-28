@@ -4,12 +4,12 @@ export const PC_LAYOUTS=Object.freeze({
   classic:Object.freeze({
     id:'classic',label:'Classic',description:'Original Parallels X keyboard layout',
     move:{left:'KeyA',right:'KeyD',up:'KeyW',down:'KeyS'},
-    actions:{jump:'Space',light:'KeyF',heavy:'KeyR',launcher:'KeyT',dash:'ShiftLeft',block:'KeyQ'}
+    actions:{jump:'Space',light:'KeyF',heavy:'KeyR',launcher:'KeyT',dash:'ShiftLeft',block:'KeyQ',charge:'KeyC',grab:'KeyG'}
   }),
   ergonomic:Object.freeze({
     id:'ergonomic',label:'Two-Hand Ergonomic',description:'Movement on the left, attacks on the right',
     move:{left:'KeyA',right:'KeyD',up:'KeyW',down:'KeyS'},
-    actions:{jump:'Space',light:'KeyJ',heavy:'KeyK',launcher:'KeyI',dash:'ShiftLeft',block:'KeyL'}
+    actions:{jump:'Space',light:'KeyJ',heavy:'KeyK',launcher:'KeyI',dash:'ShiftLeft',block:'KeyL',charge:'KeyC',grab:'KeyU'}
   })
 });
 
@@ -48,7 +48,7 @@ export function saveArenaControlSettings(settings,storage=localStorage){
 }
 
 function labelForCode(code){
-  const labels={Space:'SPACE',ShiftLeft:'SHIFT',ShiftRight:'SHIFT',KeyA:'A',KeyD:'D',KeyW:'W',KeyS:'S',KeyF:'F',KeyR:'R',KeyT:'T',KeyQ:'Q',KeyJ:'J',KeyK:'K',KeyI:'I',KeyL:'L'};
+  const labels={Space:'SPACE',ShiftLeft:'SHIFT',ShiftRight:'SHIFT',KeyA:'A',KeyD:'D',KeyW:'W',KeyS:'S',KeyF:'F',KeyR:'R',KeyT:'T',KeyQ:'Q',KeyJ:'J',KeyK:'K',KeyI:'I',KeyL:'L',KeyC:'C',KeyG:'G',KeyU:'U'};
   return labels[code]||code.replace(/^Key/,'').replace(/^Digit/,'');
 }
 
@@ -95,9 +95,9 @@ export class ArenaControlManager{
     let x=(this.keys.has(move.right)?1:0)-(this.keys.has(move.left)?1:0),z=(this.keys.has(move.down)?1:0)-(this.keys.has(move.up)?1:0);
     if(Math.abs(this.joystick.x)>Math.abs(x))x=this.joystick.x;if(Math.abs(this.joystick.z)>Math.abs(z))z=this.joystick.z;
     const directionalDash=this.queuedDirectionalDash;this.queuedDirectionalDash=null;if(directionalDash===move.left)x=-1;else if(directionalDash===move.right)x=1;else if(directionalDash===move.up)z=-1;else if(directionalDash===move.down)z=1;
-    let jump=this.consumeKey(actions.jump)||this.consumeTouch('jump'),light=this.consumeKey(actions.light)||this.consumeTouch('light'),heavy=this.consumeKey(actions.heavy)||this.consumeTouch('heavy'),launcher=this.consumeKey(actions.launcher)||this.consumeTouch('launcher'),dash=!!directionalDash||this.consumeKey(actions.dash)||(actions.dash==='ShiftLeft'&&this.consumeKey('ShiftRight'))||this.consumeTouch('dash'),block=this.keys.has(actions.block)||this.mouseDown.has(2)||this.touchDown.has('block');const primaryClick=this.consumeMouse(0);if(primaryClick){if(this.settings.mousePrimaryAttack==='heavy')heavy=true;else light=true;}
-    const gamepad=navigator.getGamepads?.()[0];if(gamepad){const axisX=Math.abs(gamepad.axes[0]||0)>.18?gamepad.axes[0]:0,axisZ=Math.abs(gamepad.axes[1]||0)>.18?gamepad.axes[1]:0,moveMagnitude=Math.hypot(axisX,axisZ);x=Math.abs(axisX)>Math.abs(x)?axisX:x;z=Math.abs(axisZ)>Math.abs(z)?axisZ:z;const buttons=gamepad.buttons.map(value=>value.pressed);jump||=buttons[0]&&!this.previousButtons[0];light||=buttons[2]&&!this.previousButtons[2];heavy||=buttons[3]&&!this.previousButtons[3];launcher||=buttons[3]&&buttons[12]&&(!this.previousButtons[3]||!this.previousButtons[12]);dash||=buttons[5]&&!this.previousButtons[5]||(moveMagnitude>.92&&this.previousGamepadMoveMagnitude<.28);block||=buttons[4];if(buttons[14]&&!this.previousButtons[14])this.selectAbility(-1);if(buttons[15]&&!this.previousButtons[15])this.selectAbility(1);if(buttons[7]&&!this.previousButtons[7])this.onAbility(this.selectedAbility+1);if(buttons.some(Boolean)||Math.abs(axisX)+Math.abs(axisZ)>.1){this.lastInput='controller';this.applyInputPresentation()}this.previousButtons=buttons;this.previousGamepadMoveMagnitude=moveMagnitude}else this.previousGamepadMoveMagnitude=0
-    return{x,z,jump,light,heavy,launcher,dash,block};
+    let jump=this.consumeKey(actions.jump)||this.consumeTouch('jump'),light=this.consumeKey(actions.light)||this.consumeTouch('light'),heavy=this.consumeKey(actions.heavy)||this.consumeTouch('heavy'),launcher=this.consumeKey(actions.launcher)||this.consumeTouch('launcher'),dash=!!directionalDash||this.consumeKey(actions.dash)||(actions.dash==='ShiftLeft'&&this.consumeKey('ShiftRight'))||this.consumeTouch('dash'),block=this.keys.has(actions.block)||this.mouseDown.has(2)||this.touchDown.has('block'),charge=this.keys.has(actions.charge)||this.touchDown.has('charge'),grab=this.consumeKey(actions.grab)||this.consumeTouch('grab');const primaryClick=this.consumeMouse(0);if(primaryClick){if(this.settings.mousePrimaryAttack==='heavy')heavy=true;else light=true;}
+    const gamepad=navigator.getGamepads?.()[0];if(gamepad){const axisX=Math.abs(gamepad.axes[0]||0)>.18?gamepad.axes[0]:0,axisZ=Math.abs(gamepad.axes[1]||0)>.18?gamepad.axes[1]:0,moveMagnitude=Math.hypot(axisX,axisZ);x=Math.abs(axisX)>Math.abs(x)?axisX:x;z=Math.abs(axisZ)>Math.abs(z)?axisZ:z;const buttons=gamepad.buttons.map(value=>value.pressed);jump||=buttons[0]&&!this.previousButtons[0];light||=buttons[2]&&!this.previousButtons[2];heavy||=buttons[3]&&!this.previousButtons[3];launcher||=buttons[3]&&buttons[12]&&(!this.previousButtons[3]||!this.previousButtons[12]);dash||=buttons[5]&&!this.previousButtons[5]||(moveMagnitude>.92&&this.previousGamepadMoveMagnitude<.28);block||=buttons[4];charge||=buttons[6];grab||=buttons[1]&&!this.previousButtons[1];if(buttons[14]&&!this.previousButtons[14])this.selectAbility(-1);if(buttons[15]&&!this.previousButtons[15])this.selectAbility(1);if(buttons[7]&&!this.previousButtons[7])this.onAbility(this.selectedAbility+1);if(buttons.some(Boolean)||Math.abs(axisX)+Math.abs(axisZ)>.1){this.lastInput='controller';this.applyInputPresentation()}this.previousButtons=buttons;this.previousGamepadMoveMagnitude=moveMagnitude}else this.previousGamepadMoveMagnitude=0
+    return{x,z,jump,light,heavy,launcher,dash,block,charge,grab};
   }
 
   selectAbility(direction){this.selectedAbility=(this.selectedAbility+direction+5)%5;this.root.querySelectorAll('[data-arena-slot]').forEach((button,index)=>{button.classList.toggle('selected',index===this.selectedAbility);button.setAttribute('aria-current',index===this.selectedAbility?'true':'false')})}
@@ -138,7 +138,7 @@ export class ArenaControlManager{
   applyInputPresentation(){
     const touch=this.touchEnabled()&&this.lastInput==='touch';this.root.dataset.activeInput=touch?'touch':this.lastInput;
     const layout=this.layout(),a=layout.actions;
-    if(this.help){if(this.lastInput==='controller')this.help.innerHTML='<b>CONTROLLER</b><br><span>Left Stick</span> move • <span>A</span> jump • <span>X</span> light • <span>Y</span> heavy • <span>Up + Y</span> launcher • <span>RB / stick flick</span> dash • <span>LB</span> block • <span>D-Pad L/R + RT</span> abilities';else{const mouseAttack=this.settings.mousePrimaryAttack==='heavy'?'heavy':'light';this.help.innerHTML=`<b>${this.lastInput==='mouse'?'MOUSE + KEYBOARD':layout.label.toUpperCase()}</b><br><span class="moveKeys">WASD</span> move • <span>${labelForCode(a.jump)}</span> jump • <span>SHIFT / double-tap</span> dash • <span>M1</span> ${mouseAttack} • <span>M2</span> block • <span>${labelForCode(a.light)}</span> light • <span>${labelForCode(a.heavy)}</span> heavy • <span>${labelForCode(a.launcher)}</span> launcher • <span>1–5</span> abilities`;}}
+    if(this.help){if(this.lastInput==='controller')this.help.innerHTML='<b>CONTROLLER</b><br><span>Left Stick</span> move • <span>A</span> jump • <span>X</span> light • <span>Y</span> heavy • <span>Up + Y</span> launcher • <span>RB / stick flick</span> dash • <span>LB</span> block • <span>LT</span> charge • <span>B</span> grab • <span>D-Pad L/R + RT</span> abilities';else{const mouseAttack=this.settings.mousePrimaryAttack==='heavy'?'heavy':'light';this.help.innerHTML=`<b>${this.lastInput==='mouse'?'MOUSE + KEYBOARD':layout.label.toUpperCase()}</b><br><span class="moveKeys">WASD</span> move • <span>${labelForCode(a.jump)}</span> jump • <span>SHIFT / double-tap</span> dash • <span>M1</span> ${mouseAttack} • <span>M2</span> block • <span>${labelForCode(a.light)}</span> light • <span>${labelForCode(a.heavy)}</span> heavy • <span>${labelForCode(a.launcher)}</span> launcher • <span>${labelForCode(a.charge)}</span> charge • <span>${labelForCode(a.grab)}</span> grab • <span>1–5</span> abilities`;}}
     this.root.querySelectorAll('.arenaNumber').forEach((number,index)=>{number.textContent=touch?'TAP':String(index+1)});
   }
 }

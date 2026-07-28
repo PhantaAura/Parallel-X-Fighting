@@ -1,12 +1,12 @@
-import {BUILD_VERSION} from './build-info.js?v=28b3-replay-button-bluefix-20260728';
+import {BUILD_VERSION} from './build-info.js?v=29a-combat-depth-20260728';
 
-const MENU_MODULE_CACHE='28b3-replay-button-bluefix-20260728';
+const MENU_MODULE_CACHE='29a-combat-depth-20260728';
 
 export const MAIN_MENU_MODES=Object.freeze([
   {id:'story',label:'STORY',glyph:'ST',kicker:'THE LOST YEAR',description:'Choose a character route and play it as continuous chapters. Rrvvfo Chapters 1–2 flow continuously, with a separate Chapter 3 opening preview for development testing.',players:'1',availability:'Rrvvfo route available — Chapters 1–2 plus Chapter 3 opening preview'},
-  {id:'arena',label:'ARENA',glyph:'AR',kicker:'3D BATTLE',description:'Enter Tangai Dojo or the Global Tournament using the reusable WebGL arena and depth-combat rules.',players:'1',availability:'Tangai Dojo and Global Tournament available'},
-  {id:'cpu',label:'VS CPU',glyph:'VS',kicker:'SINGLE BATTLE',description:'Choose a fighter and face a computer-controlled rival in the classic side-view battle system.',players:'1',availability:'Available'},
-  {id:'local',label:'2 PLAYER',glyph:'2P',kicker:'LOCAL VS',description:'Choose two fighters and battle on the same device. Separate assigned input devices are recommended.',players:'2',availability:'Available'},
+  {id:'arena',label:'ARENA',glyph:'AR',kicker:'3D BATTLE',description:'Enter Tangai Dojo or the Global Tournament in first-to-3-KO battles with continuous respawns, adaptive AI, charge, parries, grabs, and projectile clashes.',players:'1',availability:'Tangai Dojo and Global Tournament available'},
+  {id:'cpu',label:'VS CPU',glyph:'VS',kicker:'SINGLE BATTLE',description:'Choose a fighter and score three KOs against a computer-controlled rival with 135 health per life.',players:'1',availability:'Available'},
+  {id:'local',label:'2 PLAYER',glyph:'2P',kicker:'LOCAL VS',description:'Choose two fighters and battle to three KOs on the same device. Separate assigned input devices are recommended.',players:'2',availability:'Available'},
   {id:'training',label:'TRAINING',glyph:'TR',kicker:'PRACTICE',description:'Practice movement, defense, clashes, combos, abilities, and character-specific techniques.',players:'1',availability:'Available'},
   {id:'arcade',label:'ARCADE',glyph:'AC',kicker:'BATTLE ROAD',description:'A future sequence of escalating battles and route-specific opponents.',players:'1',availability:'Coming later',disabled:true},
   {id:'settings',label:'OPTIONS',glyph:'OP',kicker:'SETTINGS',description:'Adjust gameplay, controls, audio, video, accessibility, HUD, and save-data options.',players:'—',availability:'Available'},
@@ -97,7 +97,7 @@ export class MainMenu{
         const {openLostYearStory}=await import(`./story/lost-year-story.js?v=${MENU_MODULE_CACHE}`);
         openLostYearStory();
       }else if(mode.id==='arena'){
-        const {startArenaBattle}=await import(`./arena/arena-mode.js?v=${MENU_MODULE_CACHE}`);
+        const {startArenaBattle}=await import(`./arena/arena-mode.js?v=29a-combat-depth-20260728`);
         startArenaBattle();
       }else{
         this.onSelect(mode.id);

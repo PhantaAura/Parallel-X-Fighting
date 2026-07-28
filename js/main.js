@@ -6,7 +6,7 @@ import {CUSTOM_CONTROLLER_ACTIONS,InputManager} from './input.js?v=2.3.5-landsca
 import {decideCPU} from './ai.js';
 import {TimerRegistry,clamp,resetCombo} from './combat.js';
 import {EffectSystem} from './effects.js';
-import {Fighter} from './fighter.js?v=2.3.5-landscape-hotbar';
+import {Fighter} from './fighter.js?v=29a-combat-depth-20260728';
 import {moveList} from './movesets.js';
 import {trainingState,recordInput,clearTraining,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from './training.js';
 import {byId as $} from './ui.js';
@@ -20,9 +20,9 @@ import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-edit
 import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=2.3.5b-sprite-reimport';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 import {ControllerManager} from './controller-manager.js?v=2.3.5-landscape-hotbar';
-import {BUILD_VERSION} from './build-info.js?v=28b3-replay-button-bluefix-20260728';
+import {BUILD_VERSION} from './build-info.js?v=29a-combat-depth-20260728';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=28b3-replay-button-bluefix-20260728';
+import {MainMenu} from './main-menu.js?v=29a-combat-depth-20260728';
 import {MatchStatistics} from './match-statistics.js';
 import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=2.3.5-landscape-hotbar';
 import {ResultsScreen} from './results-screen.js';
@@ -34,9 +34,9 @@ import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=2
 import {LoadingManager} from './loading-manager.js';
 import {applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from './training-presets.js';
 import {FirstTimeHints} from './first-time-hints.js';
-import {cooldownText,fighterHudModel} from './hud-model.js';
+import {cooldownText,fighterHudModel} from './hud-model.js?v=29a-combat-depth-20260728';
 import {AbilityHotbar} from './ability-hotbar.js?v=2.3.5-landscape-hotbar';
-import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=2.3.5-landscape-hotbar';
+import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a-combat-depth-20260728';
 import {ResponsiveGameLayout} from './responsive-game-layout.js?v=2.3.5-landscape-hotbar';
 import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=2.3.5-landscape-hotbar-2';
 import {FullscreenManager} from './fullscreen-manager.js?v=2.3.5-landscape-hotbar';
@@ -49,7 +49,8 @@ const clashHud=document.createElement('div');clashHud.className='clashHud hidden
 const roundBanner=document.createElement('div');roundBanner.id='roundBanner';roundBanner.className='hidden';$('gameWrap').appendChild(roundBanner);
 const trainingHud=document.createElement('div');trainingHud.className='trainingHud hidden';trainingHud.innerHTML='<div id="trainStats"></div><div id="trainMoves"></div><div><div id="trainComboPrompt"></div><label><input id="liveHealth" type="checkbox" checked> ∞ HP</label> <label><input id="liveEnergy" type="checkbox" checked> ∞ ENERGY</label> <label><input id="liveGuard" type="checkbox"> ∞ GUARD</label> <label><input id="liveGuardRegen" type="checkbox" checked> GUARD REGEN</label> <label><input id="livePerfectPractice" type="checkbox"> PB PRACTICE</label> <label><input id="liveClash" type="checkbox"> ∞ CLASH</label><br><select id="liveDummy"><option value="never">Stand / Never Block</option><option value="stationary">Stationary</option><option value="crouch">Crouch (future-ready)</option><option value="jump">Jump</option><option value="walk">Walk</option><option value="always">Block</option><option value="after">Block After First Hit</option><option value="perfect">Perfect Block Attempt</option><option value="counterattack">Counterattack After Hit</option><option value="throw">Throw Attempt</option><option value="breaker">Use Combo Breaker</option><option value="random">Random Defense</option><option value="cpu">CPU Dummy</option></select> <label><input id="stationaryBlock" type="checkbox"> Stationary blocks</label><br><button id="forceClash">FORCE NEXT CLASH</button><button id="resetClash">RESET CLASH</button><button id="trainResetPos">RESET CENTER (Y)</button><button id="trainLeft">NEAR LEFT</button><button id="trainRight">NEAR RIGHT</button><button id="trainSwap">SWAP SIDES</button><button id="trainRefillHealth">REFILL HP</button><button id="trainRefillEnergy">REFILL ENERGY</button><button id="trainRefillGuard">REFILL GUARD</button><button id="trainClearCooldowns">CLEAR COOLDOWNS</button><button id="trainClearProjectiles">CLEAR PROJECTILES</button><button id="trainClearShots">CLEAR SHOTS CLONES</button><button id="trainClearLens">CLEAR LENS</button><button id="trainClearSwap">CLEAR SWAP MARKERS</button><button id="trainResetCombo">CLEAR COMBO</button><button id="trainSavePreset">SAVE PRESET</button><button id="trainLoadPreset">LOAD PRESET</button><button id="trainRestart">QUICK RESTART</button><button id="exitTraining">EXIT TRAINING</button><div id="trainInputs"></div></div>';$('gameWrap').appendChild(trainingHud);
 
-let selectSlot=1,p1id='rrvvfo',p2id='revvfo',mode='story',difficulty='normal',stage='dojo',limit=90,roundsToWin=2,currentRound=1,wins1=0,wins2=0,state='menu',paused=false,pauseOwner=1,story=0,time=90,last=0,acc=0,roundIntro=0,clashInputActive=false,cinematicInputActive=false,hotbarInfoPausedMatch=false;
+const SONIC_KO_TARGET=3,CPU_MAX_HEALTH=135;
+let selectSlot=1,p1id='rrvvfo',p2id='revvfo',mode='story',difficulty='normal',stage='dojo',limit=Infinity,roundsToWin=SONIC_KO_TARGET,currentRound=1,wins1=0,wins2=0,state='menu',paused=false,pauseOwner=1,story=0,time=90,last=0,acc=0,roundIntro=0,clashInputActive=false,cinematicInputActive=false,hotbarInfoPausedMatch=false;
 const input=new InputManager();
 const controllerManager=new ControllerManager({input,getState:()=>paused?'menu':state,onPause:({side}={side:1})=>togglePause(side),onDisconnect:({side})=>{setPaused(true,side||1);notifications?.push(`PLAYER ${side||'?'} CONTROLLER DISCONNECTED`,{important:true,key:'controller-disconnected'})},onReconnect:({side})=>{setPaused(true,side);confirmation.open({title:'Controller Reconnected',message:`Controller restored to Player ${side}. Confirm when ready to resume.`,accept:'RESUME'}).then(ok=>{if(ok)setPaused(false)})},onStatus:({type,side})=>updateControllerStatus(type,side),onStyleChange:(side,style)=>syncControllerStyleUi(side,style),onAssignmentClose:()=>{if(paused)showPauseOverlay()}});
 U.controller1.value=controllerManager.settings.styles[0];U.controller2.value=controllerManager.settings.styles[1];
@@ -298,10 +299,11 @@ function commandFor(fighter){
 function setup(){
   if(p1id===p2id)p2id=different(p1id);clearTransient();touchControls.releaseAll();touchControls.setFighter(p1id);touchControls.setMatchUiVisible(true);input.clear();paused=false;touchControls.setPaused(false);time=limit;
   world.fighters=[new Fighter(p1id,1,false,world,{appearance:selectedAppearance(1)}),new Fighter(p2id,2,mode!=='local'&&mode!=='training',world,{appearance:selectedAppearance(2)})];
+  world.fighters[0].maxHp=100;world.fighters[0].hp=100;const opponentMaxHp=mode==='local'||mode==='training'?100:CPU_MAX_HEALTH;world.fighters[1].maxHp=opponentMaxHp;world.fighters[1].hp=opponentMaxHp;
   abilityHotbar.setFighter(p1id);abilityHotbar.setVisible(true,touchControls.enabled);abilityHotbar.root?.classList.remove('hotbar-paused');$('touchLayer').classList.toggle('hotbar-enabled',touchControls.enabled);responsiveLayout.apply();
   U.p1n.textContent=`${ROSTER[p1id].n.toUpperCase()}  ${wins1}`;U.p2n.textContent=`${wins2}  ${ROSTER[p2id].n.toUpperCase()}`;
-  U.rl.textContent=mode==='story'?`STORY ${story+1}/${STORY_ORDER.length} • ROUND ${currentRound}`:mode==='training'?'TRAINING':`ROUND ${currentRound}`;
-  const finalRound=wins1===roundsToWin-1&&wins2===roundsToWin-1;roundIntro=120;roundBanner.textContent=finalRound?'FINAL ROUND':`ROUND ${currentRound}`;roundBanner.classList.remove('hidden');sound('roundStart');
+  U.rl.textContent=mode==='story'?`STORY ${story+1}/${STORY_ORDER.length} • FIRST TO ${roundsToWin} KOs`:mode==='training'?'TRAINING':`FIRST TO ${roundsToWin} KOs • BATTLE ${currentRound}`;
+  roundIntro=100;roundBanner.textContent=`BATTLE ${currentRound} • FIRST TO ${roundsToWin} KOs`;roundBanner.classList.remove('hidden');sound('roundStart');
   U.msg.classList.add('hidden');U.pause.classList.add('hidden');pauseMenu.hide();resultsScreen.hide();state='playing';hintTimer=360;last=performance.now();
 }
 async function startGame(){
@@ -311,7 +313,7 @@ async function startGame(){
   loadingManager.set(80,'STAGE & MATCH','Initializing stage, audio hooks, and match state…');loadingManager.finish();
   if(shouldShowRrvvfoLoadFailure(spriteResult,fighterVisuals.settings.enabled))U.notice.textContent='One or more character sprite atlases could not load. Legacy visuals are active for the affected fighter.';
   mode=U.mode.value;trainingState.enabled=mode==='training';trainingHud.classList.toggle('hidden',!trainingState.enabled);if(trainingState.enabled)clearTraining();
-  difficulty=U.diff.value;world.cinematicMode=U.cine.value;world.localMode=mode==='local';world.reducedShake=U.reduced.checked;limit=+U.rt.value;roundsToWin=mode==='story'?1:+U.rounds.value;currentRound=1;wins1=wins2=story=0;
+  difficulty=U.diff.value;world.cinematicMode=U.cine.value;world.localMode=mode==='local';world.reducedShake=U.reduced.checked;limit=Infinity;roundsToWin=SONIC_KO_TARGET;currentRound=1;wins1=wins2=story=0;
   if(mode==='story'){p2id=STORY_ORDER[0];if(p2id===p1id){story++;p2id=STORY_ORDER[story]}stage=STORY_STAGES[story]}else stage=U.stage.value;
   hideMenuLayers();U.game.classList.remove('hidden');document.body.classList.add('gameplay-active');window.scrollTo(0,0);statistics.reset();saveLastActivity();
   const touchEnabled=wantsTouchControls();
@@ -322,12 +324,24 @@ async function startGame(){
   if(fighterVisuals.settings.developerViewer)spriteDebugViewer.show();else spriteDebugViewer.hide();
   if(touchEnabled&&(!touchSettings.chooserShown||!touchSettings.tutorialComplete)){setPaused(true);pauseMenu.hide()}
 }
+function respawnAfterKo2D(loserIndex){
+  const loser=world.fighters[loserIndex],winner=world.fighters[1-loserIndex],maxHp=loser.maxHp||100;
+  const replacement=new Fighter(loser.id,loser.side,loser.cpu,world,{appearance:loser.appearance});
+  replacement.maxHp=maxHp;replacement.hp=maxHp;replacement.en=50;replacement.inv=80;replacement.guard=replacement.guardMax||100;
+  world.fighters[loserIndex]=replacement;
+  winner.victory=0;winner.attackCd=0;winner.windup=0;winner.pending=null;winner.pendingMove=null;winner.stun=0;winner.block=0;winner.vx=0;winner.combo&&resetCombo(winner.combo);
+  clearTransient();state='playing';roundIntro=0;roundBanner.classList.add('hidden');touchControls.setMatchUiVisible(true);abilityHotbar.setVisible(true,touchControls.enabled);abilityHotbar.setFighter(p1id);input.clear();
+  U.p1n.textContent=`${ROSTER[p1id].n.toUpperCase()}  ${wins1}`;U.p2n.textContent=`${wins2}  ${ROSTER[p2id].n.toUpperCase()}`;U.rl.textContent=mode==='story'?`STORY ${story+1}/${STORY_ORDER.length} • FIRST TO ${roundsToWin} KOs`:`FIRST TO ${roundsToWin} KOs • BATTLE ${currentRound}`;
+  notifications.push(`${replacement.c.n.toUpperCase()} RESPAWNED`,{important:true,key:`respawn-${replacement.side}`});
+}
 function over(winner){
-  state='over';touchControls.releaseAll();touchControls.setMatchUiVisible(false);abilityHotbar.setVisible(false);clearTransient();winner.victory=1;roundBanner.textContent='K.O.';roundBanner.classList.remove('hidden');sound('ko');const p1win=winner===world.fighters[0];if(p1win)wins1++;else wins2++;const matchWon=wins1>=roundsToWin||wins2>=roundsToWin;
-  if(!matchWon){currentRound++;show(p1win?`${ROSTER[p1id].n} TAKES ROUND ${currentRound-1}`:`${ROSTER[p2id].n} TAKES ROUND ${currentRound-1}`,`Score: ${wins1}–${wins2}`,'NEXT ROUND',setup);return}
+  state='over';touchControls.releaseAll();abilityHotbar.setVisible(false);clearTransient();winner.victory=1;roundBanner.textContent='K.O.';roundBanner.classList.remove('hidden');sound('ko');const p1win=winner===world.fighters[0];if(p1win)wins1++;else wins2++;const matchWon=wins1>=roundsToWin||wins2>=roundsToWin;
+  if(!matchWon){currentRound++;roundBanner.textContent=`K.O. • ${wins1}–${wins2}`;roundBanner.classList.remove('hidden');const loserIndex=p1win?1:0;world.timers.schedule(()=>respawnAfterKo2D(loserIndex),700);return}
+  touchControls.setMatchUiVisible(false);
   if(mode==='story'&&p1win){story++;currentRound=1;wins1=wins2=0;if(story>=STORY_ORDER.length){localStorage.setItem(SAVE_KEY,JSON.stringify({cleared:true,date:Date.now()}));show('STORY CLEARED!','You defeated the full Clash of Souls roster. Your victory is saved in this browser.','PLAY AGAIN',()=>{story=0;p2id=STORY_ORDER[0];stage=STORY_STAGES[0];setup()});return}p2id=STORY_ORDER[story];if(p2id===p1id){story++;if(story>=STORY_ORDER.length){localStorage.setItem(SAVE_KEY,JSON.stringify({cleared:true,date:Date.now()}));show('STORY CLEARED!','You defeated the full Clash of Souls roster.','PLAY AGAIN',startGame);return}p2id=STORY_ORDER[story]}stage=STORY_STAGES[story];show('NEXT FIGHT',`${ROSTER[p2id].n} enters ${STAGES[stage].n}.`,'CONTINUE',setup)}
   else{sound('victory');const summary=statistics.finish(world.fighters);resultsScreen.show({winner:p1win?`${ROSTER[p1id].n} WINS THE MATCH!`:`${ROSTER[p2id].n} WINS THE MATCH!`,durationMs:summary.durationMs,players:summary.players,local:mode==='local'})}
 }
+
 function show(title,text,button,callback){U.mt.textContent=title;U.mx.textContent=text;U.mb.textContent=button;U.msg.classList.remove('hidden');U.mb.onclick=callback}
 function returnToCharacterSelect(){
   cleanupMatchForNavigation();openCharacterSelect(mode);
@@ -354,12 +368,12 @@ function update(dt){
     });
     updateClash(world,contributions);world.effects.update();if(!world.clash.active){clashInputActive=false;input.clearBuffers()}return;
   }
-  if(!trainingState.enabled)time=Math.max(0,time-dt);
+  if(!trainingState.enabled)time=Infinity;
   for(const fighter of world.fighters)fighter.update(commandFor(fighter));
   if(--hintTimer<=0){const hint=firstTimeHints.next({combo:world.fighters.some(fighter=>fighter.combo.hits>0),cinematic:world.cinematic.active,clash:world.clash.active});if(hint)notifications.push(hint,{key:`hint-${firstTimeHints.index}`,cooldown:0});hintTimer=900}
   if(trainingState.enabled){if(trainingState.infiniteHealth)for(const fighter of world.fighters)fighter.hp=100;if(trainingState.infiniteEnergy)for(const fighter of world.fighters)fighter.en=100;if(trainingState.infiniteGuard)for(const fighter of world.fighters)fighter.guard=fighter.guardMax}
   for(const projectile of world.projectiles)projectile.update(world);world.projectiles=world.projectiles.filter(projectile=>!projectile.dead);world.effects.update();
-  if(!trainingState.enabled&&(world.fighters[0].hp<=0||world.fighters[1].hp<=0||time<=0)){const [a,b]=world.fighters,winner=a.hp===b.hp?world.fighters[Math.random()<.5?0:1]:a.hp>b.hp?a:b;over(winner)}
+  if(!trainingState.enabled&&(world.fighters[0].hp<=0||world.fighters[1].hp<=0)){const [a,b]=world.fighters,winner=a.hp===b.hp?world.fighters[Math.random()<.5?0:1]:a.hp>b.hp?a:b;over(winner)}
 }
 function render(){
   ctx.save();if(world.shake>0){const visibleShake=world.shake*(world.shakeScale??1);ctx.translate((Math.random()-.5)*visibleShake,(Math.random()-.5)*visibleShake);world.shake*=.86;if(world.shake<.5)world.shake=0}
@@ -367,14 +381,14 @@ function render(){
   drawStage(ctx,stage,WIDTH,HEIGHT,GROUND);world.effects.draw(ctx);for(const fighter of world.fighters)fighter.draw(ctx);for(const projectile of world.projectiles)projectile.draw(ctx);ctx.restore();
   drawCinematicOverlay(ctx,world.cinematic,WIDTH,HEIGHT,{flashScale:world.flashScale,effects:qolSettings.accessibility.ultimateEffects});
   if(!world.fighters.length)return;const blinded=world.fighters.find(fighter=>fighter.lens>0&&!fighter.cpu);
-  if(blinded){ctx.save();ctx.fillStyle=qolSettings.accessibility.lensOverlay==='reduced'?'rgba(0,0,0,.72)':'rgba(0,0,0,.96)';ctx.fillRect(0,0,WIDTH,HEIGHT);ctx.textAlign='center';ctx.fillStyle='#f7f7ff';ctx.font='900 30px Segoe UI';ctx.fillText('LENS OF TRUTH',WIDTH/2,HEIGHT/2-8);ctx.font='bold 16px Segoe UI';ctx.fillStyle='#cfd6ff';ctx.fillText(blinded.lens<60?'WARNING • LENS ENDING':'VISION LOST • AUTO-DODGE ACTIVE',WIDTH/2,HEIGHT/2+24);ctx.restore()}
+  if(blinded){ctx.save();ctx.fillStyle=qolSettings.accessibility.lensOverlay==='reduced'?'rgba(7,18,28,.15)':'rgba(7,18,28,.34)';ctx.fillRect(0,0,WIDTH,HEIGHT);ctx.textAlign='center';ctx.fillStyle='#f7f7ff';ctx.font='900 30px Segoe UI';ctx.fillText('LENS OF TRUTH',WIDTH/2,HEIGHT/2-18);ctx.font='bold 17px Segoe UI';ctx.fillStyle='#bdefff';ctx.fillText(`MOST PROBABLE: ${blinded.lensPrediction||'UNKNOWN'}`,WIDTH/2,HEIGHT/2+16);ctx.font='bold 14px Segoe UI';ctx.fillStyle='#d8e3ff';ctx.fillText(`MASTERY ${blinded.lensMastery||0}%${blinded.lensAutoDodges?` • AUTO-DODGES ${blinded.lensAutoDodges}`:''}`,WIDTH/2,HEIGHT/2+43);ctx.restore()}
   world.fighters.forEach((fighter,index)=>comboHud[index].innerHTML=fighter.combo.hits>1?`${fighter.combo.hits} HIT COMBO<small>${fighter.combo.damage.toFixed(1)} DAMAGE • ${Math.round(fighter.combo.scale*100)}% SCALE</small>`:'');
   const hudModels=world.fighters.map(fighterHudModel);hudModels.forEach((model,index)=>{cooldownHud[index].textContent=cooldownText(model)});
   abilityHotbar.update();
   clashHud.classList.toggle('hidden',!world.clash.active);
   if(world.clash.active){$('clashLabel').textContent=world.clash.type==='beam'?'BEAM CLASH!':world.clash.type==='ultimate'?'ULTIMATE CLASH!':'CLASH!';const amount=(world.clash.meter+100)/2;$('clashFill').style.left=`${Math.min(50,amount)}%`;$('clashFill').style.width=`${Math.abs(amount-50)}%`}
   if(trainingState.enabled){$('trainStats').innerHTML=`COMBO ${world.fighters[0].combo.hits}<br>DAMAGE ${world.fighters[0].combo.damage.toFixed(1)}<br>SCALING ${Math.round(world.fighters[0].combo.scale*100)}%<br>GUARD DMG ${world.fighters[1].guardDamageLast.toFixed(1)}<br>PB WINDOW ${world.fighters[0].perfectBlockWindow}<br>DUMMY ${trainingState.dummy.toUpperCase()}<br>CLASH ${world.clash.active?`${world.clash.type.toUpperCase()} ${world.clash.meter.toFixed(1)}`:trainingState.forceNextClash?'ARMED':'READY'}`;$('trainMoves').innerHTML=`<b>${ROSTER[p1id].n} MOVE LIST</b><br>${moveList(p1id).join('<br>')||'Legacy light • heavy • launcher • air • special • ultimate'}`;$('trainComboPrompt').textContent=`${input.inputStyleName(1)} ROUTE: ${input.comboPrompt(1)}`;$('trainInputs').textContent=`INPUTS: ${trainingState.inputHistory.join(' › ')}`}
-  const [a,b]=world.fighters,[ha,hb]=hudModels;U.p1h.style.width=a.hp+'%';U.p2h.style.width=b.hp+'%';U.p1e.style.width=a.en+'%';U.p2e.style.width=b.en+'%';U.p1g.style.width=a.guard+'%';U.p2g.style.width=b.guard+'%';U.p1hpText.textContent=ha.health;U.p2hpText.textContent=hb.health;U.p1enText.textContent=ha.energy;U.p2enText.textContent=hb.energy;U.p1guardText.textContent=ha.guard;U.p2guardText.textContent=hb.guard;U.p1d.textContent=`${ha.ultimateReady?'◆ ULT READY':'◇ ULT CHARGING'} • ${ha.breakerReady?'◇ BREAKER READY':'× BREAKER SPENT'}`;U.p2d.textContent=`${hb.ultimateReady?'◆ ULT READY':'◇ ULT CHARGING'} • ${hb.breakerReady?'◇ BREAKER READY':'× BREAKER SPENT'}`;U.p1status.textContent=ha.statuses.join(' • ');U.p2status.textContent=hb.statuses.join(' • ');U.timer.textContent=Math.ceil(time);
+  const [a,b]=world.fighters,[ha,hb]=hudModels;U.p1h.style.width=(Math.max(0,Math.min(100,a.hp/(a.maxHp||100)*100)))+'%';U.p2h.style.width=(Math.max(0,Math.min(100,b.hp/(b.maxHp||100)*100)))+'%';U.p1e.style.width=a.en+'%';U.p2e.style.width=b.en+'%';U.p1g.style.width=a.guard+'%';U.p2g.style.width=b.guard+'%';U.p1hpText.textContent=`${ha.health}/${ha.maxHealth}`;U.p2hpText.textContent=`${hb.health}/${hb.maxHealth}`;U.p1enText.textContent=ha.energy;U.p2enText.textContent=hb.energy;U.p1guardText.textContent=ha.guard;U.p2guardText.textContent=hb.guard;U.p1d.textContent=`${ha.ultimateReady?'◆ ULT READY':'◇ ULT CHARGING'} • ${ha.breakerReady?'◇ BREAKER READY':'× BREAKER SPENT'}`;U.p2d.textContent=`${hb.ultimateReady?'◆ ULT READY':'◇ ULT CHARGING'} • ${hb.breakerReady?'◇ BREAKER READY':'× BREAKER SPENT'}`;U.p1status.textContent=ha.statuses.join(' • ');U.p2status.textContent=hb.statuses.join(' • ');U.timer.textContent=Number.isFinite(time)?Math.ceil(time):'∞';
 }
 let fpsFrames=0,fpsStamp=performance.now();function loop(timestamp){const delta=Math.min(.034,(timestamp-last)/1000||0);last=timestamp;acc+=delta;while(acc>=1/60){update(1/60);acc-=1/60}if(state!=='menu')render();fpsFrames++;if(timestamp-fpsStamp>=500){$('fpsDisplay').textContent=`${Math.round(fpsFrames*1000/(timestamp-fpsStamp))} FPS`;fpsFrames=0;fpsStamp=timestamp}requestAnimationFrame(loop)}
 

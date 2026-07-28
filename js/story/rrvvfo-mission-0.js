@@ -1,4 +1,4 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27b-living-training-road-20260727-232814';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
 import {clampToStage} from '../arena/arena-stages.js?v=27b-living-training-road-20260727-232814';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
 
@@ -138,8 +138,10 @@ class RrvvfoMission0{
     this.battle.hideBanner();
     this.battle.projectiles=[];
     this.battle.agonyClones=[];
+    this.battle.fighters[0].maxHp=100;
     this.battle.fighters[0].hp=100;
     this.battle.fighters[0].en=100;
+    this.battle.fighters[1].maxHp=100;
     this.battle.fighters[1].hp=100;
     this.battle.fighters[1].en=100;
     this.configureHotbar();

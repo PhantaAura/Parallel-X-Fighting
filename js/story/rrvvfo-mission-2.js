@@ -1,7 +1,7 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=28b1-chapter2-compat-20260728-022318';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
 import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=28b1-chapter2-compat-20260728-022318';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=28b1-chapter2-compat-20260728-022318';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=28b1-chapter2-compat-20260728-022318';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a-combat-depth-20260728';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -157,6 +157,7 @@ class RrvvfoMission2{
     this.finalPhase='opening';
     this.awakeningReadyAt=0;
     this.clash={active:false,power:18,endAt:0,lastButton:false};
+    this.koTimer=0;
     this.completed=false;
     this.aborted=false;
     this.hubSpawn={x:-1510,z:80};
@@ -229,7 +230,7 @@ class RrvvfoMission2{
         const interact=Boolean(command.light);
         if(interact&&!this.interactHeld)this.tryInteract();
         this.interactHeld=interact;
-        return{...command,light:false,heavy:false,launcher:false,block:false,special:false};
+        return{...command,light:false,heavy:false,launcher:false,block:false,charge:false,grab:false,special:false};
       }
       if(this.mode==='fight'){
         const command=baseInput();
@@ -239,16 +240,15 @@ class RrvvfoMission2{
         return command;
       }
       if(this.mode==='spectator')return baseCpu(battle.fighters[0],battle.fighters[1],1/60);
-      return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,special:false};
+      return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false};
     };
 
     battle.cpu=(fighter,foe,dt)=>{
-      if(this.mode!=='fight'&&this.mode!=='spectator')return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,special:false};
-      const command=baseCpu(fighter,foe,dt);
-      if(this.currentFight?.id==='wade')return{...command,x:(command.x||0)*1.18,z:(command.z||0)*1.18,dash:command.dash||Math.random()<.045,special:false};
-      if(this.currentFight?.id==='plouke')return{...command,block:command.block||Math.random()<.18,special:command.special||Math.random()<.035};
-      if(this.mode==='spectator'&&fighter.id==='pouki')return{...command,heavy:command.heavy||Math.random()<.12,dash:command.dash||Math.random()<.06,special:false};
-      return{...command,special:this.currentFight?.id==='plouke'?command.special:false};
+      if(this.mode!=='fight'&&this.mode!=='spectator')return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false};
+      // Chapter 2 now uses the same state-based AI as the rest of the arena.
+      // Character identity (Wade speed pressure, Bark defense, Pouki rushdown,
+      // Plouke/Sage timing) lives in ArenaBattle instead of random story overrides.
+      return baseCpu(fighter,foe,dt);
     };
 
     battle.castAbility=slot=>{
@@ -298,10 +298,10 @@ class RrvvfoMission2{
       }else if(this.mode==='fight'){
         if(target===foe&&foe.hp<=0){
           foe.hp=1;
-          queueMicrotask(()=>this.finishCurrentFight(true));
+          queueMicrotask(()=>this.handleFightKo(true));
         }else if(target===player&&player.hp<=0){
           player.hp=1;
-          queueMicrotask(()=>this.finishCurrentFight(false));
+          queueMicrotask(()=>this.handleFightKo(false));
         }
       }else if(this.mode==='spectator'){
         if(target===player&&player.hp<=0){
@@ -402,7 +402,7 @@ class RrvvfoMission2{
     this.battle.hideBanner();
     this.battle.root.classList.add('chapter2HubMode');
     this.battle.root.querySelector('[data-stage-name]').textContent='LOCAL TOURNAMENT GROUNDS';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.8B • CHAPTER 2';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A • CHAPTER 2';
     const player=this.battle.fighters[0];
     const point=spawn||this.hubSpawn;
     player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.reset(point.x,point.z);
@@ -686,30 +686,78 @@ class RrvvfoMission2{
   }
 
   startFight(config){
-    this.currentFight={...config,elapsed:0};
+    const opponentMaxHp=this.chapter2OpponentHealth(config);
+    this.currentFight={...config,elapsed:0,koTarget:config.final?1:3,playerKOs:0,foeKOs:0,koLocked:false,opponentMaxHp,playerMaxHp:100};
     this.root.querySelector('[data-c2-prompt]').hidden=true;
     this.mode='transition';
-    this.showTournamentCard(config.intro||'FIGHT',`${config.name} is waiting in the ring.`,()=>{
+    const beginFight=()=>{
       this.battle.fighters[0].id='rrvvfo';
       this.battle.fighters[1].id=config.id;
       this.switchStage('tournament');
       this.mode='fight';
       const player=this.battle.fighters[0],foe=this.battle.fighters[1];
-      player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.reset(-370,78);player.hp=100;player.en=100;player.guard=100;player.asset=null;
-      foe.id=config.id;foe.name=config.name;foe.accent=this.opponentAccent(config.id);foe.cpu=true;foe.reset(370,-78);foe.hp=config.hp||70;foe.en=100;foe.guard=100;foe.asset=null;
-      this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();
+      player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.maxHp=this.currentFight.playerMaxHp;player.reset(-370,78);player.en=100;player.guard=100;player.asset=null;
+      foe.id=config.id;foe.name=config.name;foe.accent=this.opponentAccent(config.id);foe.cpu=true;foe.maxHp=this.currentFight.opponentMaxHp;foe.reset(370,-78);foe.en=100;foe.guard=100;foe.asset=null;
+      this.battle.koTarget=this.currentFight.koTarget;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';this.battle.time=Infinity;this.battle.hideBanner();
+      // Official Chapter 2 tournament combat uses ring-outs. The scripted final
+      // remains KO-only so its Fire Awakening and beam-clash sequence cannot skip.
+      this.battle.ringOutEnabled=!config.final;
+      this.battle.onRingOut=fighter=>{
+        if(this.mode!=='fight'||this.currentFight?.final||this.currentFight?.koLocked)return;
+        this.handleFightKo(fighter===this.battle.fighters[1],'RING OUT');
+      };
       this.battle.root.classList.remove('chapter2HubMode');
       this.battle.root.querySelector('[data-stage-name]').textContent=`LOCAL TOURNAMENT • ${config.name.toUpperCase()}`;
       this.setArenaNames('RRVVFO',config.name.toUpperCase());
       const run=this.root.querySelector('[data-tournament-run]');
       run.hidden=!config.story||this.state.runRefusals>=4;
-      this.setObjective(config.story?'WIN THE TOURNAMENT MATCH':'WIN THE OPTIONAL FIGHT',`Defeat ${config.name}.`);
+      this.setObjective(config.final?'SURVIVE THE SCRIPTED FINAL':config.story?'SCORE 3 KOs TO ADVANCE':'SCORE 3 KOs TO WIN',config.final?`Survive Plouke long enough to reach the Fire Awakening attempt.`:`Defeat ${config.name} three times. KOs and ring-outs both count. Opponent health: ${this.currentFight.opponentMaxHp}.`);
       this.updateLevelHud();
-    });
+    };
+    if(config.skipCard)beginFight();else this.showTournamentCard(config.intro||'FIGHT',`${config.name} is waiting in the ring.`,beginFight);
   }
 
   opponentAccent(id){
     return({bark:'#9a6a3a',wade:'#2f91e3',pouki:'#6ca2a7',plouke:'#e6ddc7','practice-fighter':'#6f8fbe','qualifier-fighter':'#cf7446','bracket-fighter':'#9a6cc9','grunt-a':'#7d8694','grunt-b':'#5e6672'}[id]||'#8667c7');
+  }
+
+  chapter2OpponentHealth(config={}){
+    if(config.final)return 150;
+    const base=Math.max(1,Number(config.hp)||70);
+    return Math.max(120,Math.round(base*1.55));
+  }
+
+  handleFightKo(playerWon,finishLabel='K.O.'){
+    const fight=this.currentFight;
+    if(this.mode!=='fight'||!fight||fight.final||fight.koLocked)return;
+    fight.koLocked=true;
+    fight.lastLoser=playerWon?1:0;
+    if(playerWon)fight.playerKOs++;else fight.foeKOs++;
+    this.battle.scores=[fight.playerKOs,fight.foeKOs];
+    this.battle.phase='story';this.mode='fight-ko';
+    this.battle.banner(`${finishLabel} • ${fight.playerKOs}–${fight.foeKOs}`);
+    this.battle.audio.play('ko');this.battle.hud();
+    this.setObjective(`FIRST TO ${fight.koTarget} KOs`,`${fight.name}: ${fight.playerKOs}–${fight.foeKOs}. ${playerWon?'Opponent':'Rrvvfo'} will respawn.`);
+    clearTimeout(this.koTimer);
+    const matchOver=(playerWon?fight.playerKOs:fight.foeKOs)>=fight.koTarget;
+    this.koTimer=window.setTimeout(()=>{
+      if(this.aborted||this.currentFight!==fight)return;
+      if(matchOver){this.mode='fight';this.finishCurrentFight(playerWon);return}
+      this.resetFightAfterKo();
+    },700);
+  }
+
+  resetFightAfterKo(){
+    const fight=this.currentFight;if(!fight||fight.final)return;
+    const loserIndex=Number.isInteger(fight.lastLoser)?fight.lastLoser:1;
+    fight.koLocked=false;this.mode='fight';
+    this.battle.koTarget=fight.koTarget;this.battle.scores=[fight.playerKOs,fight.foeKOs];
+    this.battle.round=fight.playerKOs+fight.foeKOs+1;
+    // Continuous stock combat: only the defeated fighter respawns. The winner
+    // keeps health, energy, position, and pressure just like one uninterrupted battle.
+    this.battle.respawnAfterKo(loserIndex);this.battle.time=Infinity;
+    this.setArenaNames('RRVVFO',fight.name.toUpperCase());
+    this.setObjective(`FIRST TO ${fight.koTarget} KOs`,`Score ${fight.koTarget} KOs to win. KOs and ring-outs count. Current score: ${fight.playerKOs}–${fight.foeKOs}.`);
   }
 
   setArenaNames(left,right){
@@ -740,14 +788,9 @@ class RrvvfoMission2{
     this.mode='story';this.battle.phase='story';
     this.root.querySelector('[data-tournament-run]').hidden=true;
     if(!won){
-      const lines=fight.story?[
-        {speaker:'RRVVFO',speakerClass:'p1',text:'No. Reset the round. I am not leaving the bracket like that.',tail:'down'},
-        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Tournament retry granted for story progression.',tail:'down'}
-      ]:[
-        {speaker:fight.name.toUpperCase(),speakerClass:'rival',text:'Need another attempt?',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I needed you to stop talking.',tail:'down'}
-      ];
-      this.showDialogue(lines,()=>this.startFight(fight));
+      // Story rematches always restart at 0–0, but skip extra dialogue so a
+      // close 2–3 loss gets the player back into the ring immediately.
+      this.battle.banner('REMATCH • 0–0');this.koTimer=window.setTimeout(()=>this.startFight({...fight,playerKOs:0,foeKOs:0,koLocked:false,skipCard:true}),650);
       return;
     }
 
@@ -852,7 +895,7 @@ class RrvvfoMission2{
       const bark=this.battle.fighters[0],pouki=this.battle.fighters[1];
       bark.id='bark';bark.name='Bark';bark.accent='#9a6a3a';bark.cpu=true;bark.reset(-370,78);bark.hp=100;bark.en=70;bark.asset=null;
       pouki.id='pouki';pouki.name='Pouki';pouki.accent='#6ca2a7';pouki.cpu=true;pouki.reset(370,-78);pouki.hp=100;pouki.en=80;pouki.asset=null;
-      this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();
+      this.battle.phase='play';this.battle.time=9999;this.battle.ringOutEnabled=false;this.battle.onRingOut=null;this.battle.hideBanner();
       this.setArenaNames('BARK','POUKI');
       this.setObjective('WATCH BARK VS POUKI','Pouki is overwhelming Bark.');
     });
@@ -1166,6 +1209,7 @@ class RrvvfoMission2{
   exitToStory(){
     if(this.aborted)return;
     this.aborted=true;
+    clearTimeout(this.koTimer);
     this.saveChapterState();
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
     this.dialogue?.overlay?.remove();

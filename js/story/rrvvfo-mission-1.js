@@ -1,8 +1,8 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27b-living-training-road-20260727-232814';
-import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=27b-living-training-road-20260727-232814';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
+import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=29a-combat-depth-20260728';
 import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b-living-training-road-20260727-232814';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
-import {grantCombatManual} from './combat-manual.js?v=27b1-road-rebuild-20260727-235117';
+import {grantCombatManual} from './combat-manual.js?v=29a-combat-depth-20260728';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
@@ -67,6 +67,7 @@ class RrvvfoMission1{
     this.battle.root.classList.add('storyMission1','storyMissionDialogueOpen');
     this.battle.root.querySelector('[data-stage-name]').textContent='SAGE TRAINING FIELD';
     this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.7A • RRVVFO CHAPTER 1';
+    this.battle.fighters[0].maxHp=100;this.battle.fighters[0].hp=100;this.battle.fighters[1].maxHp=100;this.battle.fighters[1].hp=100;
     this.battle.phase='story';
     this.battle.time=9999;
     this.battle.hideBanner();

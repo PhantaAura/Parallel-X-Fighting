@@ -1,7 +1,7 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27b1-road-rebuild-20260727-235117';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
 import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b1-road-rebuild-20260727-235117';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b1-road-rebuild-20260727-235117';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=27b1-road-rebuild-20260727-235117';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a-combat-depth-20260728';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -112,6 +112,7 @@ class RrvvfoRoadHub{
     this.qteIndex=0;
     this.qteDeadline=0;
     this.qteGamepadState={};
+    this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;this.roadKoTimer=0;
     this.npcs=[
       {x:-900,z:300,baseX:-900,baseZ:300,color:'#4b8ee8',phase:0,label:'DOJO STUDENT'},
       {x:-520,z:-300,baseX:-520,baseZ:-300,color:'#e36b48',phase:1.7,label:'TRAVELER'},
@@ -202,10 +203,10 @@ class RrvvfoRoadHub{
       if(!connected||this.mode!=='fight')return connected;
       if(target===battle.fighters[1]&&target.hp<=0){
         target.hp=1;
-        queueMicrotask(()=>this.finishRoadFight(true));
+        queueMicrotask(()=>this.handleRoadFightKo(true));
       }else if(target===battle.fighters[0]&&target.hp<=0){
         target.hp=1;
-        queueMicrotask(()=>this.restartRoadFight());
+        queueMicrotask(()=>this.handleRoadFightKo(false));
       }
       return connected;
     };
@@ -701,35 +702,42 @@ class RrvvfoRoadHub{
     this.mode='fight';
     this.fighterVisible=true;
     this.battle.root.classList.add('storyRoadFight');
-    player.reset(790,70);
-    player.hp=100;
+    this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;clearTimeout(this.roadKoTimer);
+    player.maxHp=100;player.reset(790,70);
     player.en=100;
     foe.id='road-fighter';
     foe.name='Roadside Fighter';
     foe.accent='#7f6cff';
     foe.asset=null;
-    foe.reset(940,-70);
-    foe.hp=38;
-    foe.en=45;
-    this.battle.phase='play';
-    this.battle.time=9999;
+    foe.maxHp=120;foe.reset(940,-70);
+    foe.en=70;
+    this.battle.koTarget=3;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';
+    this.battle.time=Infinity;
     this.battle.hideBanner();
-    this.setObjective('OPTIONAL ROAD FIGHT','Defeat the roadside fighter to continue.');
+    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 3 KOs','Defeat the roadside fighter three times. Opponent health: 120 per life.');
     this.battle.notice('ROAD FIGHT • RUN IS NO LONGER AVAILABLE',1.8);
   }
 
+  handleRoadFightKo(playerWon){
+    if(this.mode!=='fight'||this.aborted||this.roadKoLocked)return;
+    this.roadKoLocked=true;if(playerWon)this.roadPlayerKOs++;else this.roadFoeKOs++;
+    this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.phase='story';this.mode='fight-ko';
+    this.battle.banner(`K.O. • ${this.roadPlayerKOs}–${this.roadFoeKOs}`);this.battle.audio.play('ko');this.battle.hud();
+    const complete=(playerWon?this.roadPlayerKOs:this.roadFoeKOs)>=3;clearTimeout(this.roadKoTimer);
+    this.roadKoTimer=window.setTimeout(()=>{if(this.aborted)return;if(complete){this.mode='fight';if(playerWon)this.finishRoadFight(true);else this.restartRoadFight();return}this.respawnRoadFight();},1100);
+  }
+
+  respawnRoadFight(){
+    if(this.aborted)return;this.roadKoLocked=false;this.mode='fight';
+    this.battle.koTarget=3;this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.round=this.roadPlayerKOs+this.roadFoeKOs+1;this.battle.newRound();this.battle.time=Infinity;
+    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 3 KOs',`Current score: ${this.roadPlayerKOs}–${this.roadFoeKOs}. Opponent health: 120 per life.`);
+  }
+
   restartRoadFight(){
-    if(this.mode!=='fight'||this.aborted)return;
-    const player=this.battle.fighters[0];
-    const foe=this.battle.fighters[1];
-    player.reset(790,70);
-    player.hp=100;
-    player.en=100;
-    foe.reset(940,-70);
-    foe.hp=38;
-    foe.en=45;
-    this.battle.phase='play';
-    this.battle.notice('TRY AGAIN',1.2);
+    if(this.aborted)return;this.mode='fight';this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;
+    this.battle.koTarget=3;this.battle.scores=[0,0];this.battle.round=1;this.battle.newRound();this.battle.time=Infinity;
+    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 3 KOs','Score three KOs before the roadside fighter does.');
+    this.battle.notice('MATCH RESTARTED',1.2);
   }
 
   finishRoadFight(won){
@@ -954,7 +962,7 @@ class RrvvfoRoadHub{
 
   cleanup(){
     if(this.aborted)return;
-    this.aborted=true;
+    this.aborted=true;clearTimeout(this.roadKoTimer);
     document.removeEventListener('keydown',this.keyHandler,true);
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
     this.dialogue?.overlay?.remove();

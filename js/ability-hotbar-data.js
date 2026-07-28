@@ -10,9 +10,9 @@ const ability=(id,label,action,icon,energy,description,extra={})=>Object.freeze(
 
 const RRVVFO_ABILITIES=Object.freeze([
   ability('fireBlast','Fire Blast','fireBlast','🔥',28,'Launches Rrvvfo’s fire projectile from range.',{cooldown:55}),
-  ability('shotsOfAgony','Shots of Agony','shotsOfAgony','◉',40,'Summons exactly four blue copies that fire together. Cannot be reused while the volley remains active.',{cooldown:300,restriction:'Exactly four clones • one active volley'}),
+  ability('shotsOfAgony','Shots of Agony','shotsOfAgony','◉',100,'Consumes the full Energy meter to summon exactly four blue copies that fire together.',{cooldown:300,restriction:'All Energy • exactly four clones • one active volley'}),
   ability('objectSwap','Object Swap','objectSwap','↯',12,'Repositions using a valid nearby object or marker.',{cooldown:42,restriction:'Requires a legal destination'}),
-  ability('lensOfTruth','Lens of Truth','lensOfTruth','◈',90,'Costs 90 Energy and 50 HP. Rrvvfo cannot fall below 1 HP from activation.',{hp:50,cooldown:300,restriction:'4 second duration • HP floor at 1'}),
+  ability('lensOfTruth','Lens of Truth','lensOfTruth','◈',90,'Starts at 90 Energy and 70 HP. Successful use improves predictions and eventually unlocks two automatic dodges.',{hp:70,cooldown:300,restriction:'Mastery improves cost, duration, accuracy, and auto-dodges'}),
   ability('ultimate','Solar Weave','ultimate','◆',90,'Activates Rrvvfo’s cinematic Fire Awakening ultimate.',{cooldown:300,ultimate:true,restriction:'Subject to cinematic and clash rules'})
 ]);
 
@@ -68,9 +68,10 @@ export function moveAbilitySlot(settings,fighterId,abilityId,targetIndex){
 export function restoreAbilityOrder(settings,fighterId){settings.orders={...settings.orders,[fighterId]:defaultAbilityOrder(fighterId)};return settings.orders[fighterId]}
 
 const seconds=frames=>Math.max(0,Math.ceil(Number(frames||0)/60));
+function currentLensCosts(storage=globalThis.localStorage){let mastery=0;try{mastery=Math.max(0,Math.min(100,Number(storage?.getItem?.('pxLensMasteryV1'))||0))}catch{}const ratio=mastery/100;return{mastery,energy:Math.round(90-25*ratio),hp:Math.round(70-25*ratio)}}
 export function abilityStatus(fighter,entry,world=fighter?.world){
   if(!fighter||!entry)return{available:false,reason:'Fighter unavailable',cooldown:0,fill:0,active:false};
-  let cooldown=0,active=false,activeText='',reason='';
+  let cooldown=0,active=false,activeText='',reason='';const lens=currentLensCosts();const requiredEnergy=entry.action==='lensOfTruth'?lens.energy:entry.energy;
   if(entry.action==='fireBlast'||entry.action==='s')cooldown=fighter.specialCd||0;
   if(entry.action==='shotsOfAgony'){cooldown=fighter.agonyCooldown||0;active=!!fighter.agonyActiveVolley;activeText=active?'ACTIVE':''}
   if(entry.action==='objectSwap'||entry.action==='d')cooldown=fighter.dashCd||0;
@@ -81,7 +82,7 @@ export function abilityStatus(fighter,entry,world=fighter?.world){
   if(blocked)reason='Unavailable in current state';
   else if(active&&entry.action==='shotsOfAgony')reason='Shots of Agony already active';
   else if(cooldown>0)reason=`Cooldown ${seconds(cooldown)}s`;
-  else if(fighter.en<entry.energy)reason=`Needs ${entry.energy} Energy`;
+  else if(fighter.en<requiredEnergy)reason=`Needs ${requiredEnergy} Energy`;
   else if(entry.action==='objectSwap'){
     const destination=Math.max(15,Math.min((world?.width||960)-fighter.w-15,fighter.x+fighter.face*155));
     if(Math.abs(destination-fighter.x)<24)reason='No legal swap destination';
@@ -89,5 +90,5 @@ export function abilityStatus(fighter,entry,world=fighter?.world){
   if(!reason&&entry.action==='shotsOfAgony'&&fighter.foe?.()&&Math.abs(fighter.foe().x-fighter.x)>190)reason='Target must be nearby';
   if(entry.action==='ultimate'&&(fighter.ultimateStartup||fighter.ultimateRecovery))reason='Ultimate unavailable';
   const fill=entry.cooldown?Math.max(0,Math.min(1,cooldown/entry.cooldown)):0;
-  return{available:!reason&&!active,reason,cooldown,cooldownText:cooldown?`${seconds(cooldown)}s`:'',fill,active,activeText,hpWarning:entry.hp&&fighter.hp<=entry.hp?`HP FLOOR: ${Math.max(1,fighter.hp-entry.hp)}`:''};
+  return{available:!reason&&!active,reason,cooldown,cooldownText:cooldown?`${seconds(cooldown)}s`:'',fill,active,activeText:entry.action==='lensOfTruth'&&active?`${activeText} • ${lens.mastery}%`:activeText,hpWarning:entry.action==='lensOfTruth'&&fighter.hp<=lens.hp?`HP FLOOR: ${Math.max(1,fighter.hp-lens.hp)}`:entry.hp&&fighter.hp<=entry.hp?`HP FLOOR: ${Math.max(1,fighter.hp-entry.hp)}`:''};
 }

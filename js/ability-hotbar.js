@@ -1,4 +1,4 @@
-import {abilityStatus,createDefaultAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from './ability-hotbar-data.js';
+import {abilityStatus,createDefaultAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a-combat-depth-20260728';
 
 const ACTION_PROMPT=Object.freeze({fireBlast:'s',shotsOfAgony:'s',objectSwap:'d',lensOfTruth:'n',ultimate:'u'});
 export const HOTBAR_INFO_HOLD_MS=460;

@@ -1,4 +1,4 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=28b1-chapter2-compat-20260728-022318';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
 import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=28b1-chapter2-compat-20260728-022318';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=28b1-chapter2-compat-20260728-022318';
 

@@ -9,7 +9,7 @@ export function fighterHudModel(fighter){
   }
   if(fighter.ultCd>0)cooldowns.push({id:'ultimate',icon:'◷',text:`ULT ${seconds(fighter.ultCd)}s`});
   const statuses=[fighter.armor?'ARMOR':null,fighter.aura?'AURA':null,fighter.freeze?'FROZEN':null,fighter.stun?'STUN':null,fighter.knockdown?'KNOCKDOWN':null,fighter.guardBreakStun?'GUARD BROKEN':null,fighter.throwProtection?'THROW PROTECTION':null].filter(Boolean);
-  return{health:Math.ceil(fighter.hp),energy:Math.floor(fighter.en),guard:Math.ceil(fighter.guard),ultimateReady:fighter.en>=90&&!fighter.ultCd,breakerReady:!fighter.breakerUsed&&!fighter.breakerCooldown,cooldowns,statuses};
+  return{health:Math.ceil(fighter.hp),maxHealth:Math.ceil(fighter.maxHp||100),energy:Math.floor(fighter.en),guard:Math.ceil(fighter.guard),ultimateReady:fighter.en>=90&&!fighter.ultCd,breakerReady:!fighter.breakerUsed&&!fighter.breakerCooldown,cooldowns,statuses};
 }
 export function cooldownText(model){return model.cooldowns.map(item=>`${item.icon} ${item.text}`).join(' • ')}
 

@@ -1,8 +1,8 @@
-# Parallels X: Clash of Souls — Prototype 2.8B.3
+# Parallels X: Clash of Souls — Prototype 2.9A
 
-This is the complete standalone repository. The latest fix makes Chapter Select restart Chapter 2 from its true opening instead of stopping at the post-tournament “Back at the tournament grounds” scene. Permanent unlocks, Training Level, and Story XP are preserved.
+This is the complete standalone repository. Combat now follows a Sonic Battle-style first-to-3-KOs format: opponents have larger health pools, fighters respawn after the first two knockouts, and only the third knockout ends a normal battle. Chapter 2 replay and permanent progress preservation remain included.
 
-See `README-2.8B.2.md` and `PATCH-NOTES-2.8B.2.md` for the current release details. Older notes below are retained as development history.
+See `PATCH-NOTES-2.9A.md` for the full combat-depth update. Older notes below are retained as development history.
 
 ---
 
@@ -36,6 +36,22 @@ VS CPU, Local 2 Player, and Training still open the fighter-select screen, now r
 The animated intro is intentionally deferred to a later update.
 
 
+
+## Prototype 2.9A combat-depth update
+
+- First-to-three KOs now continue without resetting the winner.
+- Chapter 2 tournament fights include ring-outs; the scripted Plouke final is protected.
+- Wade and Bark have complete arena kits and character-driven AI.
+- Arena AI uses reaction delays, spacing, resources, danger checks, and deliberate mistakes instead of instant input reading.
+- Timed guard, perfect parry, grabs, charge energy, projectile clashes, physical Earth Walls, and heavy clashes are active.
+- Lens of Truth predicts attacks and improves through mastery; full mastery grants two auto-dodges.
+- Shots of Agony consumes the full energy meter.
+
 ## Prototype 2.8B.3 replay fix
 
 Completed chapters now show a separate **Replay** button. Chapter 2 replay starts from the beginning without replacing the saved completed checkpoint, and the tournament arena is no longer covered by an opaque blue UI layer.
+
+
+## Prototype 2.8B.4 combat update
+
+Normal fights are now first to three knockouts with automatic respawns, stronger CPU health, no timeout victories, and health-bar scaling for values above 100. The scripted Plouke finale is intentionally exempt so Chapter 2's established ending still plays correctly.

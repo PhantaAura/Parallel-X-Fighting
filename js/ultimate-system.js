@@ -42,10 +42,10 @@ function applyIdentityBuff(attacker,target){
     case'alt':attacker.aura=Math.max(attacker.aura,240);break;
     case'robert':target.freeze=Math.max(target.freeze,70);break;
     case'virek':attacker.aura=Math.max(attacker.aura,210);break;
-    case'shadow':attacker.hp=clamp(attacker.hp+8,0,100);attacker.aura=Math.max(attacker.aura,180);break;
+    case'shadow':attacker.hp=clamp(attacker.hp+8,0,attacker.maxHp||100);attacker.aura=Math.max(attacker.aura,180);break;
     case'phanta':attacker.aura=Math.max(attacker.aura,220);break;
     case'creed':attacker.inv=Math.max(attacker.inv,36);break;
-    case'sage':attacker.hp=clamp(attacker.hp+10,0,100);attacker.aura=Math.max(attacker.aura,220);break;
+    case'sage':attacker.hp=clamp(attacker.hp+10,0,attacker.maxHp||100);attacker.aura=Math.max(attacker.aura,220);break;
     case'raggie':attacker.inv=Math.max(attacker.inv,60);break;
     case'jimmy':target.freeze=Math.max(target.freeze,45);break;
   }

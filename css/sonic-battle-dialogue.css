@@ -1,248 +1,207 @@
 /* ═══════════════════════════════════════════════════════════════
-   SONIC BATTLE DIALOGUE BOX SYSTEM
-   Drop this file into your css/ folder and link it in index.html:
-   <link rel="stylesheet" href="css/sonic-battle-dialogue.css">
-   ═══════════════════════════════════════════════════════════════ */
+   PARALLELS X — COMPATIBLE SPRITE-ON-TOP DIALOGUE
+   Prototype 2.6.5
 
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&display=swap');
+   The visual design is preserved from the uploaded PX dialogue package:
+   character sprite above the box, angular white panel, thick black border,
+   colored speaker tag, typewriter cursor, prompt, and choice buttons.
+
+   Compatibility changes are limited to layering, input, existing class aliases,
+   and responsive behavior required by the current game.
+   ═══════════════════════════════════════════════════════════════ */
 
 :root{
-  --sb-dia-white:#ffffff;
-  --sb-dia-black:#111111;
-  --sb-dia-gray:#666677;
-  --sb-dia-blue:#0055cc;
-  --sb-dia-red:#e62020;
-  --sb-dia-yellow:#ffcc00;
-  --sb-dia-font:'Chakra Petch',Segoe UI,Arial,sans-serif;
+  --dia-white:#ffffff;
+  --dia-black:#111111;
+  --dia-gray:#666677;
+  --dia-red:#e62020;
+  --dia-yellow:#ffcc00;
+  --dia-blue:#0055cc;
+  --dia-font:'Segoe UI',Arial,sans-serif;
+  --dia-pixel:'Press Start 2P',cursive;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   DIALOGUE BOX OVERLAY
-   ═══════════════════════════════════════════════════════════════ */
+/* Overlay. 2200 is required because the arena is layered around 1200. */
+.px-dialogue-overlay,
 .sbDialogueOverlay{
   position:fixed;
   inset:0;
-  z-index:200;
+  z-index:2200 !important;
   display:flex;
   flex-direction:column;
   justify-content:flex-end;
   align-items:center;
-  padding:20px max(20px,var(--safe-right)) max(24px,var(--safe-bottom)) max(20px,var(--safe-left));
+  padding:20px max(20px,env(safe-area-inset-right)) max(30px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
   pointer-events:none;
-  background:linear-gradient(to top,rgba(0,20,60,0.3) 0%,transparent 35%);
+  background:linear-gradient(to top,rgba(0,20,60,.25) 0%,transparent 30%);
+}
+.px-dialogue-overlay.active,
+.sbDialogueOverlay.active{pointer-events:auto !important;}
+
+/* Character sprite sits on top of the box. */
+.px-dialogue-sprite-wrap,
+.sbDialoguePortraitWrap{
+  position:relative;
+  z-index:2202;
+  margin-bottom:-24px;
+  display:flex;
+  justify-content:flex-start;
+  width:min(860px,96%);
+  padding-left:20px;
+  pointer-events:none;
 }
 
-.sbDialogueOverlay.active{
-  pointer-events:auto;
+.px-dialogue-sprite,
+.sbDialoguePortrait{
+  width:96px;
+  height:96px;
+  flex:0 0 96px;
+  overflow:hidden;
+  background-repeat:no-repeat;
+  background-position:0 0;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+  filter:drop-shadow(3px 3px 0 rgba(0,0,0,.4));
+  transition:transform .15s ease;
+  color:#111;
+  font:800 11px/1.2 var(--dia-font);
+  text-transform:uppercase;
+  text-align:center;
+}
+.px-dialogue-sprite img,
+.sbDialoguePortrait img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+}
+.px-dialogue-sprite.is-fallback,
+.sbDialoguePortrait.is-fallback{
+  display:grid;
+  place-items:center;
+  padding:8px;
+  border:3px solid var(--dia-black);
+  background:#8899aa;
+}
+.px-dialogue-sprite.bounce,
+.sbDialoguePortrait.bounce{animation:pxSpriteBounce .3s ease;}
+@keyframes pxSpriteBounce{
+  0%{transform:translateY(0)}
+  40%{transform:translateY(-8px)}
+  100%{transform:translateY(0)}
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   MAIN DIALOGUE BOX
-   White rectangle, thick black border, angular cuts
-   ═══════════════════════════════════════════════════════════════ */
+/* Existing fighter atlases are used directly. No portrait images are generated. */
+.px-dialogue-sprite.sprite-rrvvfo,
+.sbDialoguePortrait.sprite-rrvvfo{
+  background-image:url('../assets/fighters/rrvvfo/rrvvfo-atlas.png');
+  background-size:864px 1920px;
+  background-position:0 0;
+}
+.px-dialogue-sprite.sprite-sage,
+.sbDialoguePortrait.sprite-sage{
+  background-image:url('../assets/fighters/sage/sage-atlas.png');
+  background-size:768px 960px;
+  background-position:0 0;
+}
+
+/* Main dialogue box — original uploaded geometry. */
+.px-dialogue-box,
 .sbDialogueBox{
   position:relative;
-  width:min(920px,96%);
-  background:var(--sb-dia-white);
-  border:4px solid var(--sb-dia-black);
-  padding:18px 22px 18px 22px;
-  box-shadow:0 8px 0 rgba(0,0,0,0.25),0 0 40px rgba(0,0,0,0.2);
-  font-family:var(--sb-dia-font);
-  color:var(--sb-dia-black);
-  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
-  animation:sbDiaSlideUp 0.25s ease-out;
+  z-index:2201;
+  width:min(860px,96%);
+  background:var(--dia-white);
+  border:4px solid var(--dia-black);
+  padding:20px 24px 18px;
+  box-shadow:6px 6px 0 rgba(0,0,0,.25);
+  font-family:var(--dia-font);
+  color:var(--dia-black);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+  animation:pxDiaSlideUp .22s ease-out;
+  pointer-events:auto;
 }
-
-@keyframes sbDiaSlideUp{
-  from{opacity:0;transform:translateY(30px)}
+@keyframes pxDiaSlideUp{
+  from{opacity:0;transform:translateY(25px)}
   to{opacity:1;transform:translateY(0)}
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SPEAKER NAME TAG
-   Small colored tab above the dialogue box
-   ═══════════════════════════════════════════════════════════════ */
+/* Speaker name tag. */
+.px-dialogue-speaker,
 .sbDialogueSpeaker{
-  position:absolute;
-  top:-18px;
-  left:14px;
   display:inline-flex;
   align-items:center;
   gap:8px;
-  padding:6px 14px;
-  background:var(--sb-dia-red);
-  border:3px solid var(--sb-dia-black);
-  color:var(--sb-dia-white);
-  font-size:13px;
+  padding:5px 12px;
+  margin-bottom:10px;
+  background:var(--dia-red);
+  border:3px solid var(--dia-black);
+  color:var(--dia-white);
+  font-family:var(--dia-font);
+  font-size:12px;
   font-weight:800;
   text-transform:uppercase;
-  letter-spacing:0.06em;
-  box-shadow:0 4px 0 rgba(0,0,0,0.2);
+  letter-spacing:.06em;
+  box-shadow:3px 3px 0 rgba(0,0,0,.2);
   clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
-  z-index:2;
 }
+.px-dialogue-speaker.rrvvfo,.sbDialogueSpeaker.rrvvfo,.sbDialogueSpeaker.p1{background:linear-gradient(135deg,#ff4422,#ff8800);}
+.px-dialogue-speaker.revvfo,.sbDialogueSpeaker.revvfo{background:linear-gradient(135deg,#4455ff,#88aaff);}
+.px-dialogue-speaker.wade,.sbDialogueSpeaker.wade{background:linear-gradient(135deg,#ffcc00,#ffaa00);color:#111;}
+.px-dialogue-speaker.bark,.sbDialogueSpeaker.bark{background:linear-gradient(135deg,#44aa44,#88cc66);}
+.px-dialogue-speaker.sage,.sbDialogueSpeaker.sage{background:linear-gradient(135deg,#fff,#c4a35a);color:#111;}
+.px-dialogue-speaker.alt,.sbDialogueSpeaker.alt{background:linear-gradient(135deg,#aa44aa,#cc88cc);}
+.px-dialogue-speaker.rover,.sbDialogueSpeaker.rover{background:linear-gradient(135deg,#6600cc,#111);}
+.px-dialogue-speaker.robert,.sbDialogueSpeaker.robert{background:linear-gradient(135deg,#44ccff,#88ddff);color:#111;}
+.px-dialogue-speaker.narrator,.sbDialogueSpeaker.narrator,.sbDialogueSpeaker.neutral{background:var(--dia-gray);}
+.px-dialogue-speaker.system,.sbDialogueSpeaker.system{background:#111;color:var(--dia-yellow);}
+.px-dialogue-speaker-icon,.sbDialogueSpeakerIcon{width:20px;height:20px;border:2px solid #111;flex:0 0 auto;}
 
-.sbDialogueSpeaker.p1{
-  background:var(--sb-dia-red);
-}
-
-.sbDialogueSpeaker.p2{
-  background:var(--sb-dia-blue);
-}
-
-.sbDialogueSpeaker.neutral{
-  background:var(--sb-dia-gray);
-}
-
-.sbDialogueSpeaker.rival{
-  background:var(--sb-dia-yellow);
-  color:var(--sb-dia-black);
-}
-
-/* Speaker icon (small portrait placeholder) */
-.sbDialogueSpeakerIcon{
-  width:20px;
-  height:20px;
-  border:2px solid var(--sb-dia-white);
-  background:var(--sb-dia-black);
-  border-radius:50%;
-  flex-shrink:0;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   DIALOGUE TEXT AREA
-   ═══════════════════════════════════════════════════════════════ */
+/* Dialogue text. */
+.px-dialogue-text,
 .sbDialogueText{
-  font-size:17px;
+  font-size:16px;
   font-weight:600;
   line-height:1.65;
-  color:var(--sb-dia-black);
-  min-height:48px;
+  color:var(--dia-black);
+  min-height:44px;
   white-space:pre-wrap;
-  word-break:break-word;
+  overflow-wrap:anywhere;
 }
-
+.px-dialogue-text.typing::after,
 .sbDialogueText.typing::after{
-  content:"▋";
+  content:'▋';
   display:inline-block;
   margin-left:2px;
-  animation:sbDiaCursor 0.6s step-end infinite;
-  color:var(--sb-dia-red);
+  animation:pxDiaCursor .55s step-end infinite;
+  color:var(--dia-red);
   font-weight:800;
 }
+@keyframes pxDiaCursor{0%,100%{opacity:1}50%{opacity:0}}
 
-@keyframes sbDiaCursor{
-  0%,100%{opacity:1}
-  50%{opacity:0}
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   TRIANGULAR TAIL
-   Points to the speaking character
-   ═══════════════════════════════════════════════════════════════ */
-.sbDialogueTail{
-  position:absolute;
-  width:0;
-  height:0;
-  border-style:solid;
-  z-index:1;
-}
-
-/* Tail pointing DOWN (speaker is above) */
-.sbDialogueTail.down{
-  top:100%;
-  left:40px;
-  border-width:14px 12px 0 12px;
-  border-color:var(--sb-dia-black) transparent transparent transparent;
-}
-
-.sbDialogueTail.down::after{
-  content:"";
-  position:absolute;
-  top:-18px;
-  left:-10px;
-  border-width:12px 10px 0 10px;
-  border-style:solid;
-  border-color:var(--sb-dia-white) transparent transparent transparent;
-}
-
-/* Tail pointing UP (speaker is below) */
-.sbDialogueTail.up{
-  bottom:100%;
-  left:40px;
-  border-width:0 12px 14px 12px;
-  border-color:transparent transparent var(--sb-dia-black) transparent;
-}
-
-.sbDialogueTail.up::after{
-  content:"";
-  position:absolute;
-  top:2px;
-  left:-10px;
-  border-width:0 10px 12px 10px;
-  border-style:solid;
-  border-color:transparent transparent var(--sb-dia-white) transparent;
-}
-
-/* Tail pointing LEFT (speaker is to the right) */
-.sbDialogueTail.left{
-  top:24px;
-  right:100%;
-  border-width:12px 14px 12px 0;
-  border-color:transparent var(--sb-dia-black) transparent transparent;
-}
-
-.sbDialogueTail.left::after{
-  content:"";
-  position:absolute;
-  top:-10px;
-  left:2px;
-  border-width:10px 12px 10px 0;
-  border-style:solid;
-  border-color:transparent var(--sb-dia-white) transparent transparent;
-}
-
-/* Tail pointing RIGHT (speaker is to the left) */
-.sbDialogueTail.right{
-  top:24px;
-  left:100%;
-  border-width:12px 0 12px 14px;
-  border-color:transparent transparent transparent var(--sb-dia-black);
-}
-
-.sbDialogueTail.right::after{
-  content:"";
-  position:absolute;
-  top:-10px;
-  left:-14px;
-  border-width:10px 0 10px 12px;
-  border-style:solid;
-  border-color:transparent transparent transparent var(--sb-dia-white);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   DIALOGUE CONTROLS / PROMPT
-   "Press A to continue" style prompt
-   ═══════════════════════════════════════════════════════════════ */
+/* Continue prompt. */
+.px-dialogue-prompt,
 .sbDialoguePrompt{
   display:flex;
   justify-content:flex-end;
   align-items:center;
   gap:8px;
-  margin-top:10px;
-  padding-top:8px;
+  margin-top:12px;
+  padding-top:10px;
   border-top:2px dashed #ccddee;
 }
-
+.px-dialogue-prompt span,
 .sbDialoguePrompt span{
-  font-size:12px;
+  font-size:11px;
   font-weight:700;
-  color:var(--sb-dia-gray);
+  color:var(--dia-gray);
   text-transform:uppercase;
-  letter-spacing:0.08em;
-  animation:sbDiaPromptPulse 1.2s ease-in-out infinite;
+  letter-spacing:.06em;
+  animation:pxPromptPulse 1.1s ease-in-out infinite;
 }
-
+.px-dialogue-prompt .px-key,
 .sbDialoguePrompt .sbKey{
   display:inline-flex;
   align-items:center;
@@ -250,164 +209,87 @@
   min-width:28px;
   height:24px;
   padding:0 6px;
-  background:var(--sb-dia-white);
-  border:2px solid var(--sb-dia-black);
+  background:var(--dia-white);
+  border:2px solid var(--dia-black);
   border-radius:4px;
   font-size:11px;
   font-weight:800;
-  color:var(--sb-dia-black);
-  box-shadow:0 2px 0 var(--sb-dia-gray);
+  color:var(--dia-black);
+  box-shadow:0 2px 0 var(--dia-gray);
 }
+@keyframes pxPromptPulse{0%,100%{opacity:.55}50%{opacity:1}}
 
-@keyframes sbDiaPromptPulse{
-  0%,100%{opacity:0.6}
-  50%{opacity:1}
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   DIALOGUE CHOICE / BRANCHING
-   Multiple choice options inside dialogue
-   ═══════════════════════════════════════════════════════════════ */
-.sbDialogueChoices{
-  display:grid;
-  gap:6px;
-  margin-top:10px;
-}
-
+/* Choices. */
+.px-dialogue-choices,
+.sbDialogueChoices{display:grid;gap:6px;margin-top:10px;}
+.px-dialogue-choice,
 .sbDialogueChoice{
   display:flex;
   align-items:center;
   gap:10px;
   padding:10px 14px;
-  background:var(--sb-dia-white);
-  border:3px solid var(--sb-dia-black);
-  color:var(--sb-dia-black);
-  font-family:var(--sb-dia-font);
-  font-size:15px;
+  background:var(--dia-white);
+  border:3px solid var(--dia-black);
+  color:var(--dia-black);
+  font-family:var(--dia-font);
+  font-size:14px;
   font-weight:700;
   text-align:left;
   cursor:pointer;
-  transition:transform 0.1s,background 0.1s;
-  box-shadow:0 3px 0 var(--sb-dia-gray);
+  transition:transform .1s,background .1s;
+  box-shadow:3px 3px 0 var(--dia-gray);
   clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
 }
-
-.sbDialogueChoice:hover,
-.sbDialogueChoice.selected{
+.px-dialogue-choice:hover,.px-dialogue-choice.selected,
+.sbDialogueChoice:hover,.sbDialogueChoice.selected{
   transform:translateX(6px);
-  background:var(--sb-dia-yellow);
-  border-color:var(--sb-dia-black);
-  box-shadow:0 4px 0 var(--sb-dia-yellow);
+  background:var(--dia-yellow);
+  border-color:var(--dia-black);
+  box-shadow:3px 3px 0 #cc9900;
 }
-
+.px-dialogue-choice:focus-visible,
+.sbDialogueChoice:focus-visible{outline:4px solid #0055cc;outline-offset:3px;}
+.px-dialogue-choice .px-choice-marker,
 .sbDialogueChoice .sbChoiceMarker{
   width:10px;
   height:10px;
-  background:var(--sb-dia-black);
+  background:var(--dia-black);
   clip-path:polygon(0 0,100% 50%,0 100%);
   flex-shrink:0;
 }
+.px-dialogue-choice.selected .px-choice-marker,
+.sbDialogueChoice.selected .sbChoiceMarker{background:var(--dia-red);}
 
-.sbDialogueChoice.selected .sbChoiceMarker{
-  background:var(--sb-dia-red);
-}
+.px-dialogue-emotion{display:inline-block;padding:2px 7px;background:var(--dia-yellow);border:2px solid var(--dia-black);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-left:4px;vertical-align:middle;}
 
-/* ═══════════════════════════════════════════════════════════════
-   EMOTION / EXPRESSION TAGS
-   Small inline emotion indicators
-   ═══════════════════════════════════════════════════════════════ */
-.sbDialogueEmotion{
-  display:inline-block;
-  padding:1px 6px;
-  background:var(--sb-dia-yellow);
-  border:2px solid var(--sb-dia-black);
-  font-size:11px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:0.04em;
-  margin-left:4px;
-  vertical-align:middle;
-}
+/* The old directional tail is accepted by the JS API but intentionally hidden,
+   because the uploaded sprite-on-top design does not use one. */
+.sbDialogueTail{display:none !important;}
 
-/* ═══════════════════════════════════════════════════════════════
-   PORTRAIT SIDEBAR (optional side portraits)
-   ═══════════════════════════════════════════════════════════════ */
-.sbDialoguePortraitWrap{
-  display:flex;
-  align-items:flex-end;
-  gap:16px;
-  width:min(920px,96%);
-}
+.px-dialogue-box.exit,
+.sbDialogueBox.exit{animation:pxDiaSlideDown .18s ease-in forwards;}
+@keyframes pxDiaSlideDown{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(18px)}}
 
-.sbDialoguePortrait{
-  width:96px;
-  height:96px;
-  border:4px solid var(--sb-dia-black);
-  background:var(--sb-dia-white);
-  box-shadow:0 6px 0 rgba(0,0,0,0.2);
-  flex-shrink:0;
-  image-rendering:pixelated;
-}
-
-.sbDialoguePortrait img{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   DIALOGUE TRANSITIONS
-   ═══════════════════════════════════════════════════════════════ */
-.sbDialogueBox.exit{
-  animation:sbDiaSlideDown 0.2s ease-in forwards;
-}
-
-@keyframes sbDiaSlideDown{
-  from{opacity:1;transform:translateY(0)}
-  to{opacity:0;transform:translateY(20px)}
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   MOBILE ADJUSTMENTS
-   ═══════════════════════════════════════════════════════════════ */
 @media(max-width:760px){
-  .sbDialogueOverlay{
-    padding:14px max(14px,var(--safe-right)) max(18px,var(--safe-bottom)) max(14px,var(--safe-left));
-  }
-  .sbDialogueBox{
-    width:100%;
-    padding:14px 16px;
-    border-width:3px;
-  }
-  .sbDialogueText{
-    font-size:15px;
-    line-height:1.55;
-  }
-  .sbDialogueSpeaker{
-    font-size:11px;
-    padding:4px 10px;
-    top:-14px;
-    border-width:2px;
-  }
-  .sbDialoguePortrait{
-    width:64px;
-    height:64px;
-    border-width:3px;
-  }
-  .sbDialoguePortraitWrap{
-    gap:10px;
-  }
+  .px-dialogue-overlay,.sbDialogueOverlay{padding:14px max(14px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));}
+  .px-dialogue-sprite-wrap,.sbDialoguePortraitWrap{padding-left:12px;margin-bottom:-18px;}
+  .px-dialogue-sprite,.sbDialoguePortrait{width:72px;height:72px;flex-basis:72px;}
+  .px-dialogue-sprite.sprite-rrvvfo,.sbDialoguePortrait.sprite-rrvvfo{background-size:648px 1440px;}
+  .px-dialogue-sprite.sprite-sage,.sbDialoguePortrait.sprite-sage{background-size:576px 720px;}
+  .px-dialogue-box,.sbDialogueBox{width:100%;padding:14px 16px;border-width:3px;}
+  .px-dialogue-text,.sbDialogueText{font-size:14px;line-height:1.55;}
+  .px-dialogue-speaker,.sbDialogueSpeaker{font-size:10px;padding:4px 10px;border-width:2px;}
+  .px-dialogue-choice,.sbDialogueChoice{font-size:13px;padding:8px 10px;}
+}
+@media(max-width:460px){
+  .px-dialogue-sprite,.sbDialoguePortrait{width:56px;height:56px;flex-basis:56px;}
+  .px-dialogue-sprite.sprite-rrvvfo,.sbDialoguePortrait.sprite-rrvvfo{background-size:504px 1120px;}
+  .px-dialogue-sprite.sprite-sage,.sbDialoguePortrait.sprite-sage{background-size:448px 560px;}
+  .px-dialogue-text,.sbDialogueText{font-size:13px;}
+  .px-dialogue-prompt span,.sbDialoguePrompt span{font-size:10px;}
 }
 
-@media(max-width:460px){
-  .sbDialogueText{
-    font-size:14px;
-  }
-  .sbDialogueChoice{
-    font-size:13px;
-    padding:8px 10px;
-  }
-  .sbDialoguePortrait{
-    display:none;
-  }
+@media(prefers-reduced-motion:reduce){
+  .px-dialogue-box,.sbDialogueBox,.px-dialogue-sprite,.sbDialoguePortrait,
+  .px-dialogue-prompt span,.sbDialoguePrompt span{animation:none !important;transition:none !important;}
 }

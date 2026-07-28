@@ -1,6 +1,6 @@
-import {BUILD_VERSION} from './build-info.js?v=263-start-screen-boot-fix-20260727-205100';
+import {BUILD_VERSION} from './build-info.js?v=265-compatible-dialogue-20260727-214243';
 
-const MENU_MODULE_CACHE='263-start-screen-boot-fix-20260727-205100';
+const MENU_MODULE_CACHE='265-compatible-dialogue-20260727-214243';
 
 export const MAIN_MENU_MODES=Object.freeze([
   {id:'story',label:'STORY',glyph:'ST',kicker:'THE LOST YEAR',description:'Choose a character episode, follow that route, and then choose a mission. Rrvvfo Missions 0–2 are currently playable.',players:'1',availability:'Rrvvfo route available — Missions 0, 1, and 2'},

@@ -1,6 +1,6 @@
 import {LOST_YEAR_ROUTES,loadLostYearProgress,missionUnlocked,routeProgress,saveLostYearProgress} from './lost-year-data.js?v=263-start-screen-boot-fix-20260727-205100';
 import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=263-start-screen-boot-fix-20260727-205100';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=263-start-screen-boot-fix-20260727-205100';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=265-compatible-dialogue-20260727-214243';
 import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=263-start-screen-boot-fix-20260727-205100';
 
 const SCREEN_ID='lostYearStoryScreen';

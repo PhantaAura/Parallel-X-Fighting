@@ -1,6 +1,6 @@
 import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=262-parallels-battle-menu-20260727-202046';
 import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=262-parallels-battle-menu-20260727-202046';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=262-parallels-battle-menu-20260727-202046';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=265-compatible-dialogue-20260727-214243';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=262-parallels-battle-menu-20260727-202046';
 
 const MISSION_ID='rrvvfo-01';

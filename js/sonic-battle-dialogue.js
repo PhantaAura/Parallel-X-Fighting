@@ -1,354 +1,424 @@
 /* ═══════════════════════════════════════════════════════════════
-   SONIC BATTLE DIALOGUE BOX SYSTEM
-   Drop this file into your js/ folder and import it where needed:
-   import {SonicBattleDialogue} from './sonic-battle-dialogue.js';
+   PARALLELS X — COMPATIBLE SPRITE-ON-TOP DIALOGUE
+   Prototype 2.6.5
+
+   Keeps the current game's SonicBattleDialogue API while rendering the
+   uploaded PX sprite-on-top visual design. PXDialogue is also exported as
+   an alias for future scripts.
    ═══════════════════════════════════════════════════════════════ */
 
-/**
- * SonicBattleDialogue — A dialogue box system styled after Sonic Battle (GBA).
- * Features: typewriter text, speaker tags, directional tails, portraits,
- * branching choices, and keyboard/controller input support.
- */
+const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);
+const PREVIOUS_KEYS=new Set(['ArrowUp','ArrowLeft']);
+const NEXT_KEYS=new Set(['ArrowDown']);
+
+const SPEAKER_ALIASES=Object.freeze({
+  p1:'rrvvfo',
+  player1:'rrvvfo',
+  rrvvfo:'rrvvfo',
+  revvfo:'revvfo',
+  sage:'sage',
+  'the sage':'sage',
+  wade:'wade',
+  bark:'bark',
+  alt:'alt',
+  rover:'rover',
+  robert:'robert',
+  narrator:'narrator',
+  system:'system',
+  neutral:'narrator'
+});
+
+const ATLAS_SPRITES=Object.freeze({
+  rrvvfo:'sprite-rrvvfo',
+  sage:'sprite-sage'
+});
+
+function speakerKey(entry={}){
+  const explicit=String(entry.speakerClass||'').trim().toLowerCase();
+  const name=String(entry.speaker||'').trim().toLowerCase();
+  if(name.includes('sage'))return 'sage';
+  return SPEAKER_ALIASES[explicit]||SPEAKER_ALIASES[name]||explicit||'narrator';
+}
+
+function safeText(value){return value==null?'':String(value)}
+
 export class SonicBattleDialogue{
   constructor(options={}){
-    this.container=document.body;
+    this.container=options.container||document.body;
     this.onComplete=options.onComplete||(()=>{});
     this.onChoice=options.onChoice||(()=>{});
-    this.typeSpeed=options.typeSpeed||28; // ms per char
-    this.autoAdvanceDelay=options.autoAdvanceDelay||1200; // ms after typing
+    this.typeSpeed=options.typeSpeed??28;
+    this.autoAdvanceDelay=options.autoAdvanceDelay??1200;
+
     this.overlay=null;
+    this.spriteWrap=null;
+    this.spriteEl=null;
     this.box=null;
     this.textEl=null;
     this.speakerEl=null;
     this.tailEl=null;
     this.promptEl=null;
     this.choicesEl=null;
-    this.portraitEl=null;
+    this.portraitEl=null; // Current Mission 1 cleanup code expects this name.
+
     this.typingTimer=null;
     this.advanceTimer=null;
+    this.gamepadFrame=0;
     this.isTyping=false;
     this.canAdvance=false;
     this.currentQueue=[];
     this.queueIndex=0;
     this.choiceIndex=0;
+    this.inputBound=false;
+    this.isClosing=false;
+    this.completed=false;
+    this.gamepadWasPressed=false;
+
+    this._onKey=this._onKey.bind(this);
+    this._onPointer=this._onPointer.bind(this);
+    this._pollGamepad=this._pollGamepad.bind(this);
     this.bindInput();
   }
 
-  /* ─── Create DOM structure ─── */
   build(){
     if(this.overlay)return;
 
     this.overlay=document.createElement('div');
-    this.overlay.className='sbDialogueOverlay';
+    this.overlay.className='px-dialogue-overlay sbDialogueOverlay';
+    this.overlay.style.zIndex='2200';
     this.overlay.setAttribute('role','dialog');
+    this.overlay.setAttribute('aria-modal','true');
     this.overlay.setAttribute('aria-live','polite');
+    this.overlay.setAttribute('aria-label','Story dialogue');
 
-    const wrap=document.createElement('div');
-    wrap.className='sbDialoguePortraitWrap';
+    this.spriteWrap=document.createElement('div');
+    this.spriteWrap.className='px-dialogue-sprite-wrap sbDialoguePortraitWrap';
 
-    this.portraitEl=document.createElement('div');
-    this.portraitEl.className='sbDialoguePortrait';
-    this.portraitEl.style.display='none';
+    this.spriteEl=document.createElement('div');
+    this.spriteEl.className='px-dialogue-sprite sbDialoguePortrait';
+    this.spriteEl.style.display='none';
+    this.spriteWrap.appendChild(this.spriteEl);
+    this.portraitEl=this.spriteEl;
 
     this.box=document.createElement('div');
-    this.box.className='sbDialogueBox';
+    this.box.className='px-dialogue-box sbDialogueBox';
 
     this.speakerEl=document.createElement('div');
-    this.speakerEl.className='sbDialogueSpeaker';
+    this.speakerEl.className='px-dialogue-speaker sbDialogueSpeaker';
     this.speakerEl.style.display='none';
 
     this.tailEl=document.createElement('div');
-    this.tailEl.className='sbDialogueTail down';
+    this.tailEl.className='sbDialogueTail';
+    this.tailEl.style.display='none';
 
     this.textEl=document.createElement('div');
-    this.textEl.className='sbDialogueText';
+    this.textEl.className='px-dialogue-text sbDialogueText';
 
     this.choicesEl=document.createElement('div');
-    this.choicesEl.className='sbDialogueChoices';
+    this.choicesEl.className='px-dialogue-choices sbDialogueChoices';
     this.choicesEl.style.display='none';
 
     this.promptEl=document.createElement('div');
-    this.promptEl.className='sbDialoguePrompt';
-    this.promptEl.innerHTML='<span>Press</span><kbd class="sbKey">A</kbd><span>to continue</span>';
+    this.promptEl.className='px-dialogue-prompt sbDialoguePrompt';
+    this.promptEl.innerHTML='<span>Click or press</span><kbd class="px-key sbKey">A</kbd><span>to continue</span>';
     this.promptEl.style.display='none';
 
-    this.box.appendChild(this.speakerEl);
-    this.box.appendChild(this.tailEl);
-    this.box.appendChild(this.textEl);
-    this.box.appendChild(this.choicesEl);
-    this.box.appendChild(this.promptEl);
-
-    wrap.appendChild(this.portraitEl);
-    wrap.appendChild(this.box);
-    this.overlay.appendChild(wrap);
+    this.box.append(this.speakerEl,this.tailEl,this.textEl,this.choicesEl,this.promptEl);
+    this.overlay.append(this.spriteWrap,this.box);
+    this.overlay.addEventListener('pointerdown',this._onPointer);
     this.container.appendChild(this.overlay);
   }
 
-  /* ─── Input binding ─── */
   bindInput(){
-    this._onKey=this._onKey.bind(this);
+    if(this.inputBound)return;
     document.addEventListener('keydown',this._onKey);
+    this.inputBound=true;
   }
 
-  _onKey(e){
-    if(!this.overlay||!this.overlay.classList.contains('active'))return;
+  unbindInput(){
+    if(!this.inputBound)return;
+    document.removeEventListener('keydown',this._onKey);
+    this.inputBound=false;
+  }
 
-    // Advance / confirm
-    if(e.code==='Enter'||e.code==='Space'||e.code==='KeyZ'||e.code==='KeyJ'||e.code==='KeyF'){
-      e.preventDefault();
-      if(this.isTyping){
-        this.skipTyping();
-      }else if(this.canAdvance){
-        this.advance();
-      }
+  _isActive(){return Boolean(this.overlay?.classList.contains('active'))}
+
+  _onPointer(event){
+    if(!this._isActive())return;
+    if(event.target.closest('.px-dialogue-choice,.sbDialogueChoice'))return;
+    event.preventDefault();
+    if(this.isTyping)this.skipTyping();
+    else if(this.canAdvance)this.advance();
+  }
+
+  _onKey(event){
+    if(!this._isActive())return;
+
+    if(ADVANCE_KEYS.has(event.code)){
+      event.preventDefault();
+      if(this.isTyping)this.skipTyping();
+      else if(this.choicesEl.style.display!=='none')this.selectChoice(this.choiceIndex);
+      else if(this.canAdvance)this.advance();
+      return;
     }
 
-    // Choice navigation
     if(this.choicesEl.style.display!=='none'){
-      if(e.code==='ArrowUp'||e.code==='ArrowLeft'){
-        e.preventDefault();
+      if(PREVIOUS_KEYS.has(event.code)){
+        event.preventDefault();
         this.navigateChoice(-1);
-      }else if(e.code==='ArrowDown'||e.code==='ArrowRight'){
-        e.preventDefault();
+      }else if(NEXT_KEYS.has(event.code)){
+        event.preventDefault();
         this.navigateChoice(1);
       }
     }
 
-    // Skip all (hold Escape)
-    if(e.code==='Escape'){
+    if(event.code==='Escape'){
+      event.preventDefault();
       this.close();
     }
   }
 
-  /* ─── Show a single line or a queue of lines ─── */
-  show(data){
-    this.build();
-    this.overlay.classList.add('active');
-
-    if(Array.isArray(data)){
-      this.currentQueue=data;
-      this.queueIndex=0;
-      this.displayEntry(this.currentQueue[0]);
-    }else{
-      this.currentQueue=[data];
-      this.queueIndex=0;
-      this.displayEntry(data);
+  _pollGamepad(){
+    if(!this._isActive())return;
+    const pads=navigator.getGamepads?.()||[];
+    const pad=Array.from(pads).find(Boolean);
+    const confirm=Boolean(pad?.buttons?.[0]?.pressed);
+    if(confirm&&!this.gamepadWasPressed){
+      if(this.isTyping)this.skipTyping();
+      else if(this.choicesEl.style.display!=='none')this.selectChoice(this.choiceIndex);
+      else if(this.canAdvance)this.advance();
     }
+    this.gamepadWasPressed=confirm;
+    if(this._isActive())this.gamepadFrame=requestAnimationFrame(this._pollGamepad);
   }
 
-  /* ─── Display one dialogue entry ─── */
-  displayEntry(entry){
+  show(data){
+    this.build();
+    this.bindInput();
+    this.completed=false;
+    this.isClosing=false;
+    this.overlay.classList.add('active');
+    this.currentQueue=Array.isArray(data)?data:[data];
+    this.queueIndex=0;
+    this.displayEntry(this.currentQueue[0]||{});
+    cancelAnimationFrame(this.gamepadFrame);
+    this.gamepadFrame=requestAnimationFrame(this._pollGamepad);
+    return this;
+  }
+
+  displayEntry(entry={}){
+    clearInterval(this.typingTimer);
+    clearTimeout(this.advanceTimer);
     this.canAdvance=false;
     this.promptEl.style.display='none';
     this.choicesEl.style.display='none';
+    this.choicesEl.innerHTML='';
 
-    // Speaker
+    const key=speakerKey(entry);
+
     if(entry.speaker){
       this.speakerEl.style.display='inline-flex';
-      this.speakerEl.textContent=entry.speaker;
-      this.speakerEl.className='sbDialogueSpeaker '+(entry.speakerClass||'neutral');
+      this.speakerEl.className=`px-dialogue-speaker sbDialogueSpeaker ${key}`;
+      this.speakerEl.textContent=safeText(entry.speaker);
       if(entry.speakerIcon){
-        this.speakerEl.innerHTML=`<span class="sbDialogueSpeakerIcon" style="background:url(${entry.speakerIcon}) center/cover"></span><span>${entry.speaker}</span>`;
+        const icon=document.createElement('span');
+        icon.className='px-dialogue-speaker-icon sbDialogueSpeakerIcon';
+        icon.style.background=`url(${entry.speakerIcon}) center/cover`;
+        const label=document.createElement('span');
+        label.textContent=safeText(entry.speaker);
+        this.speakerEl.replaceChildren(icon,label);
       }
     }else{
       this.speakerEl.style.display='none';
+      this.speakerEl.textContent='';
     }
 
-    // Tail direction
-    if(entry.tail){
-      this.tailEl.className='sbDialogueTail '+entry.tail;
-      this.tailEl.style.display='block';
-    }else{
-      this.tailEl.style.display='none';
-    }
+    this.tailEl.dataset.direction=entry.tail||'';
+    this.renderSprite(entry,key);
 
-    // Portrait
-    if(entry.portrait){
-      this.portraitEl.style.display='block';
-      this.portraitEl.innerHTML=`<img src="${entry.portrait}" alt="${entry.speaker||''}">`;
-    }else{
-      this.portraitEl.style.display='none';
-    }
-
-    // Text
     this.textEl.textContent='';
     this.textEl.classList.add('typing');
     this.isTyping=true;
 
-    const text=entry.text||'';
-    let i=0;
-    this.typingTimer=setInterval(()=>{
-      if(i>=text.length){
-        this.finishTyping();
-        return;
-      }
-      this.textEl.textContent+=text.charAt(i);
-      i++;
-    },this.typeSpeed);
+    const text=safeText(entry.text);
+    let index=0;
+    const speed=Math.max(0,Number(entry.typeSpeed??this.typeSpeed));
+    if(speed===0){
+      this.textEl.textContent=text;
+      this.finishTyping();
+    }else{
+      this.typingTimer=setInterval(()=>{
+        if(index>=text.length){this.finishTyping();return;}
+        this.textEl.textContent+=text.charAt(index++);
+      },speed);
+    }
 
-    // Choices (if any)
-    if(entry.choices&&entry.choices.length>0){
-      this.renderChoices(entry.choices);
+    if(Array.isArray(entry.choices)&&entry.choices.length)this.renderChoices(entry.choices);
+  }
+
+  renderSprite(entry,key){
+    this.spriteEl.className='px-dialogue-sprite sbDialoguePortrait';
+    this.spriteEl.style.display='none';
+    this.spriteEl.style.backgroundImage='';
+    this.spriteEl.style.backgroundSize='';
+    this.spriteEl.style.backgroundPosition='';
+    this.spriteEl.textContent='';
+    this.spriteEl.replaceChildren();
+
+    const image=entry.sprite||entry.portrait;
+    if(image){
+      const img=document.createElement('img');
+      img.src=image;
+      img.alt=entry.speaker?safeText(entry.speaker):'';
+      img.decoding='async';
+      this.spriteEl.appendChild(img);
+      this.spriteEl.style.display='block';
+    }else if(ATLAS_SPRITES[key]){
+      this.spriteEl.classList.add(ATLAS_SPRITES[key]);
+      this.spriteEl.setAttribute('aria-label',entry.speaker||key);
+      this.spriteEl.style.display='block';
+    }else if(entry.speaker){
+      this.spriteEl.classList.add('is-fallback');
+      this.spriteEl.textContent=safeText(entry.speaker);
+      this.spriteEl.style.display='grid';
+    }
+
+    if(this.spriteEl.style.display!=='none'){
+      this.spriteEl.classList.remove('bounce');
+      void this.spriteEl.offsetWidth;
+      this.spriteEl.classList.add('bounce');
     }
   }
 
-  /* ─── Finish typing immediately ─── */
   skipTyping(){
     if(!this.isTyping)return;
     clearInterval(this.typingTimer);
-    const entry=this.currentQueue[this.queueIndex];
-    this.textEl.textContent=entry.text||'';
+    const entry=this.currentQueue[this.queueIndex]||{};
+    this.textEl.textContent=safeText(entry.text);
     this.finishTyping();
   }
 
   finishTyping(){
+    if(!this.isTyping&&this.textEl&&!this.textEl.classList.contains('typing'))return;
+    clearInterval(this.typingTimer);
     this.isTyping=false;
     this.textEl.classList.remove('typing');
-    clearInterval(this.typingTimer);
+    const entry=this.currentQueue[this.queueIndex]||{};
 
-    const entry=this.currentQueue[this.queueIndex];
-
-    if(entry.choices&&entry.choices.length>0){
+    if(Array.isArray(entry.choices)&&entry.choices.length){
       this.canAdvance=false;
       this.promptEl.style.display='none';
       this.choicesEl.style.display='grid';
       this.choiceIndex=0;
       this.updateChoiceSelection();
+      this.choicesEl.querySelector('.px-dialogue-choice,.sbDialogueChoice')?.focus();
     }else{
       this.canAdvance=true;
       this.promptEl.style.display='flex';
-
-      // Auto-advance if configured
-      if(entry.autoAdvance){
-        this.advanceTimer=setTimeout(()=>this.advance(),this.autoAdvanceDelay);
-      }
+      if(entry.autoAdvance)this.advanceTimer=setTimeout(()=>this.advance(),this.autoAdvanceDelay);
     }
   }
 
-  /* ─── Render choice buttons ─── */
   renderChoices(choices){
     this.choicesEl.innerHTML='';
     choices.forEach((choice,index)=>{
-      const btn=document.createElement('button');
-      btn.className='sbDialogueChoice';
-      btn.dataset.index=index;
-      btn.innerHTML=`<span class="sbChoiceMarker"></span><span>${choice.text}</span>`;
-      btn.addEventListener('click',()=>this.selectChoice(index));
-      this.choicesEl.appendChild(btn);
+      const button=document.createElement('button');
+      button.type='button';
+      button.className='px-dialogue-choice sbDialogueChoice';
+      button.dataset.index=String(index);
+      const marker=document.createElement('span');
+      marker.className='px-choice-marker sbChoiceMarker';
+      const label=document.createElement('span');
+      label.textContent=safeText(choice.text);
+      button.append(marker,label);
+      button.addEventListener('click',event=>{
+        event.stopPropagation();
+        this.selectChoice(index);
+      });
+      this.choicesEl.appendChild(button);
     });
     this.choiceIndex=0;
     this.updateChoiceSelection();
   }
 
-  navigateChoice(dir){
-    const choices=this.choicesEl.querySelectorAll('.sbDialogueChoice');
+  navigateChoice(direction){
+    const choices=this.choicesEl.querySelectorAll('.px-dialogue-choice,.sbDialogueChoice');
     if(!choices.length)return;
-    this.choiceIndex=(this.choiceIndex+dir+choices.length)%choices.length;
+    this.choiceIndex=(this.choiceIndex+direction+choices.length)%choices.length;
     this.updateChoiceSelection();
     choices[this.choiceIndex].focus();
   }
 
   updateChoiceSelection(){
-    const choices=this.choicesEl.querySelectorAll('.sbDialogueChoice');
-    choices.forEach((c,i)=>c.classList.toggle('selected',i===this.choiceIndex));
+    const choices=this.choicesEl.querySelectorAll('.px-dialogue-choice,.sbDialogueChoice');
+    choices.forEach((choice,index)=>choice.classList.toggle('selected',index===this.choiceIndex));
   }
 
   selectChoice(index){
-    const entry=this.currentQueue[this.queueIndex];
-    const choice=entry.choices[index];
+    const entry=this.currentQueue[this.queueIndex]||{};
+    const choice=entry.choices?.[index];
+    if(!choice)return;
     this.onChoice({entry,choice,index});
     this.advance();
   }
 
-  /* ─── Advance to next line or close ─── */
   advance(){
+    if(this.isClosing)return;
     clearTimeout(this.advanceTimer);
     this.queueIndex++;
-    if(this.queueIndex<this.currentQueue.length){
-      this.displayEntry(this.currentQueue[this.queueIndex]);
-    }else{
-      this.close();
-    }
+    if(this.queueIndex<this.currentQueue.length)this.displayEntry(this.currentQueue[this.queueIndex]);
+    else this.close();
   }
 
-  /* ─── Close dialogue ─── */
   close(){
+    if(this.isClosing)return;
+    this.isClosing=true;
     clearInterval(this.typingTimer);
     clearTimeout(this.advanceTimer);
+    cancelAnimationFrame(this.gamepadFrame);
+    this.canAdvance=false;
+    this.isTyping=false;
+
+    const finish=()=>{
+      this.overlay?.classList.remove('active');
+      this.box?.classList.remove('exit');
+      this.isClosing=false;
+      if(!this.completed){
+        this.completed=true;
+        this.onComplete();
+      }
+    };
+
     if(this.box){
       this.box.classList.add('exit');
-      setTimeout(()=>{
-        if(this.overlay){
-          this.overlay.classList.remove('active');
-          this.box.classList.remove('exit');
-        }
-        this.onComplete();
-      },220);
-    }
+      setTimeout(finish,200);
+    }else finish();
   }
 
-  /* ─── Destroy and clean up ─── */
   destroy(){
-    this.close();
-    document.removeEventListener('keydown',this._onKey);
-    if(this.overlay){
-      this.overlay.remove();
-      this.overlay=null;
-      this.box=null;
-      this.textEl=null;
-      this.speakerEl=null;
-      this.tailEl=null;
-      this.promptEl=null;
-      this.choicesEl=null;
-      this.portraitEl=null;
-    }
+    clearInterval(this.typingTimer);
+    clearTimeout(this.advanceTimer);
+    cancelAnimationFrame(this.gamepadFrame);
+    this.unbindInput();
+    this.overlay?.removeEventListener('pointerdown',this._onPointer);
+    this.overlay?.remove();
+    this.overlay=null;
+    this.spriteWrap=null;
+    this.spriteEl=null;
+    this.portraitEl=null;
+    this.box=null;
+    this.textEl=null;
+    this.speakerEl=null;
+    this.tailEl=null;
+    this.promptEl=null;
+    this.choicesEl=null;
   }
 
-  /* ─── Quick static method for one-off messages ─── */
   static say(text,speaker,options={}){
-    const dia=new SonicBattleDialogue(options);
-    dia.show({text,speaker,...options});
-    return dia;
+    const dialogue=new SonicBattleDialogue(options);
+    dialogue.show({text,speaker,...options});
+    return dialogue;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   EXAMPLE USAGE:
-   ═══════════════════════════════════════════════════════════════
-
-   import {SonicBattleDialogue} from './sonic-battle-dialogue.js';
-
-   const dialogue = new SonicBattleDialogue({
-     onComplete: () => console.log('Dialogue finished'),
-     onChoice: ({choice}) => console.log('Picked:', choice.text),
-     typeSpeed: 24
-   });
-
-   dialogue.show([
-     {
-       speaker: 'Rrvvfo',
-       speakerClass: 'p1',
-       text: "You think you can take me? I've been training for this moment!",
-       tail: 'down',
-       portrait: 'assets/portraits/rrvvfo.png'
-     },
-     {
-       speaker: 'Revvfo',
-       speakerClass: 'p2',
-       text: "Heh... let's see if your flames can match my blade.",
-       tail: 'down',
-       portrait: 'assets/portraits/revvfo.png'
-     },
-     {
-       speaker: 'System',
-       speakerClass: 'neutral',
-       text: "Choose your response:",
-       choices: [
-         {text: "I'll burn you to ash!", value: 'aggressive'},
-         {text: "Let's settle this fair.", value: 'neutral'},
-         {text: "... (Say nothing)", value: 'silent'}
-       ]
-     }
-   ]);
-
-   ═══════════════════════════════════════════════════════════════ */
+export const PXDialogue=SonicBattleDialogue;

@@ -22,7 +22,7 @@ import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 import {ControllerManager} from './controller-manager.js?v=2.3.5-landscape-hotbar';
 import {BUILD_VERSION} from './build-info.js';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=262-parallels-battle-menu-20260727-202046';
+import {MainMenu} from './main-menu.js?v=263-start-screen-boot-fix-20260727-205100';
 import {MatchStatistics} from './match-statistics.js';
 import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=2.3.5-landscape-hotbar';
 import {ResultsScreen} from './results-screen.js';
@@ -389,6 +389,18 @@ $('random').onclick=()=>{p1id=ROSTER_IDS[Math.floor(Math.random()*ROSTER_IDS.len
 $('chooseStage').onclick=()=>openStageSelect('character');
 $('backMenu').onclick=returnToCharacterSelect;
 let quickRestartHeldAt=0;
+// start-screen-pointer-hotfix-263
+const activateStartFromPointer=event=>{
+  if(!U.start||U.start.classList.contains('hidden'))return;
+  event?.preventDefault?.();
+  activateStart();
+  audio.enable()
+    .then(enabled=>$('audioEnableNotice')?.classList.toggle('hidden',enabled))
+    .catch(()=>{});
+};
+U.start.addEventListener('pointerdown',activateStartFromPointer);
+$('startPrompt')?.addEventListener('click',activateStartFromPointer);
+
 addEventListener('keydown',event=>{
   if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code))event.preventDefault();
   if(!U.start.classList.contains('hidden')){event.preventDefault();activateStart();audio.enable().then(enabled=>$('audioEnableNotice').classList.toggle('hidden',enabled));return}

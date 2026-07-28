@@ -1,6 +1,6 @@
-import {BUILD_VERSION} from './build-info.js?v=262-parallels-battle-menu-20260727-202046';
-import {startArenaBattle} from './arena/arena-mode.js?v=262-parallels-battle-menu-20260727-202046';
-import {openLostYearStory} from './story/lost-year-story.js?v=262-parallels-battle-menu-20260727-202046';
+import {BUILD_VERSION} from './build-info.js?v=263-start-screen-boot-fix-20260727-205100';
+
+const MENU_MODULE_CACHE='263-start-screen-boot-fix-20260727-205100';
 
 export const MAIN_MENU_MODES=Object.freeze([
   {id:'story',label:'STORY',glyph:'ST',kicker:'THE LOST YEAR',description:'Choose a character episode, follow that route, and then choose a mission. Rrvvfo Missions 0–2 are currently playable.',players:'1',availability:'Rrvvfo route available — Missions 0, 1, and 2'},
@@ -81,7 +81,7 @@ export class MainMenu{
     this.render({focus:true});
   }
 
-  confirm(){
+  async confirm(){
     if(this.now()<this.lockedUntil)return false;
     this.lockedUntil=this.now()+220;
     const mode=MAIN_MENU_MODES[this.index];
@@ -89,11 +89,28 @@ export class MainMenu{
       this.root.dispatchEvent(new CustomEvent('menuerror',{detail:mode}));
       return false;
     }
+
     this.root.dispatchEvent(new CustomEvent('menuselect',{detail:mode}));
-    if(mode.id==='story')openLostYearStory();
-    else if(mode.id==='arena')startArenaBattle();
-    else this.onSelect(mode.id);
-    return true;
+
+    try{
+      if(mode.id==='story'){
+        const {openLostYearStory}=await import(`./story/lost-year-story.js?v=${MENU_MODULE_CACHE}`);
+        openLostYearStory();
+      }else if(mode.id==='arena'){
+        const {startArenaBattle}=await import(`./arena/arena-mode.js?v=${MENU_MODULE_CACHE}`);
+        startArenaBattle();
+      }else{
+        this.onSelect(mode.id);
+      }
+      return true;
+    }catch(error){
+      console.error(`[Main Menu] ${mode.label} could not load`,error);
+      this.lockedUntil=0;
+      this.root.dispatchEvent(new CustomEvent('menuloaderror',{detail:{mode,error}}));
+      const message=`${mode.label} could not load. Reload the page and try again.`;
+      if(typeof window!=='undefined'&&typeof window.alert==='function')window.alert(message);
+      return false;
+    }
   }
 
   select(id){

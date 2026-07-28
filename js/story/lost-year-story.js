@@ -1,13 +1,13 @@
-import {LOST_YEAR_ROUTES,loadLostYearProgress,missionUnlocked,routeProgress,saveLostYearProgress} from './lost-year-data.js?v=262-parallels-battle-menu-20260727-202046';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=262-parallels-battle-menu-20260727-202046';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=262-parallels-battle-menu-20260727-202046';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=262-parallels-battle-menu-20260727-202046';
+import {LOST_YEAR_ROUTES,loadLostYearProgress,missionUnlocked,routeProgress,saveLostYearProgress} from './lost-year-data.js?v=263-start-screen-boot-fix-20260727-205100';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=263-start-screen-boot-fix-20260727-205100';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=263-start-screen-boot-fix-20260727-205100';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=263-start-screen-boot-fix-20260727-205100';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
 
 function routeGlyph(route){
-  const map={rrvvfo:'R',alt-rover:'A+R',bark:'B',wade:'W',robert:'RB',oddballs:'OD',
+  const map={rrvvfo:'R','alt-rover':'A+R',bark:'B',wade:'W',robert:'RB',oddballs:'OD',
     'rev-metal':'R+M',final:'X'};
   return map[route.id]||route.lead.split(/\s|&/).filter(Boolean).map(word=>word[0]).join('').slice(0,3);
 }

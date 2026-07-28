@@ -148,7 +148,7 @@ export class SonicBattleDialogue{
       this.speakerEl.textContent=entry.speaker;
       this.speakerEl.className='sbDialogueSpeaker '+(entry.speakerClass||'neutral');
       if(entry.speakerIcon){
-        this.speakerEl.innerHTML=\`<span class="sbDialogueSpeakerIcon" style="background:url(\${entry.speakerIcon}) center/cover"></span><span>\${entry.speaker}</span>\`;
+        this.speakerEl.innerHTML=`<span class="sbDialogueSpeakerIcon" style="background:url(${entry.speakerIcon}) center/cover"></span><span>${entry.speaker}</span>`;
       }
     }else{
       this.speakerEl.style.display='none';
@@ -165,7 +165,7 @@ export class SonicBattleDialogue{
     // Portrait
     if(entry.portrait){
       this.portraitEl.style.display='block';
-      this.portraitEl.innerHTML=\`<img src="\${entry.portrait}" alt="\${entry.speaker||''}">\`;
+      this.portraitEl.innerHTML=`<img src="${entry.portrait}" alt="${entry.speaker||''}">`;
     }else{
       this.portraitEl.style.display='none';
     }
@@ -232,7 +232,7 @@ export class SonicBattleDialogue{
       const btn=document.createElement('button');
       btn.className='sbDialogueChoice';
       btn.dataset.index=index;
-      btn.innerHTML=\`<span class="sbChoiceMarker"></span><span>\${choice.text}</span>\`;
+      btn.innerHTML=`<span class="sbChoiceMarker"></span><span>${choice.text}</span>`;
       btn.addEventListener('click',()=>this.selectChoice(index));
       this.choicesEl.appendChild(btn);
     });

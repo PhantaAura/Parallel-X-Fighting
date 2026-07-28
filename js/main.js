@@ -22,7 +22,7 @@ import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 import {ControllerManager} from './controller-manager.js?v=2.3.5-landscape-hotbar';
 import {BUILD_VERSION} from './build-info.js';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=25c1-known-working-full-chain';
+import {MainMenu} from './main-menu.js?v=262-parallels-battle-menu-20260727-202046';
 import {MatchStatistics} from './match-statistics.js';
 import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=2.3.5-landscape-hotbar';
 import {ResultsScreen} from './results-screen.js';
@@ -392,7 +392,7 @@ let quickRestartHeldAt=0;
 addEventListener('keydown',event=>{
   if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(event.code))event.preventDefault();
   if(!U.start.classList.contains('hidden')){event.preventDefault();activateStart();audio.enable().then(enabled=>$('audioEnableNotice').classList.toggle('hidden',enabled));return}
-  if(!U.main.classList.contains('hidden')){if(event.code==='ArrowUp'){mainMenu.move(-1);sound('menuMove');event.preventDefault();return}if(event.code==='ArrowDown'){mainMenu.move(1);sound('menuMove');event.preventDefault();return}if(['Enter','Space'].includes(event.code)){mainMenu.confirm();event.preventDefault();return}}
+  if(!U.main.classList.contains('hidden')){if(['ArrowUp','ArrowLeft'].includes(event.code)){mainMenu.move(-1);sound('menuMove');event.preventDefault();return}if(['ArrowDown','ArrowRight'].includes(event.code)){mainMenu.move(1);sound('menuMove');event.preventDefault();return}if(['Enter','Space'].includes(event.code)){mainMenu.confirm();event.preventDefault();return}}
   if(event.code==='Escape'){event.preventDefault();if(!$('confirmDialog').classList.contains('hidden')){confirmation.close();return}if(!$('hotbarCustomizeModal').classList.contains('hidden')){closeHotbarCustomize();return}if(!$('fullscreenPrompt').classList.contains('hidden')){fullscreenManager.finish();return}if(!$('orientationPrompt').classList.contains('hidden')){orientationManager.finish();return}if(!$('moveListPanel').classList.contains('hidden')){closeAdaptiveMoveList();return}if(!$('settingsPanel').classList.contains('hidden')){requestCloseSettings();return}if(!$('extrasPanel').classList.contains('hidden')){$('extrasPanel').classList.add('hidden');return}if(!$('stageSelectPanel').classList.contains('hidden')){closeStageSelect(false);return}if(state==='playing'){togglePause();return}if(!U.menu.classList.contains('hidden')){showMainMenu();return}}
   const abilitySlot=/^Digit([1-5])$/.exec(event.code);if(abilitySlot&&state==='playing'&&!paused&&!event.repeat){event.preventDefault();abilityHotbar.activateSlot(Number(abilitySlot[1]),'keyboard');return}
   input.setKeyboard(event.code,true);if(event.code==='KeyY'&&trainingState.enabled)resetTrainingWorld(world,input);if(event.code==='KeyP'&&state==='playing')togglePause();if(event.code===qolSettings.gameplay.quickRestartKey&&state==='playing'&&!quickRestartHeldAt)quickRestartHeldAt=performance.now();

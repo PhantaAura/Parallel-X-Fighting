@@ -1,8 +1,8 @@
-# Parallels X: Clash of Souls — Prototype 2.9A
+# Parallels X: Clash of Souls — Prototype 2.9A.2
 
-This is the complete standalone repository. Combat now follows a Sonic Battle-style first-to-3-KOs format: opponents have larger health pools, fighters respawn after the first two knockouts, and only the third knockout ends a normal battle. Chapter 2 replay and permanent progress preservation remain included.
+This is the complete cumulative repository. It includes the full Prototype 2.9A combat overhaul, all Story Mode repairs from 2.9A.1, and the Chapter 2 HUD/Story Menu hotfix in 2.9A.2. No previous patch is required.
 
-See `PATCH-NOTES-2.9A.md` for the full combat-depth update. Older notes below are retained as development history.
+See `PATCH-NOTES-2.9A.2.md` for the newest update, `PATCH-NOTES-2.9A.1.md` for the Story repair, and `PATCH-NOTES-2.9A.md` for the combat overhaul. Older notes below are retained as development history.
 
 ---
 

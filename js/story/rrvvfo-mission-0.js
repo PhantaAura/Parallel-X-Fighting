@@ -1,6 +1,8 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
-import {clampToStage} from '../arena/arena-stages.js?v=27b-living-training-road-20260727-232814';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
+import {clampToStage} from '../arena/arena-stages.js?v=29a2-story-hud-20260728';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a2-story-hud-20260728';
+import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -92,7 +94,11 @@ class RrvvfoMission0{
     this.root.querySelector('[data-m0-return]').onclick=()=>this.exitToStory();
     this.keyHandler=event=>{
       if(this.root.classList.contains('hidden')||this.dialogue.classList.contains('hidden'))return;
-      if(event.key==='Enter'||event.key===' '){event.preventDefault();this.advanceDialogue()}
+      if(event.key==='Enter'||event.key===' '){event.preventDefault();this.advanceDialogue();return}
+      if(event.key==='Escape'){
+        event.preventDefault();
+        storyConfirm({title:'SKIP THIS CONVERSATION?',message:'Skipping advances the story to the next training phase.',confirmLabel:'SKIP'}).then(skip=>{if(skip&&!this.dialogue.classList.contains('hidden')){this.lineIndex=this.lines.length;this.advanceDialogue();}});
+      }
     };
     document.addEventListener('keydown',this.keyHandler);
   }
@@ -110,11 +116,17 @@ class RrvvfoMission0{
     this.battle.start();
     this.battle.root.classList.add('storyMission0');
     this.battle.root.querySelector('[data-stage-name]').textContent='SAGE TRAINING FIELD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.7A • RRVVFO CHAPTER 1';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.2 • RRVVFO CHAPTER 1';
     const badge=this.battle.root.querySelector('.badge');
     if(badge?.lastChild)badge.lastChild.textContent=' CONTINUOUS ROUTE • SHOTS OF AGONY ORIGIN';
+    this.setArenaNames('RRVVFO','THE SAGE');
+    applyStoryProgressionToFighter(this.battle.fighters[0]);
     this.baseRestart=this.battle.restart.bind(this.battle);
-    this.battle.restart=()=>{this.baseRestart();this.resetMissionFlow()};
+    this.battle.restart=async()=>{
+      const restart=await storyConfirm({title:'RESTART TRAINING?',message:'Restart Chapter 1 Part 1 from the opening dialogue?',confirmLabel:'RESTART'});
+      if(!restart)return;
+      this.baseRestart();this.resetMissionFlow();
+    };
     this.resetMissionFlow();
     return this;
   }
@@ -207,7 +219,9 @@ class RrvvfoMission0{
       }
       return baseApplyDamage(attacker,target,damage,meta);
     };
-    battle.exit=()=>{
+    battle.exit=async()=>{
+      const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave Chapter 1 training? Current mission progress will restart.',confirmLabel:'LEAVE TRAINING'});
+      if(!leave)return;
       defaultExit();
       this.cleanup();
       this.onExit();
@@ -240,6 +254,12 @@ class RrvvfoMission0{
     this.dialogue.classList.remove('hidden');
     this.battle?.root.classList.add('storyDialogueOpen');
     this.root.querySelector('[data-m0-tag]')?.classList.add('dialogueHidden');
+  }
+
+  setArenaNames(left,right){
+    const names=this.battle?.root?.querySelectorAll('.top .side .name span:first-child');
+    if(names?.[0])names[0].textContent=left;
+    if(names?.[1])names[1].textContent=right;
   }
 
   hideDialogueLayer(){

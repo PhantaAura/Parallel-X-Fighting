@@ -1,6 +1,6 @@
-import {BUILD_VERSION} from './build-info.js?v=29a-combat-depth-20260728';
+import {BUILD_VERSION} from './build-info.js?v=29a2-story-hud-20260728';
 
-const MENU_MODULE_CACHE='29a-combat-depth-20260728';
+const MENU_MODULE_CACHE='29a2-story-hud-20260728';
 
 export const MAIN_MENU_MODES=Object.freeze([
   {id:'story',label:'STORY',glyph:'ST',kicker:'THE LOST YEAR',description:'Choose a character route and play it as continuous chapters. Rrvvfo Chapters 1–2 flow continuously, with a separate Chapter 3 opening preview for development testing.',players:'1',availability:'Rrvvfo route available — Chapters 1–2 plus Chapter 3 opening preview'},
@@ -97,7 +97,7 @@ export class MainMenu{
         const {openLostYearStory}=await import(`./story/lost-year-story.js?v=${MENU_MODULE_CACHE}`);
         openLostYearStory();
       }else if(mode.id==='arena'){
-        const {startArenaBattle}=await import(`./arena/arena-mode.js?v=29a-combat-depth-20260728`);
+        const {startArenaBattle}=await import(`./arena/arena-mode.js?v=29a2-story-hud-20260728`);
         startArenaBattle();
       }else{
         this.onSelect(mode.id);

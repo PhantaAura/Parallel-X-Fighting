@@ -19,7 +19,29 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
       ['Light','Fast pressure and combo starts'],
       ['Heavy','Slower impact and knockback'],
       ['Launcher','Start an air follow-up'],
-      ['Block','Hold before the attack connects']
+      ['Timed guard','Guard lasts only a few seconds; the opening instant is a perfect-parry window'],
+      ['Grab','Beats guarding, but missing leaves you open']
+    ]
+  },
+  {
+    id:'resource-control',category:'FOUNDATIONS',title:'ENERGY & GUARD',kicker:'STANDING STILL IS A DECISION',
+    summary:'Attacking builds energy. A manual charge restores it faster, but only while standing still and exposed.',
+    entries:[
+      ['Charge','Hold C / CHARGE while standing still'],
+      ['Attack gain','Clean hits restore energy, rewarding active combat'],
+      ['Passive gain','Energy returns slowly on its own'],
+      ['Guard recovery','Guard recovers faster while standing still and not blocking'],
+      ['Story level','Energy Control increases charge and passive recovery during Story Mode']
+    ]
+  },
+  {
+    id:'advanced-defense',category:'FOUNDATIONS',title:'PARRY, GRAB & CLASH',kicker:'DEFENSE CANNOT LAST FOREVER',
+    summary:'Guarding has a time limit. Read the opponent, parry at the opening instant, or grab someone who refuses to stop blocking.',
+    entries:[
+      ['Perfect parry','Press guard just before impact to stagger the attacker'],
+      ['Guard fatigue','Holding guard too long drains it and creates a lockout'],
+      ['Grab','Use U / G or GRAB to beat a blocking opponent'],
+      ['Clashes','Heavy attacks and compatible projectiles can collide']
     ]
   },
   {
@@ -112,7 +134,10 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
       ['Hidden route','Look for visual inconsistencies'],
       ['Fake object','The Lens exposes the real interactable'],
       ['Disguise','Important story clues may be concealed'],
-      ['Cost','Use it deliberately instead of leaving it active']
+      ['Early cost','90 energy and 70 HP'],
+      ['Prediction','Shows the opponent’s most probable next action; the player must still react'],
+      ['Mastery','Successful predictions improve accuracy, duration, and cost'],
+      ['Full mastery','Adds a small number of automatic dodges instead of permanent invulnerability']
     ]
   }
 ]);

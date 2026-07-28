@@ -102,7 +102,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],storyLevel:1,storyXp:0,chapter2State:{},chapter3Preview:{},updatedAt:Date.now()};
 }
 
 export function loadLostYearProgress(storage=localStorage){
@@ -134,9 +134,41 @@ export function missionUnlocked(mission,progress){
 }
 
 export function routeProgress(route,progress){
-  const total=Math.max(1,route.missions.length);
-  const completed=route.missions.filter(mission=>progress.completedMissions.includes(mission.id)).length;
-  return route.missions.length?Math.round(completed/total*100):0;
+  if(route?.id!=='rrvvfo')return 0;
+  const completed=new Set(progress?.completedMissions||[]);
+  // Rrvvfo has six planned chapters. The current percentage only counts fully
+  // finished main chapters; the Chapter 3 development preview is not presented
+  // as a completed chapter. The author-facing roadmap uses 20% milestones while
+  // the sixth slot is the route finale, so Chapter 2 completion reads 40%.
+  let percent=0;
+  if(['rrvvfo-00','rrvvfo-01','rrvvfo-road'].every(id=>completed.has(id)))percent+=20;
+  if(completed.has('rrvvfo-02'))percent+=20;
+  if(completed.has('rrvvfo-03'))percent+=20;
+  if(completed.has('rrvvfo-04'))percent+=20;
+  if(completed.has('rrvvfo-05')||completed.has('rrvvfo-06'))percent=100;
+  return Math.min(100,percent);
+}
+
+export function routeVisible(route,progress){
+  if(!route)return false;
+  if(route.id==='rrvvfo')return true;
+  const completed=new Set(progress?.completedMissions||[]);
+  const state=progress?.chapter2State||{};
+  if(route.id==='bark'||route.id==='wade')return Boolean(state.metBarkWade||completed.has('rrvvfo-02'));
+  if(route.id==='alt-rover')return Boolean(progress?.unlocks?.includes('metAltOrRover'));
+  if(route.id==='robert')return Boolean(progress?.unlocks?.includes('metRobert'));
+  if(route.id==='oddballs')return Boolean(progress?.unlocks?.includes('metOddballs'));
+  if(route.id==='rev-metal')return Boolean(progress?.unlocks?.includes('mainRoutesComplete'));
+  if(route.id==='final')return Boolean(progress?.unlocks?.includes('allRequiredRoutesComplete'));
+  return false;
+}
+
+export function routePlayable(route,progress){
+  if(route?.id==='rrvvfo')return true;
+  // Other routes are revealed SA1-style when Rrvvfo encounters their cast, but
+  // they do not become playable until the Rrvvfo route is actually complete and
+  // their content exists.
+  return Boolean(route?.available&&progress?.completedMissions?.includes('rrvvfo-06'));
 }
 
 
@@ -148,13 +180,28 @@ export const RRVVFO_CHAPTERS=Object.freeze([
   },
   {
     id:'rrvvfo-chapter-2',number:2,title:'DEFINITELY NOT THE WORLD TOURNAMENT',
-    description:'Open tournament hub, Sage’s strange disappearance, Training Levels, optional fights, the full bracket, Pouki defeating Bark, and the final against Plouke.',
+    description:'Open tournament hub, Training Levels, optional encounters, the full bracket, Pouki defeating Bark, and the final against Plouke.',
     missions:['rrvvfo-02']
   },
   {
     id:'rrvvfo-chapter-3',number:3,title:'CLOSED OFF',
-    description:'Development preview: a larger non-linear Training Region, several destroyed routes, NPC investigation, the strange man, and the underground-base lead.',
+    description:'Development preview: a larger non-linear Training Region, blocked routes, NPC investigation, the strange man, and the underground-base lead.',
     missions:['rrvvfo-03-preview'],preview:true
+  },
+  {
+    id:'rrvvfo-chapter-4',number:4,title:'CHAPTER 4',
+    description:'Hidden until the Chapter 3 story is finished.',
+    missions:['rrvvfo-04'],future:true
+  },
+  {
+    id:'rrvvfo-chapter-5',number:5,title:'CHAPTER 5',
+    description:'Hidden until the preceding chapter is finished.',
+    missions:['rrvvfo-05'],future:true
+  },
+  {
+    id:'rrvvfo-chapter-6',number:6,title:'RRVVFO ROUTE FINALE',
+    description:'The final chapter of Rrvvfo’s six-chapter Lost Year route.',
+    missions:['rrvvfo-06'],future:true,finale:true
   }
 ]);
 

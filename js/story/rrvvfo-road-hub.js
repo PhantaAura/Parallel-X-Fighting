@@ -1,7 +1,10 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b1-road-rebuild-20260727-235117';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b1-road-rebuild-20260727-235117';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a-combat-depth-20260728';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a2-story-hud-20260728';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a2-story-hud-20260728';
+import {StoryMap} from './story-map.js?v=29a2-story-hud-20260728';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a2-story-hud-20260728';
+import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -123,7 +126,7 @@ class RrvvfoRoadHub{
       {x:1225,z:-300,baseX:1225,baseZ:-300,color:'#c75f79',phase:2.4,label:'SIGN PAINTER'}
     ];
     this.root.querySelector('[data-road-manual]').addEventListener('click',()=>this.openManualFromHub());
-    this.root.querySelector('[data-road-exit]').addEventListener('click',()=>this.exitToStory());
+    this.root.querySelector('[data-road-exit]').addEventListener('click',()=>this.requestExit());
     this.root.querySelector('[data-road-fight]').addEventListener('click',()=>this.startRoadFight());
     this.root.querySelector('[data-road-run]').addEventListener('click',()=>this.startRunQte());
     this.root.querySelectorAll('[data-qte-input]').forEach(button=>button.addEventListener('click',()=>this.acceptQteInput(button.dataset.qteInput)));
@@ -143,11 +146,25 @@ class RrvvfoRoadHub{
     sage.appearance='down';
     this.patchBattle();
     this.battle.start();
+    this.battle.beforeRestart=()=>storyConfirm({title:'RESTART ROAD?',message:'Restart the current Tournament Road section? Completed checkpoints remain saved.',confirmLabel:'RESTART'});
     this.battle.root.classList.add('storyRoadHub');
     this.battle.root.querySelector('[data-stage-name]').textContent='TRAINING GROUNDS • TOURNAMENT ROAD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.7B.1 • ROAD REBUILD';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.2 • CHAPTER 1 ROAD';
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' EXPANDED LIVING ROAD • REAL FIELD OBSTACLES';
+    if(badge?.lastChild)badge.lastChild.textContent=' LIVING TOURNAMENT ROAD • STORY EXPLORATION';
+    applyStoryProgressionToFighter(this.battle.fighters[0]);
+    this.map=new StoryMap({
+      title:'TOURNAMENT ROAD MAP',
+      bounds:{minX:-1550,maxX:1450,minZ:-720,maxZ:720},
+      getPlayer:()=>this.battle?.fighters?.[0]||null,
+      getObjective:()=>{const point=this.objectivePoint();return point?{...point,label:this.objective?.textContent||'CURRENT OBJECTIVE'}:null},
+      getPoints:()=>[
+        {x:-1160,z:-240,label:'TRAINING GROUNDS',color:'#d9232f'},
+        {x:80,z:0,label:'BROKEN RIVER',color:'#5ba9dc'},
+        {x:590,z:0,label:'TARGET GATE',color:'#6b58be'},
+        {x:1320,z:0,label:'TOURNAMENT',color:'#d9a629'}
+      ]
+    });
     this.battle.phase='story';
     this.battle.time=9999;
     this.battle.hideBanner();
@@ -254,9 +271,12 @@ class RrvvfoRoadHub{
         this.updateQte();
       }
       this.updateNpcMotion(dt);
+      this.map?.draw();
     };
 
-    battle.exit=()=>{
+    battle.exit=async()=>{
+      const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Tournament Road? Completed checkpoints remain saved.',confirmLabel:'RETURN TO ROUTE'});
+      if(!leave)return;
       defaultExit();
       this.cleanup();
       this.onExit();
@@ -700,6 +720,7 @@ class RrvvfoRoadHub{
     const player=this.battle.fighters[0];
     const foe=this.battle.fighters[1];
     this.mode='fight';
+    this.map?.setVisible(false);
     this.fighterVisible=true;
     this.battle.root.classList.add('storyRoadFight');
     this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;clearTimeout(this.roadKoTimer);
@@ -728,9 +749,13 @@ class RrvvfoRoadHub{
   }
 
   respawnRoadFight(){
-    if(this.aborted)return;this.roadKoLocked=false;this.mode='fight';
-    this.battle.koTarget=3;this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.round=this.roadPlayerKOs+this.roadFoeKOs+1;this.battle.newRound();this.battle.time=Infinity;
-    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 3 KOs',`Current score: ${this.roadPlayerKOs}–${this.roadFoeKOs}. Opponent health: 120 per life.`);
+    if(this.aborted)return;
+    this.roadKoLocked=false;this.mode='fight';
+    this.battle.koTarget=3;this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.round=this.roadPlayerKOs+this.roadFoeKOs+1;
+    const loser=this.battle.fighters[0].hp<=1?0:1;
+    this.battle.respawnAfterKo(loser);
+    this.battle.phase='play';this.battle.time=Infinity;
+    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 3 KOs',`Current score: ${this.roadPlayerKOs}–${this.roadFoeKOs}. Only the defeated fighter respawned.`);
   }
 
   restartRoadFight(){
@@ -752,6 +777,7 @@ class RrvvfoRoadHub{
   resolveEncounter(result){
     this.encounterResolved=true;
     this.mode='hub';
+    this.map?.setVisible(true);
     this.battle.phase='play';
     this.fighterVisible=false;
     this.hideSecondFighter();
@@ -953,6 +979,11 @@ class RrvvfoRoadHub{
     this.completePanel.querySelector('[data-road-continue]').focus();
   }
 
+  async requestExit(){
+    const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Tournament Road? Completed checkpoints remain saved, but the current encounter will restart.',confirmLabel:'RETURN TO ROUTE'});
+    if(leave)this.exitToStory();
+  }
+
   exitToStory(){
     this.battle?.stopMatch();
     this.battle?.root.classList.add('hidden');
@@ -962,7 +993,7 @@ class RrvvfoRoadHub{
 
   cleanup(){
     if(this.aborted)return;
-    this.aborted=true;clearTimeout(this.roadKoTimer);
+    this.aborted=true;clearTimeout(this.roadKoTimer);this.map?.destroy();this.map=null;
     document.removeEventListener('keydown',this.keyHandler,true);
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
     this.dialogue?.overlay?.remove();

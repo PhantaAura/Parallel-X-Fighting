@@ -1,3 +1,5 @@
+import {storyConfirm} from './story/story-ux.js?v=29a2-story-hud-20260728';
+
 /* ═══════════════════════════════════════════════════════════════
    PARALLELS X — COMPATIBLE SPRITE-ON-TOP DIALOGUE
    Prototype 2.6.5
@@ -73,6 +75,8 @@ export class SonicBattleDialogue{
     this.isClosing=false;
     this.completed=false;
     this.gamepadWasPressed=false;
+    this.skipPromptOpen=false;
+    this.allowSkip=options.allowSkip!==false;
 
     this._onKey=this._onKey.bind(this);
     this._onPointer=this._onPointer.bind(this);
@@ -174,7 +178,13 @@ export class SonicBattleDialogue{
 
     if(event.code==='Escape'){
       event.preventDefault();
-      this.close();
+      event.stopImmediatePropagation();
+      if(!this.allowSkip||this.skipPromptOpen)return;
+      this.skipPromptOpen=true;
+      storyConfirm({title:'SKIP THIS CONVERSATION?',message:'The remaining dialogue will be skipped and the story will continue from the next gameplay section.',accept:'SKIP DIALOGUE'}).then(skip=>{
+        this.skipPromptOpen=false;
+        if(skip&&this._isActive())this.close();
+      });
     }
   }
 

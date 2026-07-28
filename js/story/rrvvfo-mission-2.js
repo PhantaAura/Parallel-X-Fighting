@@ -1,11 +1,13 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=28b1-chapter2-compat-20260728-022318';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=28b1-chapter2-compat-20260728-022318';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a-combat-depth-20260728';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a2-story-hud-20260728';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a2-story-hud-20260728';
+import {applyStoryProgressionToFighter,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a2-story-hud-20260728';
+import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
-const LEVEL_THRESHOLDS=[0,100,240,420,650,930,1260,1640];
+const LEVEL_THRESHOLDS=STORY_LEVEL_THRESHOLDS;
 let activeMission=null;
 
 function freshChapter2State(){
@@ -32,12 +34,27 @@ function buildUI(){
         <strong data-c2-objective>EXPLORE THE TOURNAMENT GROUNDS</strong>
         <span data-c2-detail>Talk to the people arriving for the tournament.</span>
       </div>
-      <div class="chapter2Stats">
-        <span><small>TRAINING LEVEL</small><strong data-c2-level>1</strong></span>
-        <span><small>STORY XP</small><strong data-c2-xp>0 / 100</strong></span>
-        <button type="button" data-c2-manual>MANUAL</button>
-        <button type="button" data-c2-exit>EXIT</button>
-      </div>
+      <button class="chapter2MenuButton" type="button" data-c2-menu aria-haspopup="dialog" aria-controls="chapter2StoryMenu">☰ STORY MENU</button>
+    </div>
+
+    <div class="chapter2StoryMenu" id="chapter2StoryMenu" data-c2-menu-panel hidden role="dialog" aria-modal="true" aria-label="Chapter 2 story menu">
+      <article>
+        <header>
+          <div><small>RRVVFO ROUTE • CHAPTER 2</small><h2>STORY MENU</h2></div>
+          <button type="button" data-c2-menu-close aria-label="Close story menu">×</button>
+        </header>
+        <div class="chapter2MenuProgress">
+          <section><small>TRAINING LEVEL</small><strong data-c2-level>1</strong><span>Attack and Energy Control rise through Story Mode.</span></section>
+          <section><small>STORY XP</small><strong data-c2-xp>0 / 100</strong><div class="chapter2XpTrack"><i data-c2-xp-fill></i></div><span data-c2-xp-next>100 XP TO NEXT LEVEL</span></section>
+        </div>
+        <div class="chapter2MenuActions">
+          <button class="primary" type="button" data-c2-menu-resume>RETURN TO GAME</button>
+          <button type="button" data-c2-manual>COMBAT MANUAL</button>
+          <button type="button" data-c2-menu-restart>RESTART ACTIVE FIGHT</button>
+          <button type="button" data-c2-exit>EXIT CHAPTER</button>
+        </div>
+        <p class="chapter2MenuHint">Open this menu with <b>TAB</b> or <b>ESC</b>. Level and XP stay here so the battle HUD remains clear.</p>
+      </article>
     </div>
 
     <div class="chapter2AreaTitle" data-c2-area hidden>
@@ -99,7 +116,7 @@ function buildUI(){
       <article>
         <small>FINAL MATCH • BEAM CLASH</small>
         <h2>DO NOT LET GO</h2>
-        <p>Mash FIRE to push back Plouke's beam. The result is part of the story, but your resistance changes Rrvvfo's final line.</p>
+        <p>Mash FIRE to push back Plouke's beam. Win the clash to force Plouke into a ring-out counter. Losing still continues the scripted final.</p>
         <div class="beamClashVisual"><i class="rrBeam"></i><i class="ploukeBeam"></i><b data-clash-center></b></div>
         <div class="clashMeter"><i data-clash-meter></i></div>
         <button type="button" data-clash-input>FIRE!</button>
@@ -111,7 +128,7 @@ function buildUI(){
       <article class="routeEndCard">
         <small>RRVVFO ROUTE • CHAPTER 2 COMPLETE</small>
         <h2>THE TOURNAMENT IS OVER</h2>
-        <p>Rrvvfo reached the final, exhausted himself against Plouke, lost the beam clash, and discovered that Plouke was the Sage in disguise.</p>
+        <p>Rrvvfo reached the final, exhausted himself against Plouke, survived the final clash, and discovered that Plouke was the Sage in disguise.</p>
         <div class="routeEndRewards">
           <span>FULL TOURNAMENT HUB CLEARED</span>
           <span>TRAINING LEVELS UNLOCKED</span>
@@ -155,16 +172,21 @@ class RrvvfoMission2{
     this.gruntCooldown={};
     this.finalElapsed=0;
     this.finalPhase='opening';
-    this.awakeningReadyAt=0;
+    this.awakeningReadyAt=0;this.lastAwakeningSecond=null;
     this.clash={active:false,power:18,endAt:0,lastButton:false};
     this.koTimer=0;
     this.completed=false;
     this.aborted=false;
+    this.storyMenuOpen=false;
+    this.storyMenuPausedBattle=false;
     this.hubSpawn={x:-1510,z:80};
     this.npcs=this.createNpcs();
 
+    this.root.querySelector('[data-c2-menu]').addEventListener('click',()=>this.openStoryMenu());
+    this.root.querySelectorAll('[data-c2-menu-close],[data-c2-menu-resume]').forEach(button=>button.addEventListener('click',()=>this.closeStoryMenu()));
     this.root.querySelector('[data-c2-manual]').addEventListener('click',()=>openCombatManual());
-    this.root.querySelector('[data-c2-exit]').addEventListener('click',()=>this.exitToStory());
+    this.root.querySelector('[data-c2-menu-restart]').addEventListener('click',()=>this.restartFightFromMenu());
+    this.root.querySelector('[data-c2-exit]').addEventListener('click',()=>this.requestExit());
     this.root.querySelectorAll('[data-c2-qte-input]').forEach(button=>button.addEventListener('click',()=>this.acceptQteInput(button.dataset.c2QteInput)));
     this.root.querySelector('[data-level-continue]').addEventListener('click',()=>this.closeLevelUp());
     this.root.querySelector('[data-tournament-continue]').addEventListener('click',()=>this.continueTournamentCard());
@@ -195,6 +217,7 @@ class RrvvfoMission2{
     resetArenaBattleInstance();
     this.battle=new ArenaBattle('tournament-hub');
     this.patchBattle();
+    this.battle.beforeRestart=()=>storyConfirm({title:'RESTART MATCH?',message:'Restart the active tournament fight at 0–0?',confirmLabel:'RESTART'});
     if(this.replayMode){
       // A replay is opt-in from the dedicated REPLAY button. The replay gets a clean
       // Chapter 2 state, while the completed route save remains untouched underneath.
@@ -270,9 +293,7 @@ class RrvvfoMission2{
 
     battle.applyDamage=(attacker,target,damage,meta={})=>{
       let adjusted=damage;
-      if(this.mode==='fight'&&attacker===battle.fighters[0]&&!this.currentFight?.final){
-        adjusted*=1+(this.level-1)*.025;
-      }
+
       if(this.mode==='fight'&&this.currentFight?.final){
         if(attacker===battle.fighters[1])adjusted*=this.finalPhase==='fatigue'?1.34:1.12;
         if(attacker===battle.fighters[0]&&this.finalPhase==='fatigue')adjusted*=.78;
@@ -385,7 +406,9 @@ class RrvvfoMission2{
       if(this.currentFight?.final&&['fatigue','awakening-ready','awakening'].includes(this.finalPhase))this.drawFinalFatigue();
     };
 
-    battle.exit=()=>{
+    battle.exit=async()=>{
+      const leave=await storyConfirm({title:'EXIT CHAPTER 2?',message:'Leave the tournament? Official fights restart from 0–0, while completed story checkpoints remain saved.',confirmLabel:'EXIT CHAPTER'});
+      if(!leave)return;
       baseExit();
       this.exitToStory();
     };
@@ -400,10 +423,15 @@ class RrvvfoMission2{
     this.battle.phase='play';
     this.battle.time=9999;
     this.battle.hideBanner();
-    this.battle.root.classList.add('chapter2HubMode');
+    this.battle.root.classList.add('chapter2HubMode','chapter2StoryActive');
+    this.battle.root.classList.remove('chapter2FightMode');
+    this.root.classList.remove('isFight');
     this.battle.root.querySelector('[data-stage-name]').textContent='LOCAL TOURNAMENT GROUNDS';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A • CHAPTER 2';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.2 • CHAPTER 2';
     const player=this.battle.fighters[0];
+    const badge=this.battle.root.querySelector('.badge');
+    if(badge?.lastChild)badge.lastChild.textContent=' LOCAL TOURNAMENT HUB • OFFICIAL RING-OUT RULES';
+    applyStoryProgressionToFighter(player,{...this.progress,storyLevel:this.level,storyXp:this.xp});
     const point=spawn||this.hubSpawn;
     player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.reset(point.x,point.z);
     this.hideSecondFighter();
@@ -676,10 +704,8 @@ class RrvvfoMission2{
       buttons:[{label:'START TOURNAMENT',value:'start',primary:true},{label:'KEEP EXPLORING',value:'leave'}],
       onChoose:value=>{
         if(value==='start'){
-          discoverCombatManualPage('tournament-rules',{onClose:()=>{
-            this.state.tournamentStarted=true;this.state.tournamentStep='round-1';this.saveChapterState();
-            this.startTournamentStep('round-1');
-          }});
+          this.state.tournamentStarted=true;this.state.tournamentStep='round-1';this.saveChapterState();
+          this.startTournamentStep('round-1');
         }else this.resumeHub();
       }
     });
@@ -687,7 +713,9 @@ class RrvvfoMission2{
 
   startFight(config){
     const opponentMaxHp=this.chapter2OpponentHealth(config);
-    this.currentFight={...config,elapsed:0,koTarget:config.final?1:3,playerKOs:0,foeKOs:0,koLocked:false,opponentMaxHp,playerMaxHp:100};
+    const official=Boolean(config.kind==='tournament');
+    const optional=Boolean(['practice','bark-spar','grunt'].includes(config.kind));
+    this.currentFight={...config,official,optional,elapsed:0,koTarget:config.final?1:official?3:1,playerKOs:0,foeKOs:0,koLocked:false,opponentMaxHp,playerMaxHp:100};
     this.root.querySelector('[data-c2-prompt]').hidden=true;
     this.mode='transition';
     const beginFight=()=>{
@@ -697,21 +725,31 @@ class RrvvfoMission2{
       this.mode='fight';
       const player=this.battle.fighters[0],foe=this.battle.fighters[1];
       player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.maxHp=this.currentFight.playerMaxHp;player.reset(-370,78);player.en=100;player.guard=100;player.asset=null;
+      applyStoryProgressionToFighter(player,{...this.progress,storyLevel:this.level,storyXp:this.xp});
       foe.id=config.id;foe.name=config.name;foe.accent=this.opponentAccent(config.id);foe.cpu=true;foe.maxHp=this.currentFight.opponentMaxHp;foe.reset(370,-78);foe.en=100;foe.guard=100;foe.asset=null;
       this.battle.koTarget=this.currentFight.koTarget;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';this.battle.time=Infinity;this.battle.hideBanner();
       // Official Chapter 2 tournament combat uses ring-outs. The scripted final
       // remains KO-only so its Fire Awakening and beam-clash sequence cannot skip.
-      this.battle.ringOutEnabled=!config.final;
+      this.battle.ringOutEnabled=Boolean(this.currentFight.official&&!config.final);
       this.battle.onRingOut=fighter=>{
-        if(this.mode!=='fight'||this.currentFight?.final||this.currentFight?.koLocked)return;
+        if(this.mode!=='fight'||!this.currentFight?.official||this.currentFight?.final||this.currentFight?.koLocked)return;
         this.handleFightKo(fighter===this.battle.fighters[1],'RING OUT');
       };
       this.battle.root.classList.remove('chapter2HubMode');
+      this.battle.root.classList.add('chapter2StoryActive','chapter2FightMode');
+      this.root.classList.add('isFight');
       this.battle.root.querySelector('[data-stage-name]').textContent=`LOCAL TOURNAMENT • ${config.name.toUpperCase()}`;
       this.setArenaNames('RRVVFO',config.name.toUpperCase());
       const run=this.root.querySelector('[data-tournament-run]');
       run.hidden=!config.story||this.state.runRefusals>=4;
-      this.setObjective(config.final?'SURVIVE THE SCRIPTED FINAL':config.story?'SCORE 3 KOs TO ADVANCE':'SCORE 3 KOs TO WIN',config.final?`Survive Plouke long enough to reach the Fire Awakening attempt.`:`Defeat ${config.name} three times. KOs and ring-outs both count. Opponent health: ${this.currentFight.opponentMaxHp}.`);
+      this.setObjective(
+        config.final?'SURVIVE THE SCRIPTED FINAL':this.currentFight.official?'SCORE 3 KOs OR RING-OUTS TO ADVANCE':'SCORE 1 KO TO WIN',
+        config.final
+          ?'Survive Plouke long enough to reach the Fire Awakening attempt.'
+          :this.currentFight.official
+            ?`Defeat ${config.name} three times. KOs and ring-outs both count. Opponent health: ${this.currentFight.opponentMaxHp}.`
+            :`This optional or practice fight ends after one KO. Ring-outs are disabled. Opponent health: ${this.currentFight.opponentMaxHp}.`
+      );
       this.updateLevelHud();
     };
     if(config.skipCard)beginFight();else this.showTournamentCard(config.intro||'FIGHT',`${config.name} is waiting in the ring.`,beginFight);
@@ -724,7 +762,8 @@ class RrvvfoMission2{
   chapter2OpponentHealth(config={}){
     if(config.final)return 150;
     const base=Math.max(1,Number(config.hp)||70);
-    return Math.max(120,Math.round(base*1.55));
+    if(config.kind==='tournament')return Math.max(120,Math.round(base*1.55));
+    return Math.max(70,Math.round(base*1.25));
   }
 
   handleFightKo(playerWon,finishLabel='K.O.'){
@@ -778,7 +817,16 @@ class RrvvfoMission2{
         player.en=Math.max(0,player.en-dt*5.5);
         if(this.finalElapsed>68)this.offerAwakening();
       }
-      if(this.finalPhase==='awakening-ready'&&performance.now()>this.awakeningReadyAt)this.triggerAwakeningAttempt();
+      if(this.finalPhase==='awakening-ready'){
+        const remaining=Math.max(0,this.awakeningReadyAt-performance.now());
+        const seconds=Math.ceil(remaining/1000);
+        if(seconds!==this.lastAwakeningSecond){
+          this.lastAwakeningSecond=seconds;
+          this.setObjective('TRY FIRE AWAKENING',seconds>0?`Press hotbar slot 5. Automatic fallback in ${seconds}...`:'Fire Awakening is triggering...');
+          this.battle.notice(seconds>0?`PRESS 5 • ${seconds}`:'AUTO ACTIVATING',.9);
+        }
+        if(remaining<=0)this.triggerAwakeningAttempt();
+      }
     }
   }
 
@@ -847,10 +895,19 @@ class RrvvfoMission2{
     this.state.tournamentStep=step;this.saveChapterState();
     const story=true;
     if(step==='round-1'){
-      this.showDialogue([
-        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Opening round! Rrvvfo versus an entrant whose registration handwriting nobody can read!',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'A random person. Perfect.',tail:'down'}
-      ],()=>this.startFight({id:'qualifier-fighter',name:'Qualifier Fighter',hp:54,xp:90,kind:'tournament',story,intro:'ROUND ONE'}));
+      discoverCombatManualPage('tournament-rules',{
+        reactionLines:[
+          'Wait. Crossing the edge counts as losing a stock?',
+          'So camping near the boundary is somehow an even worse idea than usual.',
+          'Fine. Three KOs or ring-outs. I only need one of those rules.'
+        ],
+        onClose:()=>this.showDialogue([
+          {speaker:'ANNOUNCER',speakerClass:'rival',text:'Official matches are first to three! A knockout or crossing the ring boundary removes one stock!',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'So the edge is an attack now. Great. At least anyone camping there is volunteering.',tail:'down'},
+          {speaker:'ANNOUNCER',speakerClass:'rival',text:'Opening round! Rrvvfo versus an entrant whose registration handwriting nobody can read!',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'A random person. Perfect.',tail:'down'}
+        ],()=>this.startFight({id:'qualifier-fighter',name:'Qualifier Fighter',hp:54,xp:90,kind:'tournament',story,intro:'ROUND ONE'}))
+      });
     }else if(step==='quarterfinal'){
       this.startFight({id:'bracket-fighter',name:'Bracket Fighter',hp:68,xp:105,kind:'tournament',story,intro:'QUARTERFINAL'});
     }else if(step==='bark-pouki'){
@@ -951,7 +1008,7 @@ class RrvvfoMission2{
       {speaker:'PLOUKE',speakerClass:'rival',text:'Try it.',tail:'down'}
     ],()=>{
       this.mode='fight';this.battle.phase='play';
-      this.awakeningReadyAt=performance.now()+9000;
+      this.awakeningReadyAt=performance.now()+9000;this.lastAwakeningSecond=null;
       this.setObjective('TRY FIRE AWAKENING','Press hotbar slot 5 before Rrvvfo runs out of strength.');
       this.battle.notice('FIRE AWAKENING READY • PRESS 5',2);
     });
@@ -1005,24 +1062,33 @@ class RrvvfoMission2{
 
   finishBeamClash(){
     if(!this.clash.active)return;
-    const resisted=this.clash.power>=58;
+    const clashWon=this.clash.power>=58;
     this.clash.active=false;
     this.root.querySelector('[data-beam-clash]').hidden=true;
     this.finalPhase='finished';this.mode='story';
     this.battle.root.querySelector('[data-impact-flash]').style.opacity='1';
     setTimeout(()=>{if(this.battle?.root)this.battle.root.querySelector('[data-impact-flash]').style.opacity='0'},140);
-    this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:resisted?'I almost pushed it back...':'My arms will not move...',tail:'down'},
-      {speaker:'PLOUKE',speakerClass:'rival',text:'The match is over.',tail:'down'},
-      {speaker:'ANNOUNCER',speakerClass:'rival',text:'Plouke wins the tournament!',tail:'down'},
+    if(clashWon){
+      const player=this.battle.fighters[0],bounds=this.battle.stage.bounds;
+      player.x=bounds.minX-90;
+      this.battle.banner('RRVVFO WINS THE CLASH • PLOUKE RING-OUT!');
+    }
+    const reveal=()=>this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:clashWon?'I pushed it back—wait, where is the floor?':'My arms will not move...',tail:'down'},
+      {speaker:'PLOUKE',speakerClass:'rival',text:clashWon?'You won the clash. I won the ring.':'The match is over.',tail:'down'},
+      {speaker:'ANNOUNCER',speakerClass:'rival',text:clashWon?'Rrvvfo wins the beam clash—but Plouke wins by ring-out!':'Plouke wins the tournament!',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Who are you?',tail:'down'},
       {speaker:'PLOUKE',speakerClass:'rival',text:'You really did skim the disguise section.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'...No.',tail:'down'},
       {speaker:'SAGE',speakerClass:'neutral',text:'Plouke was me.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'You vanished, entered the tournament, beat Pouki, exhausted me in the final, and called it training?',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'You learned more while believing I was absent.',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:clashWon?'And you won the clash. That earns a level. It does not earn awareness of the ring edge.':'You learned more while believing I was absent.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'I hate how planned ahead you are.',tail:'down'}
     ],()=>this.commitCompletion());
+    if(clashWon){
+      const needed=Math.max(120,(LEVEL_THRESHOLDS[this.level]??this.xp+120)-this.xp+20);
+      this.grantXp(needed,'BEAM CLASH VICTORY • BONUS LEVEL',reveal);
+    }else reveal();
   }
 
   drawFinalFatigue(){
@@ -1051,19 +1117,68 @@ class RrvvfoMission2{
 
   grantXp(amount,source,onDone){
     if(!amount){onDone?.();return}
-    const oldLevel=this.level;
-    this.xp+=amount;
-    while(this.level<LEVEL_THRESHOLDS.length&&this.xp>=LEVEL_THRESHOLDS[this.level])this.level++;
-    this.progress=saveLostYearProgress({...loadLostYearProgress(),storyLevel:this.level,storyXp:this.xp,chapter2State:this.state});
+    if(this.replayMode){
+      this.battle.notice('REPLAY PRACTICE • NO PERMANENT XP',1.6);
+      onDone?.();
+      return;
+    }
+    const result=addStoryXp(amount,{source,persist:true,replay:false});
+    this.level=result.newLevel;this.xp=result.xp;this.progress=result.progress;
+    applyStoryProgressionToFighter(this.battle.fighters[0],this.progress);
     this.updateLevelHud();
-    if(this.level>oldLevel)this.showLevelUp(source,onDone);
+    if(result.newLevel>result.oldLevel)this.showLevelUp(source,onDone);
     else onDone?.();
   }
 
   updateLevelHud(){
     this.root.querySelector('[data-c2-level]').textContent=String(this.level);
-    const next=LEVEL_THRESHOLDS[this.level]??LEVEL_THRESHOLDS.at(-1);
-    this.root.querySelector('[data-c2-xp]').textContent=this.level>=LEVEL_THRESHOLDS.length?`${this.xp} / MAX`:`${this.xp} / ${next}`;
+    this.root.querySelector('[data-c2-xp]').textContent=levelHudText(this.level,this.xp);
+    const floor=LEVEL_THRESHOLDS[Math.max(0,this.level-1)]||0;
+    const ceiling=LEVEL_THRESHOLDS[this.level]??floor;
+    const span=Math.max(1,ceiling-floor);
+    const progress=this.level>=LEVEL_THRESHOLDS.length?1:clamp((this.xp-floor)/span,0,1);
+    const fill=this.root.querySelector('[data-c2-xp-fill]');
+    if(fill)fill.style.width=`${Math.round(progress*100)}%`;
+    const next=this.root.querySelector('[data-c2-xp-next]');
+    if(next)next.textContent=this.level>=LEVEL_THRESHOLDS.length?'MAXIMUM TRAINING LEVEL':`${Math.max(0,ceiling-this.xp)} XP TO NEXT LEVEL`;
+  }
+
+  canOpenStoryMenu(){
+    return !this.aborted&&!this.storyMenuOpen&&!['dialogue','choice','qte','clash','level','transition'].includes(this.mode);
+  }
+
+  openStoryMenu(){
+    if(!this.canOpenStoryMenu())return;
+    this.storyMenuOpen=true;
+    this.updateLevelHud();
+    const panel=this.root.querySelector('[data-c2-menu-panel]');
+    const restart=this.root.querySelector('[data-c2-menu-restart]');
+    const activeFight=Boolean(this.currentFight&&['fight','fight-ko'].includes(this.mode));
+    restart.disabled=!activeFight;
+    restart.textContent=activeFight?'RESTART ACTIVE FIGHT':'NO ACTIVE FIGHT';
+    panel.hidden=false;
+    this.storyMenuPausedBattle=Boolean(this.battle&&!this.battle.paused);
+    if(this.storyMenuPausedBattle)this.battle.togglePause();
+    panel.querySelector('[data-c2-menu-resume]')?.focus();
+  }
+
+  closeStoryMenu(){
+    if(!this.storyMenuOpen)return;
+    this.storyMenuOpen=false;
+    this.root.querySelector('[data-c2-menu-panel]').hidden=true;
+    if(this.storyMenuPausedBattle&&this.battle?.paused)this.battle.togglePause();
+    this.storyMenuPausedBattle=false;
+    this.root.querySelector('[data-c2-menu]')?.focus();
+  }
+
+  async restartFightFromMenu(){
+    const fight=this.currentFight;
+    if(!fight||!['fight','fight-ko'].includes(this.mode))return;
+    const restart=await storyConfirm({title:'RESTART ACTIVE FIGHT?',message:'Restart this fight at 0–0? Chapter progress before the fight remains saved.',confirmLabel:'RESTART FIGHT'});
+    if(!restart)return;
+    this.closeStoryMenu();
+    clearTimeout(this.koTimer);
+    this.startFight({...fight,playerKOs:0,foeKOs:0,koLocked:false,skipCard:true});
   }
 
   showLevelUp(source,onDone){
@@ -1123,6 +1238,17 @@ class RrvvfoMission2{
 
   onKey(event){
     if(this.aborted||this.root.hidden)return;
+    const manual=document.getElementById('pxCombatManualUI');
+    if(manual&&!manual.hidden)return;
+    if(this.storyMenuOpen){
+      if(event.key==='Escape'||event.key==='Tab'){
+        event.preventDefault();event.stopImmediatePropagation();this.closeStoryMenu();
+      }
+      return;
+    }
+    if((event.key==='Escape'||event.key==='Tab')&&this.canOpenStoryMenu()){
+      event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();return;
+    }
     if(this.mode==='hub'&&event.key==='Enter'){
       event.preventDefault();event.stopImmediatePropagation();this.tryInteract();return;
     }
@@ -1133,7 +1259,7 @@ class RrvvfoMission2{
       event.preventDefault();event.stopImmediatePropagation();this.clashInput();return;
     }
     if(event.key.toLowerCase()==='m'&&['hub','fight'].includes(this.mode)){
-      event.preventDefault();event.stopImmediatePropagation();openCombatManual();
+      event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();
     }
   }
 
@@ -1158,8 +1284,9 @@ class RrvvfoMission2{
     // Crowd movement makes the hub feel active without turning every NPC into an interaction.
     const crowdColors=['#d45172','#4ea4d1','#d99c45','#6e58ad','#5aa36d'];
     for(let i=0;i<18;i++){
-      const x=-900+((i*173+time*20*(i%2?1:-1))%1700);
-      const z=(i%2?860:-870)+Math.sin(time*.5+i)*55;
+      const drift=((i*173+time*20*(i%2?1:-1))%1500+1500)%1500;
+      const x=-760+drift;
+      const z=(i%2?680:-680)+Math.sin(time*.5+i)*36;
       r.box({x,y:42,z,sx:25,sy:58,sz:22,color:crowdColors[i%crowdColors.length],alpha:.82});
       r.box({x,y:82,z,sx:23,sy:23,sz:22,color:'#8f5d42',alpha:.85});
     }
@@ -1171,8 +1298,8 @@ class RrvvfoMission2{
       this.progress=saveLostYearProgress({
         ...progress,
         chapter2State:this.savedChapter2State,
-        storyLevel:this.level,
-        storyXp:this.xp,
+        storyLevel:Number(progress.storyLevel)||1,
+        storyXp:Number(progress.storyXp)||0,
         lastCheckpoint:this.savedCheckpoint||'rrvvfo-02-complete'
       });
       return;
@@ -1189,8 +1316,8 @@ class RrvvfoMission2{
       saveLostYearProgress({
         ...progress,
         chapter2State:this.savedChapter2State,
-        storyLevel:this.level,
-        storyXp:this.xp,
+        storyLevel:Number(progress.storyLevel)||1,
+        storyXp:Number(progress.storyXp)||0,
         lastCheckpoint:this.savedCheckpoint||'rrvvfo-02-complete'
       });
       this.onComplete();
@@ -1206,6 +1333,13 @@ class RrvvfoMission2{
     this.root.querySelector('[data-end-route]').focus();
   }
 
+  async requestExit(){
+    const leave=await storyConfirm({title:'EXIT CHAPTER 2?',message:'Leave the tournament? Completed checkpoints remain saved. Any active fight restarts at 0–0.',confirmLabel:'EXIT CHAPTER'});
+    if(!leave)return;
+    if(this.storyMenuOpen)this.closeStoryMenu();
+    this.exitToStory();
+  }
+
   exitToStory(){
     if(this.aborted)return;
     this.aborted=true;
@@ -1215,6 +1349,7 @@ class RrvvfoMission2{
     this.dialogue?.overlay?.remove();
     document.removeEventListener('keydown',this.keyHandler,true);
     if(this.battle?.active)this.battle.stopMatch();
+    this.battle?.root?.classList.remove('chapter2HubMode','chapter2FightMode','chapter2StoryActive');
     this.battle?.root?.classList.add('hidden');
     this.root.remove();activeMission=null;this.onExit();
   }

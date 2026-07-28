@@ -1,15 +1,17 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
-import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=29a-combat-depth-20260728';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b-living-training-road-20260727-232814';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
-import {grantCombatManual} from './combat-manual.js?v=29a-combat-depth-20260728';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
+import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=29a2-story-hud-20260728';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a2-story-hud-20260728';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
+import {grantCombatManual} from './combat-manual.js?v=29a2-story-hud-20260728';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a2-story-hud-20260728';
+import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
 let activeMission=null;
 
 function controlLabel(code){
-  const labels={Space:'SPACE',ShiftLeft:'SHIFT',ShiftRight:'SHIFT',KeyA:'A',KeyD:'D',KeyW:'W',KeyS:'S',KeyF:'F',KeyR:'R',KeyT:'T',KeyQ:'Q',KeyJ:'J',KeyK:'K',KeyI:'I',KeyL:'L'};
+  const labels={Space:'SPACE',ShiftLeft:'SHIFT',ShiftRight:'SHIFT',KeyA:'A',KeyD:'D',KeyW:'W',KeyS:'S',KeyF:'F',KeyR:'R',KeyT:'T',KeyQ:'Q',KeyJ:'J',KeyK:'K',KeyI:'I',KeyL:'L',KeyC:'C',KeyU:'U',KeyG:'G'};
   return labels[code]||String(code||'').replace(/^Key/,'').replace(/^Digit/,'');
 }
 
@@ -47,10 +49,10 @@ class RrvvfoMission1{
     this.manual=this.root.querySelector('[data-combat-manual]');
     this.completePanel=this.root.querySelector('[data-mission-complete]');
     this.root.querySelector('[data-begin-tutorial]').addEventListener('click',()=>this.beginTutorial());
-    this.root.querySelector('[data-exit-manual]').addEventListener('click',()=>this.exitToStory());
+    this.root.querySelector('[data-exit-manual]').addEventListener('click',()=>this.requestExit());
     this.root.querySelector('[data-return-story]').addEventListener('click',()=>this.exitToStory());
     this.phase='opening';
-    this.flags={move:false,jump:false,dash:false,light:false,heavy:false,launcher:false,block:false,fire:false,shots:false,swap:false,lens:false};
+    this.flags={move:false,jump:false,dash:false,light:false,heavy:false,launcher:false,block:false,parry:false,grab:false,charge:false,fire:false,shots:false,swap:false,lens:false};
     this.finalHits=0;
     this.sageAttackTimer=.8;
     this.aborted=false;
@@ -64,10 +66,13 @@ class RrvvfoMission1{
     sage.id='sage';sage.name='The Sage';sage.accent='#d9e7f3';sage.cpu=true;sage.appearance='down';
     this.patchBattle();
     this.battle.start();
+    this.battle.beforeRestart=()=>storyConfirm({title:'RESTART REFRESHER?',message:'Restart the Combat Manual tutorial from the beginning?',confirmLabel:'RESTART'});
     this.battle.root.classList.add('storyMission1','storyMissionDialogueOpen');
     this.battle.root.querySelector('[data-stage-name]').textContent='SAGE TRAINING FIELD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.7A • RRVVFO CHAPTER 1';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.2 • RRVVFO CHAPTER 1';
     this.battle.fighters[0].maxHp=100;this.battle.fighters[0].hp=100;this.battle.fighters[1].maxHp=100;this.battle.fighters[1].hp=100;
+    applyStoryProgressionToFighter(this.battle.fighters[0]);
+    this.setArenaNames('RRVVFO','THE SAGE');
     this.battle.phase='story';
     this.battle.time=9999;
     this.battle.hideBanner();
@@ -110,8 +115,13 @@ class RrvvfoMission1{
 
     battle.applyDamage=(attacker,target,damage,meta={})=>{
       const wasBlocking=target.block;
+      const wasPerfect=wasBlocking&&target.blockAge<=.12;
       const connected=baseApplyDamage(attacker,target,damage,meta);
-      if(attacker.id==='sage'&&target.id==='rrvvfo'&&wasBlocking&&connected){this.flags.block=true;this.checkBasics()}
+      if(attacker.id==='sage'&&target.id==='rrvvfo'&&wasBlocking&&connected){
+        this.flags.block=true;
+        if(wasPerfect)this.flags.parry=true;
+        this.checkBasics();
+      }
       if(attacker.id==='rrvvfo'&&target.id==='sage'&&connected&&this.phase==='final'){
         this.finalHits++;
         if(this.finalHits>=3)this.finishTutorial();
@@ -124,16 +134,28 @@ class RrvvfoMission1{
       baseUpdate(dt);
       if(!battle.active||this.aborted)return;
       const player=battle.fighters[0];
-      player.en=100;
-      if(player.hp<55)player.hp=55;
+      if(player.hp<1)player.hp=1;
       battle.fighters[1].hp=Math.max(1,battle.fighters[1].hp);
       if(this.phase==='movement'&&this.flags.move&&this.flags.jump&&this.flags.dash)this.startBasics();
-      if(this.phase==='abilities'){
-        for(const key of ['fireBlast','shotsOfAgony','objectSwap','lensOfTruth'])player.cooldowns[key]=Math.min(player.cooldowns[key],.35);
+      if(this.phase==='resource'&&this.flags.charge&&player.en>=75)this.startAbilities();
+      if(this.phase==='shotsCharge'&&player.en>=100){
+        this.phase='shotsReady';
+        this.setObjective('FULL-ENERGY TECHNIQUE','Energy is full. Use slot 2: Shots of Agony. It will consume the entire meter.');
+        battle.notice('USE SLOT 2 • ALL ENERGY',1.8);
+      }
+      if(this.phase==='lensCharge'&&player.en>=90){
+        this.phase='lensReady';
+        this.setObjective('RISKY PREDICTION','Energy is at 90. Use slot 4: Lens of Truth. It costs 70 HP and still requires you to react.');
+        battle.notice('USE SLOT 4 • 90 ENERGY • 70 HP',2);
+      }
+      if(['abilities','shotsReady','lensReady'].includes(this.phase)){
+        for(const key of ['fireBlast','shotsOfAgony','objectSwap','lensOfTruth'])player.cooldowns[key]=Math.min(player.cooldowns[key],.2);
       }
     };
 
-    battle.exit=()=>{
+    battle.exit=async()=>{
+      const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the training refresher? Current tutorial progress will restart.',confirmLabel:'LEAVE TRAINING'});
+      if(!leave)return;
       defaultExit();
       this.cleanup();
       this.onExit();
@@ -180,13 +202,14 @@ class RrvvfoMission1{
     const a=layout.actions;
     this.root.querySelector('[data-manual-grid]').innerHTML=`
       <section><h3>MOVEMENT</h3><dl><div><dt>Move</dt><dd>W A S D</dd></div><div><dt>Jump</dt><dd>${controlLabel(a.jump)}</dd></div><div><dt>Dash</dt><dd>${controlLabel(a.dash)} / DOUBLE-TAP</dd></div></dl></section>
-      <section><h3>BASIC COMBAT</h3><dl><div><dt>Light</dt><dd>${controlLabel(a.light)} / MOUSE 1</dd></div><div><dt>Heavy</dt><dd>${controlLabel(a.heavy)}</dd></div><div><dt>Launcher</dt><dd>${controlLabel(a.launcher)}</dd></div><div><dt>Block</dt><dd>${controlLabel(a.block)} / MOUSE 2</dd></div></dl></section>
-      <section><h3>HOTBAR</h3><dl><div><dt>1</dt><dd>FIRE BLAST</dd></div><div><dt>2</dt><dd>SHOTS OF AGONY</dd></div><div><dt>3</dt><dd>OBJECT SWAP</dd></div><div><dt>4</dt><dd>LENS OF TRUTH</dd></div><div><dt>5</dt><dd>ULTIMATE</dd></div></dl></section>
-      <section><h3>SAGE'S NOTE</h3><p>Lens of Truth is not just “everything gets slower.” Read the attack, move before it lands, and stop relying on raw power.</p></section>`;
+      <section><h3>BASIC COMBAT</h3><dl><div><dt>Light</dt><dd>${controlLabel(a.light)} / MOUSE 1</dd></div><div><dt>Heavy</dt><dd>${controlLabel(a.heavy)}</dd></div><div><dt>Launcher</dt><dd>${controlLabel(a.launcher)}</dd></div><div><dt>Timed Guard</dt><dd>${controlLabel(a.block)} / MOUSE 2</dd></div><div><dt>Grab</dt><dd>U / G</dd></div></dl></section>
+      <section><h3>RESOURCE CONTROL</h3><dl><div><dt>Charge</dt><dd>C • STAND STILL</dd></div><div><dt>Attack gain</dt><dd>CLEAN HITS RESTORE ENERGY</dd></div><div><dt>Guard recovery</dt><dd>FASTER WHILE STANDING STILL</dd></div></dl></section>
+      <section><h3>HOTBAR</h3><dl><div><dt>1</dt><dd>FIRE BLAST</dd></div><div><dt>2</dt><dd>SHOTS OF AGONY • ALL ENERGY</dd></div><div><dt>3</dt><dd>OBJECT SWAP</dd></div><div><dt>4</dt><dd>LENS • 90 ENERGY / 70 HP EARLY</dd></div><div><dt>5</dt><dd>ULTIMATE</dd></div></dl></section>
+      <section><h3>SAGE'S NOTE</h3><p>Lens predicts the most probable attack. Successful reads build mastery. At full mastery it can auto-dodge only a few times—not forever.</p></section>`;
   }
 
   showManual(){
-    grantCombatManual({pages:['movement','basic-combat','hotbar']});
+    grantCombatManual({pages:['movement','basic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
     this.manual.hidden=false;
     this.setObjective('READ THE COMBAT MANUAL','Review movement, attacks, blocking, and hotbar slots 1–5.');
     this.root.querySelector('[data-begin-tutorial]').focus();
@@ -211,38 +234,69 @@ class RrvvfoMission1{
       if(command.light)this.flags.light=true;
       if(command.heavy)this.flags.heavy=true;
       if(command.launcher)this.flags.launcher=true;
-      if(command.block)this.battle.notice('HOLD BLOCK WHILE THE SAGE ATTACKS',.8);
+      if(command.grab)this.flags.grab=true;
+      if(command.block)this.battle.notice('TIME BLOCK WITH THE SAGE ATTACK • PERFECT PARRY',.8);
       this.checkBasics();
+    }else if(['resource','shotsCharge','lensCharge'].includes(this.phase)){
+      if(command.charge)this.flags.charge=true;
     }
   }
 
   startBasics(){
     if(this.phase!=='movement')return;
     this.phase='basics';
-    this.setObjective('BASIC COMBAT','Use light, heavy, and launcher attacks. Then block one Sage attack.');
-    this.battle.notice('ATTACKS FIRST • THEN BLOCK',1.8);
+    this.setObjective('BASIC COMBAT','Use light, heavy, launcher, and grab. Then time a perfect parry against one Sage attack.');
+    this.battle.notice('ATTACKS • GRAB • PERFECT PARRY',1.8);
   }
 
   checkBasics(){
     if(this.phase!=='basics')return;
-    if(this.flags.light&&this.flags.heavy&&this.flags.launcher&&this.flags.block)this.startAbilities();
+    if(this.flags.light&&this.flags.heavy&&this.flags.launcher&&this.flags.grab&&this.flags.parry)this.startResourceLesson();
+  }
+
+  startResourceLesson(){
+    this.phase='resource';
+    const player=this.battle.fighters[0];
+    player.en=20;
+    this.flags.charge=false;
+    this.setObjective('ENERGY CONTROL','Stand still and hold C / CHARGE until your energy reaches 75. Moving or blocking stops the charge.');
+    this.battle.notice('STAND STILL • HOLD CHARGE',1.8);
   }
 
   startAbilities(){
     this.phase='abilities';
-    this.setObjective('TECHNIQUE REFRESHER','Use Fire Blast, Shots of Agony, Object Swap, and Lens of Truth with slots 1–4.');
-    this.battle.notice('USE HOTBAR SLOTS 1 • 2 • 3 • 4',2);
+    this.setObjective('TECHNIQUE REFRESHER','Use Fire Blast (1) and Object Swap (3). Clean attacks and charging restore energy.');
+    this.battle.notice('USE SLOT 1 AND SLOT 3',2);
   }
 
   markAbility(slot){
-    if(this.phase!=='abilities')return;
-    if(slot===1)this.flags.fire=true;
-    if(slot===2)this.flags.shots=true;
-    if(slot===3)this.flags.swap=true;
-    if(slot===4)this.flags.lens=true;
-    const done=[this.flags.fire,this.flags.shots,this.flags.swap,this.flags.lens].filter(Boolean).length;
-    this.setObjective('TECHNIQUE REFRESHER',`Abilities completed: ${done}/4 — use slots 1, 2, 3, and 4.`);
-    if(done===4)setTimeout(()=>this.startFinalSpar(),500);
+    if(slot===1&&this.phase==='abilities')this.flags.fire=true;
+    if(slot===3&&this.phase==='abilities')this.flags.swap=true;
+    if(this.phase==='abilities'){
+      const done=[this.flags.fire,this.flags.swap].filter(Boolean).length;
+      this.setObjective('TECHNIQUE REFRESHER',`Basic techniques completed: ${done}/2 — use slots 1 and 3.`);
+      if(done===2){
+        this.phase='shotsCharge';
+        this.battle.fighters[0].en=Math.min(this.battle.fighters[0].en,35);
+        this.setObjective('CHARGE FOR SHOTS OF AGONY','Stand still and charge to a completely full energy meter.');
+        this.battle.notice('CHARGE TO 100',1.5);
+      }
+      return;
+    }
+    if(slot===2&&this.phase==='shotsReady'){
+      this.flags.shots=true;
+      this.phase='lensCharge';
+      const player=this.battle.fighters[0];
+      player.en=35;player.hp=100;
+      this.setObjective('CHARGE FOR LENS OF TRUTH','Shots consumed everything. Charge back to 90 energy for Lens of Truth.');
+      this.battle.notice('SHOTS USED ALL ENERGY • CHARGE TO 90',2);
+      return;
+    }
+    if(slot===4&&this.phase==='lensReady'){
+      this.flags.lens=true;
+      this.setObjective('READ THE SAGE','Lens shows the Sage’s probable attack. Dodge or parry it yourself; mastery grows from successful reads.');
+      setTimeout(()=>this.startFinalSpar(),1300);
+    }
   }
 
   startFinalSpar(){
@@ -279,6 +333,16 @@ class RrvvfoMission1{
   }
 
   setObjective(title,detail){this.objective.textContent=title;this.detail.textContent=detail}
+
+  setArenaNames(left,right){
+    const names=this.battle?.root?.querySelectorAll('.top .side .name span:first-child');
+    if(names?.[0])names[0].textContent=left;
+    if(names?.[1])names[1].textContent=right;
+  }
+
+  async requestExit(){
+    if(await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the training refresher? Current tutorial progress will restart.',confirmLabel:'LEAVE TRAINING'}))this.exitToStory();
+  }
 
   exitToStory(){
     this.battle?.stopMatch();

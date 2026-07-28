@@ -1,6 +1,9 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a-combat-depth-20260728';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=28b1-chapter2-compat-20260728-022318';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=28b1-chapter2-compat-20260728-022318';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a2-story-hud-20260728';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
+import {StoryMap} from './story-map.js?v=29a2-story-hud-20260728';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a2-story-hud-20260728';
+import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
 
 const MISSION_ID='rrvvfo-03-preview';
 const UI_ID='rrvvfoChapter3PreviewUI';
@@ -112,9 +115,16 @@ class RrvvfoChapter3Preview{
     ];
     this.strangeMan={id:'strange-man',label:'STRANGE MAN',x:-60,z:170,color:'#6e587d'};
     this.baseEntrance={x:-1430,z:790};
+    const saved=loadLostYearProgress().chapter3Preview||{};
+    this.inspectedRoutes=new Set(Array.isArray(saved.inspectedRoutes)?saved.inspectedRoutes:[]);
+    this.questionedNpcs=new Set(Array.isArray(saved.questionedNpcs)?saved.questionedNpcs:[]);
+    this.strangeManMet=Boolean(saved.strangeManMet);
+    this.strangeManVisible=this.strangeManMet||this.inspectedRoutes.size>=2&&this.questionedNpcs.size>=3;
+    this.baseUnlocked=Boolean(saved.baseUnlocked);
+    for(const route of this.barricades)route.inspected=this.inspectedRoutes.has(route.id);
     this.root.querySelector('[data-c3-status]').addEventListener('click',()=>this.openTracker());
     this.root.querySelector('[data-c3-close-status]').addEventListener('click',()=>this.closeTracker());
-    this.root.querySelector('[data-c3-exit]').addEventListener('click',()=>this.exitToStory());
+    this.root.querySelector('[data-c3-exit]').addEventListener('click',()=>this.requestExit());
     this.root.querySelector('[data-c3-continue]').addEventListener('click',()=>this.exitToStory());
     this.keyHandler=event=>this.onKey(event);
     document.addEventListener('keydown',this.keyHandler,true);
@@ -129,19 +139,32 @@ class RrvvfoChapter3Preview{
     hidden.cpu=true;
     this.patchBattle();
     this.battle.start();
-    this.battle.root.classList.add('storyChapter3Hub');
+    this.battle.beforeRestart=()=>storyConfirm({title:'RESTART PREVIEW?',message:'Return Rrvvfo to the Chapter 3 starting point? Investigation discoveries remain saved.',confirmLabel:'RESTART'});
+    this.battle.root.classList.add('storyChapter3Hub','storyChapter3Preview');
     this.battle.root.querySelector('[data-stage-name]').textContent='EXPANDED TRAINING REGION';
     const badge=this.battle.root.querySelector('.badge');
     if(badge){
-      badge.querySelector('strong').textContent='PROTOTYPE 2.8A • CHAPTER 3 OPENING';
+      badge.querySelector('strong').textContent='PROTOTYPE 2.9A.2 • CHAPTER 3 PREVIEW';
       if(badge.lastChild)badge.lastChild.textContent=' NON-LINEAR INVESTIGATION PREVIEW';
     }
     this.battle.phase='story';
     this.battle.time=9999;
     this.battle.hideBanner();
+    applyStoryProgressionToFighter(this.battle.fighters[0]);
     this.root.hidden=false;
+    this.map=new StoryMap({
+      title:'EXPANDED TRAINING REGION MAP',
+      bounds:{minX:-1750,maxX:1750,minZ:-1300,maxZ:1300},
+      getPlayer:()=>this.battle?.fighters?.[0]||null,
+      getObjective:()=>{const point=this.objectivePoint();return point?{...point,label:this.objective?.textContent||'CURRENT OBJECTIVE'}:null},
+      getPoints:()=>[
+        ...this.barricades.map(route=>({x:route.x,z:route.z,label:route.label,color:route.inspected?'#6ca56f':'#c65b4f'})),
+        {x:this.baseEntrance.x,z:this.baseEntrance.z,label:'UNDERGROUND BASE',color:this.baseUnlocked?'#4e9d7c':'#55515c'},
+        {x:-40,z:80,label:'CENTRAL PLAZA',color:'#d9a629'}
+      ]
+    });
     this.showAreaTitle('EXPANDED TRAINING REGION');
-    this.showOpeningDialogue();
+    this.openingTimer=window.setTimeout(()=>{if(!this.aborted)this.showOpeningDialogue()},2200);
     return this;
   }
 
@@ -209,8 +232,12 @@ class RrvvfoChapter3Preview{
         this.updateHub(previous);
       }
       this.updateNpcMotion();
+      this.map?.draw();
     };
-    battle.exit=()=>{
+    battle.exit=async()=>{
+      const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Chapter 3 preview? Investigation progress has been saved.',confirmLabel:'RETURN TO ROUTE'});
+      if(!leave)return;
+      this.persistPreview();
       defaultExit();
       this.cleanup();
       this.onExit();
@@ -228,8 +255,18 @@ class RrvvfoChapter3Preview{
       this.hideSecondFighter();
       this.mode='hub';
       this.battle.phase='play';
-      this.setObjective('INVESTIGATE THE CLOSED ROUTES','Inspect any two damaged routes and question at least three people. You can explore in any order.');
-      this.battle.notice('NON-LINEAR CHAPTER HUB • CHOOSE YOUR OWN ORDER',2);
+      if(this.baseUnlocked){
+        this.step='reach-base';
+        this.setObjective('FIND THE UNDERGROUND BASE','Your restored investigation points to the underground entrance in the southwest.');
+      }else if(this.strangeManMet||this.strangeManVisible){
+        this.strangeManVisible=true;
+        this.step=this.strangeManMet?'reach-base':'meet-strange-man';
+        this.setObjective(this.strangeManMet?'FIND THE UNDERGROUND BASE':'MEET THE STRANGE MAN',this.strangeManMet?'Follow the new lead to the underground entrance.':'Return to the central plaza. Someone is waiting there.');
+      }else{
+        this.step='investigate';
+        this.setObjective('INVESTIGATE THE CLOSED ROUTES',`Restored progress: ${Math.min(this.inspectedRoutes.size,2)} / 2 routes and ${Math.min(this.questionedNpcs.size,3)} / 3 people. Explore in any order.`);
+      }
+      this.battle.notice(this.inspectedRoutes.size||this.questionedNpcs.size?'INVESTIGATION PROGRESS RESTORED':'NON-LINEAR CHAPTER HUB • CHOOSE YOUR OWN ORDER',2);
       this.refreshTracker();
     });
   }
@@ -622,7 +659,14 @@ class RrvvfoChapter3Preview{
     this.completePanel.querySelector('[data-c3-continue]').focus();
   }
 
+  async requestExit(){
+    this.persistPreview();
+    const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Chapter 3 preview? Your investigation progress is saved and will restore next time.',confirmLabel:'RETURN TO ROUTE'});
+    if(leave)this.exitToStory();
+  }
+
   exitToStory(){
+    if(!this.completed)this.persistPreview();
     this.battle?.stopMatch();
     this.battle?.root.classList.add('hidden');
     this.cleanup();
@@ -631,13 +675,13 @@ class RrvvfoChapter3Preview{
 
   cleanup(){
     if(this.aborted)return;
-    this.aborted=true;
+    this.aborted=true;clearTimeout(this.openingTimer);this.map?.destroy();this.map=null;
     document.removeEventListener('keydown',this.keyHandler,true);
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
     this.dialogue?.overlay?.remove();
     resetArenaBattleInstance();
     this.root.remove();
-    this.battle?.root.classList.remove('storyChapter3Hub');
+    this.battle?.root.classList.remove('storyChapter3Hub','storyChapter3Preview');
     activeMission=null;
   }
 }

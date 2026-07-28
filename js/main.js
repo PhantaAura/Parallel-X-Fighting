@@ -22,7 +22,7 @@ import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 import {ControllerManager} from './controller-manager.js?v=2.3.5-landscape-hotbar';
 import {BUILD_VERSION} from './build-info.js';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=265-compatible-dialogue-20260727-214243';
+import {MainMenu} from './main-menu.js?v=27a-continuous-route-20260727-225332';
 import {MatchStatistics} from './match-statistics.js';
 import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=2.3.5-landscape-hotbar';
 import {ResultsScreen} from './results-screen.js';

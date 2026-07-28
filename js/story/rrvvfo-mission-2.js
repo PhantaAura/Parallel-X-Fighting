@@ -1,5 +1,6 @@
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=262-parallels-battle-menu-20260727-202046';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=262-parallels-battle-menu-20260727-202046';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27a-continuous-route-20260727-225332';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27a-continuous-route-20260727-225332';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=27a-continuous-route-20260727-225332';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -16,15 +17,32 @@ function buildUI(){
   root.hidden=true;
   root.innerHTML=`
     <div class="tournamentShell">
-      <header class="tournamentHeader"><div><small>RRVVFO MISSION 2</small><h1>TOURNAMENT ARRIVAL</h1><p>Register, inspect the bracket, and reach the fighter entrance.</p></div><button class="tournamentAction" type="button" data-exit-m2>← STORY MENU</button></header>
+      <header class="tournamentHeader">
+        <div><small>RRVVFO ROUTE • CHAPTER 2</small><h1>DEFINITELY NOT THE WORLD TOURNAMENT</h1><p>Register, inspect the bracket, and reach the fighter entrance.</p></div>
+        <div class="tournamentHeaderActions">
+          <button class="tournamentAction" type="button" data-open-manual>COMBAT MANUAL</button>
+          <button class="tournamentAction" type="button" data-exit-m2>← RRVVFO ROUTE</button>
+        </div>
+      </header>
       <div class="tournamentPlaza">
         <div class="venueArt" aria-label="Global Tournament exterior"><div class="crowdStrip">${Array.from({length:18},(_,i)=>`<i style="--c:${['#e52b2f','#ffd400','#2da4ff','#7ad66d','#ad63e8'][i%5]}"></i>`).join('')}</div></div>
-        <aside class="hubPanel"><small>TOURNAMENT HUB</small><h2>ENTRY CHECKLIST</h2><div class="hubTasks">
+        <aside class="hubPanel"><small>TOURNAMENT HUB • FOUNDATION VERSION</small><h2>ENTRY CHECKLIST</h2><div class="hubTasks">
           <button class="tournamentAction" type="button" data-hub-task="register"><strong>REGISTRATION BOOTH</strong><span>Show the entry Sage submitted.</span></button>
           <button class="tournamentAction" type="button" data-hub-task="bracket" disabled><strong>BRACKET BOARD</strong><span>Find Rrvvfo's first-round slot.</span></button>
           <button class="tournamentAction" type="button" data-hub-task="entrance" disabled><strong>FIGHTER ENTRANCE</strong><span>Proceed toward the waiting area.</span></button>
         </div><div class="hubStatus" data-hub-status>ARRIVE AT THE REGISTRATION BOOTH.</div></aside>
       </div>
+    </div>
+    <div class="routeEndOverlay" data-route-end hidden>
+      <article class="routeEndCard">
+        <small>RRVVFO ROUTE • CHAPTER 2 COMPLETE</small>
+        <h2>TOURNAMENT ENTRY CONFIRMED</h2>
+        <p>Rrvvfo has officially entered the tournament. The remaining tournament matches, roaming challengers, side stories, and fully explorable living 3D hubs continue in future overhaul phases.</p>
+        <div class="routeEndActions">
+          <button class="tournamentAction" type="button" data-end-manual>OPEN COMBAT MANUAL</button>
+          <button class="tournamentAction" type="button" data-end-route>RETURN TO RRVVFO ROUTE</button>
+        </div>
+      </article>
     </div>`;
   document.body.appendChild(root);
   return root;
@@ -32,9 +50,25 @@ function buildUI(){
 
 class RrvvfoMission2{
   constructor({onComplete=()=>{},onExit=()=>{}}={}){
-    this.onComplete=onComplete;this.onExit=onExit;this.root=buildUI();this.dialogue=null;this.completedTasks=new Set();
+    this.onComplete=onComplete;
+    this.onExit=onExit;
+    this.root=buildUI();
+    this.dialogue=null;
+    this.completedTasks=new Set();
+    this.completed=false;
     this.root.querySelector('[data-exit-m2]').addEventListener('click',()=>this.exitToStory());
+    this.root.querySelector('[data-open-manual]').addEventListener('click',()=>openCombatManual());
+    this.root.querySelector('[data-end-manual]').addEventListener('click',()=>openCombatManual());
+    this.root.querySelector('[data-end-route]').addEventListener('click',()=>this.exitToStory());
     this.root.querySelectorAll('[data-hub-task]').forEach(button=>button.addEventListener('click',()=>this.runTask(button.dataset.hubTask)));
+    this.keyHandler=event=>{
+      if(this.root.hidden||this.dialogue)return;
+      if(event.key.toLowerCase()==='m'){
+        event.preventDefault();
+        openCombatManual();
+      }
+    };
+    document.addEventListener('keydown',this.keyHandler);
   }
 
   start(){
@@ -44,7 +78,9 @@ class RrvvfoMission2{
       {speaker:'RRVVFO',speakerClass:'p1',text:'This looks like a knockoff of the World Tournament I always used to watch on TV.',tail:'down'},
       {speaker:'TOURNAMENT WORKER',speakerClass:'neutral',text:'It is not a knockoff.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'That sounds exactly like something a knockoff would say.',tail:'down'}
-    ],()=>this.root.querySelector('[data-hub-task="register"]')?.focus());
+    ],()=>{
+      discoverCombatManualPage('hub-exploration',{onClose:()=>this.root.querySelector('[data-hub-task="register"]')?.focus()});
+    });
     return this;
   }
 
@@ -62,6 +98,7 @@ class RrvvfoMission2{
   }
 
   runTask(task){
+    if(this.completed)return;
     if(task==='register'&&!this.completedTasks.has(task)){
       this.showDialogue([
         {speaker:'TOURNAMENT WORKER',speakerClass:'neutral',text:'Rrvvfo. Registered by... “The Sage.”',tail:'down'},
@@ -72,11 +109,13 @@ class RrvvfoMission2{
       this.showDialogue([
         {speaker:'RRVVFO',speakerClass:'p1',text:'There I am. First round. Sage better not have put me against somebody boring.',tail:'down'},
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'All registered fighters report to the entrance tunnel. Opening matches begin soon.',tail:'down'}
-      ],()=>this.completeTask('bracket','entrance','BRACKET FOUND • GO TO THE FIGHTER ENTRANCE.'));
+      ],()=>{
+        discoverCombatManualPage('tournament-rules',{onClose:()=>this.completeTask('bracket','entrance','BRACKET FOUND • GO TO THE FIGHTER ENTRANCE.')});
+      });
     }else if(task==='entrance'&&!this.completedTasks.has(task)){
-      this.completeTask('entrance',null,'MISSION COMPLETE • FIRST MATCH AVAILABLE NEXT.');
+      this.completeTask('entrance',null,'CHAPTER COMPLETE • FIRST MATCH COMING IN A FUTURE UPDATE.');
       this.showDialogue([
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Alright. Let us see which “old face” Sage was talking about.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'All right. Let us see which “old face” Sage was talking about.',tail:'down'},
         {speaker:'UNKNOWN FIGHTER',speakerClass:'rival',text:'So Sage really brought you here.',tail:'down'}
       ],()=>this.commitCompletion());
     }
@@ -87,21 +126,28 @@ class RrvvfoMission2{
     const button=this.root.querySelector(`[data-hub-task="${task}"]`);
     button?.classList.add('done');
     if(button){button.disabled=true;button.querySelector('span').textContent='COMPLETE';}
-    if(next){const nextButton=this.root.querySelector(`[data-hub-task="${next}"]`);if(nextButton){nextButton.disabled=false;nextButton.focus();}}
+    if(next){
+      const nextButton=this.root.querySelector(`[data-hub-task="${next}"]`);
+      if(nextButton){nextButton.disabled=false;nextButton.focus();}
+    }
     this.root.querySelector('[data-hub-status]').textContent=status;
   }
 
   commitCompletion(){
+    if(this.completed)return;
+    this.completed=true;
     const progress=loadLostYearProgress();
     const completedMissions=progress.completedMissions.includes(MISSION_ID)?progress.completedMissions:[...progress.completedMissions,MISSION_ID];
-    const unlocks=[...new Set([...(progress.unlocks||[]),'tournamentHub','firstTournamentMatch'])];
-    saveLostYearProgress({...progress,completedMissions,unlocks});
+    const unlocks=[...new Set([...(progress.unlocks||[]),'tournamentHub','firstTournamentMatch','chapterSelect'])];
+    saveLostYearProgress({...progress,completedMissions,unlocks,lastCheckpoint:'rrvvfo-02'});
     this.onComplete();
-    this.showDialogue([{speaker:'SYSTEM',speakerClass:'neutral',text:'MISSION 2 COMPLETE — TOURNAMENT HUB UNLOCKED. FIRST MATCH COMING NEXT.',tail:'down'}],()=>this.exitToStory());
+    this.root.querySelector('[data-route-end]').hidden=false;
+    this.root.querySelector('[data-end-route]').focus();
   }
 
   exitToStory(){
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
+    document.removeEventListener('keydown',this.keyHandler);
     this.dialogue?.overlay?.remove();
     this.root.remove();
     activeMission=null;

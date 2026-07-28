@@ -1,7 +1,8 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=262-parallels-battle-menu-20260727-202046';
-import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=262-parallels-battle-menu-20260727-202046';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=265-compatible-dialogue-20260727-214243';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=262-parallels-battle-menu-20260727-202046';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27a-continuous-route-20260727-225332';
+import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=27a-continuous-route-20260727-225332';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27a-continuous-route-20260727-225332';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27a-continuous-route-20260727-225332';
+import {grantCombatManual} from './combat-manual.js?v=27a-continuous-route-20260727-225332';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
@@ -18,7 +19,7 @@ function buildUI(){
   root.id=UI_ID;
   root.innerHTML=`
     <div class="storyTutorialTag" data-tutorial-tag>
-      <small>RRVVFO MISSION 1 • BACK IN FIGHTING SHAPE</small>
+      <small>RRVVFO ROUTE • CHAPTER 1 • PART 2</small>
       <strong data-tutorial-objective>WAIT FOR THE SAGE</strong>
       <span data-tutorial-detail>The refresher begins after the briefing.</span>
     </div>
@@ -26,11 +27,11 @@ function buildUI(){
       <article class="storyManualCard">
         <header><div><small>THE SAGE'S COMBAT MANUAL</small><h2>BACK IN FIGHTING SHAPE</h2></div><strong>TOURNAMENT PREP</strong></header>
         <div class="manualGrid" data-manual-grid></div>
-        <div class="storyManualActions"><button type="button" class="primary" data-begin-tutorial>BEGIN REFRESHER</button><button type="button" data-exit-manual>RETURN TO STORY</button></div>
+        <div class="storyManualActions"><button type="button" class="primary" data-begin-tutorial>BEGIN REFRESHER</button><button type="button" data-exit-manual>RETURN TO RRVVFO ROUTE</button></div>
       </article>
     </div>
     <div class="storyCompleteOverlay" data-mission-complete hidden>
-      <article class="storyCompleteCard"><small>MISSION 1 COMPLETE</small><h2>BACK IN FIGHTING SHAPE</h2><p>Combat Manual unlocked. Lens of Truth refreshed. Tournament entry unlocked.</p><button type="button" class="primary" data-return-story>RETURN TO RRVVFO STORY</button></article>
+      <article class="storyCompleteCard"><small>CHAPTER 1 COMPLETE</small><h2>NO MAXIMUMS</h2><p>Combat Manual unlocked. Lens of Truth refreshed. Tournament entry unlocked.</p><button type="button" class="primary" data-return-story>TRAVEL TO THE TOURNAMENT</button></article>
     </div>`;
   document.body.appendChild(root);
   return root;
@@ -65,7 +66,7 @@ class RrvvfoMission1{
     this.battle.start();
     this.battle.root.classList.add('storyMission1','storyMissionDialogueOpen');
     this.battle.root.querySelector('[data-stage-name]').textContent='SAGE TRAINING FIELD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.5D • RRVVFO MISSION 1';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.7A • RRVVFO CHAPTER 1';
     this.battle.phase='story';
     this.battle.time=9999;
     this.battle.hideBanner();
@@ -155,6 +156,7 @@ class RrvvfoMission1{
     });
     this.dialogue=dialogue;
     dialogue.show(lines);
+    if(dialogue.overlay)dialogue.overlay.style.zIndex='2200';
   }
 
   showOpeningDialogue(){
@@ -165,7 +167,9 @@ class RrvvfoMission1{
       {speaker:'RRVVFO',speakerClass:'p1',text:'Old faces? You could have mentioned that before signing me up.',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'I just did. But first, you have gotten rusty.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'I beat Revvfo.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'And apparently forgot how to block afterward. Read the manual.',tail:'down'}
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'And apparently forgot how to block afterward. Here. Take the manual.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'It updates itself whenever you find a mechanic I knew you would ignore.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'That sentence somehow made it less trustworthy.',tail:'down'}
     ],()=>this.showManual());
   }
 
@@ -181,6 +185,7 @@ class RrvvfoMission1{
   }
 
   showManual(){
+    grantCombatManual({pages:['movement','basic-combat','hotbar']});
     this.manual.hidden=false;
     this.setObjective('READ THE COMBAT MANUAL','Review movement, attacks, blocking, and hotbar slots 1–5.');
     this.root.querySelector('[data-begin-tutorial]').focus();

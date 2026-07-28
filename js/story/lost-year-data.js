@@ -8,7 +8,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
     availability:'AVAILABLE',
     available:true,
     unlock:'Available from the start',
-    description:'Rrvvfo recovers, trains, and grows restless during the year Revvfo remains petrified. The Sage prepares him for a tournament where familiar fighters may return.',
+    description:'Follow one continuous Rrvvfo chapter route through the Lost Year: Sage training, the Combat Manual, and the local tournament that follows.',
     perspective:'Main combat route',
     color:'#e94b3c',
     missions:[
@@ -35,7 +35,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         description:'The Sage signs Rrvvfo up for a tournament and warns that he may meet old faces there. Before he can enter, Rrvvfo must use a combat manual and relearn movement, attacks, blocking, Lens of Truth, and his other techniques.',
         objectives:['Read the combat manual','Complete the movement and attack refresher','Block the Sage and use abilities 1–4','Finish the final spar'],
         stage:'Sage Training Field',
-        note:'This mission is the full arena-controls tutorial and unlocks the combat manual from the Story menu.'
+        note:'This is the second half of Chapter 1. The Combat Manual remains available and gains new pages as later systems are discovered.'
       },
       {
         id:'rrvvfo-02',
@@ -48,7 +48,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         description:'Rrvvfo enters the tournament grounds, insults the arena design, completes registration, checks the bracket, and heads toward his first match.',
         objectives:['Enter the tournament grounds','Complete registration','Inspect the bracket board','Reach the fighter entrance'],
         stage:'Global Tournament — Entrance Hub',
-        note:'This is the tournament-arrival chapter. The first official match begins in Mission 3.'
+        note:'This is Chapter 2. The tournament matches and living 3D hub expansion continue in later updates.'
       }
     ]
   },
@@ -76,7 +76,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',completedMissions:[],viewedBriefings:[],unlocks:[],updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],updatedAt:Date.now()};
 }
 
 export function loadLostYearProgress(storage=localStorage){
@@ -89,7 +89,9 @@ export function loadLostYearProgress(storage=localStorage){
       ...parsed,
       completedMissions:Array.isArray(parsed.completedMissions)?parsed.completedMissions:[],
       viewedBriefings:Array.isArray(parsed.viewedBriefings)?parsed.viewedBriefings:[],
-      unlocks:Array.isArray(parsed.unlocks)?parsed.unlocks:[]
+      unlocks:Array.isArray(parsed.unlocks)?parsed.unlocks:[],
+      routeStarted:Boolean(parsed.routeStarted||parsed.completedMissions?.length),
+      lastCheckpoint:typeof parsed.lastCheckpoint==='string'?parsed.lastCheckpoint:'rrvvfo-00'
     };
   }catch{return fallback}
 }
@@ -109,4 +111,35 @@ export function routeProgress(route,progress){
   const total=Math.max(1,route.missions.length);
   const completed=route.missions.filter(mission=>progress.completedMissions.includes(mission.id)).length;
   return route.missions.length?Math.round(completed/total*100):0;
+}
+
+
+export const RRVVFO_CHAPTERS=Object.freeze([
+  {
+    id:'rrvvfo-chapter-1',number:1,title:'NO MAXIMUMS',
+    description:'Shots of Agony training, the Sage’s Combat Manual, and the full fighting refresher.',
+    missions:['rrvvfo-00','rrvvfo-01']
+  },
+  {
+    id:'rrvvfo-chapter-2',number:2,title:'DEFINITELY NOT THE WORLD TOURNAMENT',
+    description:'Arrival, registration, bracket inspection, and the fighter entrance.',
+    missions:['rrvvfo-02']
+  }
+]);
+
+export function rrvvfoRouteStarted(progress){
+  return Boolean(progress?.routeStarted||progress?.completedMissions?.length);
+}
+
+export function rrvvfoNextMission(progress){
+  const completed=new Set(progress?.completedMissions||[]);
+  if(!completed.has('rrvvfo-00'))return'rrvvfo-00';
+  if(!completed.has('rrvvfo-01'))return'rrvvfo-01';
+  if(!completed.has('rrvvfo-02'))return'rrvvfo-02';
+  return null;
+}
+
+export function rrvvfoChapterComplete(chapter,progress){
+  const completed=new Set(progress?.completedMissions||[]);
+  return Boolean(chapter?.missions?.length&&chapter.missions.every(id=>completed.has(id)));
 }

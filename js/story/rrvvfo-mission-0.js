@@ -1,6 +1,6 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=25c-mission-scenario';
-import {clampToStage} from '../arena/arena-stages.js?v=25c-training-field';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=25c-mission-data';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27a-continuous-route-20260727-225332';
+import {clampToStage} from '../arena/arena-stages.js?v=27a-continuous-route-20260727-225332';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27a-continuous-route-20260727-225332';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -52,14 +52,14 @@ function installMissionUI(){
   root.id=UI_ID;
   root.className='hidden';
   root.innerHTML=`
-    <div class="missionTag" data-m0-tag><small>RRVVFO STORY • MISSION 0</small><strong data-m0-objective>TRAINING HAS NOT STARTED</strong><span data-m0-detail>Learn the technique that becomes Shots of Agony.</span></div>
+    <div class="missionTag" data-m0-tag><small>RRVVFO ROUTE • CHAPTER 1 • PART 1</small><strong data-m0-objective>TRAINING HAS NOT STARTED</strong><span data-m0-detail>Learn the technique that becomes Shots of Agony.</span></div>
     <div class="dialogueWrap hidden" data-m0-dialogue data-speaker="THE SAGE">
       <button type="button" class="sonicDialogueBox" data-m0-next aria-label="Advance dialogue">
         <span class="dialoguePortrait" aria-hidden="true"></span>
         <span class="dialogueCopy"><span class="speakerTab" data-m0-speaker>THE SAGE</span><span class="dialogueText" data-m0-text></span><span class="dialoguePrompt">CLICK / ENTER</span><span class="advanceArrow" aria-hidden="true"></span></span>
       </button>
     </div>
-    <div class="complete hidden" data-m0-complete><div class="completeCard"><small>MISSION COMPLETE</small><h2>NO MAXIMUMS</h2><p>Rrvvfo learned to coordinate four energy copies and caught the Sage outside his prediction window.</p><div class="rewards"><div class="reward"><b>UNLOCKED:</b> Shots of Agony</div><div class="reward"><b>STORY:</b> Rrvvfo Mission 0 completed</div><div class="reward"><b>STAGE:</b> Sage Training Field introduced</div></div><button type="button" data-m0-return>RETURN TO THE LOST YEAR</button></div></div>`;
+    <div class="complete hidden" data-m0-complete><div class="completeCard"><small>CHAPTER 1 • PART 1 COMPLETE</small><h2>NO MAXIMUMS</h2><p>Rrvvfo learned to coordinate four energy copies and caught the Sage outside his prediction window.</p><div class="rewards"><div class="reward"><b>UNLOCKED:</b> Shots of Agony</div><div class="reward"><b>CHAPTER:</b> Training continues with the Combat Manual</div><div class="reward"><b>STAGE:</b> Sage Training Field introduced</div></div><button type="button" data-m0-return>CONTINUE TRAINING</button></div></div>`;
   document.body.appendChild(root);
   return root;
 }
@@ -110,9 +110,9 @@ class RrvvfoMission0{
     this.battle.start();
     this.battle.root.classList.add('storyMission0');
     this.battle.root.querySelector('[data-stage-name]').textContent='SAGE TRAINING FIELD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.5C1 • RRVVFO MISSION 0';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.7A • RRVVFO CHAPTER 1';
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' STORY TRAINING • SHOTS OF AGONY ORIGIN';
+    if(badge?.lastChild)badge.lastChild.textContent=' CONTINUOUS ROUTE • SHOTS OF AGONY ORIGIN';
     this.baseRestart=this.battle.restart.bind(this.battle);
     this.battle.restart=()=>{this.baseRestart();this.resetMissionFlow()};
     this.resetMissionFlow();
@@ -349,7 +349,7 @@ class RrvvfoMission0{
 
   castTrainingAbility(slot){
     const battle=this.battle,player=battle.fighters[0],sage=battle.fighters[1];
-    if(slot!==2){battle.notice('MISSION 0 ONLY TRAINS SHOTS OF AGONY');return false}
+    if(slot!==2){battle.notice('THIS CHAPTER SECTION TRAINS SHOTS OF AGONY');return false}
     if(battle.phase!=='play'||battle.paused){battle.notice(battle.paused?'MISSION PAUSED':'WAIT FOR THE SPAR');return false}
     if(this.normalDodges<3){battle.notice('TRY TO HIT THE SAGE DIRECTLY FIRST');return false}
     if(player.stun||player.guardBreak||!player.grounded||player.attackState){battle.notice('ABILITY UNAVAILABLE');return false}

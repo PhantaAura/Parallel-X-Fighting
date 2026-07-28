@@ -1,9 +1,9 @@
-import {BUILD_VERSION} from './build-info.js?v=265-compatible-dialogue-20260727-214243';
+import {BUILD_VERSION} from './build-info.js?v=27a-continuous-route-20260727-225332';
 
-const MENU_MODULE_CACHE='265-compatible-dialogue-20260727-214243';
+const MENU_MODULE_CACHE='27a-continuous-route-20260727-225332';
 
 export const MAIN_MENU_MODES=Object.freeze([
-  {id:'story',label:'STORY',glyph:'ST',kicker:'THE LOST YEAR',description:'Choose a character episode, follow that route, and then choose a mission. Rrvvfo Missions 0–2 are currently playable.',players:'1',availability:'Rrvvfo route available — Missions 0, 1, and 2'},
+  {id:'story',label:'STORY',glyph:'ST',kicker:'THE LOST YEAR',description:'Choose a character route and play it as continuous chapters. Rrvvfo Chapters 1–2 now flow without returning to Mission Select.',players:'1',availability:'Rrvvfo continuous route available — Chapters 1 and 2'},
   {id:'arena',label:'ARENA',glyph:'AR',kicker:'3D BATTLE',description:'Enter Tangai Dojo or the Global Tournament using the reusable WebGL arena and depth-combat rules.',players:'1',availability:'Tangai Dojo and Global Tournament available'},
   {id:'cpu',label:'VS CPU',glyph:'VS',kicker:'SINGLE BATTLE',description:'Choose a fighter and face a computer-controlled rival in the classic side-view battle system.',players:'1',availability:'Available'},
   {id:'local',label:'2 PLAYER',glyph:'2P',kicker:'LOCAL VS',description:'Choose two fighters and battle on the same device. Separate assigned input devices are recommended.',players:'2',availability:'Available'},

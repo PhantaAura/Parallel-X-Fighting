@@ -54,6 +54,16 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     ]
   },
   {
+    id:'field-fire',category:'FIELD',title:'FIRE BLAST ROADBLOCKS',kicker:'SOMETIMES THE DIRECT ANSWER IS FIRE',
+    summary:'Burnable field obstacles can be removed with Fire Blast. The route stays blocked until the obstacle is actually cleared.',
+    entries:[
+      ['Burnable object','Look for dry wood, rope, or heat-reactive machinery'],
+      ['Field input','Use hotbar slot 1 inside the marked zone'],
+      ['World result','The obstacle is removed and nearby characters react'],
+      ['Safety note','Do not interpret this page as permission to burn everything']
+    ]
+  },
+  {
     id:'field-shots',category:'FIELD',title:'SHOTS OF AGONY SWITCHES',kicker:'ONE RRVVFO IS APPARENTLY NOT ENOUGH',
     summary:'The technique Sage personally taught Rrvvfo can strike several field targets at once. The manual only explains the overworld use; it does not replace the training scene.',
     entries:[

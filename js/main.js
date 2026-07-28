@@ -20,7 +20,7 @@ import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-edit
 import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=2.3.5b-sprite-reimport';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 import {ControllerManager} from './controller-manager.js?v=2.3.5-landscape-hotbar';
-import {BUILD_VERSION} from './build-info.js?v=27b-living-training-road-20260727-232814';
+import {BUILD_VERSION} from './build-info.js?v=27b1-road-rebuild-20260727-235117';
 import {ConfirmationDialog} from './confirmation-dialog.js';
 import {MainMenu} from './main-menu.js?v=27b-living-training-road-20260727-232814';
 import {MatchStatistics} from './match-statistics.js';

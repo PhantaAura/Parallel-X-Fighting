@@ -1,7 +1,7 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27b-living-training-road-20260727-232814';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b-living-training-road-20260727-232814';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=27b-living-training-road-20260727-232814';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=27b1-road-rebuild-20260727-235117';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b1-road-rebuild-20260727-235117';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b1-road-rebuild-20260727-235117';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=27b1-road-rebuild-20260727-235117';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -56,10 +56,10 @@ function buildUI(){
       <article>
         <small>CHAPTER 1 COMPLETE</small>
         <h2>ROAD TO THE TOURNAMENT</h2>
-        <p>Rrvvfo crossed the living Training Grounds, tested the manual's field pages, and reached the tournament outskirts.</p>
+        <p>Rrvvfo completed the dojo warm-up, crossed the river by swapping with a real rock, cleared the road, and reached the tournament outskirts.</p>
         <div class="roadRewards">
           <span>3D TRAINING GROUNDS UNLOCKED</span>
-          <span>FIELD TECHNIQUES UNLOCKED</span>
+          <span>PHYSICAL OBJECT SWAP ROUTE CLEARED</span>
           <span>FIGHT OR RUN ENCOUNTERS INTRODUCED</span>
         </div>
         <button type="button" data-road-continue>ENTER THE TOURNAMENT GROUNDS</button>
@@ -85,7 +85,7 @@ class RrvvfoRoadHub{
     this.qte=this.root.querySelector('[data-road-qte]');
     this.completePanel=this.root.querySelector('[data-road-complete]');
     this.mode='opening';
-    this.step='leave-training';
+    this.step='warmup';
     this.completed=false;
     this.aborted=false;
     this.dialogue=null;
@@ -93,11 +93,21 @@ class RrvvfoRoadHub{
     this.manualPending=false;
     this.interactHeld=false;
     this.bridgeCrossed=false;
+    this.swapRock={x:230,z:0};
+    this.roadCleared=false;
     this.gateOpen=false;
     this.lensRevealed=false;
     this.encounterResolved=false;
     this.fighterVisible=true;
     this.noticeCooldown=0;
+    this.playerFlip=false;
+    this.finishDialogueShown=false;
+    this.checkpointDialogueShown=false;
+    this.warmupMarkers=[
+      {x:-1260,z:250,label:'NORTH FLAG',done:false},
+      {x:-980,z:330,label:'EAST FLAG',done:false},
+      {x:-875,z:-240,label:'FOREST FLAG',done:false}
+    ];
     this.qteSequence=[];
     this.qteIndex=0;
     this.qteDeadline=0;
@@ -105,8 +115,11 @@ class RrvvfoRoadHub{
     this.npcs=[
       {x:-900,z:300,baseX:-900,baseZ:300,color:'#4b8ee8',phase:0,label:'DOJO STUDENT'},
       {x:-520,z:-300,baseX:-520,baseZ:-300,color:'#e36b48',phase:1.7,label:'TRAVELER'},
-      {x:410,z:310,baseX:410,baseZ:310,color:'#6eaa58',phase:3.1,label:'WORKER'},
-      {x:1130,z:260,baseX:1130,baseZ:260,color:'#8a63ce',phase:4.6,label:'VENDOR'}
+      {x:365,z:300,baseX:365,baseZ:300,color:'#6eaa58',phase:3.1,label:'ROAD WORKER'},
+      {x:730,z:-285,baseX:730,baseZ:-285,color:'#d48845',phase:4.1,label:'LOST COMPETITOR'},
+      {x:940,z:285,baseX:940,baseZ:285,color:'#4fa3a8',phase:5.2,label:'TOURNAMENT FAN'},
+      {x:1130,z:260,baseX:1130,baseZ:260,color:'#8a63ce',phase:4.6,label:'VENDOR'},
+      {x:1225,z:-300,baseX:1225,baseZ:-300,color:'#c75f79',phase:2.4,label:'SIGN PAINTER'}
     ];
     this.root.querySelector('[data-road-manual]').addEventListener('click',()=>this.openManualFromHub());
     this.root.querySelector('[data-road-exit]').addEventListener('click',()=>this.exitToStory());
@@ -131,9 +144,9 @@ class RrvvfoRoadHub{
     this.battle.start();
     this.battle.root.classList.add('storyRoadHub');
     this.battle.root.querySelector('[data-stage-name]').textContent='TRAINING GROUNDS • TOURNAMENT ROAD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.7B • LIVING CHAPTER ROAD';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.7B.1 • ROAD REBUILD';
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' MARIO & LUIGI-STYLE FIELD PROGRESSION';
+    if(badge?.lastChild)badge.lastChild.textContent=' EXPANDED LIVING ROAD • REAL FIELD OBSTACLES';
     this.battle.phase='story';
     this.battle.time=9999;
     this.battle.hideBanner();
@@ -152,6 +165,7 @@ class RrvvfoRoadHub{
     const baseApplyDamage=battle.applyDamage.bind(battle);
     const baseDraw=battle.draw.bind(battle);
     const baseDrawFighterLayer=battle.drawFighterLayer.bind(battle);
+    const baseFlipFor=battle.flipFor.bind(battle);
     const defaultExit=battle.exit.bind(battle);
 
     battle.input=()=>{
@@ -194,6 +208,19 @@ class RrvvfoRoadHub{
         queueMicrotask(()=>this.restartRoadFight());
       }
       return connected;
+    };
+
+    battle.flipFor=fighter=>{
+      if(this.mode!=='fight'&&fighter===battle.fighters[0]){
+        const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
+        if(speed>.05){
+          const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
+          const ahead=battle.renderer.project(fighter.x+(fighter.moveX||fighter.aimX||1)*120,80+fighter.y,fighter.z+(fighter.moveZ||fighter.aimZ||0)*120);
+          this.playerFlip=ahead.x<self.x;
+        }
+        return this.playerFlip;
+      }
+      return baseFlipFor(fighter);
     };
 
     battle.drawFighterLayer=fighters=>{
@@ -243,14 +270,16 @@ class RrvvfoRoadHub{
       {speaker:'RRVVFO',speakerClass:'p1',text:'You mean sleeping somewhere closer to the tournament than I am.',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'Excellent. Your deductive reasoning survived the year.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'And you still personally taught me Shots of Agony, so I guess you did one useful thing.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'One? Read the manual this time.',tail:'down'}
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'One? Read the manual this time. And touch the three red training flags before you leave.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You added homework after the lesson?',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'I added proof that your legs still work.',tail:'down'}
     ],()=>{
       this.fighterVisible=false;
       this.hideSecondFighter();
       this.mode='hub';
       this.battle.phase='play';
-      this.setObjective('LEAVE THE TRAINING GROUNDS','Follow the tan road east toward the tournament banners.');
-      this.battle.notice('MOVE EAST • LIGHT / ENTER TO INTERACT',2);
+      this.setObjective('COMPLETE THE WARM-UP LOOP','Touch all three red training flags around the dojo.');
+      this.battle.notice('3 TRAINING FLAGS • MOVE / JUMP / DASH',2);
     });
   }
 
@@ -308,28 +337,78 @@ class RrvvfoRoadHub{
 
     const blockers=[];
     blockers.push({id:'dojo',minX:-1395,maxX:-940,minZ:-405,maxZ:-125});
-    if(!this.bridgeCrossed)blockers.push({id:'river',minX:-15,maxX:165,minZ:-700,maxZ:700});
-    if(!this.gateOpen)blockers.push({id:'gate',minX:555,maxX:645,minZ:-660,maxZ:660});
-    if(!this.lensRevealed)blockers.push({id:'lens',minX:1045,maxX:1120,minZ:-660,maxZ:660});
+    if(this.step==='warmup'){
+      blockers.push({id:'training-exit-road',minX:-850,maxX:-810,minZ:-185,maxZ:185});
+      blockers.push({id:'training-exit-north',minX:-850,maxX:-810,minZ:-660,maxZ:-185});
+      blockers.push({id:'training-exit-south',minX:-850,maxX:-810,minZ:185,maxZ:660});
+    }
+    // The river is always solid. Object Swap gets Rrvvfo across; unlocking the story never turns water into floor.
+    blockers.push({id:'river',minX:-25,maxX:175,minZ:-700,maxZ:700});
+    if(!this.roadCleared){
+      blockers.push({id:'fallen-tree',minX:285,maxX:395,minZ:-190,maxZ:190});
+      blockers.push({id:'fallen-tree-north',minX:285,maxX:395,minZ:-660,maxZ:-190});
+      blockers.push({id:'fallen-tree-south',minX:285,maxX:395,minZ:190,maxZ:660});
+    }
+    if(!this.gateOpen){
+      blockers.push({id:'gate',minX:555,maxX:645,minZ:-175,maxZ:175});
+      blockers.push({id:'gate-north',minX:555,maxX:645,minZ:-660,maxZ:-175});
+      blockers.push({id:'gate-south',minX:555,maxX:645,minZ:175,maxZ:660});
+    }
+    if(!this.lensRevealed){
+      blockers.push({id:'lens',minX:1045,maxX:1120,minZ:-175,maxZ:175});
+      blockers.push({id:'lens-north',minX:1045,maxX:1120,minZ:-660,maxZ:-175});
+      blockers.push({id:'lens-south',minX:1045,maxX:1120,minZ:175,maxZ:660});
+    }
     for(const rect of blockers){
       if(player.x>rect.minX&&player.x<rect.maxX&&player.z>rect.minZ&&player.z<rect.maxZ){
         player.x=previous.x;
         player.z=previous.z;
         player.moveVX=0;
         player.moveVZ=0;
+        if(rect.id==='river'&&!this.noticeCooldown){
+          this.noticeCooldown=1.5;
+          this.battle.notice(this.bridgeCrossed?'THE RIVER IS STILL NOT A FLOOR':'THE CURRENT IS TOO DEEP • SWAP WITH THE ROCK',1.2);
+        }
       }
     }
 
+    this.updateWarmup(player);
     this.updateStoryTriggers(player);
     this.updatePrompt(player);
   }
 
+  updateWarmup(player){
+    if(this.step!=='warmup')return;
+    let changed=false;
+    for(const marker of this.warmupMarkers){
+      if(!marker.done&&distance(player,marker)<62){
+        marker.done=true;
+        changed=true;
+        const done=this.warmupMarkers.filter(item=>item.done).length;
+        this.battle.notice(`TRAINING FLAG ${done}/3`,1.1);
+      }
+    }
+    if(changed&&this.warmupMarkers.every(marker=>marker.done)){
+      this.step='leave-training';
+      this.showDialogue([
+        {speaker:'RRVVFO',speakerClass:'p1',text:'There. All three. My legs remain tragically functional.',tail:'down'},
+        {speaker:'THE SAGE',speakerClass:'neutral',text:'Excellent. The road is east.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Were you listening from somewhere?',tail:'down'},
+        {speaker:'THE SAGE',speakerClass:'neutral',text:'No.',tail:'down'}
+      ],()=>{
+        this.mode='hub';
+        this.battle.phase='play';
+        this.setObjective('LEAVE THE TRAINING GROUNDS','Follow the tan road east toward the tournament banners.');
+      });
+    }
+  }
+
   updateStoryTriggers(player){
-    if(this.step==='leave-training'&&player.x>-850){
+    if(this.step==='leave-training'&&player.x>-800){
       this.step='bridge';
       this.showAreaTitle('FOREST ROAD');
       this.pauseForManual('hub-exploration',()=>{
-        this.setObjective('CROSS THE BROKEN RIVER','Reach the river and use Object Swap when the manual opens.');
+        this.setObjective('CROSS THE BROKEN RIVER','Reach the river and swap with the marked rock on the far bank.');
       });
       return;
     }
@@ -337,11 +416,24 @@ class RrvvfoRoadHub{
       this.step='bridge-ready';
       this.showAreaTitle('BROKEN CROSSING');
       this.pauseForManual('field-object-swap',()=>{
-        this.setObjective('OBJECT SWAP ACROSS','Stand near the river and press hotbar slot 3.');
+        this.setObjective('SWAP WITH THE FAR-BANK ROCK','Stand at the river edge and press hotbar slot 3.');
       });
       return;
     }
-    if(this.step==='gate'&&player.x>405&&!this.manualPending){
+    if(this.step==='cart'&&player.x>235&&!this.manualPending){
+      this.step='cart-dialogue';
+      this.showAreaTitle('ROADSIDE DELAY');
+      this.showDialogue([
+        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Stop! A practice log rolled loose and pinned the supply cart.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'That sounds like a flammable problem.',tail:'down'},
+        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Please solve it with slightly less confidence than that sentence had.',tail:'down'}
+      ],()=>this.pauseForManual('field-fire',()=>{
+        this.step='cart-ready';
+        this.setObjective('CLEAR THE FALLEN LOG','Stand near the roadblock and press hotbar slot 1.');
+      }));
+      return;
+    }
+    if(this.step==='gate'&&player.x>430&&!this.manualPending){
       this.step='gate-ready';
       this.pauseForManual('field-shots',()=>{
         this.setObjective('OPEN THE MULTI-TARGET GATE','Press hotbar slot 2 to strike all four gate targets together.');
@@ -353,6 +445,23 @@ class RrvvfoRoadHub{
       this.pauseForManual('run-encounters',()=>this.beginEncounter());
       return;
     }
+    if(this.step==='checkpoint'&&player.x>895&&!this.checkpointDialogueShown){
+      this.checkpointDialogueShown=true;
+      this.step='checkpoint-dialogue';
+      this.showDialogue([
+        {speaker:'TOURNAMENT CHECKPOINT',speakerClass:'neutral',text:'Name and reason for entering the grounds.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Rrvvfo. Winning.',tail:'down'},
+        {speaker:'TOURNAMENT CHECKPOINT',speakerClass:'neutral',text:'Winning is not a reason.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Then your form is asking the wrong question.',tail:'down'},
+        {speaker:'TOURNAMENT CHECKPOINT',speakerClass:'neutral',text:'...Proceed.',tail:'down'}
+      ],()=>{
+        this.mode='hub';
+        this.battle.phase='play';
+        this.step='lens';
+        this.setObjective('CONTINUE TO THE OUTSKIRTS','The final manual check is near the stadium roadblock.');
+      });
+      return;
+    }
     if(this.step==='lens'&&player.x>980&&!this.manualPending){
       this.step='lens-ready';
       this.showAreaTitle('TOURNAMENT OUTSKIRTS');
@@ -361,15 +470,24 @@ class RrvvfoRoadHub{
       },['Why would he hide the page explaining how to find hidden things?']);
       return;
     }
-    if(this.step==='finish'&&player.x>1280){
-      this.commitCompletion();
+    if(this.step==='finish'&&player.x>1260&&!this.finishDialogueShown){
+      this.finishDialogueShown=true;
+      this.step='finish-dialogue';
+      this.showDialogue([
+        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'There it is! The tournament stadium!',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'That is definitely trying to look like another tournament.',tail:'down'},
+        {speaker:'SIGN PAINTER',speakerClass:'neutral',text:'Legally, the banners are inspired.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Legally, I am already embarrassed.',tail:'down'}
+      ],()=>this.commitCompletion());
     }
   }
 
   updatePrompt(player){
     let visible=false,title='',detail='';
-    if(this.step==='bridge-ready'&&player.x>-150&&player.x<10){
-      visible=true;title='BROKEN CROSSING';detail='PRESS 3 • OBJECT SWAP';
+    if(this.step==='bridge-ready'&&player.x>-170&&player.x<5){
+      visible=true;title='MARKED ROCK';detail='PRESS 3 • OBJECT SWAP';
+    }else if(this.step==='cart-ready'&&player.x>210&&player.x<300){
+      visible=true;title='FALLEN PRACTICE LOG';detail='PRESS 1 • FIRE BLAST';
     }else if(this.step==='gate-ready'&&player.x>410&&player.x<555){
       visible=true;title='FOUR TARGETS';detail='PRESS 2 • SHOTS OF AGONY';
     }else if(this.step==='lens-ready'&&player.x>920&&player.x<1045){
@@ -396,9 +514,23 @@ class RrvvfoRoadHub{
         {speaker:'TRAVELER',speakerClass:'neutral',text:'Everybody is heading to the tournament. The decorations look suspiciously familiar.',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'Good. I was worried I was the only one seeing it.',tail:'down'}
       ],
-      'WORKER':[
-        {speaker:'TOURNAMENT WORKER',speakerClass:'neutral',text:'Please do not destroy the gate. It is mostly paint and confidence.',tail:'down'},
+      'ROAD WORKER':[
+        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Please do not destroy the gate. It is mostly paint and confidence.',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'That is not reassuring.',tail:'down'}
+      ],
+      'LOST COMPETITOR':[
+        {speaker:'LOST COMPETITOR',speakerClass:'neutral',text:'Is the tournament east or west?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'The stadium is visible from here.',tail:'down'},
+        {speaker:'LOST COMPETITOR',speakerClass:'neutral',text:'So... east?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'I suddenly understand why the signs are so large.',tail:'down'}
+      ],
+      'TOURNAMENT FAN':[
+        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'I heard the red-haired entrant survived a black hole.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'The story improves every time someone repeats it.',tail:'down'}
+      ],
+      'SIGN PAINTER':[
+        {speaker:'SIGN PAINTER',speakerClass:'neutral',text:'Do not stare at the lettering too closely.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'I was not planning to until you said that.',tail:'down'}
       ],
       'VENDOR':[
         {speaker:'VENDOR',speakerClass:'neutral',text:'Tournament snacks. Twice the price, half the ingredients.',tail:'down'},
@@ -410,18 +542,42 @@ class RrvvfoRoadHub{
 
   castFieldAbility(slot){
     const player=this.battle.fighters[0];
-    if(slot===3&&this.step==='bridge-ready'&&player.x>-180&&player.x<25){
+    if(slot===3&&this.step==='bridge-ready'&&player.x>-180&&player.x<15){
+      const oldX=player.x,oldZ=player.z;
+      const targetX=this.swapRock.x,targetZ=this.swapRock.z;
       this.bridgeCrossed=true;
-      player.x=225;
-      player.z=clamp(player.z,-220,220);
+      player.x=targetX;
+      player.z=targetZ;
+      this.swapRock.x=oldX;
+      this.swapRock.z=oldZ;
       player.visualAction='objectSwapDisappear';
       player.visualActionTime=.45;
-      this.battle.burst(-20,player.z,'#ffd079',20,55);
-      this.battle.burst(player.x,player.z,'#ffd079',20,55);
-      this.battle.notice('FIELD OBJECT SWAP',1.4);
-      this.step='gate';
-      this.setObjective('REACH THE TOURNAMENT GATE','Continue east. The next check uses Shots of Agony.');
+      this.battle.burst(oldX,oldZ,'#ffd079',20,55);
+      this.battle.burst(targetX,targetZ,'#ffd079',20,55);
+      this.battle.notice('OBJECT SWAP • ROCK TRADED PLACES',1.5);
+      this.step='cart';
+      this.setObjective('FOLLOW THE ROAD TO THE WORKER','A supply cart is blocking the next section.');
       saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-bridge'});
+      return true;
+    }
+    if(slot===1&&this.step==='cart-ready'&&player.x>200&&player.x<315){
+      player.visualAction='fireBlastFire';
+      player.visualActionTime=.5;
+      this.roadCleared=true;
+      this.battle.burst(340,0,'#ff7b38',30,76);
+      this.battle.notice('FALLEN LOG CLEARED',1.4);
+      this.showDialogue([
+        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'That was supposed to be moved carefully.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'It moved.',tail:'down'},
+        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'It evaporated.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Even more efficient.',tail:'down'}
+      ],()=>{
+        this.mode='hub';
+        this.battle.phase='play';
+        this.step='gate';
+        this.setObjective('REACH THE MULTI-TARGET GATE','Continue east. The next check uses Shots of Agony.');
+        saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-fire'});
+      });
       return true;
     }
     if(slot===2&&this.step==='gate-ready'&&player.x>380&&player.x<570){
@@ -453,7 +609,7 @@ class RrvvfoRoadHub{
       saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-lens'});
       return true;
     }
-    const labels={1:'NO FIELD TARGET FOR FIRE BLAST',2:'NO MULTI-TARGET SWITCH HERE',3:'NO SWAP POINT HERE',4:'NOTHING HIDDEN HERE',5:'ULTIMATES ARE DISABLED IN HUBS'};
+    const labels={1:'NO BURNABLE ROADBLOCK HERE',2:'NO MULTI-TARGET SWITCH HERE',3:'NO SWAP POINT HERE',4:'NOTHING HIDDEN HERE',5:'ULTIMATES ARE DISABLED IN HUBS'};
     this.battle.notice(labels[slot]||'FIELD TECHNIQUE UNAVAILABLE',1.1);
     return false;
   }
@@ -596,8 +752,8 @@ class RrvvfoRoadHub{
     player.z=20;
     player.hp=100;
     player.en=100;
-    this.step='lens';
-    this.setObjective('CONTINUE TO THE OUTSKIRTS','The final manual check is near the stadium roadblock.');
+    this.step='checkpoint';
+    this.setObjective('PASS THE TOURNAMENT CHECKPOINT','Continue east and speak with the checkpoint worker.');
     saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-encounter',roadEncounterResult:result});
   }
 
@@ -631,6 +787,49 @@ class RrvvfoRoadHub{
     };
     this.npcs.forEach(drawPerson);
 
+    for(const marker of this.warmupMarkers){
+      if(marker.done)continue;
+      const pulse=1+Math.sin(time*4+marker.x)*.07;
+      r.box({x:marker.x,y:48,z:marker.z,sx:9,sy:96,sz:9,color:'#2e241f'});
+      r.box({x:marker.x+20,y:80,z:marker.z,sx:42,sy:34,sz:5,color:'#d82431'});
+      r.disc({x:marker.x,y:5,z:marker.z,rx:34*pulse,rz:23*pulse,color:'#ffd557',alpha:.2});
+    }
+
+    // Draw extra current lines so the water reads as a hazard instead of a blue floor tile.
+    for(let z=-620;z<=620;z+=95){
+      const drift=Math.sin(time*1.8+z*.02)*18;
+      r.segment({x:5,y:10,z:z+drift},{x:145,y:10,z:z+drift+24},{width:5,height:2,color:'#a9e7ff',alpha:.45,lit:false});
+    }
+
+    const rockPulse=1+Math.sin(time*4.3)*.08;
+    r.box({x:this.swapRock.x,y:24,z:this.swapRock.z,sx:58,sy:42,sz:52,color:'#77766e',rotationY:.25});
+    r.box({x:this.swapRock.x-10,y:47,z:this.swapRock.z+4,sx:38,sy:18,sz:34,color:'#98958a',rotationY:-.2});
+    if(this.step==='bridge-ready'){
+      r.disc({x:this.swapRock.x,y:6,z:this.swapRock.z,rx:42*rockPulse,rz:28*rockPulse,color:'#ffd557',alpha:.35});
+      r.billboard({x:this.swapRock.x,y:105,z:this.swapRock.z,size:30*rockPulse,color:'#fff1a3',alpha:.9});
+    }
+
+    const drawThicket=(x,z)=>{
+      r.box({x,y:42,z,sx:74,sy:84,sz:120,color:'#315f35'});
+      r.box({x:x-18,y:93,z:z+8,sx:52,sy:58,sz:80,color:'#427a43'});
+      r.box({x:x+22,y:88,z:z-14,sx:48,sy:54,sz:74,color:'#3b713e'});
+    };
+
+    if(this.step==='warmup'){
+      r.segment({x:-830,y:36,z:-165},{x:-830,y:36,z:165},{width:20,height:20,color:'#8a5c35',alpha:1});
+      for(const z of [-520,-350,350,520])drawThicket(-830,z);
+    }
+
+    if(!this.roadCleared){
+      r.segment({x:330,y:30,z:-155},{x:350,y:30,z:155},{width:38,height:36,color:'#6b482f',alpha:1});
+      for(const z of [-120,-45,35,115])r.box({x:350,y:45,z,sx:78,sy:28,sz:36,color:'#436d36',rotationY:.3});
+      r.box({x:420,y:28,z:180,sx:120,sy:55,sz:78,color:'#8d6a42',rotationY:-.12});
+      for(const z of [-525,-350,350,525])drawThicket(340,z);
+    }
+
+    if(!this.gateOpen)for(const z of [-520,-350,350,520])drawThicket(600,z);
+    if(!this.lensRevealed)for(const z of [-520,-350,350,520])drawThicket(1080,z);
+
     const objective=this.objectivePoint();
     if(objective){
       const pulse=1+Math.sin(time*4)*.09;
@@ -638,10 +837,10 @@ class RrvvfoRoadHub{
       r.billboard({x:objective.x,y:145,z:objective.z,size:34*pulse,color:'#fff1a3',alpha:.88});
     }
 
-    if(!this.bridgeCrossed){
-      r.segment({x:-5,y:19,z:-135},{x:155,y:19,z:-135},{width:14,height:14,color:'#6f4e2f',alpha:.95});
-      r.segment({x:-5,y:19,z:135},{x:155,y:19,z:135},{width:14,height:14,color:'#6f4e2f',alpha:.95});
-      for(const z of [-105,-55,-5,45,95])r.box({x:20,y:18,z,sx:80,sy:10,sz:34,color:'#7b5a37',rotationY:.03});
+    // Broken bridge pieces stop at each bank; there is deliberately no walkable span.
+    for(const x of [-45,195]){
+      r.segment({x,y:20,z:-120},{x,y:20,z:120},{width:14,height:14,color:'#6f4e2f',alpha:.95});
+      for(const z of [-90,-30,30,90])r.box({x,y:18,z,sx:60,sy:10,sz:30,color:'#7b5a37',rotationY:.03});
     }
 
     if(!this.gateOpen){
@@ -661,17 +860,25 @@ class RrvvfoRoadHub{
   }
 
   objectivePoint(){
+    const remainingWarmup=this.warmupMarkers.find(marker=>!marker.done);
+    if(this.step==='warmup'&&remainingWarmup)return{x:remainingWarmup.x,z:remainingWarmup.z};
     const table={
       'leave-training':{x:-780,z:40},
       bridge:{x:-95,z:20},
       'bridge-ready':{x:-75,z:20},
+      cart:{x:250,z:0},
+      'cart-dialogue':{x:260,z:0},
+      'cart-ready':{x:270,z:0},
       gate:{x:430,z:0},
       'gate-ready':{x:500,z:0},
       encounter:{x:780,z:0},
       'encounter-ready':{x:800,z:0},
+      checkpoint:{x:915,z:0},
+      'checkpoint-dialogue':{x:915,z:0},
       lens:{x:990,z:0},
       'lens-ready':{x:1000,z:0},
-      finish:{x:1320,z:-10}
+      finish:{x:1280,z:-10},
+      'finish-dialogue':{x:1280,z:-10}
     };
     return table[this.step]||null;
   }

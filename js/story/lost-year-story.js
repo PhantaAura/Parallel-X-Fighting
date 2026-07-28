@@ -11,8 +11,8 @@ import {
 import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=27b-living-training-road-20260727-232814';
 import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=27b-living-training-road-20260727-232814';
 import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=27b-living-training-road-20260727-232814';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=27b-living-training-road-20260727-232814';
-import {combatManualOwned,openCombatManual} from './combat-manual.js?v=27b-living-training-road-20260727-232814';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=27b1-road-rebuild-20260727-235117';
+import {combatManualOwned,openCombatManual} from './combat-manual.js?v=27b1-road-rebuild-20260727-235117';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

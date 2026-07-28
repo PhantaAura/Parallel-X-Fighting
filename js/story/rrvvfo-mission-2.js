@@ -1,6 +1,6 @@
 import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=27b-living-training-road-20260727-232814';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=27b-living-training-road-20260727-232814';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=27b-living-training-road-20260727-232814';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=27b1-road-rebuild-20260727-235117';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';

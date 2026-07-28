@@ -1,3 +1,11 @@
+# Parallels X: Clash of Souls — Prototype 2.8B.2
+
+This is the complete standalone repository. The latest fix makes Chapter Select restart Chapter 2 from its true opening instead of stopping at the post-tournament “Back at the tournament grounds” scene. Permanent unlocks, Training Level, and Story XP are preserved.
+
+See `README-2.8B.2.md` and `PATCH-NOTES-2.8B.2.md` for the current release details. Older notes below are retained as development history.
+
+---
+
 # Parallels X Prototype 2.6.2 — Parallels Battle Menu Flow
 
 This patch replaces the broad V2 theme with a scoped, consistent menu flow built for Parallels X.

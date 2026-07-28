@@ -8,6 +8,14 @@ const UI_ID='rrvvfoMission2UI';
 const LEVEL_THRESHOLDS=[0,100,240,420,650,930,1260,1640];
 let activeMission=null;
 
+function freshChapter2State(){
+  return{
+    talked:[],sageVanished:false,firstBrawlComplete:false,metBarkWade:false,
+    barkSparResult:null,gruntDefeated:[],tournamentStarted:false,
+    tournamentStep:'round-1',runRefusals:0
+  };
+}
+
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
 function distance(a,b){return Math.hypot((a.x||0)-(b.x||0),(a.z||0)-(b.z||0))}
 function unique(values){return[...new Set(values)]}
@@ -124,12 +132,7 @@ class RrvvfoMission2{
     this.progress=loadLostYearProgress();
     this.completedBefore=this.progress.completedMissions?.includes(MISSION_ID);
     this.replayMode=false;
-    this.state={
-      talked:[],sageVanished:false,firstBrawlComplete:false,metBarkWade:false,
-      barkSparResult:null,gruntDefeated:[],tournamentStarted:false,
-      tournamentStep:'round-1',runRefusals:0,
-      ...(this.progress.chapter2State||{})
-    };
+    this.state={...freshChapter2State(),...(this.progress.chapter2State||{})};
     this.level=Math.max(1,Number(this.progress.storyLevel)||1);
     this.xp=Math.max(0,Number(this.progress.storyXp)||0);
     this.root.hidden=false;
@@ -188,13 +191,12 @@ class RrvvfoMission2{
     this.battle=new ArenaBattle('tournament-hub');
     this.patchBattle();
     if(this.completedBefore){
+      // Chapter Select means a real replay, not the old post-tournament hub shortcut.
+      // Permanent route completion, unlocks, Training Level, and Story XP remain saved;
+      // only Chapter 2's temporary scene/checkpoint state is reset for this run.
       this.replayMode=true;
-      this.state={...this.state,sageVanished:true,firstBrawlComplete:true,metBarkWade:true,tournamentStarted:false,tournamentStep:'round-1'};
-      this.enterHub({opening:false,spawn:{x:-420,z:80}});
-      this.showDialogue([
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Back at the tournament grounds. I can revisit the hub or run through the bracket again.',tail:'down'},
-        {speaker:'BARK',speakerClass:'neutral',text:'The practice ring is still open.',tail:'down'}
-      ]);
+      this.state=freshChapter2State();
+      this.enterHub({opening:true});
     }else if(this.state.tournamentStarted){
       this.battle.fighters[0].id='rrvvfo';
       this.battle.fighters[1].id='qualifier-fighter';

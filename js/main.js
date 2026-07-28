@@ -20,9 +20,9 @@ import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-edit
 import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=2.3.5b-sprite-reimport';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 import {ControllerManager} from './controller-manager.js?v=2.3.5-landscape-hotbar';
-import {BUILD_VERSION} from './build-info.js?v=28b1-chapter2-compat-20260728-022318';
+import {BUILD_VERSION} from './build-info.js?v=28b2-chapter2-replay-20260728';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=28b1-chapter2-compat-20260728-022318';
+import {MainMenu} from './main-menu.js?v=28b2-chapter2-replay-20260728';
 import {MatchStatistics} from './match-statistics.js';
 import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=2.3.5-landscape-hotbar';
 import {ResultsScreen} from './results-screen.js';

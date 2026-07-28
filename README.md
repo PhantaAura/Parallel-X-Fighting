@@ -1,4 +1,4 @@
-# Parallels X: Clash of Souls — Prototype 2.8B.2
+# Parallels X: Clash of Souls — Prototype 2.8B.3
 
 This is the complete standalone repository. The latest fix makes Chapter Select restart Chapter 2 from its true opening instead of stopping at the post-tournament “Back at the tournament grounds” scene. Permanent unlocks, Training Level, and Story XP are preserved.
 
@@ -34,3 +34,8 @@ VS CPU, Local 2 Player, and Training still open the fighter-select screen, now r
 - No external font is required for the new menu.
 
 The animated intro is intentionally deferred to a later update.
+
+
+## Prototype 2.8B.3 replay fix
+
+Completed chapters now show a separate **Replay** button. Chapter 2 replay starts from the beginning without replacing the saved completed checkpoint, and the tournament arena is no longer covered by an opaque blue UI layer.

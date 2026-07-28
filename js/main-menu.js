@@ -1,6 +1,6 @@
-import {BUILD_VERSION} from './build-info.js?v=28b2-chapter2-replay-20260728';
+import {BUILD_VERSION} from './build-info.js?v=28b3-replay-button-bluefix-20260728';
 
-const MENU_MODULE_CACHE='28b2-chapter2-replay-20260728';
+const MENU_MODULE_CACHE='28b3-replay-button-bluefix-20260728';
 
 export const MAIN_MENU_MODES=Object.freeze([
   {id:'story',label:'STORY',glyph:'ST',kicker:'THE LOST YEAR',description:'Choose a character route and play it as continuous chapters. Rrvvfo Chapters 1–2 flow continuously, with a separate Chapter 3 opening preview for development testing.',players:'1',availability:'Rrvvfo route available — Chapters 1–2 plus Chapter 3 opening preview'},

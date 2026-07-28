@@ -125,14 +125,18 @@ function buildUI(){
 }
 
 class RrvvfoMission2{
-  constructor({onComplete=()=>{},onExit=()=>{}}={}){
+  constructor({onComplete=()=>{},onExit=()=>{},replay=false}={}){
     this.onComplete=onComplete;
     this.onExit=onExit;
     this.root=buildUI();
     this.progress=loadLostYearProgress();
     this.completedBefore=this.progress.completedMissions?.includes(MISSION_ID);
-    this.replayMode=false;
-    this.state={...freshChapter2State(),...(this.progress.chapter2State||{})};
+    this.replayMode=Boolean(replay&&this.completedBefore);
+    this.savedChapter2State={...(this.progress.chapter2State||{})};
+    this.savedCheckpoint=this.progress.lastCheckpoint;
+    this.state=this.replayMode
+      ?freshChapter2State()
+      :{...freshChapter2State(),...(this.progress.chapter2State||{})};
     this.level=Math.max(1,Number(this.progress.storyLevel)||1);
     this.xp=Math.max(0,Number(this.progress.storyXp)||0);
     this.root.hidden=false;
@@ -190,12 +194,9 @@ class RrvvfoMission2{
     resetArenaBattleInstance();
     this.battle=new ArenaBattle('tournament-hub');
     this.patchBattle();
-    if(this.completedBefore){
-      // Chapter Select means a real replay, not the old post-tournament hub shortcut.
-      // Permanent route completion, unlocks, Training Level, and Story XP remain saved;
-      // only Chapter 2's temporary scene/checkpoint state is reset for this run.
-      this.replayMode=true;
-      this.state=freshChapter2State();
+    if(this.replayMode){
+      // A replay is opt-in from the dedicated REPLAY button. The replay gets a clean
+      // Chapter 2 state, while the completed route save remains untouched underneath.
       this.enterHub({opening:true});
     }else if(this.state.tournamentStarted){
       this.battle.fighters[0].id='rrvvfo';
@@ -1122,7 +1123,18 @@ class RrvvfoMission2{
   }
 
   saveChapterState(){
-    this.progress=saveLostYearProgress({...loadLostYearProgress(),chapter2State:this.state,storyLevel:this.level,storyXp:this.xp,lastCheckpoint:`rrvvfo-02-${this.state.tournamentStarted?this.state.tournamentStep:'hub'}`});
+    const progress=loadLostYearProgress();
+    if(this.replayMode){
+      this.progress=saveLostYearProgress({
+        ...progress,
+        chapter2State:this.savedChapter2State,
+        storyLevel:this.level,
+        storyXp:this.xp,
+        lastCheckpoint:this.savedCheckpoint||'rrvvfo-02-complete'
+      });
+      return;
+    }
+    this.progress=saveLostYearProgress({...progress,chapter2State:this.state,storyLevel:this.level,storyXp:this.xp,lastCheckpoint:`rrvvfo-02-${this.state.tournamentStarted?this.state.tournamentStep:'hub'}`});
   }
 
   commitCompletion(){
@@ -1130,6 +1142,19 @@ class RrvvfoMission2{
     this.completed=true;
     this.state.tournamentStep='complete';
     const progress=loadLostYearProgress();
+    if(this.replayMode){
+      saveLostYearProgress({
+        ...progress,
+        chapter2State:this.savedChapter2State,
+        storyLevel:this.level,
+        storyXp:this.xp,
+        lastCheckpoint:this.savedCheckpoint||'rrvvfo-02-complete'
+      });
+      this.onComplete();
+      this.root.querySelector('[data-route-end]').hidden=false;
+      this.root.querySelector('[data-end-route]').focus();
+      return;
+    }
     const completedMissions=progress.completedMissions.includes(MISSION_ID)?progress.completedMissions:[...progress.completedMissions,MISSION_ID];
     const unlocks=unique([...(progress.unlocks||[]),'tournamentHub','trainingLevels','chapter2Tournament','chapterSelect','chapter3']);
     saveLostYearProgress({...progress,completedMissions,unlocks,chapter2State:this.state,storyLevel:this.level,storyXp:this.xp,lastCheckpoint:'rrvvfo-02-complete'});

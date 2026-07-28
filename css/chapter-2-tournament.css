@@ -1,5 +1,5 @@
 /* Prototype 2.8B — Chapter 2 open tournament hub and full bracket */
-#rrvvfoMission2UI{position:fixed;inset:0;z-index:2100;pointer-events:none;font-family:Inter,Segoe UI,Arial,sans-serif;color:#080808}
+#rrvvfoMission2UI{position:fixed;inset:0;z-index:2100;overflow:hidden!important;pointer-events:none;font-family:Inter,Segoe UI,Arial,sans-serif;color:#080808;background:transparent!important}
 #rrvvfoMission2UI[hidden]{display:none!important}
 #rrvvfoMission2UI button{border:4px solid #080808;background:#fff;color:#080808;padding:10px 14px;font:1000 12px inherit;box-shadow:5px 5px 0 #080808;cursor:pointer}
 #rrvvfoMission2UI button:hover,#rrvvfoMission2UI button:focus-visible{background:#ffd557;outline:3px solid #1a79d2}

@@ -10,7 +10,7 @@ import {
 } from './lost-year-data.js?v=28b1-chapter2-compat-20260728-022318';
 import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=28b1-chapter2-compat-20260728-022318';
 import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=28b1-chapter2-compat-20260728-022318';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=28b2-chapter2-replay-20260728';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=28b3-replay-button-bluefix-20260728';
 import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=28b1-chapter2-compat-20260728-022318';
 import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=28b1-chapter2-compat-20260728-022318';
 import {combatManualOwned,openCombatManual} from './combat-manual.js?v=28b1-chapter2-compat-20260728-022318';
@@ -242,10 +242,13 @@ class LostYearStoryScreen{
             const chapterComplete=rrvvfoChapterComplete(chapter,this.progress);
             const unlocked=chapter.number===1||this.progress.completedMissions.includes('rrvvfo-road')||this.progress.completedMissions.includes('rrvvfo-02');
             const status=chapterComplete?'COMPLETE':chapter.preview&&unlocked?'DEVELOPMENT PREVIEW':unlocked?'PLAYABLE':'LOCKED';
-            return `<button type="button" class="chapterCard" data-chapter-number="${chapter.number}" ${unlocked?'':'disabled'}>
-              <span class="chapterNumber">${chapter.number}</span>
-              <span><small>${status}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span>
-            </button>`;
+            return `<div class="chapterRow ${chapterComplete?'isComplete':''}">
+              <button type="button" class="chapterCard" data-chapter-number="${chapter.number}" ${(unlocked&&!chapterComplete)?'':'disabled'}>
+                <span class="chapterNumber">${chapter.number}</span>
+                <span><small>${status}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span>
+              </button>
+              ${chapterComplete?`<button type="button" class="chapterReplay" data-replay-chapter="${chapter.number}"><strong>REPLAY</strong><span>Restart this chapter from its first scene.</span></button>`:''}
+            </div>`;
           }).join('')}
         </div>
       </section>`;
@@ -253,8 +256,9 @@ class LostYearStoryScreen{
     this.routeHome.querySelector('[data-continue-route]')?.addEventListener('click',()=>this.continueRoute());
     this.routeHome.querySelector('[data-open-manual]')?.addEventListener('click',()=>openCombatManual());
     this.routeHome.querySelector('[data-free-explore]:not(:disabled)')?.addEventListener('click',()=>this.startStep('rrvvfo-road','freeExplore'));
-    this.routeHome.querySelectorAll('[data-chapter-number]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.chapterNumber))));
-    if(focus)(this.routeHome.querySelector('[data-continue-route]:not(:disabled)')||this.routeHome.querySelector('[data-chapter-number]:not(:disabled)'))?.focus();
+    this.routeHome.querySelectorAll('[data-chapter-number]:not(:disabled)').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.chapterNumber))));
+    this.routeHome.querySelectorAll('[data-replay-chapter]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.replayChapter),{replay:true})));
+    if(focus)(this.routeHome.querySelector('[data-continue-route]:not(:disabled)')||this.routeHome.querySelector('[data-chapter-number]:not(:disabled)')||this.routeHome.querySelector('[data-replay-chapter]'))?.focus();
   }
 
   continueRoute(){
@@ -263,20 +267,20 @@ class LostYearStoryScreen{
     if(next)this.startStep(next,'route');
   }
 
-  startChapter(number){
+  startChapter(number,{replay=false}={}){
     this.progress=loadLostYearProgress();
     if(number===1){
       const chapter=RRVVFO_CHAPTERS[0];
       const firstIncomplete=chapter.missions.find(id=>!this.progress.completedMissions.includes(id));
-      this.startStep(firstIncomplete||'rrvvfo-00','chapter1');
+      this.startStep(replay?'rrvvfo-00':(firstIncomplete||'rrvvfo-00'),'chapter1');
     }else if(number===2&&(this.progress.completedMissions.includes('rrvvfo-road')||this.progress.completedMissions.includes('rrvvfo-02'))){
-      this.startStep('rrvvfo-02','chapter2');
+      this.startStep('rrvvfo-02',replay?'chapter2-replay':'chapter2',{replay});
     }else if(number===3&&this.progress.completedMissions.includes('rrvvfo-02')){
       this.startStep('rrvvfo-03-preview','chapter3-preview');
     }
   }
 
-  startStep(stepId,chainMode='route'){
+  startStep(stepId,chainMode='route',starterOptions={}){
     const starters={
       'rrvvfo-00':startRrvvfoMission0,
       'rrvvfo-01':startRrvvfoMission1,
@@ -290,6 +294,7 @@ class LostYearStoryScreen{
     this.root.hidden=true;
     let completedThisRun=false;
     starter({
+      ...starterOptions,
       onComplete:()=>{
         completedThisRun=true;
         this.progress=loadLostYearProgress();

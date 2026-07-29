@@ -1,5 +1,5 @@
-export const BUILD_VERSION='Prototype 2.9A.7 — Casual Player Retention Pass';
-export const SAVE_SCHEMA_VERSION=244;
+export const BUILD_VERSION='Prototype 2.9A.8 — Kinetic Combat Pass';
+export const SAVE_SCHEMA_VERSION=245;
 export const BUILD_FEATURES=Object.freeze([
   'combat-2.9A','controller-mobile','rrvvfo-sprites-v2','revvfo-sprites','qol-2.3.5b',
   'arena-pipeline','lost-year-story','mission-0','mission-1-tutorial','mission-2-full-tournament',
@@ -31,5 +31,8 @@ export const BUILD_FEATURES=Object.freeze([
   'casual-quick-battle','fair-100-hp-cpu','finished-roster-filter','truthful-lens-predictions','reduced-lens-cost',
   'compact-manual-unlocks','movement-jump-dash-warmup','road-escape-retry','first-to-one-road-fight','dedicated-interact-action',
   'device-aware-exploration-prompts','arena-training-default','classic-training-advanced-lab','guard-fatigue-warning','selected-ability-hotbar',
-  'simplified-fighter-setup','advanced-settings-collapse','touch-hotbar-safe-layout','favicon'
+  'simplified-fighter-setup','advanced-settings-collapse','touch-hotbar-safe-layout','tutorial-grab-range-assist','tutorial-grab-confirmed-hit-detection',
+  'unique-arena-normal-profiles','kinetic-movement-pass','launch-pursuit-system','one-pursuit-per-combo','arena-combo-scaling','six-hit-juggle-protection',
+  'visible-ringout-fall','three-hit-edge-pressure','non-grab-ringout-finishers','dash-dodge-window','depth-readability-trails','anti-stall-energy-rules',
+  'counter-cost-and-cooldown','breaker-cost-and-cooldown','45-starting-energy','ability-startup-and-recovery','shot-power-trick-categories','momentum-finisher','favicon'
 ]);

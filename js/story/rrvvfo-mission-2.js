@@ -1,9 +1,9 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a7-casual-retention-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a7-casual-retention-20260729';
-import {applyStoryProgressionToFighter,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a7-casual-retention-20260729';
-import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a8-kinetic-combat-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a8-kinetic-combat-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a8-kinetic-combat-20260729';
+import {applyStoryProgressionToFighter,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a8-kinetic-combat-20260729';
+import {storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -361,7 +361,7 @@ class RrvvfoMission2{
     this.battle.root.classList.remove('chapter2FightMode');
     this.root.classList.remove('isFight');
     this.battle.root.querySelector('[data-stage-name]').textContent='LOCAL TOURNAMENT GROUNDS';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.7 • RRVVFO CHAPTER 2';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.8 • RRVVFO CHAPTER 2';
     const player=this.battle.fighters[0];
     const badge=this.battle.root.querySelector('.badge');
     if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • OFFICIAL RING-OUT RULES';
@@ -659,9 +659,9 @@ class RrvvfoMission2{
       this.switchStage('tournament');
       this.mode='fight';
       const player=this.battle.fighters[0],foe=this.battle.fighters[1];
-      player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.maxHp=this.currentFight.playerMaxHp;player.reset(-370,78);player.en=100;player.guard=100;player.asset=null;
+      player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.maxHp=this.currentFight.playerMaxHp;player.reset(-370,78);player.en=config.final?80:45;player.guard=100;player.asset=null;
       applyStoryProgressionToFighter(player,{...this.progress,storyLevel:this.level,storyXp:this.xp});
-      foe.id=config.id;foe.name=config.name;foe.accent=this.opponentAccent(config.id);foe.cpu=true;foe.maxHp=this.currentFight.opponentMaxHp;foe.reset(370,-78);foe.en=100;foe.guard=100;foe.asset=null;
+      foe.id=config.id;foe.name=config.name;foe.accent=this.opponentAccent(config.id);foe.cpu=true;foe.maxHp=this.currentFight.opponentMaxHp;foe.reset(370,-78);foe.en=config.final?80:45;foe.guard=100;foe.asset=null;
       this.battle.koTarget=this.currentFight.koTarget;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';this.battle.time=Infinity;this.battle.hideBanner();
       // Official Chapter 2 tournament combat uses ring-outs. The scripted final
       // remains KO-only so its Fire Awakening and beam-clash sequence cannot skip.

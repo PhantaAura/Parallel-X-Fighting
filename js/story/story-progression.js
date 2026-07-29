@@ -1,4 +1,4 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
 
 export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,240,420,650,930,1260,1640]);
 

@@ -1,7 +1,7 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
-import {StoryMap} from './story-map.js?v=29a7-casual-retention-20260729';
-import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a8-kinetic-combat-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
+import {StoryMap} from './story-map.js?v=29a8-kinetic-combat-20260729';
+import {storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
 
 const MISSION_ID='rrvvfo-03-preview';
 const UI_ID='rrvvfoChapter3PreviewUI';

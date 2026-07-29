@@ -11,7 +11,7 @@ export const DEFENSE_BALANCE={
   throwStartup:7,
   throwRecovery:24,
   throwProtection:90,
-  breakerCost:35,
+  breakerCost:60,
   breakerCooldown:600
 };
 

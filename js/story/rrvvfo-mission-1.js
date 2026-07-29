@@ -1,8 +1,8 @@
-import {CONTROL_MAPS} from '../input.js?v=29a7-casual-retention-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
-import {grantCombatManual} from './combat-manual.js?v=29a7-casual-retention-20260729';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
-import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
+import {CONTROL_MAPS} from '../input.js?v=29a8-kinetic-combat-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
+import {grantCombatManual} from './combat-manual.js?v=29a8-kinetic-combat-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a8-kinetic-combat-20260729';
+import {storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
@@ -82,6 +82,7 @@ class RrvvfoMission1{
     this.previousPlayerPos=null;
     this.lastObservedAttack='';
     this.lastInputDevice='';
+    this.grabHintUntil=0;
     this.aborted=false;
   }
 
@@ -122,6 +123,7 @@ class RrvvfoMission1{
     this.previousPlayerPos=null;
     this.lastObservedAttack='';
     this.lastInputDevice='';
+    this.grabHintUntil=0;
     this.root.classList.remove('tutorialActive');
     this.battle?.root?.classList.remove('tutorialHudActive','tutorialShowEnergy','tutorialShowGuard','tutorialShowHotbar','tutorialShowOpponent');
     this.engine?.clearHotbarAvailability();
@@ -153,6 +155,23 @@ class RrvvfoMission1{
       input:next=>{
         const command=next();
         this.observeInputDevice();
+        if(this.phase==='basics'&&command.grab&&!this.flags.grab){
+          const player=battle.fighters[0],sage=battle.fighters[1];
+          const dx=sage.x-player.x,dz=sage.z-player.z,distance=Math.max(.001,Math.hypot(dx,dz));
+          if(distance<=112){
+            // The refresher is intentionally forgiving: once the player is close,
+            // stabilize the training dummy and place it inside the real 74-unit
+            // grab range before ArenaBattle resolves the shared Grab action.
+            const nx=dx/distance,nz=dz/distance;
+            sage.x=player.x+nx*Math.min(64,distance);
+            sage.z=player.z+nz*Math.min(64,distance);
+            sage.y=0;sage.vy=0;sage.grounded=true;sage.inv=0;
+            sage.stun=0;sage.knockdown=0;sage.kvx=0;sage.kvz=0;
+          }else{
+            this.grabHintUntil=performance.now()+1500;
+            battle.notice('MOVE CLOSER • GRAB ONLY WORKS AT CLOSE RANGE',1.35);
+          }
+        }
         return command;
       },
       cpu:(_next,fighter,foe,dt)=>{
@@ -176,7 +195,13 @@ class RrvvfoMission1{
           if(distance>145){x=dx/distance*.42;z=dz/distance*.42}
           else if(this.sageAttackTimer<=0){light=true;this.sageAttackTimer=1.05}
           if(foe.attackState&&distance<150)block=Math.random()<.35;
-        }else if(this.phase==='basics'&&distance>100){x=dx/distance*.2;z=dz/distance*.2}
+        }else if(this.phase==='basics'){
+          const desired=this.flags.grab?96:62;
+          if(distance>desired+5){
+            const speed=this.flags.grab?.2:.42;
+            x=dx/distance*speed;z=dz/distance*speed;
+          }
+        }
         return{x,z,jump:false,light,heavy:false,launcher:false,dash:false,block,charge:false,grab:false,special:false};
       },
       castAbility:(next,slot)=>{
@@ -193,6 +218,9 @@ class RrvvfoMission1{
         const wasBlocking=target.block;
         const wasPerfect=wasBlocking&&target.blockAge<=.12;
         const connected=next(attacker,target,damage,meta);
+        if(attacker.id==='rrvvfo'&&target.id==='sage'&&meta.kind==='grab'&&connected&&this.phase==='basics'&&!this.flags.grab){
+          this.flags.grab=true;this.markProgress();this.updateCoach();
+        }
         if(attacker.id==='sage'&&target.id==='rrvvfo'&&wasPerfect&&connected){
           if(this.phase==='parry'){
             this.flags.parry=true;this.markProgress();this.updateCoach();
@@ -366,7 +394,12 @@ class RrvvfoMission1{
   startBasics(){
     if(this.phase!=='movement')return;
     this.phase='basics';
-    this.setObjective('STEP 2 • BASIC ATTACKS','Use one light, heavy, launcher, and grab. Any order works.');
+    const player=this.battle.fighters[0],sage=this.battle.fighters[1];
+    const facingX=Math.abs(player.aimX||0)>.01?player.aimX:1;
+    const facingZ=Math.abs(player.aimZ||0)>.01?player.aimZ:0;
+    sage.x=player.x+facingX*62;sage.z=player.z+facingZ*62;
+    sage.y=0;sage.vy=0;sage.grounded=true;sage.inv=0;sage.stun=0;sage.knockdown=0;sage.kvx=0;sage.kvz=0;
+    this.setObjective('STEP 2 • BASIC ATTACKS','Use one light, heavy, launcher, and close-range grab. Any order works.');
     this.markProgress();
     this.updateCoach();
     this.syncTutorialHud();
@@ -469,7 +502,12 @@ class RrvvfoMission1{
     const ability=slot=>prompt(`ability${slot}`,`SLOT ${slot}`);
     switch(this.phase){
       case'movement':return{step:1,title:'MOVE, JUMP, AND DASH',keys:[prompt('move','WASD'),prompt('jump',controlLabel(a.jump)),prompt('dash',controlLabel(a.dash))],instruction:`Travel around the field, leave the ground, and complete a real dash. Distance: ${Math.min(72,Math.round(this.movementDistance))} / 72.`,items:[['MOVE 72 UNITS',this.flags.move],['LEAVE THE GROUND',this.flags.jump],['COMPLETE A DASH',this.flags.dash]]};
-      case'basics':return{step:2,title:'PERFORM EVERY BASIC ATTACK',keys:[prompt('light',controlLabel(a.light)),prompt('heavy',controlLabel(a.heavy)),prompt('launcher',controlLabel(a.launcher)),prompt('grab',controlLabel(a.grab))],instruction:'Each item checks off only after its attack animation actually begins.',items:[['LIGHT ATTACK',this.flags.light],['HEAVY ATTACK',this.flags.heavy],['LAUNCHER',this.flags.launcher],['GRAB',this.flags.grab]]};
+      case'basics':{
+        const sage=this.battle?.fighters?.[1];
+        const distance=player&&sage?Math.round(Math.hypot(sage.x-player.x,sage.z-player.z)):0;
+        const needsCloser=!this.flags.grab&&distance>82;
+        return{step:2,title:'PERFORM EVERY BASIC ATTACK',keys:[prompt('light',controlLabel(a.light)),prompt('heavy',controlLabel(a.heavy)),prompt('launcher',controlLabel(a.launcher)),prompt('grab',controlLabel(a.grab))],instruction:needsCloser?`Move closer to the Sage, then press Grab. Distance: ${distance} — grab range is close.`:'Light, Heavy, and Launcher count when their animation begins. Grab counts only when it connects at close range.',items:[['LIGHT ATTACK',this.flags.light],['HEAVY ATTACK',this.flags.heavy],['LAUNCHER',this.flags.launcher],['CLOSE-RANGE GRAB',this.flags.grab]]};
+      }
       case'parry':return{step:3,title:'PERFECT-PARRY THE SAGE',keys:[prompt('block',`${controlLabel(a.block)} / MOUSE 2`)],instruction:'Tap block only when BLOCK NOW appears. Holding too early will not count.',items:[['PERFECT PARRY',this.flags.parry]]};
       case'resource':return{step:4,title:'CHARGE ENERGY TO 75',keys:[prompt('charge',controlLabel(a.charge)),'STAND STILL'],instruction:`Hold charge without moving. Current energy: ${Math.round(player?.en||0)} / 75.`,items:[['ENERGY IS RISING',this.flags.charge],['75 ENERGY',(player?.en||0)>=75]]};
       case'abilities':return{step:5,title:'USE YOUR CORE TECHNIQUES',keys:[`${ability(1)} • FIRE BLAST`,`${ability(3)} • OBJECT SWAP`],instruction:'Only slots 1 and 3 are unlocked for this lesson.',items:[['FIRE BLAST',this.flags.fire],['OBJECT SWAP',this.flags.swap]]};
@@ -500,8 +538,15 @@ class RrvvfoMission1{
   }
 
   updateLiveCoach(){
-    if(['resource','shotsCharge','lensCharge','final','parry','lensPractice'].includes(this.phase))this.updateCoach();
-    if(this.phase==='parry'){
+    if(['basics','resource','shotsCharge','lensCharge','final','parry','lensPractice'].includes(this.phase))this.updateCoach();
+    if(this.phase==='basics'&&!this.flags.grab){
+      const player=this.battle?.fighters?.[0],sage=this.battle?.fighters?.[1];
+      const distance=player&&sage?Math.hypot(sage.x-player.x,sage.z-player.z):0;
+      if(distance>82||performance.now()<this.grabHintUntil){
+        this.coachState.textContent='MOVE CLOSER';
+        this.coach.classList.toggle('urgent',distance>112);
+      }else this.coach.classList.remove('urgent');
+    }else if(this.phase==='parry'){
       const ready=this.sageAttackTimer<=.32;
       this.coachState.textContent=ready?'BLOCK NOW':'WAIT FOR ATTACK';
       this.coach.classList.toggle('urgent',ready);

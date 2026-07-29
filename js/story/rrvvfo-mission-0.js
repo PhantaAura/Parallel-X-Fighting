@@ -1,7 +1,7 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
-import {clampToStage} from '../arena/arena-stages.js?v=29a7-casual-retention-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
-import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a8-kinetic-combat-20260729';
+import {clampToStage} from '../arena/arena-stages.js?v=29a8-kinetic-combat-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
+import {storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

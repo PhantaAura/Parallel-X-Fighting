@@ -9,14 +9,14 @@ import {
   rrvvfoNextMission,
   rrvvfoRouteStarted,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a7-casual-retention-20260729';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a7-casual-retention-20260729';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a7-casual-retention-20260729';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a7-casual-retention-20260729';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a7-casual-retention-20260729';
-import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=29a7-casual-retention-20260729';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a7-casual-retention-20260729';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
+} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a8-kinetic-combat-20260729';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a8-kinetic-combat-20260729';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a8-kinetic-combat-20260729';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a8-kinetic-combat-20260729';
+import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=29a8-kinetic-combat-20260729';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a8-kinetic-combat-20260729';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

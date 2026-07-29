@@ -1,9 +1,9 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a7-casual-retention-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a7-casual-retention-20260729';
-import {StoryMap} from './story-map.js?v=29a7-casual-retention-20260729';
-import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a8-kinetic-combat-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a8-kinetic-combat-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a8-kinetic-combat-20260729';
+import {StoryMap} from './story-map.js?v=29a8-kinetic-combat-20260729';
+import {storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -678,13 +678,13 @@ class RrvvfoRoadHub{
     this.battle.root.classList.add('storyRoadFight');
     this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;clearTimeout(this.roadKoTimer);
     player.maxHp=100;player.reset(790,70);
-    player.en=100;
+    player.en=45;
     foe.id='road-fighter';
     foe.name='Roadside Fighter';
     foe.accent='#7f6cff';
     foe.asset=null;
     foe.maxHp=100;foe.reset(940,-70);
-    foe.en=70;
+    foe.en=45;
     this.battle.koTarget=1;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';
     this.battle.time=Infinity;
     this.battle.hideBanner();

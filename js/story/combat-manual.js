@@ -1,7 +1,7 @@
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 
-const PUBLIC_PAGE_IDS=Object.freeze(['welcome','movement','basic-combat','resource-control','advanced-defense','modes','training-drills','fighter-rrvvfo','fighter-revvfo','fighter-wade','fighter-bark','fighter-sage','glossary','input-devices']);
+const PUBLIC_PAGE_IDS=Object.freeze(['welcome','movement','basic-combat','kinetic-combat','special-categories','momentum-finisher','resource-control','advanced-defense','modes','training-drills','fighter-rrvvfo','fighter-revvfo','fighter-wade','fighter-bark','fighter-sage','glossary','input-devices']);
 
 export const COMBAT_MANUAL_PAGES=Object.freeze([
   {
@@ -33,12 +33,46 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     summary:'Light, heavy, launcher, grab, and block form the base of every fight.',
     entries:[
       ['Light','Fast pressure and combo starts'],
-      ['Heavy','Slower impact and knockback'],
-      ['Launcher','Starts an air follow-up'],
+      ['Heavy','Slower impact, knockback, and a pursuit window on hit'],
+      ['Launcher','Starts an air route and opens a pursuit window'],
       ['Timed guard','Guard lasts only a few seconds; the opening instant is a perfect-parry window'],
       ['Grab','Beats guarding, but missing leaves you open']
     ],
     drill:'Land a light, heavy, launcher, and grab on a stationary Training dummy.'
+  },
+  {
+    id:'kinetic-combat',category:'FOUNDATIONS',title:'KINETIC COMBAT',kicker:'LAUNCH, CHASE, FINISH',
+    summary:'Movement is defense and offense. Heavy or launcher hits can open one pursuit chase before juggle protection forces recovery.',
+    entries:[
+      ['Pursuit','Land Heavy or Launcher, then press Dash during PURSUIT WINDOW'],
+      ['Follow-up','Press Light for control or Heavy for a committed slam'],
+      ['One chase','Only one pursuit and one wall bounce are allowed per combo'],
+      ['Juggle limit','Six airborne hits force recovery so stunlocks cannot continue'],
+      ['Depth assist','Attacks gently correct depth at close range, but movement still matters']
+    ],
+    drill:'Launch the dummy, press Dash to pursue, then finish with a pursuit Heavy.'
+  },
+  {
+    id:'special-categories',category:'TECHNIQUES',title:'SHOT / POWER / TRICK',kicker:'THREE TACTICAL JOBS',
+    summary:'Every special belongs to one readable category. The categories do not create hidden immunity; they explain the move’s job and counterplay.',
+    entries:[
+      ['Shot','Ranged pressure such as Fire Blast or Shots of Agony'],
+      ['Power','High-commitment damage and guard pressure such as Solar Weave'],
+      ['Trick','Mobility, prediction, traps, or defensive utility such as Object Swap and Lens'],
+      ['Read the cue','Each technique announces its category before the dangerous part'],
+      ['Loadout identity','Characters keep their own techniques instead of copying another fighter’s identity']
+    ]
+  },
+  {
+    id:'momentum-finisher',category:'TECHNIQUES',title:'MOMENTUM FINISHER',kicker:'TENSION WITHOUT A CHEAP INSTANT KO',
+    summary:'Aggressive play, heavy hits, pursuits, and perfect parries build Momentum. At full Momentum, a Power technique becomes a stronger but defendable Finisher.',
+    entries:[
+      ['Build','Fight close, land attacks, take risks, and perfect parry'],
+      ['Do not farm','Running away and distant charging build no Momentum'],
+      ['Ready cue','The Momentum bar reads FINISHER and the fighter gains a gold aura'],
+      ['Counterplay','A Finisher has obvious startup and can still be dodged or parried'],
+      ['Not instant death','Finishers deal major damage and launch power, never a hidden full-health KO']
+    ]
   },
   {
     id:'resource-control',category:'FOUNDATIONS',title:'ENERGY & GUARD',kicker:'STANDING STILL IS A DECISION',
@@ -81,7 +115,7 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     summary:'The Training panel can configure focused exercises instead of leaving you in an empty room.',
     entries:[
       ['Perfect Parry','Practice the opening guard window'],
-      ['Launcher Route','Learn a grounded launcher into an air follow-up'],
+      ['Pursuit Route','Launch, press Dash to chase, then choose a Light or Heavy follow-up'],
       ['Energy Discipline','Fight with Infinite Energy disabled'],
       ['Guard Pressure','Practice grabs and guard damage against a blocking dummy'],
       ['Lens Read','Activate Lens and react to the prediction instead of admiring the effect']
@@ -100,9 +134,9 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     ]
   },
   {
-    id:'hotbar',category:'TECHNIQUES',title:'RRVVFO HOTBAR',kicker:'SLOTS 1–5',
-    summary:'Rrvvfo carries his main techniques on the combat hotbar.',
-    entries:[['1','Fire Blast'],['2','Shots of Agony'],['3','Object Swap'],['4','Lens of Truth'],['5','Solar Weave / Ultimate']],
+    id:'hotbar',category:'TECHNIQUES',title:'RRVVFO HOTBAR',kicker:'SHOT / POWER / TRICK',
+    summary:'Rrvvfo carries five techniques organized into the three tactical categories: Shot, Power, and Trick.',
+    entries:[['1 • SHOT','Fire Blast'],['2 • SHOT','Shots of Agony'],['3 • TRICK','Object Swap'],['4 • TRICK','Lens of Truth'],['5 • POWER','Solar Weave / Momentum Finisher']],
     drill:'Use every unlocked hotbar slot once without wasting the technique into empty space.'
   },
   {

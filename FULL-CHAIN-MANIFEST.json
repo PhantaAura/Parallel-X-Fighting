@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X Prototype 2.9A.7 Complete Cumulative Build",
-  "version": "2.9A.7",
+  "name": "Parallels X Prototype 2.9A.8 Complete Cumulative Build",
+  "version": "2.9A.8",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -15,7 +15,10 @@
     "2.9A.5 presentation foundation",
     "2.9A.6 unified Chapter 1-3 runtime, controls, loading, audio, CSS, and release cleanup",
     "2.9A.6.1 restored M1 attack and M2 block across every player mode",
-    "2.9A.7 casual retention pass: fair health, Quick Battle, truthful Lens, finished roster, simpler setup and Training, compact Manual unlocks, dedicated Interact, and shorter optional encounters"
+    "2.9A.7 casual retention pass: fair health, Quick Battle, truthful Lens, finished roster, simpler setup and Training, compact Manual unlocks, dedicated Interact, and shorter optional encounters",
+    "2.9A.7.1 Chapter 1 tutorial Grab hotfix: close-range coaching, forgiving dummy positioning, and confirmed connected-hit completion",
+    "2.9A.8 Kinetic Combat Pass: unique finished-fighter normals, faster movement, launch pursuit, combo scaling, fairer defense, committed specials, three-hit visible ring-outs, Shot/Power/Trick categories, and a defendable Momentum Finisher"
   ],
-  "cache_tag": "29a7-casual-retention-20260729"
+  "cache_tag": "29a8-kinetic-combat-20260729",
+  "save_schema": 245
 }

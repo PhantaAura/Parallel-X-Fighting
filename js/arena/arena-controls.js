@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a7-casual-retention-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a7-casual-retention-20260729';
+import {CONTROL_MAPS} from '../input.js?v=29a8-kinetic-combat-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a8-kinetic-combat-20260729';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

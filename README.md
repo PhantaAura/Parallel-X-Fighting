@@ -6,11 +6,13 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.7 — Casual Player Retention Pass**
+**Prototype 2.9A.8 — Kinetic Combat Pass**
 
 This ZIP is a complete cumulative build. No older package or patch is required.
 
 ### Playable now
+
+The current combat pass adds unique normals for the five finished fighters, faster kinetic movement, launch-and-pursuit routes, combo scaling, juggle protection, visible ring-out falls, Shot / Power / Trick technique categories, and a defendable Momentum Finisher instead of instant-kill attacks.
 
 - Rrvvfo Story Route: Chapters 1–2 plus the Chapter 3 development preview
 - VS CPU
@@ -66,4 +68,4 @@ On controllers, the left stick moves, D-pad Left/Right selects an ability, and Z
 
 Arena Training matches Story’s 3D combat. **Classic 2D Training — Advanced Lab** remains available through character select for the legacy 2D battle system.
 
-See [`PATCH-NOTES-2.9A.7.md`](PATCH-NOTES-2.9A.7.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.7.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.7.md). Older patch notes remain as development history.
+See [`PATCH-NOTES-2.9A.8.md`](PATCH-NOTES-2.9A.8.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.8.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.8.md). Older patch notes remain as development history.

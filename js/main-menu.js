@@ -1,6 +1,6 @@
-import {BUILD_VERSION} from './build-info.js?v=29a7-casual-retention-20260729';
+import {BUILD_VERSION} from './build-info.js?v=29a8-kinetic-combat-20260729';
 
-const MENU_MODULE_CACHE='29a7-casual-retention-20260729';
+const MENU_MODULE_CACHE='29a8-kinetic-combat-20260729';
 
 export const MAIN_MENU_MODES=Object.freeze([
   {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Choose a character route and play continuous chapters through the shared Story Engine. Rrvvfo Chapters 1–2 are playable, with a separate Chapter 3 opening preview.',players:'1',availability:'Rrvvfo route • Chapters 1–2 + Chapter 3 preview'},

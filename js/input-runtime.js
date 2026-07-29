@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a7-casual-retention-20260729';
+import {InputManager} from './input.js?v=29a8-kinetic-combat-20260729';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

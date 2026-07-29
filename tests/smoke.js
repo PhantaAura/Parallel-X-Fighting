@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a8-kinetic-combat-20260729';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a8-kinetic-combat-20260729';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a10-living-tournament-hub-20260729';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a10-living-tournament-hub-20260729';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a8-kinetic-combat-20260729';
-import {Fighter} from '../js/fighter.js?v=29a8-kinetic-combat-20260729';
+import {EffectSystem} from '../js/effects.js?v=29a10-living-tournament-hub-20260729';
+import {Fighter} from '../js/fighter.js?v=29a10-living-tournament-hub-20260729';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,10 +17,12 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a8-kinetic-combat-20260729';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a8-kinetic-combat-20260729';
+import {FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a10-living-tournament-hub-20260729';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a10-living-tournament-hub-20260729';
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js';
-import {MAIN_MENU_MODES,MainMenu} from '../js/main-menu.js?v=29a8-kinetic-combat-20260729';
+import {CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a10-living-tournament-hub-20260729';
+import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a10-living-tournament-hub-20260729';
+import {MAIN_MENU_MODES,MainMenu} from '../js/main-menu.js?v=29a10-living-tournament-hub-20260729';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -31,14 +33,14 @@ import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringif
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a8-kinetic-combat-20260729';
+import {LoadingManager} from '../js/loading-manager.js?v=29a10-living-tournament-hub-20260729';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a8-kinetic-combat-20260729';
-import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a8-kinetic-combat-20260729';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a10-living-tournament-hub-20260729';
+import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a10-living-tournament-hub-20260729';
 
 const results=[],assert=(condition,message)=>{if(!condition)throw new Error(message)};
 async function test(name,fn){try{await fn();results.push({name,pass:true})}catch(error){results.push({name,pass:false,error:error.message})}}
@@ -197,8 +199,8 @@ await test('controller detection and disconnection assignment stay deterministic
 await test('InputManager honors explicit player device assignment',()=>{const pads=[makePad(),null,makePad()],input=new InputManager(()=>pads);input.setControllerStyle(1,'xbox');input.setControllerAssignment(1,2);pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=true;input.poll();pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=false;settleChordWindow(input);assert(input.consumeAction(1,'a'),'assigned Player 1 controller input was ignored')});
 await test('round and Training cleanup clear visual-only state',()=>{const setup=pair();setup.world.fighterVisuals={resetFighter:fighter=>{fighter.__visualReset=true}};setup.one.visualAction='ultimateAttack';setup.one.visualActionTimer=99;setup.one.resetRuntime();assert(setup.one.__visualReset&&!setup.one.visualAction&&!setup.one.visualActionTimer,'fighter reset retained visual state');trainingState.enabled=true;resetTrainingWorld(setup.world);assert(setup.world.projectiles.length===0&&setup.world.effects.effects.length===0,'Training cleanup retained transient visuals')});
 
-await test('Prototype 2.9A.8 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.8 — Kinetic Combat Pass','build label is outdated');assert(SAVE_SCHEMA_VERSION===245,'save schema version is outdated')});
-await test('main menu exposes every implemented mode and honest Coming Later state',()=>{const ids=MAIN_MENU_MODES.map(mode=>mode.id);for(const id of ['story','cpu','local','training','settings','extras','credits'])assert(ids.includes(id),`main menu omitted ${id}`);const arcade=MAIN_MENU_MODES.find(mode=>mode.id==='arcade');assert(arcade.disabled&&/Coming in Prototype 3\.x/i.test(arcade.availability),'Arcade was presented as functional')});
+await test('Prototype 2.9A.10 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.10 — Living Tournament Hub','build label is outdated');assert(SAVE_SCHEMA_VERSION===247,'save schema version is outdated')});
+await test('main menu exposes every implemented mode and honest Coming Later state',()=>{const ids=MAIN_MENU_MODES.map(mode=>mode.id);for(const id of ['story','cpu','local','training','settings','extras','credits'])assert(ids.includes(id),`main menu omitted ${id}`);const arcade=MAIN_MENU_MODES.find(mode=>mode.id==='arcade');assert(arcade.disabled&&/Coming Later/i.test(arcade.availability),'Arcade was presented as functional')});
 await test('main menu mode descriptions include player and availability data',()=>{for(const mode of MAIN_MENU_MODES){assert(mode.label&&mode.description&&mode.players&&mode.availability,`${mode.id} preview is incomplete`)}});
 await test('post-match options include every requested destination',()=>{assert(RESULT_ACTIONS.map(action=>action.id).join(',')==='rematch,character,stage,mode,main','results actions are incomplete');const model=buildResultsModel({winner:'Rrvvfo',durationMs:61500,players:[{damage:25}]});assert(model.duration==='1:02'&&model.actions.length===5,'result summary did not retain actions or duration')});
 await test('match statistics track actual damage and both player summaries',()=>{let clock=1000;const stats=new MatchStatistics(()=>clock);stats.recordDamage(1,8.5,2,13);stats.add(1,'perfectBlocks');stats.add(2,'throws');clock=62500;const summary=stats.finish([{hp:72,en:40},{hp:31,en:12}]);assert(summary.players[0].damage===8.5&&summary.players[0].highestCombo===2&&summary.players[0].perfectBlocks===1,'Player 1 stats were wrong');assert(summary.players[1].throws===1&&summary.players[1].remainingHealth===31,'Player 2 stats were wrong');assert(formatMatchDuration(summary.durationMs)==='1:02','duration formatting was wrong')});
@@ -278,12 +280,12 @@ await test('public Sage Manual grants onboarding guides without forcing story di
   assert(!state.unlocked.includes('tournament-rules'),'public manual spoiled a story-discovered tournament page');
   assert(COMBAT_MANUAL_PAGES.some(page=>page.id==='fighter-sage'&&page.drill===undefined),'Sage guide page missing');
 });
-await test('main menu renders character art and the Prototype 3.x Arcade tooltip',()=>{
+await test('main menu renders character art, visible groups, and an honest Arcade tooltip',()=>{
   const root=document.createElement('section');root.innerHTML='<nav data-main-menu-list></nav><aside data-main-menu-preview></aside><span data-build-version></span>';document.body.appendChild(root);
   const menu=new MainMenu(root,{storage:memoryStorage()});
   assert(root.querySelector('.menuFighter-rrvvfo'),'Story preview did not render Rrvvfo art');
   menu.select('arcade');
-  assert(/Prototype 3\.x/i.test(root.querySelector('.comingTooltip')?.textContent||''),'Arcade tooltip did not name Prototype 3.x');
+  assert(root.querySelectorAll('.mainMenuGroupLabel').length===2,'Play/System groups were not rendered');assert(root.querySelectorAll('[data-main-menu-id]').length===MAIN_MENU_MODES.length,'a main-menu mode was hidden');assert(/Coming Later/i.test(root.querySelector('.comingTooltip')?.textContent||''),'Arcade tooltip did not say Coming Later');
   root.remove();
 });
 await test('loading manager reports task-derived progress and fighter identity',()=>{
@@ -327,10 +329,61 @@ await test('Chapter 1 tutorial grab is close-range assisted and confirmed by a c
   assert(source.includes('CLOSE-RANGE GRAB'),'tutorial does not explain that Grab requires close range');
 });
 
+await test('Story menu exposes only Rrvvfo and chains Chapters 1–3 without route-menu swaps',async()=>{
+  const source=await(await fetch('../js/story/lost-year-story.js')).text();
+  assert(source.includes("const route=LOST_YEAR_ROUTES[0]")&&source.includes('rrvvfoOnlyRoute'),'Rrvvfo is not the only released Story card');
+  assert(source.includes("'rrvvfo-00':'rrvvfo-01'")&&source.includes("'rrvvfo-road':'rrvvfo-02'")&&source.includes("'rrvvfo-02':'rrvvfo-03-preview'"),'automatic Story chain is incomplete');
+  assert(!source.includes('routeVisible(')&&!source.includes('ALT & ROVER'),'unreleased Story routes leaked into the player screen');
+});
+await test('Chapter 1 uses clear attempt counts, saved checkpoints, and the correct Lens charge target',async()=>{
+  const m0=await(await fetch('../js/story/rrvvfo-mission-0.js')).text(),m1=await(await fetch('../js/story/rrvvfo-mission-1.js')).text();
+  assert(m0.includes("TEST THE SAGE'S DODGE • 0 / 3")&&m0.includes('DIRECT ATTEMPTS REQUIRED'),'direct-attack requirement is still hidden');
+  assert(m1.includes('CHARGE TO 60')&&!m1.includes('CHARGE TO 90'),'Lens charge instruction is contradictory');
+  for(const checkpoint of ['movement','parry','abilities','lensCharge','final'])assert(m1.includes(checkpoint),`tutorial checkpoint ${checkpoint} is missing`);
+});
+await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permanent tournament Run refusal',async()=>{
+  const source=await(await fetch('../js/story/rrvvfo-mission-2.js')).text();
+  for(const token of ['storyStatsForLevel','applyStoryLevelToFighter','enemyLevelFor','USE STORY ASSIST','TRY TO BEAT PLOUKE','Definitely not. I am not forfeiting.'])assert(source.includes(token),`Chapter 2 omitted ${token}`);
+  assert(source.includes("this.root.querySelector('[data-tournament-run]').hidden=false"),'Run does not stay visible in tournament fights');
+  assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
+});
+await test('Chapter 3 is clearly a demo with dynamic leads and no silent ability failure',async()=>{
+  const source=await(await fetch('../js/story/rrvvfo-chapter-3-preview.js')).text();
+  for(const token of ['CHAPTER 3 DEMO','PLAYABLE DEMO','OPTIONAL WITNESS','ABILITIES UNAVAILABLE WHILE INVESTIGATING','missing.sort','INVESTIGATION HAS ONLY BEGUN'])assert(source.includes(token),`Chapter 3 demo omitted ${token}`);
+  assert(!/NEXT BUILD|DEVELOPMENT PREVIEW/.test(source),'Chapter 3 still exposes development-note language');
+});
+
+
+await test('Chapter 2 living hub keeps only the four story-fit questlines mandatory',()=>{
+  const state=createChapter2QuestState(),summary=chapter2QuestSummary(state);
+  assert(summary.mandatory.length===4,'mandatory Chapter 2 quest count changed');
+  assert(summary.optional.length===Object.keys(CHAPTER2_OPTIONAL_QUESTS).length&&summary.optional.length===6,'optional Chapter 2 quest count is wrong');
+  assert(!chapter2MandatoryReadyForTournament(state),'empty hub state incorrectly unlocked the tournament');
+  state.mandatory.bracket.complete=true;state.mandatory.wadeRace.complete=true;state.mandatory.barkRing.complete=true;
+  assert(chapter2MandatoryReadyForTournament(state),'the three pre-tournament story quests did not unlock registration');
+  assert(CHAPTER2_RACE_CHECKPOINTS.length===5&&CHAPTER2_RING_SUPPORTS.length===3&&CHAPTER2_SHORTCUTS.length===3&&CHAPTER2_PLOUKE_CLUES.length===4,'hub quest content counts drifted');
+});
+await test('Chapter 2 quest saves migrate safely and rumor gates advance between rounds',()=>{
+  const state=normalizeChapter2QuestState({mandatory:{bracket:{cards:['fan-card','fan-card']},ploukeRumors:{clues:['stillness','stillness']}}});
+  assert(state.mandatory.bracket.cards.length===1&&state.mandatory.ploukeRumors.clues.length===1,'quest normalizer did not remove duplicate progress');
+  assert(requiredRumorCountForStep('quarterfinal')===1&&requiredRumorCountForStep('bark-pouki')===2&&requiredRumorCountForStep('wade')===3&&requiredRumorCountForStep('final')===4,'Plouke rumor intermission order is wrong');
+});
+await test('permanent Chapter 2 side-quest stats affect Story calculations',()=>{
+  const base=storyStatsForLevel(4),boosted=storyStatsForLevel(4,{hp:6,power:2,defense:1,speed:3,focus:4});
+  assert(boosted.hp===base.hp+6&&boosted.power===base.power+2&&boosted.defense===base.defense+1&&boosted.speed===base.speed+3&&boosted.focus===base.focus+4,'persistent Story stat bonuses were not applied');
+  assert(storyAttackMultiplier(4,{power:2})>storyAttackMultiplier(4)&&storyDefenseMultiplier(4,{defense:2})<storyDefenseMultiplier(4)&&storySpeedMultiplier(4,{speed:2})>storySpeedMultiplier(4),'side-quest stats do not change battle multipliers');
+});
+await test('Chapter 2 tournament returns to the hub and exposes mandatory and optional activities',async()=>{
+  const source=await(await fetch('../js/story/rrvvfo-mission-2.js')).text();
+  for(const token of ['startWadeRace','useWadeShortcut','inspectRingSupport','returnToHubIntermission','beginFoodQuest','beginFakeChampionQuest','beginLostFanQuest','beginDummyQuest','beginPrizeCartQuest','beginRejectedChallengerQuest'])assert(source.includes(token),`Chapter 2 hub omitted ${token}`);
+  assert(source.includes("returnToHubIntermission('quarterfinal'")&&source.includes("returnToHubIntermission('bark-pouki'")&&source.includes("returnToHubIntermission('wade'")&&source.includes("returnToHubIntermission('final'"),'tournament rounds do not reopen the hub');
+  assert(source.includes('three hub shortcuts unlocked')||source.includes('Three hub shortcuts unlocked'),'Wade route does not unlock hub shortcuts');
+});
+
 await test('Story chapters use one shared runtime controller without method monkey-patching',async()=>{
   const source=await(await fetch('../js/story/story-engine.js')).text();
   for(const token of ['useChapterProfile','installUnifiedRuntime','storyUnifiedRuntime','storyCommandForMode','invokeRuntime'])assert(source.includes(token),`Story Engine omitted ${token}`);
-  assert(source.includes("STORY_ENGINE_VERSION='2.9A.8'"),'Story Engine version is stale');
+  assert(source.includes("STORY_ENGINE_VERSION='2.9A.10'"),'Story Engine version is stale');
   const chapters=['rrvvfo-mission-0.js','rrvvfo-mission-1.js','rrvvfo-road-hub.js','rrvvfo-mission-2.js','rrvvfo-chapter-3-preview.js'];
   for(const file of chapters){const chapter=await(await fetch(`../js/story/${file}`)).text();assert(chapter.includes('useChapterProfile'),`${file} did not register a Story profile`);assert(!/battle\.(?:input|cpu|update|hud|draw|drawFighterLayer|drawFallback2D|flipFor|updateCamera|castAbility|applyDamage|updateSpecials|exit)\s*=/.test(chapter),`${file} still replaces an engine method`) }
 });

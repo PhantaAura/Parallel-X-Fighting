@@ -4,7 +4,7 @@
   "build_label": "Prototype 2.9A.8 — Kinetic Combat Pass",
   "package_type": "complete cumulative browser build",
   "requires_previous_build": false,
-  "cache_tag": "29a8-kinetic-combat-20260729",
+  "cache_tag": "29a9-story-rpg-20260729",
   "save_schema": 245,
   "combat_pass": {
     "finished_fighter_normal_profiles": [

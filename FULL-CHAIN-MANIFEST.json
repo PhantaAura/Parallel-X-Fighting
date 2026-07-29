@@ -1,24 +1,20 @@
 {
-  "name": "Parallels X Prototype 2.9A.8 Complete Cumulative Build",
-  "version": "2.9A.8",
+  "name": "Parallels X Prototype 2.9A.10 Complete Cumulative Build",
+  "version": "2.9A.10",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
   "included_milestones": [
     "2.4A-2.4C 3D arena and tournament pipeline",
-    "2.5A-2.8B Story route, replay, and chapter foundations",
+    "2.5A-2.8B Rrvvfo Story route, replay, hub, and chapter foundations",
     "2.9A combat-depth overhaul",
-    "2.9A.1 Story repair",
-    "2.9A.2 combat HUD and Story Menu repair",
-    "2.9A.3 shared Story Engine foundation",
-    "2.9A.4 Story playtest polish",
-    "2.9A.5 presentation foundation",
-    "2.9A.6 unified Chapter 1-3 runtime, controls, loading, audio, CSS, and release cleanup",
-    "2.9A.6.1 restored M1 attack and M2 block across every player mode",
-    "2.9A.7 casual retention pass: fair health, Quick Battle, truthful Lens, finished roster, simpler setup and Training, compact Manual unlocks, dedicated Interact, and shorter optional encounters",
-    "2.9A.7.1 Chapter 1 tutorial Grab hotfix: close-range coaching, forgiving dummy positioning, and confirmed connected-hit completion",
-    "2.9A.8 Kinetic Combat Pass: unique finished-fighter normals, faster movement, launch pursuit, combo scaling, fairer defense, committed specials, three-hit visible ring-outs, Shot/Power/Trick categories, and a defendable Momentum Finisher"
+    "2.9A.1-2.9A.5 Story repair, shared runtime foundation, and presentation polish",
+    "2.9A.6-2.9A.6.1 unified Chapter 1-3 controls and restored mouse combat",
+    "2.9A.7-2.9A.7.1 casual retention pass and tutorial Grab repair",
+    "2.9A.8 Kinetic Combat Pass",
+    "2.9A.9 Story RPG & Menu Pass",
+    "2.9A.10 Living Tournament Hub: mandatory story quest spine, optional side quests, tournament intermissions, persistent quest rewards, and Plouke rumor progression"
   ],
-  "cache_tag": "29a8-kinetic-combat-20260729",
-  "save_schema": 245
+  "cache_tag": "29a10-living-tournament-hub-20260729",
+  "save_schema": 247
 }

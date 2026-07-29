@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,displayedControlPosition} from './touch-layout-editor.js?v=29a8-kinetic-combat-20260729';
+import {TouchLayoutEditor,displayedControlPosition} from './touch-layout-editor.js?v=29a10-living-tournament-hub-20260729';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',

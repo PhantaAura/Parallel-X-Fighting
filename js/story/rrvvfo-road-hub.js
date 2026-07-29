@@ -1,9 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a8-kinetic-combat-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a8-kinetic-combat-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a8-kinetic-combat-20260729';
-import {StoryMap} from './story-map.js?v=29a8-kinetic-combat-20260729';
-import {storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a10-living-tournament-hub-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a10-living-tournament-hub-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a10-living-tournament-hub-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a10-living-tournament-hub-20260729';
+import {StoryMap} from './story-map.js?v=29a10-living-tournament-hub-20260729';
+import {storyConfirm} from './story-ux.js?v=29a10-living-tournament-hub-20260729';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a10-living-tournament-hub-20260729';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a10-living-tournament-hub-20260729';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -27,10 +29,12 @@ function buildUI(){
         <span data-road-detail>Follow the tournament road east.</span>
       </div>
       <div class="roadHudActions">
-        <button type="button" data-road-manual>COMBAT MANUAL</button>
-        <button type="button" data-road-exit>RETURN TO ROUTE</button>
+        <button type="button" data-road-menu>STORY MENU</button>
+        <button type="button" data-road-manual>SAGE MANUAL</button>
+        <button type="button" data-road-exit>RETURN TO STORY</button>
       </div>
     </div>
+    ${storyAttackStripMarkup({compact:true})}
     <div class="roadAreaTitle" data-road-area hidden><small>THE LOST YEAR</small><strong data-road-area-name>TRAINING GROUNDS</strong></div>
     <div class="roadPrompt" data-road-prompt hidden><strong data-road-prompt-title>INTERACT</strong><span data-road-prompt-detail>PRESS INTERACT</span></div>
     <div class="roadChoice" data-road-choice hidden>
@@ -53,6 +57,16 @@ function buildUI(){
         </div>
         <div class="qteTimer"><i data-qte-timer></i></div>
       </article>
+    </div>
+    <div class="roadPause storyRpgPause" data-road-pause hidden>
+      <article><header><small>RRVVFO • CHAPTER 1</small><h2>STORY MENU</h2></header>
+        <p data-road-pause-objective>Follow the Tournament Road.</p>
+        ${storyControlLegendMarkup()}
+        <div><button class="primary" type="button" data-road-resume>RETURN TO GAME</button><button type="button" data-road-pause-manual>SAGE MANUAL</button><button type="button" data-road-pause-map>AREA MAP</button><button type="button" data-road-pause-exit>RETURN TO STORY MENU</button></div>
+      </article>
+    </div>
+    <div class="roadDefeat storyRpgPause" data-road-defeat hidden>
+      <article><header><small>OPTIONAL ENCOUNTER</small><h2>CHOOSE WHAT HAPPENS NEXT</h2></header><p>The roadside fight is optional. Losing does not trap you here.</p><div><button class="primary" type="button" data-road-rematch>TRY AGAIN</button><button type="button" data-road-leave-fight>LEAVE ENCOUNTER</button><button type="button" data-road-defeat-exit>RETURN TO STORY MENU</button></div></article>
     </div>
     <div class="roadComplete" data-road-complete hidden>
       <article>
@@ -86,6 +100,8 @@ class RrvvfoRoadHub{
     this.choice=this.root.querySelector('[data-road-choice]');
     this.qte=this.root.querySelector('[data-road-qte]');
     this.completePanel=this.root.querySelector('[data-road-complete]');
+    this.pausePanel=this.root.querySelector('[data-road-pause]');
+    this.defeatPanel=this.root.querySelector('[data-road-defeat]');
     this.mode='opening';
     this.step='warmup';
     this.completed=false;
@@ -125,7 +141,15 @@ class RrvvfoRoadHub{
       {x:1130,z:260,baseX:1130,baseZ:260,color:'#8a63ce',phase:4.6,label:'VENDOR'},
       {x:1225,z:-300,baseX:1225,baseZ:-300,color:'#c75f79',phase:2.4,label:'SIGN PAINTER'}
     ];
+    this.root.querySelector('[data-road-menu]').addEventListener('click',()=>this.openPauseMenu());
     this.root.querySelector('[data-road-manual]').addEventListener('click',()=>this.openManualFromHub());
+    this.root.querySelector('[data-road-resume]').addEventListener('click',()=>this.closePauseMenu());
+    this.root.querySelector('[data-road-pause-manual]').addEventListener('click',()=>{this.closePauseMenu();this.openManualFromHub()});
+    this.root.querySelector('[data-road-pause-map]').addEventListener('click',()=>{this.closePauseMenu();this.map?.open()});
+    this.root.querySelector('[data-road-pause-exit]').addEventListener('click',()=>this.requestExit());
+    this.root.querySelector('[data-road-rematch]').addEventListener('click',()=>{this.defeatPanel.hidden=true;this.restartRoadFight()});
+    this.root.querySelector('[data-road-leave-fight]').addEventListener('click',()=>{this.defeatPanel.hidden=true;this.resolveEncounter('left-after-loss')});
+    this.root.querySelector('[data-road-defeat-exit]').addEventListener('click',()=>this.exitToStory());
     this.root.querySelector('[data-road-exit]').addEventListener('click',()=>this.requestExit());
     this.root.querySelector('[data-road-fight]').addEventListener('click',()=>this.startRoadFight());
     this.root.querySelector('[data-road-run]').addEventListener('click',()=>this.startRunQte());
@@ -147,7 +171,7 @@ class RrvvfoRoadHub{
     this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','THE SAGE']});
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART ROAD?',message:'Restart the current Tournament Road section? Completed checkpoints remain saved.',confirmLabel:'RESTART'});
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • LIVING TOURNAMENT ROAD';
+    if(badge?.lastChild)badge.lastChild.textContent=' CHAPTER 1 • TOURNAMENT ROAD';
     this.map=new StoryMap({
       title:'TOURNAMENT ROAD MAP',
       bounds:{minX:-1550,maxX:1450,minZ:-720,maxZ:720},
@@ -225,14 +249,14 @@ class RrvvfoRoadHub{
         this.areaTimer=Math.max(0,this.areaTimer-dt);
         if(!this.areaTimer)this.area.hidden=true;
         if(this.mode==='hub'){
-          player.hp=100;player.en=100;battle.time=9999;this.updateHub(dt,previous);
+          player.hp=Math.max(1,Math.min(player.maxHp,player.hp));battle.time=9999;this.updateHub(dt,previous);
         }else if(this.mode==='fight'){
           battle.time=9999;battle.fighters[1].en=Math.min(battle.fighters[1].en,45);
         }else if(this.mode==='qte')this.updateQte();
         this.updateNpcMotion(dt);this.map?.draw();
       },
       exit:async next=>{
-        const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Tournament Road? Completed checkpoints remain saved.',confirmLabel:'RETURN TO ROUTE'});
+        const leave=await storyConfirm({title:'RETURN TO STORY?',message:'Leave the Tournament Road? Completed checkpoints remain saved.',confirmLabel:'RETURN TO STORY'});
         if(!leave)return;
         next();this.cleanup();this.onExit();
       }
@@ -677,18 +701,18 @@ class RrvvfoRoadHub{
     this.fighterVisible=true;
     this.battle.root.classList.add('storyRoadFight');
     this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;clearTimeout(this.roadKoTimer);
-    player.maxHp=100;player.reset(790,70);
+    player.reset(790,70);applyStoryProgressionToFighter(player,loadLostYearProgress());
     player.en=45;
     foe.id='road-fighter';
     foe.name='Roadside Fighter';
     foe.accent='#7f6cff';
     foe.asset=null;
-    foe.maxHp=100;foe.reset(940,-70);
+    foe.reset(940,-70);applyStoryLevelToFighter(foe,storyLevelFromProgress(loadLostYearProgress()),{restoreHealth:true});
     foe.en=45;
     this.battle.koTarget=1;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';
     this.battle.time=Infinity;
     this.battle.hideBanner();
-    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 1 KO','Score one KO. Both fighters have 100 health.');
+    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 1 KO',`Score one KO. Both fighters are Level ${storyLevelFromProgress(loadLostYearProgress())} with matching RPG stats.`);
     this.battle.notice('ROAD FIGHT • RUN IS NO LONGER AVAILABLE',1.8);
   }
 
@@ -698,7 +722,7 @@ class RrvvfoRoadHub{
     this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.phase='story';this.mode='fight-ko';
     this.battle.banner(`K.O. • ${this.roadPlayerKOs}–${this.roadFoeKOs}`);this.battle.audio.play('ko');this.battle.hud();
     const complete=(playerWon?this.roadPlayerKOs:this.roadFoeKOs)>=1;clearTimeout(this.roadKoTimer);
-    this.roadKoTimer=window.setTimeout(()=>{if(this.aborted)return;if(complete){this.mode='fight';if(playerWon)this.finishRoadFight(true);else this.restartRoadFight();return}this.respawnRoadFight();},1100);
+    this.roadKoTimer=window.setTimeout(()=>{if(this.aborted)return;if(complete){this.mode='fight';if(playerWon)this.finishRoadFight(true);else this.showRoadDefeatOptions();return}this.respawnRoadFight();},1100);
   }
 
   respawnRoadFight(){
@@ -709,6 +733,23 @@ class RrvvfoRoadHub{
     this.battle.respawnAfterKo(loser);
     this.battle.phase='play';this.battle.time=Infinity;
     this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 1 KO',`Current score: ${this.roadPlayerKOs}–${this.roadFoeKOs}. Only the defeated fighter respawned.`);
+  }
+
+  showRoadDefeatOptions(){
+    if(this.aborted)return;
+    this.mode='choice';this.battle.phase='story';this.battle.root.classList.remove('storyRoadFight');
+    this.defeatPanel.hidden=false;this.defeatPanel.querySelector('[data-road-rematch]')?.focus();
+  }
+
+  openPauseMenu(){
+    if(this.mode!=='hub')return;
+    this.pausePanel.querySelector('[data-road-pause-objective]').textContent=`${this.objective.textContent} — ${this.detail.textContent}`;
+    this.pausePanel.hidden=false;this.mode='pause';this.battle.phase='story';this.pausePanel.querySelector('[data-road-resume]')?.focus();
+  }
+
+  closePauseMenu(){
+    if(this.pausePanel.hidden)return;
+    this.pausePanel.hidden=true;this.mode='hub';this.battle.phase='play';this.root.querySelector('[data-road-menu]')?.focus();
   }
 
   restartRoadFight(){
@@ -737,8 +778,8 @@ class RrvvfoRoadHub{
     const player=this.battle.fighters[0];
     player.x=850;
     player.z=20;
-    player.hp=100;
-    player.en=100;
+    player.hp=player.maxHp;
+    player.en=45;
     this.step='checkpoint';
     this.setObjective('PASS THE TOURNAMENT CHECKPOINT','Continue east and speak with the checkpoint worker.');
     saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-encounter',roadEncounterResult:result});
@@ -773,6 +814,13 @@ class RrvvfoRoadHub{
       r.box({x:npc.x,y:111+bob,z:npc.z,sx:33,sy:15,sz:30,color:index%2?'#33211c':'#d5b04d'});
     };
     this.npcs.forEach(drawPerson);
+    // Small moving creatures and delivery carts keep the road active even when
+    // the player is not talking to an NPC.
+    for(let i=0;i<5;i++){
+      const birdX=-1300+((time*95+i*570)%2900),birdZ=-520+i*245+Math.sin(time*1.7+i)*55;
+      r.billboard({x:birdX,y:145+Math.sin(time*4+i)*18,z:birdZ,size:13,color:'#f2f4ff',alpha:.8});
+    }
+    const cartX=-620+((time*42)%1900);r.box({x:cartX,y:22,z:520,sx:72,sy:38,sz:52,color:'#9a6b3f'});r.disc({x:cartX-28,y:5,z:546,rx:13,rz:8,color:'#26211e',alpha:1});r.disc({x:cartX+28,y:5,z:546,rx:13,rz:8,color:'#26211e',alpha:1});
 
     for(const marker of this.warmupMarkers){
       if(marker.done)continue;
@@ -884,23 +932,19 @@ class RrvvfoRoadHub{
   onKey(event){
     if(this.root.hidden)return;
     if(this.mode==='qte'){
-      const key=event.code;
-      if(['KeyA','KeyD','Space'].includes(key)){
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        this.acceptQteInput(key);
-      }
+      if(['KeyA','KeyD','Space'].includes(event.code)){event.preventDefault();event.stopImmediatePropagation();this.acceptQteInput(event.code)}
       return;
     }
-    if(this.mode==='hub'&&(event.key==='Enter'||event.code==='KeyE')){
-      event.preventDefault();
-      this.tryInteract();
+    if(event.key==='Escape'){
+      event.preventDefault();event.stopImmediatePropagation();
+      if(this.mode==='pause')this.closePauseMenu();else if(this.mode==='hub')this.openPauseMenu();
+      return;
     }
-    if(event.key.toLowerCase()==='m'&&this.mode==='hub'){
-      event.preventDefault();
-      this.openManualFromHub();
-    }
+    if(event.key.toLowerCase()==='m'&&this.mode==='hub'){event.preventDefault();this.openManualFromHub();return}
+    if(event.key.toLowerCase()==='t'&&this.mode==='hub'){event.preventDefault();this.map?.open();return}
+    if(this.mode==='hub'&&(event.key==='Enter'||event.code==='KeyE')){event.preventDefault();this.tryInteract()}
   }
+
 
 
   openManualFromHub(){
@@ -933,7 +977,7 @@ class RrvvfoRoadHub{
   }
 
   async requestExit(){
-    const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Tournament Road? Completed checkpoints remain saved, but the current encounter will restart.',confirmLabel:'RETURN TO ROUTE'});
+    const leave=await storyConfirm({title:'RETURN TO STORY?',message:'Leave the Tournament Road? Completed checkpoints remain saved, but the current encounter will restart.',confirmLabel:'RETURN TO STORY'});
     if(leave)this.exitToStory();
   }
 

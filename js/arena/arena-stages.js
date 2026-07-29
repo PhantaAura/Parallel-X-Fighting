@@ -469,6 +469,18 @@ const LOCAL_TOURNAMENT_HUB={
       {x:-310,y:6,z:40,sx:980,sy:9,sz:760,color:'#d7bb85'},
       {x:520,y:6,z:40,sx:800,sy:8,sz:230,color:'#c8aa76'},
       {x:1060,y:6,z:40,sx:460,sy:8,sz:260,color:'#c8aa76'},
+      // North and south loops keep the hub from becoming one straight road.
+      {x:-850,y:6,z:-430,sx:1180,sy:8,sz:150,color:'#bfa271'},
+      {x:250,y:6,z:-430,sx:1020,sy:8,sz:150,color:'#bfa271'},
+      {x:900,y:6,z:-260,sx:160,sy:8,sz:500,color:'#bfa271'},
+      {x:-1030,y:6,z:570,sx:920,sy:8,sz:170,color:'#cbb17c'},
+      {x:-150,y:6,z:570,sx:900,sy:8,sz:170,color:'#cbb17c'},
+      {x:700,y:6,z:570,sx:820,sy:8,sz:170,color:'#cbb17c'},
+      {x:1010,y:6,z:350,sx:160,sy:8,sz:560,color:'#cbb17c'},
+      // Cross paths and unlocked shortcut lanes.
+      {x:-860,y:7,z:120,sx:150,sy:9,sz:940,color:'#d5b983'},
+      {x:240,y:7,z:230,sx:150,sy:9,sz:760,color:'#d5b983'},
+      {x:650,y:7,z:40,sx:150,sy:9,sz:980,color:'#d5b983'},
       // Stadium and fighter gate at the east landmark.
       {x:1490,y:205,z:40,sx:470,sy:410,sz:1420,color:'#2c1c38'},
       {x:1410,y:430,z:40,sx:520,sy:42,sz:1530,color:'#d54682'},
@@ -497,6 +509,21 @@ const LOCAL_TOURNAMENT_HUB={
       {x:640,y:66,z:-520,sx:420,sy:132,sz:300,color:'#9e3457'},
       {x:640,y:146,z:-520,sx:490,sy:28,sz:360,color:'#f0c85d'},
       {x:930,y:94,z:-540,sx:38,sy:188,sz:260,color:'#2e2338'},
+      // Small shops, notice boards, and seating make each district readable.
+      {x:-900,y:34,z:-420,sx:150,sy:68,sz:80,color:'#4e75a4'},
+      {x:-900,y:80,z:-420,sx:178,sy:22,sz:110,color:'#f0c85d'},
+      {x:130,y:30,z:610,sx:140,sy:60,sz:78,color:'#4f9369'},
+      {x:130,y:72,z:610,sx:168,sy:20,sz:104,color:'#f0c85d'},
+      {x:760,y:28,z:420,sx:120,sy:56,sz:72,color:'#b05461'},
+      {x:760,y:68,z:420,sx:148,sy:18,sz:96,color:'#f2d36e'},
+      {x:-1450,y:22,z:300,sx:160,sy:44,sz:48,color:'#72563f'},
+      {x:-1340,y:22,z:300,sx:52,sy:44,sz:48,color:'#72563f'},
+      {x:420,y:22,z:-720,sx:180,sy:44,sz:52,color:'#72563f'},
+      {x:560,y:22,z:-720,sx:70,sy:44,sz:52,color:'#72563f'},
+      // Service lane behind the practice ring for Bark's repair quest.
+      {x:-1120,y:4,z:900,sx:780,sy:8,sz:140,color:'#6e745a'},
+      {x:-1490,y:34,z:900,sx:28,sy:68,sz:150,color:'#4d4b43'},
+      {x:-750,y:34,z:900,sx:28,sy:68,sz:150,color:'#4d4b43'},
       // Trees and carts create readable districts without invisible walls.
       {x:-1540,y:58,z:-760,sx:28,sy:116,sz:28,color:'#5d3d29'},
       {x:-1540,y:145,z:-760,sx:130,sy:120,sz:130,color:'#397442'},

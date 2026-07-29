@@ -1,45 +1,57 @@
 # Parallels X: Clash of Souls
 
-**A Sonic Battle-inspired browser fighter with real parries, grabs, energy management, continuous first-to-three-KO battles, and playable story chapters.**
+**A high-speed 3D arena fighter and RPG built around kinetic movement, pursuit combos, parries, character techniques, exploration, side quests, and continuous Story progression.**
 
 Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.8 — Kinetic Combat Pass**
+**Prototype 2.9A.10 — Living Tournament Hub**
 
 This ZIP is a complete cumulative build. No older package or patch is required.
 
-### Playable now
+## Playable now
 
-The current combat pass adds unique normals for the five finished fighters, faster kinetic movement, launch-and-pursuit routes, combo scaling, juggle protection, visible ring-out falls, Shot / Power / Trick technique categories, and a defendable Momentum Finisher instead of instant-kill attacks.
-
-- Rrvvfo Story Route: Chapters 1–2 plus the Chapter 3 development preview
-- VS CPU
-- Local two-player
-- Training Mode with suggested drills
-- Tangai Dojo and Global Tournament Arena battles
-- Keyboard, Nintendo, Xbox, PlayStation, custom-controller, and touch input
+- Rrvvfo Story: Chapters 1–2 and the playable Chapter 3 investigation demo
+- Automatic Story continuation between completed sections
+- RPG levels with HP, Power, Defense, Speed, and Focus growth
+- A multi-district Chapter 2 tournament hub with mandatory story quests, optional side quests, changing intermissions, fast-travel shortcuts, and persistent rewards
+- VS CPU and local two-player battles
+- Arena Training plus the optional Advanced 2D Lab
+- Five current playable fighters: Rrvvfo, Revvfo, Wade, Bark, and The Sage
+- Keyboard and mouse, Nintendo, Xbox, PlayStation, custom-controller, and touch input
 - The Sage’s Manual with beginner lessons, fighter guides, drills, and spoiler-safe unlocks
 
-Story Mode is entered only through **STORY** on the main menu. The old duplicate Story entry has been removed from character select.
+Story begins from **STORY** on the main menu. Select Rrvvfo once to begin or continue; completing a normal Story section automatically loads the next playable section without returning to the route screen.
 
-### Showcase focus
+## Chapter 2 hub
 
-- **Showcase sprites:** Rrvvfo, Revvfo, The Sage
-- **Visual prototypes:** Wade, Bark
-- **In development:** remaining roster entries are clearly labeled in character select
+The mandatory Chapter 2 path contains only the quests that directly support the tournament story:
 
-Arcade Mode is planned for **Prototype 3.x**.
+- The Lost Bracket
+- Wade’s Shortcut
+- The Cracked Ring
+- Rumors About Plouke
 
-## Chapter 1–3 controls used everywhere
+Food preparation, the Fake Champion, Wade’s lost fan, the runaway dummy, the prize cart, the rejected challenger, Bark’s spar, roaming grunts, and extra conversations are optional. The hub reopens between tournament events so the player can explore or return to the bracket when ready.
 
-The Chapter 1–3 control scheme is the source of truth for VS, Training, Arena, and Story:
+Optional quest rewards include persistent Story stats, one-fight meals, coins, and discounted meal preparation. They do not alter VS or Training balance.
+
+## Core combat
+
+- Fast depth movement, ground dashing, air dashing, jumping, and pursuit attacks
+- Unique normal attacks for the five current fighters
+- Heavy-launch pursuit routes with combo scaling and juggle protection
+- Perfect parries, guard fatigue, fair grabs, counters, and limited Combo Breakers
+- Shot / Power / Trick technique categories
+- Visible ring-out pressure followed by an actual falling animation
+- Momentum Finishers that remain avoidable, blockable, and interruptible
+
+## Chapter 1–3 controls
 
 - Move / depth: **W / A / S / D**
 - Jump: **Space**
-- Primary attack: **Left Click** (Light by default)
-- Light: **J**
+- Primary attack: **Left Click** or **J**
 - Heavy: **K**
 - Launcher: **I**
 - Grab: **U**
@@ -52,20 +64,21 @@ The Chapter 1–3 control scheme is the source of truth for VS, Training, Arena,
 - Activate selected ability: **O**
 - Direct ability slots: **1–5**
 - Lens shortcut: **Z**
+- Sage’s Manual: **M**
+- Objective tracker: **T**
+- Pause / Story menu: **Escape**
 
-On controllers, the left stick moves, D-pad Left/Right selects an ability, and ZR/RT/R2 activates it. Prompts change live for Nintendo, Xbox, PlayStation, custom mappings, mouse, keyboard, and touch.
+Prompts change for keyboard and mouse, Nintendo, Xbox, PlayStation, custom mappings, and touch.
 
 ## Friend-test priorities
 
-- Begin with Arena Training and verify the Chapter 1–3 controls feel understandable.
-- Play Quick Battle on Easy and confirm both fighters begin at 100 HP.
-- Check that Random never selects a Coming Soon fighter.
-- Use Lens at low mastery and verify every warning is broad but truthful.
-- Play the Chapter 1 road and check the movement, jump, dash, Interact, Manual unlock, and escape-retry flow.
-- Switch between keyboard/mouse, controller, and touch to verify prompts update.
-- Complete Chapters 1–3 without progression, cleanup, objective, or exit problems.
-- Check desktop 1440×900, laptop 1280×720, and landscape phone layouts.
+- Complete the Chapter 2 bracket, Wade race, and Bark ring-repair quests.
+- Confirm registration is not blocked by optional side quests.
+- Verify the hub reopens after every tournament event and the next Plouke clue is easy to locate.
+- Test all three Wade shortcut signs.
+- Check that permanent side-quest stats appear in the Story menu and affect Story combat.
+- Use a meal, lose, and retry to confirm the meal remains active without being consumed twice.
+- Catch the prize cart and purchase a discounted meal after the current meal is gone.
+- Report empty districts, unclear routes, repetitive dialogue, quest-marker confusion, frame drops, or mobile HUD overlap.
 
-Arena Training matches Story’s 3D combat. **Classic 2D Training — Advanced Lab** remains available through character select for the legacy 2D battle system.
-
-See [`PATCH-NOTES-2.9A.8.md`](PATCH-NOTES-2.9A.8.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.8.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.8.md). Older patch notes remain as development history.
+See [`PATCH-NOTES-2.9A.10.md`](PATCH-NOTES-2.9A.10.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.10.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.10.md). Older patch notes remain as development history.

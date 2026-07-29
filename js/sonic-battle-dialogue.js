@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a8-kinetic-combat-20260729';
+import {storyConfirm} from './story/story-ux.js?v=29a10-living-tournament-hub-20260729';
 
 /* ═══════════════════════════════════════════════════════════════
    PARALLELS X — COMPATIBLE SPRITE-ON-TOP DIALOGUE

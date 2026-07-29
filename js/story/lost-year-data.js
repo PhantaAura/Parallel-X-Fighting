@@ -58,10 +58,10 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         playable:true,
         unlockAfter:'rrvvfo-road',
         status:'PLAYABLE OPEN HUB + TOURNAMENT',
-        description:'Rrvvfo explores an open tournament hub, witnesses the Sage vanish, unlocks Story Training Levels, meets Bark and Wade, enters the bracket, reaches the final, and discovers Plouke was the Sage in disguise.',
-        objectives:['Explore the open tournament hub','Win the first brawl and unlock Training Levels','Meet Bark and Wade; optionally spar with Bark','Defeat two random tournament entrants and Wade','Watch Pouki overwhelm Bark','Survive the programmed final loss against Plouke and reveal the Sage'],
+        description:'Rrvvfo explores a living tournament hub, rebuilds the lost bracket, races Wade through multiple districts, helps Bark repair a cracked ring, follows rumors about Plouke between rounds, and fights through the tournament.',
+        objectives:['Rebuild the lost tournament bracket','Tour the hub with Wade and repair Bark’s cracked ring','Complete optional side quests for permanent Story rewards','Return to the living hub between tournament rounds','Verify four rumors about Plouke','Try to beat Plouke and reveal the Sage'],
         stage:'Local Tournament Grounds + Tournament Ring',
-        note:'This is the complete Chapter 2 tournament structure. Non-story grunts and Bark’s pre-tournament spar remain optional.'
+        note:'The bracket, Wade’s hub tour, Bark’s ring repair, and the Plouke rumor thread are mandatory. Food, fan, challenger, dummy, prize-cart, fake-champion, grunt, and Bark-spar quests remain optional.'
       },
       {
         id:'rrvvfo-03-preview',
@@ -70,39 +70,19 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         available:true,
         playable:true,
         unlockAfter:'rrvvfo-02',
-        status:'DEVELOPMENT PREVIEW',
+        status:'CHAPTER 3 DEMO',
         description:'After the tournament, Rrvvfo returns to a much larger Training Region and finds several routes exploded, barricaded, or sealed. He questions locals until a strange man offers a lead into an underground teleporter base.',
         objectives:['Explore the expanded Training Region in any order','Inspect at least two blocked routes','Question local NPCs','Meet the strange man in the central plaza','Find the underground base entrance'],
         stage:'Expanded Training Region',
-        note:'This preview begins Chapter 3 without pretending the unfinished tournament is already implemented. The finished release will unlock it only after the full Chapter 2 tournament.'
+        note:'This playable demo tests the opening investigation systems and is not the full Chapter 3.'
       }
     ]
-  },
-  {
-    id:'alt-rover',lead:'ALT & ROVER',title:'FOR THE FIRSTBORN',availability:'LOCKED',available:false,unlock:'Complete Rrvvfo Mission 1',description:'Alt wants revenge for Revvfo’s defeat. Rover plans the operations and protects what remains of their family. Rev and Metal are not on their side after Season 1.',perspective:'Villain route',color:'#ff9b3d',missions:[]
-  },
-  {
-    id:'bark',lead:'BARK',title:'KEEPER OF PEACE',availability:'LOCKED',available:false,unlock:'Progress the shared Lost Year timeline',description:'Bark handles reconstruction problems and investigates the damage caused by several unrelated groups operating during the same year.',perspective:'Defense and investigation',color:'#b38a52',missions:[]
-  },
-  {
-    id:'wade',lead:'WADE',title:'WIDE HORIZON',availability:'LOCKED',available:false,unlock:'Progress the shared Lost Year timeline',description:'Wade’s speed gives him a wider view of the world than the others. His route shows distant incidents and overlapping events the other stories never witness.',perspective:'Speed and traversal',color:'#4f9ef8',missions:[]
-  },
-  {
-    id:'robert',lead:'ROBERT',title:'WHITE SURVIVOR',availability:'LOCKED',available:false,unlock:'Discover Robert during another route',description:'Robert investigates every side without trusting any of them, following clues connected to the destroyed mountain village and the Ninja weapons.',perspective:'Mystery route',color:'#d9ecff',missions:[]
-  },
-  {
-    id:'oddballs',lead:'THE ODDBALLS',title:'THREE TINY PROBLEMS',availability:'LOCKED',available:false,unlock:'Encounter their havoc in another route',description:'Raggie, Jimmy, and Jonathan cause havoc and mayhem because it is fun. Their accidents collide with the serious conflict and ruin everyone else’s plans.',perspective:'Chaos route',color:'#ffe36b',missions:[]
-  },
-  {
-    id:'rev-metal',lead:'REV & METAL',title:'THE HIDDEN SIDE',availability:'HIDDEN ROUTE',available:false,unlock:'Complete the main character routes',description:'A separate perspective following Rev and Metal after they were stranded with the Hidden Man. This route is not connected to Alt and Rover’s revenge campaign.',perspective:'Behind-the-scenes route',color:'#b763ff',missions:[]
-  },
-  {
-    id:'final',lead:'FINAL STORY',title:'THE LOST YEAR',availability:'LOCKED',available:false,unlock:'Complete every required route',description:'The overlapping stories finally meet, revealing which events were connected, which were misunderstandings, and what truly happened during the missing year.',perspective:'Shared finale',color:'#ff65bd',missions:[]
+
   }
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],storyLevel:1,storyXp:0,chapter2State:{},chapter3Preview:{},updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},updatedAt:Date.now()};
 }
 
 export function loadLostYearProgress(storage=localStorage){
@@ -116,6 +96,7 @@ export function loadLostYearProgress(storage=localStorage){
       completedMissions:Array.isArray(parsed.completedMissions)?parsed.completedMissions:[],
       viewedBriefings:Array.isArray(parsed.viewedBriefings)?parsed.viewedBriefings:[],
       unlocks:Array.isArray(parsed.unlocks)?parsed.unlocks:[],
+      storyBonusStats:{...fallback.storyBonusStats,...(parsed.storyBonusStats||{})},
       routeStarted:Boolean(parsed.routeStarted||parsed.completedMissions?.length),
       lastCheckpoint:typeof parsed.lastCheckpoint==='string'?parsed.lastCheckpoint:'rrvvfo-00'
     };
@@ -136,72 +117,34 @@ export function missionUnlocked(mission,progress){
 export function routeProgress(route,progress){
   if(route?.id!=='rrvvfo')return 0;
   const completed=new Set(progress?.completedMissions||[]);
-  // Rrvvfo has six planned chapters. The current percentage only counts fully
-  // finished main chapters; the Chapter 3 development preview is not presented
-  // as a completed chapter. The author-facing roadmap uses 20% milestones while
-  // the sixth slot is the route finale, so Chapter 2 completion reads 40%.
-  let percent=0;
-  if(['rrvvfo-00','rrvvfo-01','rrvvfo-road'].every(id=>completed.has(id)))percent+=20;
-  if(completed.has('rrvvfo-02'))percent+=20;
-  if(completed.has('rrvvfo-03'))percent+=20;
-  if(completed.has('rrvvfo-04'))percent+=20;
-  if(completed.has('rrvvfo-05')||completed.has('rrvvfo-06'))percent=100;
-  return Math.min(100,percent);
+  const released=['rrvvfo-00','rrvvfo-01','rrvvfo-road','rrvvfo-02','rrvvfo-03-preview'];
+  return Math.round(released.filter(id=>completed.has(id)).length/released.length*100);
 }
 
-export function routeVisible(route,progress){
-  if(!route)return false;
-  if(route.id==='rrvvfo')return true;
-  const completed=new Set(progress?.completedMissions||[]);
-  const state=progress?.chapter2State||{};
-  if(route.id==='bark'||route.id==='wade')return Boolean(state.metBarkWade||completed.has('rrvvfo-02'));
-  if(route.id==='alt-rover')return Boolean(progress?.unlocks?.includes('metAltOrRover'));
-  if(route.id==='robert')return Boolean(progress?.unlocks?.includes('metRobert'));
-  if(route.id==='oddballs')return Boolean(progress?.unlocks?.includes('metOddballs'));
-  if(route.id==='rev-metal')return Boolean(progress?.unlocks?.includes('mainRoutesComplete'));
-  if(route.id==='final')return Boolean(progress?.unlocks?.includes('allRequiredRoutesComplete'));
-  return false;
+export function routeVisible(route){
+  return Boolean(route?.id==='rrvvfo');
 }
 
-export function routePlayable(route,progress){
-  if(route?.id==='rrvvfo')return true;
-  // Other routes are revealed SA1-style when Rrvvfo encounters their cast, but
-  // they do not become playable until the Rrvvfo route is actually complete and
-  // their content exists.
-  return Boolean(route?.available&&progress?.completedMissions?.includes('rrvvfo-06'));
+export function routePlayable(route){
+  return Boolean(route?.id==='rrvvfo'&&route.available);
 }
 
 
 export const RRVVFO_CHAPTERS=Object.freeze([
   {
     id:'rrvvfo-chapter-1',number:1,title:'NO MAXIMUMS',
-    description:'Shots of Agony training, the Sage’s Combat Manual, the full fighting refresher, and the playable road to the tournament.',
+    description:'Shots of Agony training, the Sage’s Combat Manual, the fighting refresher, and the road to the tournament.',
     missions:['rrvvfo-00','rrvvfo-01','rrvvfo-road']
   },
   {
     id:'rrvvfo-chapter-2',number:2,title:'DEFINITELY NOT THE WORLD TOURNAMENT',
-    description:'Open tournament hub, Training Levels, optional encounters, the full bracket, Pouki defeating Bark, and the final against Plouke.',
+    description:'Explore a living tournament town, complete character-driven hub quests, grow through Training Levels, and return between bracket rounds before facing Plouke.',
     missions:['rrvvfo-02']
   },
   {
     id:'rrvvfo-chapter-3',number:3,title:'CLOSED OFF',
-    description:'Development preview: a larger non-linear Training Region, blocked routes, NPC investigation, the strange man, and the underground-base lead.',
-    missions:['rrvvfo-03-preview'],preview:true
-  },
-  {
-    id:'rrvvfo-chapter-4',number:4,title:'CHAPTER 4',
-    description:'Hidden until the Chapter 3 story is finished.',
-    missions:['rrvvfo-04'],future:true
-  },
-  {
-    id:'rrvvfo-chapter-5',number:5,title:'CHAPTER 5',
-    description:'Hidden until the preceding chapter is finished.',
-    missions:['rrvvfo-05'],future:true
-  },
-  {
-    id:'rrvvfo-chapter-6',number:6,title:'RRVVFO ROUTE FINALE',
-    description:'The final chapter of Rrvvfo’s six-chapter Lost Year route.',
-    missions:['rrvvfo-06'],future:true,finale:true
+    description:'Playable demo: investigate sealed roads, question witnesses, and follow the underground lead.',
+    missions:['rrvvfo-03-preview'],demo:true
   }
 ]);
 
@@ -215,6 +158,7 @@ export function rrvvfoNextMission(progress){
   if(!completed.has('rrvvfo-01'))return'rrvvfo-01';
   if(!completed.has('rrvvfo-road'))return'rrvvfo-road';
   if(!completed.has('rrvvfo-02'))return'rrvvfo-02';
+  if(!completed.has('rrvvfo-03-preview'))return'rrvvfo-03-preview';
   return null;
 }
 

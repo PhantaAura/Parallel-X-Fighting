@@ -1,0 +1,55 @@
+{
+  "name": "Parallels X Prototype 2.9A.10 Complete Cumulative Build",
+  "version": "2.9A.10",
+  "build_label": "Prototype 2.9A.10 \u2014 Living Tournament Hub",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cache_id": "29a10-living-tournament-hub-20260729",
+  "save_schema": 247,
+  "story_engine": "2.9A.10",
+  "released_story_content": [
+    "Rrvvfo Chapter 1",
+    "Rrvvfo Chapter 2",
+    "Rrvvfo Chapter 3 playable investigation demo"
+  ],
+  "chapter_2_mandatory_quests": [
+    "The Lost Bracket",
+    "Wade's Shortcut",
+    "The Cracked Ring",
+    "Rumors About Plouke"
+  ],
+  "chapter_2_optional_quests": [
+    "Controlled Flame",
+    "The Fake Champion",
+    "Wade's Biggest Fan",
+    "Dummy on the Loose",
+    "The Missing Prize Envelope",
+    "One Match Anyway"
+  ],
+  "major_features": [
+    "living multi-district tournament hub",
+    "tournament intermissions between official events",
+    "staggered Plouke rumor thread",
+    "Wade race and functional fast-travel shortcuts",
+    "Bark ring-repair quest and ring-out lesson",
+    "optional side-quest journal discovery",
+    "persistent Story stat rewards",
+    "one-fight tournament meals and discounted meal purchases",
+    "old Chapter 2 save migration",
+    "moving crowds, practice fighters, birds, carts, signs, and ambient dialogue"
+  ],
+  "validation": {
+    "game_javascript_syntax_files": 70,
+    "browser_smoke_passed": 207,
+    "browser_smoke_failed": 0,
+    "intentional_negative_test_404": "assets/fighters/rrvvfo/missing.json",
+    "desktop_menu_audit": "1440x900",
+    "mobile_landscape_menu_audit": "844x390",
+    "zip_integrity": "passed",
+    "json_files_parsed": 13,
+    "html_local_references": 10,
+    "javascript_import_references": 132,
+    "css_asset_references": 9,
+    "active_cache_ids": 1
+  }
+}

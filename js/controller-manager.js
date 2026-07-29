@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a8-kinetic-combat-20260729';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a10-living-tournament-hub-20260729';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

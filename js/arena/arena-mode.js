@@ -1,9 +1,9 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a8-kinetic-combat-20260729';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a10-living-tournament-hub-20260729';
 import {drawArenaStage} from './arena-stage-renderer.js';
 import {WebGLArenaRenderer} from './webgl-renderer.js';
-import {ArenaControlManager} from './arena-controls.js?v=29a8-kinetic-combat-20260729';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a8-kinetic-combat-20260729';
+import {ArenaControlManager} from './arena-controls.js?v=29a10-living-tournament-hub-20260729';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a10-living-tournament-hub-20260729';
 
 const ID='arenaModeScreen';
 const W=960;
@@ -40,7 +40,12 @@ const MOVEMENT_PROFILES=Object.freeze({
   default:Object.freeze({walkSpeed:150,runSpeed:304,airSpeed:214,accel:1280,runAccel:1740,brake:1970,airAccel:700,airBrake:110,dashSpeed:700,pursuitSpeed:940})
 });
 
-function movementProfile(fighter){return MOVEMENT_PROFILES[fighter.id]||MOVEMENT_PROFILES.default}
+function movementProfile(fighter){
+  const base=MOVEMENT_PROFILES[fighter.id]||MOVEMENT_PROFILES.default;
+  const scale=Math.max(.85,Math.min(1.25,Number(fighter?.storySpeedMultiplier)||1));
+  if(scale===1)return base;
+  return{...base,walkSpeed:base.walkSpeed*scale,runSpeed:base.runSpeed*scale,airSpeed:base.airSpeed*scale,accel:base.accel*scale,runAccel:base.runAccel*scale,airAccel:base.airAccel*scale,dashSpeed:base.dashSpeed*scale,pursuitSpeed:base.pursuitSpeed*scale};
+}
 function approach(current,target,amount){return current<target?Math.min(target,current+amount):Math.max(target,current-amount)}
 
 const ATTACKS=ARENA_NORMAL_PROFILES.default;
@@ -119,7 +124,7 @@ function installUI(){
 <canvas data-fighter-layer width="${W}" height="${H}" aria-hidden="true"></canvas>
 
 <div class="arenaStageSelect hidden" data-arena-stage-select role="dialog" aria-modal="true" aria-label="Arena select"><div class="arenaStageCard">
-  <header><small>PROTOTYPE 2.9A.8</small><h2>SELECT ARENA</h2><p>Choose a stage. Kinetic movement, pursuit attacks, and Shot / Power / Trick techniques use the same rules everywhere.</p></header>
+  <header><small>PROTOTYPE 2.9A.10</small><h2>SELECT ARENA</h2><p>Choose a stage. Kinetic movement, pursuit attacks, and Shot / Power / Trick techniques use the same rules everywhere.</p></header>
   <div class="arenaStageGrid" data-arena-stage-grid></div>
   <button class="arenaStageBack" data-stage-back>BACK TO MAIN MENU</button>
 </div></div>
@@ -130,7 +135,7 @@ function installUI(){
   <div class="clock"><b data-time>90</b><small data-round>ROUND 1</small></div>
   <div class="side r"><div class="name"><span>REVVFO</span><span data-s2>0</span></div><div class="track"><div class="fill" data-h2></div></div><div class="resourceLine"><span data-e2-text>45</span><span>ENERGY</span></div><div class="resourceTrack"><div class="energyFill" data-e2></div></div><div class="resourceLine"><span data-g2-text>100</span><span>GUARD</span></div><div class="resourceTrack"><div class="guardFill" data-g2></div></div><div class="resourceLine"><span data-m2-text>0</span><span>MOMENTUM</span></div><div class="resourceTrack"><div class="momentumFill" data-m2></div></div></div>
 </div>
-<div class="badge"><strong>PROTOTYPE 2.9A.8 • KINETIC COMBAT</strong><span data-stage-name>TANGAI DOJO</span><br>REUSABLE ARENA PIPELINE • DATA-DRIVEN STAGE</div><div class="banner hidden" data-banner></div>
+<div class="badge"><strong>PROTOTYPE 2.9A.10 • KINETIC COMBAT</strong><span data-stage-name>TANGAI DOJO</span><br>REUSABLE ARENA PIPELINE • DATA-DRIVEN STAGE</div><div class="banner hidden" data-banner></div>
 <div class="result hidden" data-result><small>ARENA BATTLE</small><h2 data-title>MATCH COMPLETE</h2><p data-text></p><div class="actions"><button class="primary" data-rematch>REMATCH</button><button data-change-arena>CHANGE ARENA</button><button data-return>MAIN MENU</button></div></div>
 <div class="arenaNotice" data-arena-notice></div><div class="edgeWarning" data-edge-warning>EDGE PRESSURE • ESCAPE OR COUNTER</div>
 <div class="arenaHotbar" data-arena-hotbar><div class="arenaSlots">${ARENA_ABILITIES.map((ability,index)=>`<button class="arenaAbility ${ability.ultimate?'ultimate':''}" data-arena-slot="${index+1}" aria-label="Slot ${index+1}: ${ability.label}, ${SPECIAL_CATEGORIES[ability.category].label} category"><span class="arenaCooldown"></span><span class="arenaNumber">${index+1}</span><span class="arenaCategory">${SPECIAL_CATEGORIES[ability.category].label}</span><span class="arenaIcon">${ability.icon}</span><span class="arenaAbilityName">${ability.label}</span><span class="arenaCost">${ability.cost} ENERGY${ability.hp?` • ${ability.hp} HP`:''}</span><span class="arenaState" data-arena-state>READY</span></button>`).join('')}</div></div>
@@ -153,7 +158,7 @@ function installUI(){
 <div class="arenaTouchUtilities"><button data-arena-touch-pause aria-label="Pause">Ⅱ</button><button data-arena-touch-settings aria-label="Control settings">⚙</button></div>
 <div class="rotateHint"><div><strong>ROTATE TO LANDSCAPE</strong><span>Arena controls are designed for two-thumb play.</span></div></div>
 <div class="arenaControlSettings hidden" data-arena-control-settings role="dialog" aria-modal="true" aria-label="Arena control settings"><div class="arenaControlCard">
-  <header><div><small>PROTOTYPE 2.9A.8</small><h2>CONTROL LAYOUTS</h2><p>Desktop and mobile settings save separately from combat balance.</p></div><button data-arena-controls-close aria-label="Close">×</button></header>
+  <header><div><small>PROTOTYPE 2.9A.10</small><h2>CONTROL LAYOUTS</h2><p>Desktop and mobile settings save separately from combat balance.</p></div><button data-arena-controls-close aria-label="Close">×</button></header>
   <div class="arenaControlGrid">
     <fieldset><legend>PC</legend><label>Keyboard profile<select data-control-pc-layout><option value="shared">Chapter 1–3 Controls — used in every mode</option></select></label><label>Left mouse click<select data-control-mouse-attack><option value="light">Light Attack</option><option value="heavy">Heavy Attack</option></select></label><p><strong>Movement:</strong> WASD<br><strong>Jump:</strong> Space<br><strong>Light / Heavy / Launcher:</strong> J / K / I<br><strong>Dash:</strong> Shift<br><strong>Block:</strong> L or Mouse 2<br><strong>Charge:</strong> C<br><strong>Grab:</strong> U<br><strong>Abilities:</strong> 1–5</p></fieldset>
     <fieldset><legend>MOBILE</legend><label>Touch controls<select data-control-touch-mode><option value="auto">Auto detect</option><option value="on">Always on</option><option value="off">Off</option></select></label><label>Button size<select data-control-mobile-layout><option value="compact">Compact</option><option value="standard">Standard</option><option value="large">Large Buttons</option></select></label><label>Handedness<select data-control-handedness><option value="right">Joystick left / attacks right</option><option value="left">Joystick right / attacks left</option></select></label><label>Opacity<input data-control-opacity type="range" min=".45" max="1" step=".05"></label><label><input data-control-labels type="checkbox"> Show action labels</label></fieldset>
@@ -626,7 +631,7 @@ class ArenaBattle{
     }
 
     const comboIndex=attacker&&attacker.comboTimer>0?attacker.comboHits:0,comboScale=kind==='grab'?1:Math.max(.55,1-comboIndex*.08);
-    let finalDamage=damage*comboScale*Math.max(1,Number(attacker?.storyAttackMultiplier)||1);
+    let finalDamage=damage*comboScale*Math.max(1,Number(attacker?.storyAttackMultiplier)||1)*Math.max(.65,Math.min(1,Number(target?.storyDefenseMultiplier)||1));
     const armorDef=target.attackState?.def,armored=armorDef?.armorStart!=null&&target.attackState.elapsed>=armorDef.armorStart&&target.attackState.elapsed<=armorDef.armorEnd&&!['grab','ultimate','projectile'].includes(kind);
     if(armored){finalDamage*=.72;stun*=.25;knockback*=.35;this.burst(target.x,target.z,'#d7b979',16,62);this.notice(`${target.name.toUpperCase()} • STARTUP ARMOR`,.55)}
     if(target.armorDurability>0){const armorLoss=(kind==='heavy'||kind==='airHeavy'||kind==='ultimate'||kind==='pursuitHeavy'?34:18);target.armorDurability=Math.max(0,target.armorDurability-armorLoss);finalDamage*=kind==='ultimate'?.78:.58;knockback*=.58;if(target.armorDurability<=0){target.stun=Math.max(target.stun,.34);this.burst(target.x,target.z,'#d2ae72',30,70);this.notice('ROCK ARMOR BROKEN')}}

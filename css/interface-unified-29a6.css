@@ -1883,7 +1883,7 @@
 /* The metadata is descriptive, not interactive. */
 #lostYearStoryScreen .lyMeta{pointer-events:none}
 #lostYearStoryScreen .lyChip{box-shadow:none!important;border-width:2px!important;opacity:.9}
-#lostYearStoryScreen .routeView:before{content:"DISCOVERED CHARACTER ROUTES"!important}
+#lostYearStoryScreen .routeView:before{content:"RRVVFO’S JOURNEY"!important}
 #lostYearStoryScreen .routeCard.isDiscovered .status{color:#8a4c00!important}
 #lostYearStoryScreen .routeCard.isDiscovered .percent{display:none!important}
 #lostYearStoryScreen .routeCard.isLocked{cursor:default!important}
@@ -2577,7 +2577,7 @@
 .storyUnifiedRuntime .arenaNotice{font-family:var(--px-font-ui)!important}
 
 #pxCombatManualUI .manualBookShell{background:linear-gradient(92deg,#f3ead0,#fffaf0 46%,#efe0bf)!important}
-#pxCombatManualUI .manualBookHeader h1:after{content:' • PROTOTYPE 2.9A.8';display:block;margin-top:6px;color:#8a2c2c;font:900 10px var(--px-font-ui);letter-spacing:.12em}
+#pxCombatManualUI .manualBookHeader h1:after{content:' • PROTOTYPE 2.9A.9';display:block;margin-top:6px;color:#8a2c2c;font:900 10px var(--px-font-ui);letter-spacing:.12em}
 #pxCombatManualUI .manualWelcome{margin:0 0 14px;padding:12px 14px;border:4px solid #090909;background:#ffe75f;font:900 14px/1.4 var(--px-font-ui)}
 #pxCombatManualUI .manualQuickActions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}#pxCombatManualUI .manualQuickActions button{padding:7px 10px;border:3px solid #090909;background:#fff;color:#111;font-weight:900}#pxCombatManualUI .manualQuickActions button.active{background:#e52b2f;color:#fff}
 #pxCombatManualUI .manualPage .manualDrill{margin-top:15px;padding:12px;border:4px solid #090909;background:#dff7ff}#pxCombatManualUI .manualPage .manualDrill strong{display:block;color:#0b5e7d}#pxCombatManualUI .manualPage .manualStatus{display:inline-block;margin-top:8px;padding:4px 7px;background:#111;color:#fff;font:900 10px var(--px-font-ui);letter-spacing:.08em}
@@ -2620,3 +2620,251 @@
 #menuScreen .comingSoonRoster>summary{cursor:pointer;padding:10px 12px;color:#bfc9df;font-weight:900;letter-spacing:.06em}
 #menuScreen .comingSoonRoster .lockedRoster{padding:0 10px 10px}
 #menuScreen .comingSoonRoster:not([open]) .lockedRoster{display:none}
+
+/* ===== Prototype 2.9A.9 — Story RPG & Menu Pass ===== */
+
+/* Main menu: every released option stays visible without a hidden horizontal strip. */
+#mainMenuScreen .mainMenuLayout{
+  grid-template-rows:auto minmax(260px,1fr)!important;
+  gap:12px!important;
+}
+#mainMenuScreen [data-main-menu-list]{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(112px,1fr))!important;
+  grid-auto-flow:row!important;
+  gap:7px!important;
+  overflow:visible!important;
+  padding:5px 7px 8px!important;
+  border-bottom:3px solid rgba(255,255,255,.28)!important;
+  scroll-snap-type:none!important;
+}
+#mainMenuScreen [data-main-menu-list]:before{display:none!important}
+#mainMenuScreen .mainMenuGroupLabel{
+  grid-column:1/-1;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:19px;
+  color:#fff;
+  font:italic 900 12px/1 var(--pxb-display,var(--px-font-display));
+  letter-spacing:.14em;
+  text-shadow:2px 2px 0 #071228;
+}
+#mainMenuScreen .mainMenuGroupLabel:after{content:"";height:2px;flex:1;background:linear-gradient(90deg,#fff8,transparent)}
+#mainMenuScreen .mainMode{
+  width:100%!important;
+  min-width:0!important;
+  min-height:58px!important;
+  flex:none!important;
+  padding:7px 10px!important;
+  grid-template-columns:27px 1fr!important;
+  gap:7px!important;
+  scroll-snap-align:none!important;
+}
+#mainMenuScreen .modeIndex{width:26px!important;height:26px!important;font-size:12px!important}
+#mainMenuScreen .modeWords>span{font-size:clamp(11px,1.05vw,15px)!important}
+#mainMenuScreen .modeWords>small{font-size:9px!important;line-height:1.15!important}
+#mainMenuScreen .modeCopy p{font-size:max(12px,.86vw)!important;line-height:1.42!important}
+#mainMenuScreen .modeCopy dt,#mainMenuScreen .modeCopy dd,#mainMenuScreen .modeConfirm,#mainMenuScreen .comingTooltip{font-size:10px!important}
+
+/* Rrvvfo Story route presentation. */
+#lostYearStoryScreen .lyLayout{
+  display:grid!important;
+  grid-template-columns:minmax(320px,.82fr) minmax(430px,1.18fr)!important;
+  gap:18px!important;
+  align-items:stretch!important;
+}
+#lostYearStoryScreen .routeView,#lostYearStoryScreen .routePanel{min-width:0!important}
+#lostYearStoryScreen .routeGrid{display:grid!important;height:100%!important}
+#lostYearStoryScreen .rrvvfoOnlyRoute{
+  min-height:430px!important;
+  display:grid!important;
+  grid-template-rows:minmax(220px,1fr) auto auto!important;
+  align-content:stretch!important;
+  padding:14px!important;
+}
+#lostYearStoryScreen .rrvvfoOnlyRoute .routePortrait{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:220px!important;
+  overflow:hidden!important;
+  border:4px solid #090909!important;
+  background:radial-gradient(circle at 50% 85%,#ff8a56 0,transparent 52%),linear-gradient(#38204c,#0a1024)!important;
+}
+#lostYearStoryScreen .rrvvfoOnlyRoute .routePortrait:before,
+#lostYearStoryScreen .routeFeatureRrvvfo:before,
+#lostYearStoryScreen .routeHeroPortrait:before{
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  bottom:-9%!important;
+  width:190px!important;
+  height:250px!important;
+  transform:translateX(-50%) scale(1.22)!important;
+  background:url('../assets/fighters/rrvvfo/rrvvfo-atlas.png') 0 0/900% 2000% no-repeat!important;
+  image-rendering:pixelated!important;
+  filter:drop-shadow(0 18px 12px #000b) saturate(1.08)!important;
+}
+#lostYearStoryScreen .rrvvfoOnlyRoute .routePortrait b,#lostYearStoryScreen .routeFeatureRrvvfo>b{display:none!important}
+#lostYearStoryScreen .rrvvfoOnlyRoute .routeCopy{padding:13px 3px 5px!important}
+#lostYearStoryScreen .rrvvfoOnlyRoute .routeCopy p{display:block!important;margin:7px 0 0!important;font-size:12px!important;line-height:1.38!important}
+#lostYearStoryScreen .rrvvfoOnlyRoute .routeStartHint{display:block!important;padding:9px 10px!important;border:3px solid #090909!important;background:#090909!important;color:#fff!important;font-size:11px!important;font-weight:1000!important;text-align:center!important}
+#lostYearStoryScreen .routePanel{display:block!important}
+#lostYearStoryScreen .routeFeatureRrvvfo{
+  position:relative!important;
+  min-height:250px!important;
+  overflow:hidden!important;
+  border:5px solid #090909!important;
+  border-bottom:0!important;
+  background:radial-gradient(circle at 50% 85%,#ff663f55,transparent 55%),linear-gradient(145deg,#2f1642,#0c1735)!important;
+}
+#lostYearStoryScreen .routeFeatureRrvvfo:before{width:210px!important;height:280px!important}
+#lostYearStoryScreen .routeDetails{border:5px solid #090909!important;padding:18px!important;background:#fff!important;color:#090909!important}
+#lostYearStoryScreen .routeDetails h2{margin:3px 0 7px!important;font-size:clamp(34px,4.6vw,62px)!important;line-height:.9!important;font-style:italic!important}
+#lostYearStoryScreen .routeDetails p{font-size:13px!important;line-height:1.4!important}
+#lostYearStoryScreen .routeHeroPortrait{
+  position:relative!important;
+  min-height:180px!important;
+  overflow:hidden!important;
+  border:4px solid #090909!important;
+  background:radial-gradient(circle at 50% 85%,#ff744b 0,transparent 52%),linear-gradient(#351943,#101a37)!important;
+}
+#lostYearStoryScreen .routeHeroPortrait:before{width:165px!important;height:220px!important}
+
+/* RPG menu language shared across Story. */
+.storyAttackSigns{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:10px 0!important}
+.storyAttackSigns>span{display:grid!important;grid-template-columns:auto 1fr!important;grid-template-rows:auto auto!important;column-gap:8px!important;align-items:center!important;padding:9px 10px!important;border:3px solid #090909!important;background:#eef5ff!important;color:#090909!important;min-width:0!important}
+.storyAttackSigns>span>b{grid-row:1/3!important;display:grid!important;place-items:center!important;width:30px!important;height:30px!important;border:2px solid #090909!important;background:#fff!important;font-size:17px!important}
+.storyAttackSigns>span small{font-size:9px!important;font-weight:1000!important;letter-spacing:.1em!important}
+.storyAttackSigns>span strong{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:10px!important}
+.storyAttackSigns>span[data-type="shot"]{border-color:#327acc!important}.storyAttackSigns>span[data-type="power"]{border-color:#d15530!important}.storyAttackSigns>span[data-type="trick"]{border-color:#7654a8!important}
+.storyAttackSigns.compact{margin:0!important;max-width:510px!important}.storyAttackSigns.compact>span{padding:5px 7px!important;border-width:2px!important}.storyAttackSigns.compact>span>b{width:23px!important;height:23px!important;font-size:13px!important}.storyAttackSigns.compact>span strong{font-size:8px!important}.storyAttackSigns.compact>span small{font-size:8px!important}
+.storyRpgStats{padding:12px!important;border:4px solid #090909!important;background:#fff!important;color:#090909!important}
+.storyRpgStats header{display:flex!important;gap:14px!important;justify-content:space-between!important;margin-bottom:10px!important;padding-bottom:8px!important;border-bottom:3px solid #090909!important}
+.storyRpgStats header span{display:flex!important;gap:8px!important;align-items:baseline!important}.storyRpgStats header small{font-size:9px!important;font-weight:1000!important;letter-spacing:.1em!important}.storyRpgStats header strong{font-size:20px!important}
+.storyStatGrid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:6px!important}.storyStatGrid span{display:grid!important;gap:2px!important;padding:7px 5px!important;border:2px solid #090909!important;background:#eef4fa!important;text-align:center!important}.storyStatGrid small{font-size:8px!important;font-weight:1000!important}.storyStatGrid b{font-size:16px!important}
+.storyRpgStats.compact{padding:8px!important;border-width:3px!important}.storyRpgStats.compact header{margin-bottom:6px!important;padding-bottom:5px!important}.storyRpgStats.compact .storyStatGrid span{padding:4px 3px!important}.storyRpgStats.compact .storyStatGrid b{font-size:13px!important}
+.storyControlLegend{display:flex!important;flex-wrap:wrap!important;gap:7px!important;margin-top:12px!important}.storyControlLegend span{padding:6px 8px!important;border:2px solid currentColor!important;background:#0c1630!important;color:#fff!important;font-size:10px!important;font-weight:800!important}.storyControlLegend b{color:#ffe06e!important}
+.storyRpgObjectiveCard{display:grid!important;gap:4px!important;margin:10px 0!important;padding:11px!important;border:3px solid #090909!important;background:#fff5cf!important;color:#090909!important}.storyRpgObjectiveCard small{font-size:9px!important;font-weight:1000!important;letter-spacing:.1em!important}.storyRpgObjectiveCard strong{font-size:15px!important}.storyRpgObjectiveCard span{font-size:11px!important;font-weight:800!important;line-height:1.35!important}
+
+/* Chapter 2 RPG menu, tracker, and level-up panel. */
+#rrvvfoMission2UI .chapter2Hud{align-items:center!important}
+#rrvvfoMission2UI .chapter2Hud>.storyAttackSigns{flex:1 1 420px!important;max-width:520px!important}
+#rrvvfoMission2UI .chapter2StoryMenu>article{width:min(880px,95vw)!important;max-height:92dvh!important;overflow:auto!important}
+#rrvvfoMission2UI .storyRpgMenuProgress{display:grid!important;grid-template-columns:minmax(0,1.4fr) minmax(220px,.6fr)!important;gap:10px!important}
+#rrvvfoMission2UI .storyXpPanel{display:grid!important;align-content:center!important;gap:8px!important;padding:12px!important;border:4px solid #090909!important;background:#f3f7fb!important}.storyXpPanel>small{font-size:9px!important;font-weight:1000!important}.storyXpPanel>strong{font-size:20px!important}.storyXpPanel>span{font-size:9px!important;font-weight:900!important}
+#rrvvfoMission2UI .chapter2Tracker{position:absolute!important;z-index:2250!important;right:18px!important;top:106px!important;width:min(410px,calc(100vw - 36px))!important;pointer-events:auto!important}
+#rrvvfoMission2UI .chapter2Tracker[hidden]{display:none!important}
+.storyObjectiveTracker>article{padding:16px!important;border:5px solid #080808!important;background:#fff!important;color:#080808!important;box-shadow:8px 8px 0 #080808!important}.storyObjectiveTracker header{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:10px!important;border-bottom:3px solid #080808!important;padding-bottom:8px!important}.storyObjectiveTracker h2{margin:2px 0 0!important;font-size:30px!important;line-height:.9!important}.storyObjectiveTracker>article>strong{display:block!important;margin-top:12px!important;font-size:15px!important}.storyObjectiveTracker>article>p{font-size:12px!important;font-weight:800!important;line-height:1.4!important}.trackerStatus{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}.trackerStatus span{padding:7px!important;border:2px solid #080808!important;background:#eef4fa!important;font-size:9px!important;font-weight:900!important}.trackerStatus b{display:block!important;margin-top:3px!important;font-size:12px!important}
+#rrvvfoMission2UI .storyLevelRewards{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:7px!important;margin:14px 0!important}.storyLevelRewards span{display:grid!important;grid-template-columns:1fr auto!important;align-items:center!important;padding:8px!important;border:3px solid #080808!important;background:#eef4fa!important}.storyLevelRewards small{grid-column:1/-1!important;font-size:8px!important;font-weight:1000!important}.storyLevelRewards b,.storyLevelRewards strong{font-size:17px!important}.storyLevelRewards i{display:none!important}.storyLevelRewards em{grid-column:1/-1!important;color:#16844b!important;font-size:10px!important;font-style:normal!important;font-weight:1000!important}.levelModeNote{display:block!important;margin-bottom:10px!important;font-size:9px!important;font-weight:900!important}
+
+/* Chapter 3 demo presentation and pause menu. */
+#rrvvfoChapter3PreviewUI .c3Hud{align-items:center!important}
+#rrvvfoChapter3PreviewUI .c3Hud>.storyAttackSigns{flex:1 1 420px!important;max-width:500px!important}
+#rrvvfoChapter3PreviewUI .c3Transition{position:absolute!important;z-index:3000!important;inset:0!important;display:grid!important;place-items:center!important;background:radial-gradient(circle,#2d163e,#050711 68%)!important;color:#fff!important;pointer-events:auto!important}
+#rrvvfoChapter3PreviewUI .c3Transition[hidden]{display:none!important}
+#rrvvfoChapter3PreviewUI .c3Transition article{text-align:center!important;animation:c3TitleIn .7s ease both!important}#rrvvfoChapter3PreviewUI .c3Transition small,#rrvvfoChapter3PreviewUI .c3Transition span{display:block!important;font-size:11px!important;font-weight:1000!important;letter-spacing:.18em!important}#rrvvfoChapter3PreviewUI .c3Transition h1{margin:5px 0!important;color:#ffe06e!important;font-size:clamp(58px,13vw,132px)!important;line-height:.78!important;font-style:italic!important;text-shadow:7px 7px 0 #080808!important}#rrvvfoChapter3PreviewUI .c3Transition strong{display:block!important;margin:12px 0 8px!important;font-size:clamp(19px,3.5vw,38px)!important;font-style:italic!important}
+@keyframes c3TitleIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
+#rrvvfoChapter3PreviewUI .c3StoryMenu{position:absolute!important;z-index:2900!important;inset:0!important;display:grid!important;place-items:center!important;padding:16px!important;background:#050a16e8!important;pointer-events:auto!important}#rrvvfoChapter3PreviewUI .c3StoryMenu[hidden]{display:none!important}#rrvvfoChapter3PreviewUI .c3StoryMenu>article{width:min(880px,96vw)!important;max-height:92dvh!important;overflow:auto!important;padding:19px!important;border:6px solid #080808!important;background:#f8fbff!important;color:#080808!important;box-shadow:12px 12px 0 #080808!important}#rrvvfoChapter3PreviewUI .c3StoryMenu header{display:flex!important;justify-content:space-between!important;gap:12px!important;align-items:flex-start!important;border-bottom:4px solid #080808!important;padding-bottom:9px!important}#rrvvfoChapter3PreviewUI .c3StoryMenu h2{margin:2px 0 0!important;font-size:clamp(36px,6vw,64px)!important;line-height:.88!important;font-style:italic!important}
+#rrvvfoChapter3PreviewUI .c3Tracker{z-index:2850!important}
+
+@media (max-width:1000px){
+  #mainMenuScreen [data-main-menu-list]{grid-template-columns:repeat(3,minmax(104px,1fr))!important}
+  #lostYearStoryScreen .lyLayout{grid-template-columns:minmax(260px,.8fr) minmax(360px,1.2fr)!important}
+}
+
+@media (orientation:landscape) and (max-height:540px){
+  #mainMenuScreen .mainMenuLayout{grid-template-columns:minmax(245px,34vw) minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important;gap:9px!important;overflow:hidden!important}
+  #mainMenuScreen [data-main-menu-list]{grid-template-columns:repeat(2,minmax(0,1fr))!important;align-content:start!important;height:100%!important;overflow-y:auto!important;padding:3px 5px 7px!important;border-right:2px solid #fff5!important;border-bottom:0!important}
+  #mainMenuScreen .mainMenuGroupLabel{min-height:15px!important;font-size:10px!important}
+  #mainMenuScreen .mainMode{min-height:42px!important;padding:4px 6px!important;grid-template-columns:21px 1fr!important;gap:5px!important}
+  #mainMenuScreen .modeIndex{width:20px!important;height:20px!important;font-size:9px!important}
+  #mainMenuScreen .modeWords>span{font-size:10px!important}.mainMode .modeWords>small{font-size:8px!important}
+  #mainMenuScreen [data-main-menu-preview]{height:100%!important;min-height:0!important;overflow:hidden!important}
+  #mainMenuScreen .modeCopy p{font-size:10px!important}
+  #lostYearStoryScreen .lyLayout{grid-template-columns:minmax(210px,.68fr) minmax(0,1.32fr)!important;gap:8px!important}
+  #lostYearStoryScreen .rrvvfoOnlyRoute{min-height:0!important;height:calc(100dvh - 100px)!important;grid-template-rows:minmax(105px,1fr) auto auto!important;padding:7px!important}
+  #lostYearStoryScreen .rrvvfoOnlyRoute .routePortrait{min-height:105px!important}
+  #lostYearStoryScreen .rrvvfoOnlyRoute .routePortrait:before{width:110px!important;height:145px!important}
+  #lostYearStoryScreen .rrvvfoOnlyRoute .routeCopy p{display:none!important}
+  #lostYearStoryScreen .routeFeatureRrvvfo{min-height:115px!important}.routeFeatureRrvvfo:before{width:100px!important;height:135px!important}
+  #lostYearStoryScreen .routeDetails{padding:9px!important}.routeDetails h2{font-size:30px!important}.routeDetails p{font-size:10px!important}
+  #lostYearStoryScreen .routeHomePanel{max-height:calc(100dvh - 78px)!important;overflow:auto!important}
+  #lostYearStoryScreen .routeHomeHero>p{display:block!important;font-size:10px!important}
+  .storyAttackSigns>span strong{font-size:9px!important}.storyAttackSigns>span small{font-size:8px!important}
+  .storyStatGrid small{font-size:8px!important}.storyStatGrid b{font-size:13px!important}
+  #rrvvfoMission2UI .chapter2Hud>.storyAttackSigns,#rrvvfoChapter3PreviewUI .c3Hud>.storyAttackSigns{display:none!important}
+  #rrvvfoMission2UI .chapter2StoryMenu>article,#rrvvfoChapter3PreviewUI .c3StoryMenu>article{max-height:94dvh!important;padding:10px!important;border-width:4px!important;box-shadow:6px 6px 0 #080808!important}
+  #rrvvfoMission2UI .storyRpgMenuProgress{grid-template-columns:1fr 210px!important}
+  #rrvvfoChapter3PreviewUI .c3HudActions button,#rrvvfoMission2UI .chapter2MenuButton{font-size:10px!important;padding:7px 9px!important}
+  #rrvvfoChapter3PreviewUI .c3Tracker,#rrvvfoMission2UI .chapter2Tracker{top:86px!important;max-height:calc(100dvh - 96px)!important;overflow:auto!important}
+}
+
+@media (max-width:620px) and (orientation:portrait){
+  #mainMenuScreen [data-main-menu-list]{grid-template-columns:repeat(2,minmax(0,1fr))!important;overflow-y:auto!important}
+  #mainMenuScreen .mainMenuLayout{grid-template-rows:auto minmax(250px,1fr)!important}
+  #lostYearStoryScreen .lyLayout{grid-template-columns:1fr!important;overflow:auto!important}
+  #lostYearStoryScreen .routePanel{display:none!important}
+  .storyAttackSigns{grid-template-columns:1fr!important}
+  .storyStatGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #rrvvfoMission2UI .storyRpgMenuProgress{grid-template-columns:1fr!important}
+  #rrvvfoMission2UI .storyLevelRewards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+/* 2.9A.9 contrast correction for the light Story RPG panel. */
+#lostYearStoryScreen .routeDetails>p{color:#26364d!important}
+
+/* ===== Prototype 2.9A.10 — Living Tournament Hub ===== */
+#rrvvfoMission2UI .chapter2QuestJournal{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+#rrvvfoMission2UI .chapter2QuestJournal>section{min-width:0;padding:12px;border:4px solid #080808;background:#f7fbff;box-shadow:4px 4px 0 #080808}
+#rrvvfoMission2UI .chapter2QuestJournal>section:last-child{background:#fff8dc}
+#rrvvfoMission2UI .chapter2QuestJournal header{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:3px solid #080808}
+#rrvvfoMission2UI .chapter2QuestJournal header small{font-size:9px;font-weight:1000;letter-spacing:.1em;color:#c81724}
+#rrvvfoMission2UI .chapter2QuestJournal header strong{font-size:12px}
+#rrvvfoMission2UI .chapter2QuestJournal [data-c2-main-quests],#rrvvfoMission2UI .chapter2QuestJournal [data-c2-side-quests]{display:grid;gap:6px}
+#rrvvfoMission2UI .chapter2QuestJournal span{display:grid;grid-template-columns:24px 1fr;gap:0 6px;padding:7px;border:2px solid #080808;background:#fff}
+#rrvvfoMission2UI .chapter2QuestJournal span>b{grid-row:1/3;align-self:center;font-size:18px;text-align:center}
+#rrvvfoMission2UI .chapter2QuestJournal span>strong{font-size:11px;line-height:1.15}
+#rrvvfoMission2UI .chapter2QuestJournal span>small{font-size:9px;line-height:1.25;color:#4f5663}
+#rrvvfoMission2UI .chapter2QuestJournal span.done{background:#b9f2c0;opacity:.82}
+
+#rrvvfoMission2UI .chapter2QuestToast{position:absolute;z-index:2300;right:20px;top:118px;width:min(360px,calc(100vw - 40px));padding:12px 15px;border:4px solid #080808;border-left:12px solid #f2c94c;background:#fff;box-shadow:6px 6px 0 #080808;pointer-events:none;animation:c2QuestToastIn .22s ease-out}
+#rrvvfoMission2UI .chapter2QuestToast small,#rrvvfoMission2UI .chapter2QuestToast strong,#rrvvfoMission2UI .chapter2QuestToast span{display:block}
+#rrvvfoMission2UI .chapter2QuestToast small{font-size:9px;font-weight:1000;letter-spacing:.12em;color:#c81724}
+#rrvvfoMission2UI .chapter2QuestToast strong{margin-top:2px;font-size:18px}
+#rrvvfoMission2UI .chapter2QuestToast span{margin-top:3px;font-size:11px;font-weight:800;line-height:1.3}
+@keyframes c2QuestToastIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+
+#rrvvfoMission2UI .chapter2RaceHud{position:absolute;z-index:2200;left:50%;top:112px;transform:translateX(-50%);min-width:270px;padding:9px 16px;border:4px solid #080808;background:#dff6ff;box-shadow:5px 5px 0 #080808;text-align:center;pointer-events:none}
+#rrvvfoMission2UI .chapter2RaceHud small,#rrvvfoMission2UI .chapter2RaceHud strong,#rrvvfoMission2UI .chapter2RaceHud span{display:block}
+#rrvvfoMission2UI .chapter2RaceHud small{font-size:9px;font-weight:1000;letter-spacing:.12em;color:#176aaa}
+#rrvvfoMission2UI .chapter2RaceHud strong{font-size:17px}
+#rrvvfoMission2UI .chapter2RaceHud span{margin-top:2px;font-size:12px;font-weight:1000}
+
+#rrvvfoMission2UI .chapter2FlameGame{position:absolute;z-index:2600;inset:0;display:grid;place-items:center;padding:16px;background:rgba(8,8,8,.72);pointer-events:auto}
+#rrvvfoMission2UI .chapter2FlameGame[hidden]{display:none!important}
+#rrvvfoMission2UI .chapter2FlameGame>article{width:min(620px,94vw);padding:22px;border:6px solid #080808;background:#fff8df;box-shadow:10px 10px 0 #080808;text-align:center}
+#rrvvfoMission2UI .chapter2FlameGame h2{margin:2px 0 8px;font-size:clamp(34px,7vw,62px);font-style:italic;line-height:.9}
+#rrvvfoMission2UI .chapter2FlameGame p{font-weight:900}
+#rrvvfoMission2UI .flameHeatTrack{position:relative;height:38px;margin:20px 0;border:5px solid #080808;background:#251c22;overflow:hidden}
+#rrvvfoMission2UI .flameHeatTrack i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#ffcb45,#ff5f35);transition:width .08s linear}
+#rrvvfoMission2UI .flameHeatTrack b{position:absolute;top:0;bottom:0;background:rgba(101,235,111,.45);border-left:3px solid #1c7c2b;border-right:3px solid #1c7c2b;pointer-events:none}
+#rrvvfoMission2UI .flameGameActions{display:grid;grid-template-columns:1fr 1fr auto;gap:10px}
+#rrvvfoMission2UI .flameGameActions button{min-height:52px;border:4px solid #080808;background:#fff;color:#080808;font:1000 13px inherit;box-shadow:4px 4px 0 #080808;cursor:pointer}
+#rrvvfoMission2UI .flameGameActions button.primary{background:#ff9e43}
+#rrvvfoMission2UI .chapter2FlameGame>article>span{display:block;margin-top:14px;font-size:11px;font-weight:1000}
+
+@media(max-width:760px){
+  #rrvvfoMission2UI .chapter2QuestJournal{grid-template-columns:1fr}
+  #rrvvfoMission2UI .chapter2QuestJournal>section{padding:8px;border-width:3px;box-shadow:3px 3px 0 #080808}
+  #rrvvfoMission2UI .chapter2QuestJournal span{padding:5px}
+  #rrvvfoMission2UI .chapter2QuestToast{right:8px;top:86px;width:min(320px,calc(100vw - 16px));padding:7px 10px;border-width:3px;border-left-width:8px;box-shadow:3px 3px 0 #080808}
+  #rrvvfoMission2UI .chapter2QuestToast strong{font-size:14px}
+  #rrvvfoMission2UI .chapter2RaceHud{top:84px;min-width:210px;padding:6px 10px;border-width:3px;box-shadow:3px 3px 0 #080808}
+  #rrvvfoMission2UI .chapter2RaceHud strong{font-size:13px}
+  #rrvvfoMission2UI .chapter2FlameGame>article{max-height:92dvh;overflow:auto;padding:12px;border-width:4px;box-shadow:6px 6px 0 #080808}
+  #rrvvfoMission2UI .flameGameActions{grid-template-columns:1fr 1fr}
+  #rrvvfoMission2UI .flameGameActions button:last-child{grid-column:1/-1}
+}
+/* ===== END Prototype 2.9A.10 ===== */

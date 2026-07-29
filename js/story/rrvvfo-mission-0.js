@@ -1,7 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a8-kinetic-combat-20260729';
-import {clampToStage} from '../arena/arena-stages.js?v=29a8-kinetic-combat-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
-import {storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a10-living-tournament-hub-20260729';
+import {clampToStage} from '../arena/arena-stages.js?v=29a10-living-tournament-hub-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a10-living-tournament-hub-20260729';
+import {storyConfirm} from './story-ux.js?v=29a10-living-tournament-hub-20260729';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a10-living-tournament-hub-20260729';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -53,14 +54,14 @@ function installMissionUI(){
   root.id=UI_ID;
   root.className='hidden';
   root.innerHTML=`
-    <div class="missionTag" data-m0-tag><small>RRVVFO ROUTE • CHAPTER 1 • PART 1</small><strong data-m0-objective>TRAINING HAS NOT STARTED</strong><span data-m0-detail>Learn the technique that becomes Shots of Agony.</span></div>
+    <div class="missionTag" data-m0-tag><small>RRVVFO STORY • CHAPTER 1 • TRAINING</small><strong data-m0-objective>TRAINING HAS NOT STARTED</strong><span data-m0-detail>Learn the technique that becomes Shots of Agony.</span></div>
     <div class="dialogueWrap hidden" data-m0-dialogue data-speaker="THE SAGE">
       <button type="button" class="sonicDialogueBox" data-m0-next aria-label="Advance dialogue">
         <span class="dialoguePortrait" aria-hidden="true"></span>
-        <span class="dialogueCopy"><span class="speakerTab" data-m0-speaker>THE SAGE</span><span class="dialogueText" data-m0-text></span><span class="dialoguePrompt">CLICK / ENTER</span><span class="advanceArrow" aria-hidden="true"></span></span>
+        <span class="dialogueCopy"><span class="speakerTab" data-m0-speaker>THE SAGE</span><span class="dialogueText" data-m0-text></span><span class="dialoguePrompt">${storyPromptLabel('confirm')} • CONTINUE</span><span class="advanceArrow" aria-hidden="true"></span></span>
       </button>
     </div>
-    <div class="complete hidden" data-m0-complete><div class="completeCard"><small>CHAPTER 1 • PART 1 COMPLETE</small><h2>NO MAXIMUMS</h2><p>Rrvvfo learned to coordinate four energy copies and caught the Sage outside his prediction window.</p><div class="rewards"><div class="reward"><b>UNLOCKED:</b> Shots of Agony</div><div class="reward"><b>CHAPTER:</b> Training continues with the Combat Manual</div><div class="reward"><b>STAGE:</b> Sage Training Field introduced</div></div><button type="button" data-m0-return>CONTINUE TRAINING</button></div></div>`;
+    <div class="complete hidden" data-m0-complete><div class="completeCard"><small>CHECKPOINT COMPLETE</small><h2>NO MAXIMUMS</h2><p>Rrvvfo learned to coordinate four energy copies and caught the Sage outside his prediction window.</p><div class="rewards"><div class="reward"><b>UNLOCKED:</b> Shots of Agony</div><div class="reward"><b>CHAPTER:</b> Training continues with the Combat Manual</div><div class="reward"><b>STAGE:</b> Sage Training Field introduced</div></div><button type="button" data-m0-return>CONTINUE TRAINING</button></div></div>`;
   document.body.appendChild(root);
   return root;
 }
@@ -113,7 +114,7 @@ class RrvvfoMission0{
     this.patchBattle();
     this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','THE SAGE']});
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • SHOTS OF AGONY ORIGIN';
+    if(badge?.lastChild)badge.lastChild.textContent=' CHAPTER 1 • SHOTS OF AGONY TRAINING';
     this.baseRestart=this.battle.restart.bind(this.battle);
     this.battle.restart=async()=>{
       const restart=await storyConfirm({title:'RESTART TRAINING?',message:'Restart Chapter 1 Part 1 from the opening dialogue?',confirmLabel:'RESTART'});
@@ -201,6 +202,7 @@ class RrvvfoMission0{
           }
           this.sageDodge(attacker,target,false);
           this.normalDodges++;
+          if(this.normalDodges<3)this.setObjective(`TEST THE SAGE'S DODGE • ${this.normalDodges} / 3`,`Direct attempts required: ${this.normalDodges} / 3. The Sage predicts each normal attack.`);
           if(this.normalDodges>=3&&this.mastery===1)this.unlockShotsTraining();
           return false;
         }
@@ -212,7 +214,7 @@ class RrvvfoMission0{
         return next(attacker,target,damage,meta);
       },
       exit:async next=>{
-        const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave Chapter 1 training? Current mission progress will restart.',confirmLabel:'LEAVE TRAINING'});
+        const leave=await storyConfirm({title:'RETURN TO STORY?',message:'Leave Chapter 1 training? Current mission progress will restart.',confirmLabel:'LEAVE TRAINING'});
         if(!leave)return;
         next();this.cleanup();this.onExit();
       }
@@ -349,7 +351,7 @@ class RrvvfoMission0{
     this.battle.fighters[0].en=100;
     this.battle.fighters[1].hp=100;
     this.normalDodges=0;
-    this.setObjective('TRY TO HIT THE SAGE','Normal attacks cannot catch his prediction dodge. Land three attempts.');
+    this.setObjective(`TEST THE SAGE'S DODGE • 0 / 3`,'Use normal attacks three times. The counter updates after every predicted dodge.');
     this.battle.notice('THE SAGE IS READING EVERY DIRECT ATTACK',1.8);
   }
 
@@ -362,7 +364,7 @@ class RrvvfoMission0{
     const battle=this.battle,player=battle.fighters[0],sage=battle.fighters[1];
     if(slot!==2){battle.notice('THIS CHAPTER SECTION TRAINS SHOTS OF AGONY');return false}
     if(battle.phase!=='play'||battle.paused){battle.notice(battle.paused?'MISSION PAUSED':'WAIT FOR THE SPAR');return false}
-    if(this.normalDodges<3){battle.notice('TRY TO HIT THE SAGE DIRECTLY FIRST');return false}
+    if(this.normalDodges<3){battle.notice(`DIRECT ATTEMPTS REQUIRED • ${this.normalDodges} / 3`);return false}
     if(player.stun||player.guardBreak||!player.grounded||player.attackState){battle.notice('ABILITY UNAVAILABLE');return false}
     if(battle.volleyActive(player)){battle.notice('SHOTS VOLLEY ACTIVE');return false}
     if(player.cooldowns.shotsOfAgony>0){battle.notice(`FOCUS • ${player.cooldowns.shotsOfAgony.toFixed(1)}s`);return false}

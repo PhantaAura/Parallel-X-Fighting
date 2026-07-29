@@ -1,7 +1,9 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a8-kinetic-combat-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a8-kinetic-combat-20260729';
-import {StoryMap} from './story-map.js?v=29a8-kinetic-combat-20260729';
-import {storyConfirm} from './story-ux.js?v=29a8-kinetic-combat-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a10-living-tournament-hub-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a10-living-tournament-hub-20260729';
+import {StoryMap} from './story-map.js?v=29a10-living-tournament-hub-20260729';
+import {storyConfirm} from './story-ux.js?v=29a10-living-tournament-hub-20260729';
+import {openCombatManual} from './combat-manual.js?v=29a10-living-tournament-hub-20260729';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a10-living-tournament-hub-20260729';
 
 const MISSION_ID='rrvvfo-03-preview';
 const UI_ID='rrvvfoChapter3PreviewUI';
@@ -19,14 +21,18 @@ function buildUI(){
   root.innerHTML=`
     <div class="c3Hud">
       <div class="c3Objective">
-        <small>RRVVFO ROUTE • CHAPTER 3 DEVELOPMENT PREVIEW</small>
+        <small>RRVVFO STORY • CHAPTER 3 DEMO</small>
         <strong data-c3-objective>LOOK AROUND THE TRAINING REGION</strong>
         <span data-c3-detail>Inspect the damaged routes and question the people nearby.</span>
       </div>
+      ${storyAttackStripMarkup({compact:true})}
       <div class="c3HudActions">
-        <button type="button" data-c3-status>AREA STATUS</button>
-        <button type="button" data-c3-exit>RETURN TO ROUTE</button>
+        <button type="button" data-c3-status>OBJECTIVES</button>
+        <button type="button" data-c3-menu-button>STORY MENU</button>
       </div>
+    </div>
+    <div class="c3Transition" data-c3-transition>
+      <article><small>RRVVFO STORY</small><h1>CHAPTER 3</h1><strong>INVESTIGATION BEGINS</strong><span>PLAYABLE DEMO</span></article>
     </div>
     <div class="c3AreaTitle" data-c3-area hidden>
       <small>THE LOST YEAR • AFTER THE TOURNAMENT</small>
@@ -40,24 +46,35 @@ function buildUI(){
       <header><small>CHAPTER 3 • INVESTIGATION</small><h2>CLOSED OFF</h2></header>
       <div class="c3TrackerRows">
         <div><span>BLOCKED ROUTES</span><strong data-c3-route-count>0 / 2</strong></div>
-        <div><span>PEOPLE QUESTIONED</span><strong data-c3-npc-count>0 / 3</strong></div>
+        <div><span>REQUIRED WITNESSES</span><strong data-c3-npc-count>0 / 3</strong></div>
+        <div><span>OPTIONAL WITNESSES</span><strong data-c3-optional-count>0 / 3</strong></div>
         <div><span>STRANGE MAN</span><strong data-c3-strange-status>NOT FOUND</strong></div>
         <div><span>UNDERGROUND BASE</span><strong data-c3-base-status>LOCKED</strong></div>
       </div>
-      <p>This is the first playable slice of Chapter 3. The full tournament still comes before it in the finished route.</p>
+      <p>This playable demo tests the opening investigation. Chapter 3 continues far beyond this area.</p>
       <button type="button" data-c3-close-status>CLOSE</button>
     </aside>
+    <div class="c3StoryMenu storyRpgPause" data-c3-menu hidden role="dialog" aria-modal="true" aria-label="Chapter 3 story menu">
+      <article>
+        <header><div><small>RRVVFO STORY • CHAPTER 3 DEMO</small><h2>STORY MENU</h2></div><button type="button" data-c3-menu-close aria-label="Close story menu">×</button></header>
+        ${storyAttackStripMarkup()}
+        ${storyStatsMarkup(loadLostYearProgress())}
+        <div class="storyRpgObjectiveCard"><small>CURRENT OBJECTIVE</small><strong data-c3-menu-objective>LOOK AROUND THE TRAINING REGION</strong><span data-c3-menu-detail>Inspect the damaged routes and question the people nearby.</span></div>
+        <div class="chapter2MenuActions"><button class="primary" type="button" data-c3-menu-resume>RETURN TO GAME</button><button type="button" data-c3-menu-manual>SAGE MANUAL</button><button type="button" data-c3-menu-tracker>OBJECTIVE TRACKER</button><button type="button" data-c3-exit>EXIT CHAPTER</button></div>
+        ${storyControlLegendMarkup()}
+      </article>
+    </div>
     <div class="c3Complete" data-c3-complete hidden>
       <article>
-        <small>CHAPTER 3 OPENING PREVIEW COMPLETE</small>
+        <small>CHAPTER 3 DEMO COMPLETE</small>
         <h2>THE UNDERGROUND LEAD</h2>
         <p>Rrvvfo found several sealed routes, questioned the locals, and met a strange man who claims the culprit can be reached through an underground teleporter base.</p>
         <div class="c3Rewards">
-          <span>EXPANDED NON-LINEAR TRAINING REGION ESTABLISHED</span>
-          <span>BLOCKED-ROUTE INVESTIGATION ESTABLISHED</span>
-          <span>UNDERGROUND BASE IS THE NEXT BUILD</span>
+          <span>THE EVIDENCE POINTS BENEATH THE TOURNAMENT GROUNDS</span>
+          <span>THE STRANGE MAN KNOWS MORE THAN HE ADMITS</span>
+          <span>THE INVESTIGATION HAS ONLY BEGUN</span>
         </div>
-        <button type="button" data-c3-continue>RETURN TO RRVVFO ROUTE</button>
+        <button type="button" data-c3-continue>RETURN TO STORY</button>
       </article>
     </div>`;
   document.body.appendChild(root);
@@ -80,9 +97,12 @@ class RrvvfoChapter3Preview{
     this.completePanel=this.root.querySelector('[data-c3-complete]');
     this.routeCount=this.root.querySelector('[data-c3-route-count]');
     this.npcCount=this.root.querySelector('[data-c3-npc-count]');
+    this.optionalCount=this.root.querySelector('[data-c3-optional-count]');
     this.strangeStatus=this.root.querySelector('[data-c3-strange-status]');
     this.baseStatus=this.root.querySelector('[data-c3-base-status]');
     this.mode='opening';
+    this.menuOpen=false;
+    this.menuPausedBattle=false;
     this.step='investigate';
     this.completed=false;
     this.aborted=false;
@@ -121,6 +141,10 @@ class RrvvfoChapter3Preview{
     this.baseUnlocked=Boolean(saved.baseUnlocked);
     for(const route of this.barricades)route.inspected=this.inspectedRoutes.has(route.id);
     this.root.querySelector('[data-c3-status]').addEventListener('click',()=>this.openTracker());
+    this.root.querySelector('[data-c3-menu-button]').addEventListener('click',()=>this.openStoryMenu());
+    this.root.querySelectorAll('[data-c3-menu-close],[data-c3-menu-resume]').forEach(button=>button.addEventListener('click',()=>this.closeStoryMenu()));
+    this.root.querySelector('[data-c3-menu-manual]').addEventListener('click',()=>this.openManual());
+    this.root.querySelector('[data-c3-menu-tracker]').addEventListener('click',()=>{this.closeStoryMenu();this.openTracker()});
     this.root.querySelector('[data-c3-close-status]').addEventListener('click',()=>this.closeTracker());
     this.root.querySelector('[data-c3-exit]').addEventListener('click',()=>this.requestExit());
     this.root.querySelector('[data-c3-continue]').addEventListener('click',()=>this.exitToStory());
@@ -131,16 +155,16 @@ class RrvvfoChapter3Preview{
   start(){
     this.battle=createStoryBattle({stageId:'expanded-training-region',opponent:{id:'sage',name:'The Sage',cpu:true}});
     this.engine=attachStoryEngine(this.battle,{
-      chapterLabel:'RRVVFO CHAPTER 3 PREVIEW',
+      chapterLabel:'RRVVFO CHAPTER 3 DEMO',
       stageName:'EXPANDED TRAINING REGION',
       rootClasses:['storyChapter3Hub','storyChapter3Preview'],
       getMode:()=>this.engine?.dialogue?'dialogue':this.mode==='hub'?'exploration':this.mode
     });
     this.patchBattle();
     this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','THE SAGE']});
-    this.battle.beforeRestart=()=>storyConfirm({title:'RESTART PREVIEW?',message:'Return Rrvvfo to the Chapter 3 starting point? Investigation discoveries remain saved.',confirmLabel:'RESTART'});
+    this.battle.beforeRestart=()=>storyConfirm({title:'RESTART CHAPTER 3 DEMO?',message:'Return Rrvvfo to the investigation starting point? Discovered evidence remains saved.',confirmLabel:'RESTART'});
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • NON-LINEAR INVESTIGATION';
+    if(badge?.lastChild)badge.lastChild.textContent=' CHAPTER 3 DEMO • INVESTIGATION';
     this.root.hidden=false;
     this.map=new StoryMap({
       title:'EXPANDED TRAINING REGION MAP',
@@ -153,8 +177,13 @@ class RrvvfoChapter3Preview{
         {x:-40,z:80,label:'CENTRAL PLAZA',color:'#d9a629'}
       ]
     });
+    this.engine.setHotbarAvailability([],{show:false});
     this.showAreaTitle('EXPANDED TRAINING REGION');
-    this.openingTimer=window.setTimeout(()=>{if(!this.aborted)this.showOpeningDialogue()},2200);
+    this.openingTimer=window.setTimeout(()=>{
+      if(this.aborted)return;
+      this.root.querySelector('[data-c3-transition]').hidden=true;
+      this.showOpeningDialogue();
+    },850);
     return this;
   }
 
@@ -172,7 +201,10 @@ class RrvvfoChapter3Preview{
         return this.engine.commandForMode(command,this.mode);
       },
       cpu:()=>({x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false}),
-      castAbility:()=>false,
+      castAbility:()=>{
+        if(this.mode==='hub')battle.notice('ABILITIES UNAVAILABLE WHILE INVESTIGATING',1.35);
+        return false;
+      },
       updateCamera:()=>this.updateCamera(),
       flipFor:(next,fighter)=>{
         if(fighter===battle.fighters[0]){
@@ -194,11 +226,11 @@ class RrvvfoChapter3Preview{
         if(!battle.active||this.aborted)return;
         this.areaTimer=Math.max(0,this.areaTimer-dt);this.noticeCooldown=Math.max(0,this.noticeCooldown-dt);
         if(!this.areaTimer)this.area.hidden=true;
-        if(this.mode==='hub'){player.hp=100;player.en=100;battle.time=9999;this.updateHub(previous)}
+        if(this.mode==='hub'){player.hp=Math.min(player.maxHp,Math.max(1,player.hp));player.en=Math.min(45,Math.max(0,player.en));battle.time=9999;this.updateHub(previous)}
         this.updateNpcMotion();this.map?.draw();
       },
       exit:async next=>{
-        const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Chapter 3 preview? Investigation progress has been saved.',confirmLabel:'RETURN TO ROUTE'});
+        const leave=await storyConfirm({title:'EXIT CHAPTER 3 DEMO?',message:'Leave the investigation? Your discovered evidence remains saved.',confirmLabel:'EXIT DEMO'});
         if(!leave)return;
         this.persistPreview();next();this.cleanup();this.onExit();
       }
@@ -295,7 +327,9 @@ class RrvvfoChapter3Preview{
     }
     for(const npc of this.npcs){
       const d=distance(player,npc);
-      if(d<115)options.push({type:'npc',target:npc,distance:d,title:this.questionedNpcs.has(npc.id)?'TALK AGAIN':'ASK WHAT HAPPENED'});
+      const asked=this.questionedNpcs.has(npc.id);
+      const optional=!asked&&this.questionedNpcs.size>=3;
+      if(d<115)options.push({type:'npc',target:npc,distance:d,title:asked?'TALK AGAIN':optional?'OPTIONAL WITNESS':'ASK WHAT HAPPENED'});
     }
     if(this.strangeManVisible){
       const d=distance(player,this.strangeMan);
@@ -440,6 +474,35 @@ class RrvvfoChapter3Preview{
     ],()=>this.commitCompletion());
   }
 
+  openManual(){
+    if(this.menuOpen)this.closeStoryMenu();
+    if(this.mode!=='hub')return;
+    this.mode='manual';this.battle.phase='story';
+    const opened=openCombatManual({onClose:()=>{
+      if(this.aborted)return;
+      this.mode='hub';this.battle.phase='play';
+    }});
+    if(!opened){this.mode='hub';this.battle.phase='play'}
+  }
+
+  openStoryMenu(){
+    if(this.menuOpen||!['hub','tracker'].includes(this.mode))return;
+    if(this.mode==='tracker')this.closeTracker();
+    this.menuOpen=true;
+    this.root.querySelector('[data-c3-menu]').hidden=false;
+    this.menuPausedBattle=Boolean(this.battle&&!this.battle.paused);
+    if(this.menuPausedBattle)this.battle.togglePause();
+    this.root.querySelector('[data-c3-menu-resume]')?.focus();
+  }
+
+  closeStoryMenu(){
+    if(!this.menuOpen)return;
+    this.menuOpen=false;
+    this.root.querySelector('[data-c3-menu]').hidden=true;
+    if(this.menuPausedBattle&&this.battle?.paused)this.battle.togglePause();
+    this.menuPausedBattle=false;
+  }
+
   openTracker(){
     if(this.mode!=='hub')return;
     this.mode='tracker';
@@ -459,6 +522,7 @@ class RrvvfoChapter3Preview{
   refreshTracker(){
     this.routeCount.textContent=`${Math.min(this.inspectedRoutes.size,2)} / 2`;
     this.npcCount.textContent=`${Math.min(this.questionedNpcs.size,3)} / 3`;
+    if(this.optionalCount)this.optionalCount.textContent=`${Math.max(0,this.questionedNpcs.size-3)} / ${Math.max(0,this.npcs.length-3)}`;
     this.strangeStatus.textContent=this.strangeManMet?'MET':this.strangeManVisible?'IN PLAZA':'NOT FOUND';
     this.baseStatus.textContent=this.baseUnlocked?'ENTRANCE OPEN':'LOCKED';
   }
@@ -559,6 +623,26 @@ class RrvvfoChapter3Preview{
       r.billboard({x:this.baseEntrance.x,y:160,z:this.baseEntrance.z-120,size:38*pulse,color:'#b9ffe5',alpha:.9});
     }
 
+    // Background activity keeps the investigation region from feeling abandoned.
+    const crowdColors=['#4779a8','#a35b63','#6e9c62','#9b7448','#6f5a9c'];
+    for(let i=0;i<10;i++){
+      const lane=i%2?430:-430;
+      const travel=((time*(22+i%3*4)+i*317)%2600)-1300;
+      const x=i%2?travel:lane+Math.sin(time*.35+i)*120;
+      const z=i%2?lane+Math.cos(time*.3+i)*90:travel;
+      r.box({x,y:40,z,sx:23,sy:54,sz:20,color:crowdColors[i%crowdColors.length],alpha:.72});
+      r.box({x,y:77,z,sx:21,sy:21,sz:20,color:'#8f6047',alpha:.76});
+    }
+    const cartX=((time*38+900)%3000)-1500;
+    r.box({x:cartX,y:32,z:760,sx:130,sy:52,sz:75,color:'#8b5e36',alpha:.9});
+    r.box({x:cartX,y:72,z:760,sx:110,sy:28,sz:68,color:'#d28b3d',alpha:.9});
+    r.disc({x:cartX-48,y:7,z:790,rx:18,rz:12,color:'#202126',alpha:.9});
+    r.disc({x:cartX+48,y:7,z:790,rx:18,rz:12,color:'#202126',alpha:.9});
+    for(let i=0;i<4;i++){
+      const bx=-700+i*420+Math.sin(time*.45+i)*150,bz=-780+Math.cos(time*.38+i)*130;
+      r.billboard({x:bx,y:250+i*16,z:bz,size:16,color:'#dfe9ee',alpha:.6});
+    }
+
     const objective=this.objectivePoint();
     if(objective){
       const pulse=1+Math.sin(time*4)*.09;
@@ -570,13 +654,19 @@ class RrvvfoChapter3Preview{
   objectivePoint(){
     if(this.step==='meet-strange-man')return this.strangeMan;
     if(this.step==='reach-base')return this.baseEntrance;
-    const uninspected=this.barricades.find(route=>!route.inspected);
-    return uninspected||null;
+    const player=this.battle?.fighters?.[0]||{x:0,z:0};
+    const missing=[];
+    if(this.inspectedRoutes.size<2)missing.push(...this.barricades.filter(route=>!route.inspected));
+    if(this.questionedNpcs.size<3)missing.push(...this.npcs.filter(npc=>!this.questionedNpcs.has(npc.id)));
+    missing.sort((a,b)=>distance(player,a)-distance(player,b));
+    return missing[0]||null;
   }
 
   setObjective(title,detail){
     this.objective.textContent=title;
     this.detail.textContent=detail;
+    const menuTitle=this.root.querySelector('[data-c3-menu-objective]');if(menuTitle)menuTitle.textContent=title;
+    const menuDetail=this.root.querySelector('[data-c3-menu-detail]');if(menuDetail)menuDetail.textContent=detail;
   }
 
   showAreaTitle(name){
@@ -587,16 +677,31 @@ class RrvvfoChapter3Preview{
 
   onKey(event){
     if(this.root.hidden)return;
+    const manual=document.getElementById('pxCombatManualUI');
+    if(manual&&!manual.hidden)return;
+    if(this.menuOpen){
+      if(event.key==='Escape'){
+        event.preventDefault();event.stopImmediatePropagation();this.closeStoryMenu();
+      }
+      return;
+    }
+    if(this.mode==='tracker'){
+      if(event.key==='Escape'||event.key.toLowerCase()==='t'){
+        event.preventDefault();event.stopImmediatePropagation();this.closeTracker();
+      }
+      return;
+    }
+    if(event.key==='Escape'&&this.mode==='hub'){
+      event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();return;
+    }
+    if(event.key.toLowerCase()==='m'&&this.mode==='hub'){
+      event.preventDefault();event.stopImmediatePropagation();this.openManual();return;
+    }
+    if(event.key.toLowerCase()==='t'&&this.mode==='hub'){
+      event.preventDefault();event.stopImmediatePropagation();this.openTracker();return;
+    }
     if(this.mode==='hub'&&((event.key==='Enter'||event.code==='KeyE')||event.key.toLowerCase()==='e')){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      this.tryInteract();
-    }else if(this.mode==='hub'&&event.key.toLowerCase()==='m'){
-      event.preventDefault();
-      this.openTracker();
-    }else if(this.mode==='tracker'&&(event.key==='Escape'||event.key.toLowerCase()==='m')){
-      event.preventDefault();
-      this.closeTracker();
+      event.preventDefault();event.stopImmediatePropagation();this.tryInteract();
     }
   }
 
@@ -616,7 +721,7 @@ class RrvvfoChapter3Preview{
 
   async requestExit(){
     this.persistPreview();
-    const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Chapter 3 preview? Your investigation progress is saved and will restore next time.',confirmLabel:'RETURN TO ROUTE'});
+    const leave=await storyConfirm({title:'EXIT CHAPTER 3 DEMO?',message:'Leave the investigation? Your progress is saved and will restore next time.',confirmLabel:'EXIT DEMO'});
     if(leave)this.exitToStory();
   }
 

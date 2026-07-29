@@ -6,7 +6,7 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.11 — Bark, Wade & Tournament Pacing**
+**Prototype 2.9A.15 — Mobile & Controller Comfort**
 
 This ZIP is a complete cumulative build. No older package or patch is required.
 
@@ -16,13 +16,16 @@ This ZIP is a complete cumulative build. No older package or patch is required.
 - Automatic Story continuation between completed sections
 - RPG levels with HP, Power, Defense, Speed, and Focus growth
 - A multi-district Chapter 2 tournament hub with mandatory story quests, optional side quests, changing intermissions, fast-travel shortcuts, and persistent rewards
-- VS CPU and local two-player battles
+- VS CPU and local two-player battles, reserved for the future six-chapter Story clear
+- Arena Mode, revealed alongside Classic battles after all six Rrvvfo chapters are complete
 - Arena Training plus the optional Advanced 2D Lab
 - Five current playable fighters: Rrvvfo, Revvfo, Wade, Bark, and The Sage
 - Keyboard and mouse, Nintendo, Xbox, PlayStation, custom-controller, and touch input
+- Responsive phone controls that stay inside the safe area without overlapping each other, the ability hotbar, or the portrait battle view
+- Compact portrait and short-landscape menus with touch-sized buttons and clear swipe/tap prompts
 - The Sage’s Manual with beginner lessons, fighter guides, drills, and spoiler-safe unlocks
 
-Story begins from **STORY** on the main menu. Select Rrvvfo once to begin or continue; completing a normal Story section automatically loads the next playable section without returning to the route screen.
+Story begins from **STORY** on the main menu. Select Rrvvfo once to begin or continue; completing a normal Story section automatically loads the next playable section without returning to the route screen. Classic VS CPU, 2 Player, and Arena Mode stay hidden until all six Rrvvfo chapters are complete. Chapters 1–3 do not reveal them. Training remains available from the start.
 
 ## Chapter 2 hub
 
@@ -80,5 +83,6 @@ Prompts change for keyboard and mouse, Nintendo, Xbox, PlayStation, custom mappi
 - Use a meal, lose, and retry to confirm the meal remains active without being consumed twice.
 - Catch the prize cart and purchase a discounted meal after the current meal is gone.
 - Report empty districts, unclear routes, repetitive dialogue, quest-marker confusion, frame drops, or mobile HUD overlap.
+- On phones, rotate between portrait and landscape and confirm the controls remain separated and the main-menu sections never overlap.
 
-See [`PATCH-NOTES-2.9A.11.md`](PATCH-NOTES-2.9A.11.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.11.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.11.md). Older patch notes remain as development history.
+See [`PATCH-NOTES-2.9A.15.md`](PATCH-NOTES-2.9A.15.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.15.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.15.md). Older patch notes remain as development history.

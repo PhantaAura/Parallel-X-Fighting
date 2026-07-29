@@ -87,8 +87,8 @@ const TANGAI_DOJO={
   camera:{
     yawDeg:40,
     fov:42,
-    clear:'#101326',
-    fogColor:'#0e0f1c',
+    clear:'#17120e',
+    fogColor:'#17120e',
     fogRange:[560,1450],
     focusClampX:110,
     focusClampZ:90,
@@ -105,34 +105,74 @@ const TANGAI_DOJO={
     zoomSmoothing:.04
   },
   floor:{
-    base:{x:0,y:-15,z:0,sx:760,sy:30,sz:520,color:'#4b3044'},
-    surface:{x:0,y:1,z:0,sx:724,sy:4,sz:484,color:'#815f72'},
-    grid:{stepX:60,stepZ:48,y:4,widthX:1.8,widthZ:1.8,height:1.2,color:'#e5b5ce',alphaX:.42,alphaZ:.35},
-    centerMark:{x:0,y:5,z:0,radius:92,segments:36,width:3,height:1.5,color:'#ff91d4',alpha:.74,crossRadius:105,crossWidth:2,crossAlpha:.55}
+    base:{x:0,y:-15,z:0,sx:760,sy:30,sz:520,color:'#3b2518'},
+    surface:{x:0,y:1,z:0,sx:724,sy:4,sz:484,color:'#a46e3e'},
+    grid:{stepX:52,stepZ:48,y:4,widthX:1.6,widthZ:1.4,height:1.2,color:'#e2b878',alphaX:.34,alphaZ:.24},
+    centerMark:{x:0,y:5,z:0,radius:92,segments:36,width:3,height:1.5,color:'#c82928',alpha:.8,crossRadius:105,crossWidth:2,crossAlpha:.5}
   },
   boundary:{
     postSpacing:120,
-    post:{y:24,sx:9,sy:48,sz:9,color:'#2b1d32'},
-    cap:{y:52,sx:14,sy:10,sz:14,color:'#ff55b6',lit:false},
-    rail:{y:34,width:7,height:7,color:'#553149'}
+    post:{y:24,sx:9,sy:48,sz:9,color:'#3a2418'},
+    cap:{y:52,sx:14,sy:10,sz:14,color:'#d6a34d',lit:false},
+    rail:{y:34,width:7,height:7,color:'#694226'}
   },
   scenery:{
     boxes:[
-      {x:-70,y:120,z:-318,sx:560,sy:230,sz:34,color:'#211827'},
-      {x:-70,y:238,z:-316,sx:620,sy:24,sz:78,color:'#512b4b'},
-      {x:-70,y:260,z:-316,sx:700,sy:18,sz:104,color:'#2a1b31'},
-      {x:-70,y:124,z:-296,sx:250,sy:170,sz:7,color:'#0e0d15'},
-      {x:-300,y:118,z:-292,sx:18,sy:230,sz:18,color:'#71405e'},
-      {x:-190,y:118,z:-292,sx:18,sy:230,sz:18,color:'#71405e'},
-      {x:50,y:118,z:-292,sx:18,sy:230,sz:18,color:'#71405e'},
-      {x:160,y:118,z:-292,sx:18,sy:230,sz:18,color:'#71405e'},
-      {x:-405,y:74,z:-70,sx:26,sy:150,sz:470,color:'#1b1625'},
-      {x:405,y:74,z:-70,sx:26,sy:150,sz:470,color:'#1b1625'}
+      // Rear wall, roof line, and heavy timber frame.
+      {x:0,y:120,z:-318,sx:720,sy:230,sz:34,color:'#d8bd8b'},
+      {x:0,y:238,z:-316,sx:780,sy:26,sz:78,color:'#4a2d1c'},
+      {x:0,y:268,z:-316,sx:850,sy:24,sz:112,color:'#241812'},
+      {x:0,y:221,z:-294,sx:710,sy:15,sz:15,color:'#684127'},
+      {x:-350,y:122,z:-292,sx:20,sy:235,sz:20,color:'#55331f'},
+      {x:-175,y:122,z:-292,sx:17,sy:235,sz:17,color:'#684127'},
+      {x:0,y:122,z:-292,sx:20,sy:235,sz:20,color:'#55331f'},
+      {x:175,y:122,z:-292,sx:17,sy:235,sz:17,color:'#684127'},
+      {x:350,y:122,z:-292,sx:20,sy:235,sz:20,color:'#55331f'},
+
+      // Shoji-style wall panels.
+      {x:-263,y:132,z:-295,sx:145,sy:150,sz:6,color:'#f1dfb8',alpha:.92},
+      {x:-88,y:132,z:-295,sx:145,sy:150,sz:6,color:'#ead6aa',alpha:.92},
+      {x:88,y:132,z:-295,sx:145,sy:150,sz:6,color:'#ead6aa',alpha:.92},
+      {x:263,y:132,z:-295,sx:145,sy:150,sz:6,color:'#f1dfb8',alpha:.92},
+      {x:-263,y:132,z:-289,sx:5,sy:150,sz:5,color:'#6a4328'},
+      {x:-88,y:132,z:-289,sx:5,sy:150,sz:5,color:'#6a4328'},
+      {x:88,y:132,z:-289,sx:5,sy:150,sz:5,color:'#6a4328'},
+      {x:263,y:132,z:-289,sx:5,sy:150,sz:5,color:'#6a4328'},
+      {x:0,y:132,z:-288,sx:700,sy:5,sz:5,color:'#7a4a29'},
+      {x:0,y:84,z:-288,sx:700,sy:5,sz:5,color:'#7a4a29'},
+      {x:0,y:180,z:-288,sx:700,sy:5,sz:5,color:'#7a4a29'},
+
+      // Tangai crest and hanging red banners.
+      {x:0,y:149,z:-282,sx:92,sy:92,sz:8,color:'#c72f28'},
+      {x:0,y:149,z:-276,sx:57,sy:57,sz:8,color:'#e7bd57'},
+      {x:0,y:149,z:-270,sx:19,sy:82,sz:8,color:'#7f221f'},
+      {x:-122,y:157,z:-278,sx:36,sy:116,sz:8,color:'#9f2824'},
+      {x:122,y:157,z:-278,sx:36,sy:116,sz:8,color:'#9f2824'},
+      {x:-122,y:205,z:-276,sx:52,sy:10,sz:10,color:'#d6a34d'},
+      {x:122,y:205,z:-276,sx:52,sy:10,sz:10,color:'#d6a34d'},
+
+      // Side walls, benches, weapon racks, and training equipment.
+      {x:-405,y:78,z:-70,sx:26,sy:158,sz:470,color:'#3c281c'},
+      {x:405,y:78,z:-70,sx:26,sy:158,sz:470,color:'#3c281c'},
+      {x:-330,y:24,z:175,sx:105,sy:22,sz:32,color:'#70472b'},
+      {x:330,y:24,z:175,sx:105,sy:22,sz:32,color:'#70472b'},
+      {x:-330,y:70,z:-214,sx:118,sy:12,sz:14,color:'#4b2f20'},
+      {x:330,y:70,z:-214,sx:118,sy:12,sz:14,color:'#4b2f20'},
+      {x:-372,y:72,z:-214,sx:10,sy:105,sz:10,color:'#4b2f20'},
+      {x:372,y:72,z:-214,sx:10,sy:105,sz:10,color:'#4b2f20'},
+      {x:-332,y:81,z:-208,sx:8,sy:126,sz:8,color:'#c5a25b'},
+      {x:-305,y:81,z:-208,sx:8,sy:126,sz:8,color:'#c5a25b'},
+      {x:332,y:81,z:-208,sx:8,sy:126,sz:8,color:'#c5a25b'},
+      {x:305,y:81,z:-208,sx:8,sy:126,sz:8,color:'#c5a25b'},
+      {x:-420,y:56,z:155,sx:42,sy:94,sz:42,color:'#8f2c25'},
+      {x:-420,y:109,z:155,sx:65,sy:24,sz:65,color:'#d6a34d'},
+      {x:420,y:56,z:155,sx:42,sy:94,sz:42,color:'#8f2c25'},
+      {x:420,y:109,z:155,sx:65,sy:24,sz:65,color:'#d6a34d'}
     ],
     lamps:[
       {x:-330,z:-190},{x:330,z:-190},{x:-330,z:190},{x:330,z:190}
     ],
-    lamp:{post:{y:78,sx:13,sy:110,sz:13,color:'#32203a'},light:{y:142,sx:34,sy:45,sz:34,color:'#ff6fc8',alpha:.82,lit:false}}
+    lamp:{post:{y:78,sx:13,sy:110,sz:13,color:'#4a2d1c'},light:{y:142,sx:34,sy:45,sz:34,color:'#ffd68a',alpha:.9,lit:false}}
   }
 };
 

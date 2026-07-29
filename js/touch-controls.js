@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,displayedControlPosition} from './touch-layout-editor.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a15-mobile-controller-comfort-20260729';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',
@@ -343,8 +343,11 @@ export class TouchControls {
     const movement=this.settings.positions.movement;
     movement.size=this.settings.movement==='joystick'?this.settings.stickSize:this.settings.dpadSize*3+this.settings.dpadSpacing*2;
     this.layoutEditor.apply();
+    const rect=this.root.getBoundingClientRect?.()||{};
+    const width=rect.width||globalThis.window?.visualViewport?.width||globalThis.window?.innerWidth||844;
+    const height=rect.height||globalThis.window?.visualViewport?.height||globalThis.window?.innerHeight||390;
     for(const control of this.root.querySelectorAll('[data-control-id]')){
-      const position=displayedControlPosition(this.settings,control.dataset.controlId);
+      const position=responsiveControlPosition(this.settings,control.dataset.controlId,{width,height});
       control.setAttribute('aria-label',control.getAttribute('aria-label')||control.dataset.controlId);
       control.style.setProperty('--control-size',`${position.size}px`);
     }

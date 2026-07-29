@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a15-mobile-controller-comfort-20260729';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a15-mobile-controller-comfort-20260729';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {Fighter} from '../js/fighter.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {EffectSystem} from '../js/effects.js?v=29a15-mobile-controller-comfort-20260729';
+import {Fighter} from '../js/fighter.js?v=29a15-mobile-controller-comfort-20260729';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -14,15 +14,18 @@ import {AUDIO_HOOKS,AudioManager} from '../js/audio-manager.js';
 import {SAFE_AREA_VARIABLES,applySafeAreaVariables,isPortraitViewport,viewportMetrics} from '../js/mobile-safe-area.js';
 import {HapticsManager,MobilePlatformController,TOUCH_SETTINGS_KEY,detectMobilePlatform,loadTouchSettings,saveTouchSettings} from '../js/mobile-platform.js';
 import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDPadDirections,touchTutorialSteps} from '../js/touch-controls.js';
-import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
+import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a15-mobile-controller-comfort-20260729';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a15-mobile-controller-comfort-20260729';
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js';
-import {CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {MAIN_MENU_MODES,MainMenu} from '../js/main-menu.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a15-mobile-controller-comfort-20260729';
+import {MAIN_MENU_MODES,STORY_CLEAR_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a15-mobile-controller-comfort-20260729';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
+import {resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a15-mobile-controller-comfort-20260729';
+import {getArenaStage} from '../js/arena/arena-stages.js?v=29a15-mobile-controller-comfort-20260729';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -33,14 +36,14 @@ import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringif
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {LoadingManager} from '../js/loading-manager.js?v=29a15-mobile-controller-comfort-20260729';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a15-mobile-controller-comfort-20260729';
+import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a15-mobile-controller-comfort-20260729';
 
 const results=[],assert=(condition,message)=>{if(!condition)throw new Error(message)};
 async function test(name,fn){try{await fn();results.push({name,pass:true})}catch(error){results.push({name,pass:false,error:error.message})}}
@@ -184,7 +187,7 @@ await test('Lens visuals preserve mastered cost and dodge state',()=>{localStora
 await test('Object Swap selects disappearance and reappearance without changing movement rules',()=>{const{one}=pair();const start=one.x;one.en=100;one.dash();assert(one.x!==start&&one.visualAction==='objectSwapDisappear','Object Swap visual or movement did not start');one.visualActionTimer=8;assert(resolveRrvvfoAnimation(one,one.world).name==='objectSwapReappear','Object Swap did not enter reappearance')});
 await test('showcase sprites default On and old saves migrate to the stable pipeline',()=>{const fresh=loadRrvvfoVisualSettings(memoryStorage());assert(fresh.enabled,'fresh sprite setting did not default On');const legacy=memoryStorage();legacy.setItem(RRVVFO_VISUAL_SAVE_KEY,JSON.stringify({enabled:false,appearance:'down',quality:'full'}));assert(loadRrvvfoVisualSettings(legacy).enabled,'legacy prototype Off value did not migrate to the stable default')});
 await test('explicit Rrvvfo sprite On preference persists',()=>{const storage=memoryStorage(),settings={...defaultRrvvfoVisualSettings(),enabled:true,quality:'reduced'};assert(saveRrvvfoVisualSettings(settings,storage),'settings did not save');const loaded=loadRrvvfoVisualSettings(storage);assert(storage.data[RRVVFO_VISUAL_SAVE_KEY]&&loaded.enabled&&loaded.quality==='reduced','explicit sprite On preference did not persist')});
-await test('non-Rrvvfo matches do not report a sprite load failure',async()=>{const visuals=new FighterVisuals({settings:{...defaultRrvvfoVisualSettings(),enabled:true}}),result=await visuals.preloadForMatch(['wade','bark']);assert(result.reason==='disabled-or-unused','non-Rrvvfo match returned the wrong preload reason');assert(!shouldShowRrvvfoLoadFailure(result,true),'unused sprites displayed a load-failure warning')});
+await test('Bark and Wade matches preload their first-class sprite atlases',async()=>{const visuals=new FighterVisuals({settings:{...defaultRrvvfoVisualSettings(),enabled:true}}),result=await visuals.preloadForMatch(['wade','bark']);assert(result.ready&&!result.failed?.length,'Bark or Wade sprite preload failed');assert(!shouldShowRrvvfoLoadFailure(result,true),'ready Bark or Wade sprites displayed a load-failure warning')});
 await test('genuine missing manifests report fallback status',async()=>{const missing=new FighterVisuals({settings:{...defaultRrvvfoVisualSettings(),enabled:true},manifestUrl:new URL('../assets/fighters/rrvvfo/missing.json',document.baseURI).href}),result=await missing.preloadForMatch(['rrvvfo']);assert(!result.ready&&result.reason==='load-failed'&&missing.status==='fallback','missing asset did not enter fallback state');assert(shouldShowRrvvfoLoadFailure(result,true),'genuine load failure did not request the fallback notice')});
 await test('Player 1 Player 2 and Training appearances persist separately',()=>{const storage=memoryStorage(),settings=defaultRrvvfoVisualSettings();settings.appearances={player1:'down',player2:'up',trainingPlayer1:'up',trainingDummy:'down'};saveRrvvfoVisualSettings(settings,storage);const loaded=loadRrvvfoVisualSettings(storage);assert(loaded.appearances.player1==='down'&&loaded.appearances.player2==='up'&&loaded.appearances.trainingPlayer1==='up'&&loaded.appearances.trainingDummy==='down','per-player appearance slots were merged')});
 await test('Hood Down remains the default appearance',()=>{const settings=defaultRrvvfoVisualSettings();assert(Object.values(settings.appearances).every(value=>value==='down'),'a fresh appearance slot did not default Hood Down')});
@@ -199,7 +202,7 @@ await test('controller detection and disconnection assignment stay deterministic
 await test('InputManager honors explicit player device assignment',()=>{const pads=[makePad(),null,makePad()],input=new InputManager(()=>pads);input.setControllerStyle(1,'xbox');input.setControllerAssignment(1,2);pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=true;input.poll();pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=false;settleChordWindow(input);assert(input.consumeAction(1,'a'),'assigned Player 1 controller input was ignored')});
 await test('round and Training cleanup clear visual-only state',()=>{const setup=pair();setup.world.fighterVisuals={resetFighter:fighter=>{fighter.__visualReset=true}};setup.one.visualAction='ultimateAttack';setup.one.visualActionTimer=99;setup.one.resetRuntime();assert(setup.one.__visualReset&&!setup.one.visualAction&&!setup.one.visualActionTimer,'fighter reset retained visual state');trainingState.enabled=true;resetTrainingWorld(setup.world);assert(setup.world.projectiles.length===0&&setup.world.effects.effects.length===0,'Training cleanup retained transient visuals')});
 
-await test('Prototype 2.9A.11 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.11 — Bark, Wade & Tournament Pacing','build label is outdated');assert(SAVE_SCHEMA_VERSION===248,'save schema version is outdated')});
+await test('Prototype 2.9A.15 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.15 — Mobile & Controller Comfort','build label is outdated');assert(SAVE_SCHEMA_VERSION===250,'save schema version is outdated')});
 await test('Bark and Wade are first-class sprite fighters with complete manifests',async()=>{
   assert(SPRITE_FIGHTER_IDS.includes('bark')&&SPRITE_FIGHTER_IDS.includes('wade'),'Bark or Wade is missing from the sprite fighter pipeline');
   for(const [name,url,specials] of [['Bark',BARK_MANIFEST_URL,['rockShot','rockArmor','earthWall','groundQuake','seismicCounter']],['Wade',WADE_MANIFEST_URL,['lightningBlast','lightningDash','thunderstorm','lightningBeam']]]){
@@ -207,7 +210,92 @@ await test('Bark and Wade are first-class sprite fighters with complete manifest
     for(const animation of ['idle','fightingStance','run','jumpRise','fall','dash','light1','light2','light3','heavyStartup','launcherStartup','blockHold','perfectBlock','grab','hurtLight','knockdown','getUp','defeated','victory',...specials])assert(manifest.animations?.[animation],`${name} omitted ${animation}`);
   }
 });
+await test('all five cleaned fighter atlases have valid manifests and reachable images',async()=>{
+  for(const fighter of ['rrvvfo','revvfo','bark','wade','sage']){
+    const manifestResponse=await fetch(`../assets/fighters/${fighter}/${fighter}-animations.json`);
+    assert(manifestResponse.ok,`${fighter} cleaned manifest did not load`);
+    const manifest=await manifestResponse.json();
+    assert(validateSpriteManifest(manifest),`${fighter} cleaned manifest is invalid`);
+    const imageResponse=await fetch(new URL(manifest.image,new URL(`../assets/fighters/${fighter}/${fighter}-animations.json`,document.baseURI)));
+    assert(imageResponse.ok,`${fighter} cleaned atlas image did not load`);
+  }
+});
+await test('Sage uses the supplied full production sheet instead of twelve reused poses',async()=>{
+  const manifest=await(await fetch('../assets/fighters/sage/sage-animations.json')).json();
+  const used=new Set(Object.values(manifest.animations).flatMap(animation=>animation.frames));
+  assert(Object.keys(manifest.frames).length===36,'Sage does not have 36 production frames');
+  assert(used.size>=32,'Sage animations still reuse too few poses');
+  for(const animation of ['run','jumpRise','fall','light1','heavyActive','launcherActive','airLight','airHeavy','blockHold','perfectBlock','hurtHeavy','knockdown','getUp','predictionDodge','mentorCounter','sagePalm','ultimateAttack','defeated','victory'])assert(manifest.animations[animation],`Sage omitted ${animation}`);
+});
+await test('Classic fighter sprites are readable and off-model turnaround cells stay inactive',async()=>{
+  for(const fighter of ['rrvvfo','revvfo','bark','wade','sage']){
+    const manifest=await(await fetch(`../assets/fighters/${fighter}/${fighter}-animations.json`)).json();
+    assert(manifest.defaults.scale>=.7,`${fighter} remains too small in Classic`);
+    assert(!(manifest.animations.turn?.frames||[]).some(frame=>frame.includes('turn_')),`${fighter} still activates an off-model turnaround cell`);
+  }
+  const css=await(await fetch('../css/interface-unified-29a6.css')).text();
+  assert(/#menuScreen \.roster\{\s*display:block!important/.test(css),'Classic roster can collapse back into the outer legacy grid');
+  assert(/#menuScreen \.playableRoster\{grid-template-columns:repeat\(5,minmax\(0,1fr\)\)!important\}/.test(css),'playable Classic roster is not a five-card row');
+});
 await test('main menu exposes every implemented mode and honest Coming Later state',()=>{const ids=MAIN_MENU_MODES.map(mode=>mode.id);for(const id of ['story','cpu','local','training','settings','extras','credits'])assert(ids.includes(id),`main menu omitted ${id}`);const arcade=MAIN_MENU_MODES.find(mode=>mode.id==='arcade');assert(arcade.disabled&&/Coming Later/i.test(arcade.availability),'Arcade was presented as functional')});
+await test('Classic and Arena stay hidden until all six Story chapters are complete',()=>{
+  const storage=memoryStorage(),released=['rrvvfo-00','rrvvfo-01','rrvvfo-road','rrvvfo-02','rrvvfo-03-preview'];
+  const freshIds=mainMenuModesForProgress(storage).map(mode=>mode.id);
+  assert(STORY_CLEAR_MODE_IDS.every(id=>!freshIds.includes(id)),'a Story-clear mode appeared on a fresh save');
+  assert(STORY_CHAPTERS_PER_CHARACTER===6,'the Story unlock target is not six chapters per character');
+  assert(!storyModeComplete({completedMissions:released.slice(0,-1)}),'an incomplete released Story was treated as cleared');
+  storage.setItem(LOST_YEAR_SAVE_KEY,JSON.stringify({version:1,completedMissions:released}));
+  const clearedIds=mainMenuModesForProgress(storage).map(mode=>mode.id);
+  assert(!storyModeComplete({completedMissions:released}),'three released chapters incorrectly counted as the full six-chapter Story');
+  assert(STORY_CLEAR_MODE_IDS.every(id=>!clearedIds.includes(id)),'Classic or Arena appeared after only Chapters 1–3');
+});
+await test('Story progress measures the planned six chapters instead of released demo content',()=>{
+  const route=LOST_YEAR_ROUTES[0];
+  assert(routeProgress(route,{completedMissions:[]})===0,'fresh Story progress was not zero');
+  assert(routeProgress(route,{completedMissions:['rrvvfo-00','rrvvfo-01','rrvvfo-road']})===17,'Chapter 1 did not count as one of six');
+  const released=['rrvvfo-00','rrvvfo-01','rrvvfo-road','rrvvfo-02','rrvvfo-03-preview'];
+  assert(routeProgress(route,{completedMissions:released})===33,'Chapter 3 demo incorrectly counted as a completed full chapter');
+});
+await test('hub camera snaps after teleports and keeps Rrvvfo centered during exploration',()=>{
+  const battle={
+    stage:{camera:{yawDeg:40,horizontalDistanceScale:.78,heightBase:360,heightDistanceScale:.18,targetHeight:38,jumpTargetScale:.16}},
+    camera:{x:0,z:0,distance:900,eye:[0,0,0],target:[0,0,0]},
+    cameraShake:0,
+    fighters:[{x:900,y:0,z:700},{x:-400,y:-1200,z:-300}]
+  };
+  updateHubCamera(battle,{hubDistance:1120});
+  assert(battle.camera.x===900&&battle.camera.z===700,'the hub camera did not catch up when Rrvvfo moved far away');
+  battle.fighters[0].x=960;battle.fighters[0].z=720;
+  updateHubCamera(battle,{hubDistance:1120});
+  assert(battle.camera.x>900&&battle.camera.x<960,'nearby movement did not use smooth follow');
+  snapHubCamera(battle,battle.fighters[0],{distance:1010});
+  assert(battle.camera.x===960&&battle.camera.z===720&&battle.camera.distance===1010,'teleport camera snap was inaccurate');
+});
+await test('hub camera lifts or pulls forward when solid scenery blocks Rrvvfo',()=>{
+  const stage={scenery:{boxes:[{x:0,y:190,z:500,sx:240,sy:380,sz:180,alpha:1}]}};
+  const target=[0,55,0],eye=[0,540,1000],resolved=resolveHubCameraOcclusion(stage,target,eye);
+  assert(resolved!==eye&&(resolved[1]>eye[1]||resolved[2]<eye[2]),'hub camera ignored blocking scenery');
+  assert(resolveHubCameraOcclusion({scenery:{boxes:[]}},target,eye)===eye,'unblocked camera position changed');
+});
+await test('Story startup failure does not create false Continue progress',async()=>{
+  const source=await(await fetch('../js/story/lost-year-story.js')).text();
+  const openRoute=source.slice(source.indexOf('openRoute(){'),source.indexOf('showRouteHome('));
+  const startStep=source.slice(source.indexOf('startStep(stepId'),source.indexOf('export function openLostYearStory'));
+  assert(!openRoute.includes('saveLostYearProgress'),'opening the route saves progress before the chapter exists');
+  assert(startStep.indexOf('starter({...starterOptions')<startStep.indexOf('routeStarted:true'),'chapter progress is saved before successful startup');
+  assert(startStep.includes('saveLostYearProgress(progressBeforeStart)'),'failed startup does not restore the previous save');
+});
+await test('Chapter 2 hub animation timing advances in simulation updates only',async()=>{
+  const source=await(await fetch('../js/story/rrvvfo-mission-2.js')).text();
+  assert(source.includes('this.hubAnimationClock+=Math.max(0,dt)*1000'),'hub actors do not use elapsed simulation time');
+  assert(!source.includes('actor.animationClock+=16.67'),'render refresh rate still advances hub animation');
+});
+await test('Tangai Dojo has a detailed but compact 3D stage layout',()=>{
+  const dojo=getArenaStage('dojo'),tournament=getArenaStage('tournament');
+  assert(dojo.scenery.boxes.length>=40,'Tangai Dojo still has placeholder scenery');
+  assert(dojo.bounds.maxX-dojo.bounds.minX<tournament.bounds.maxX-tournament.bounds.minX,'Tangai Dojo became as large as the Global Tournament');
+  assert(dojo.floor.centerMark.color==='#c82928','Tangai Dojo crest palette is missing');
+});
 await test('main menu mode descriptions include player and availability data',()=>{for(const mode of MAIN_MENU_MODES){assert(mode.label&&mode.description&&mode.players&&mode.availability,`${mode.id} preview is incomplete`)}});
 await test('post-match options include every requested destination',()=>{assert(RESULT_ACTIONS.map(action=>action.id).join(',')==='rematch,character,stage,mode,main','results actions are incomplete');const model=buildResultsModel({winner:'Rrvvfo',durationMs:61500,players:[{damage:25}]});assert(model.duration==='1:02'&&model.actions.length===5,'result summary did not retain actions or duration')});
 await test('match statistics track actual damage and both player summaries',()=>{let clock=1000;const stats=new MatchStatistics(()=>clock);stats.recordDamage(1,8.5,2,13);stats.add(1,'perfectBlocks');stats.add(2,'throws');clock=62500;const summary=stats.finish([{hp:72,en:40},{hp:31,en:12}]);assert(summary.players[0].damage===8.5&&summary.players[0].highestCombo===2&&summary.players[0].perfectBlocks===1,'Player 1 stats were wrong');assert(summary.players[1].throws===1&&summary.players[1].remainingHealth===31,'Player 2 stats were wrong');assert(formatMatchDuration(summary.durationMs)==='1:02','duration formatting was wrong')});
@@ -225,7 +313,7 @@ await test('Training presets save and load isolated Training configuration',()=>
 await test('Training position resource and cleanup shortcuts reset transient state',()=>{const setup=pair();setup.one.hp=12;setup.one.en=3;setup.one.guard=4;setup.one.specialCd=50;setup.world.projectiles.push({});setup.world.effects.add({t:'x',l:5});assert(resetTrainingPosition(setup.world,'left'),'left-wall reset failed');assert(setup.one.x===35&&setup.two.x===180,'left-wall positions were wrong');const oldOne=setup.one.x;swapTrainingSides(setup.world);assert(setup.two.x===oldOne,'side swap failed');refillTraining(setup.world,'all');assert(setup.one.hp===100&&setup.one.en===100&&setup.one.guard===setup.one.guardMax,'resource refill failed');setup.one.specialCd=50;clearTrainingState(setup.world,'cooldowns');assert(setup.one.specialCd===0,'cooldowns were not cleared');clearTrainingState(setup.world,'projectiles');assert(setup.world.projectiles.length===0,'projectiles were not cleared')});
 await test('saved controller dead zones filter drift without clearing keyboard',()=>{const pad=makePad(),input=new InputManager(()=>[pad]);input.setControllerDeadZone(1,.3);pad.axes[0]=.25;input.poll();assert(!input.actionIsDown(1,'r'),'stick drift crossed saved dead zone');input.setKeyboard('KeyA',true);input.poll();assert(input.actionIsDown(1,'l'),'controller polling cleared keyboard movement');pad.axes[0]=.5;input.poll();assert(input.actionIsDown(1,'r'),'intentional stick movement was filtered')});
 await test('first-time hints use active prompts and can be dismissed or reset',()=>{const storage=memoryStorage(),input=new InputManager(()=>[]),hints=new FirstTimeHints({input,storage});const hint=hints.next();assert(/Keyboard/.test(hint),'hint did not detect input style');hints.dismiss();assert(storage.getItem(HINTS_DISMISSED_KEY)==='1'&&hints.next()===null,'dismissed hints continued');hints.reset();assert(storage.getItem(HINTS_DISMISSED_KEY)===null&&hints.next(),'hint reset failed')});
-await test('HUD model reports Rrvvfo cooldowns active volley Lens and breaker state',()=>{const{one}=pair();one.agonyActiveVolley=true;one.lens=121;one.dashCd=61;one.ultCd=180;one.throwProtection=20;one.breakerUsed=true;const model=fighterHudModel(one),text=cooldownText(model);assert(/SHOTS VOLLEY ACTIVE/.test(text)&&/LENS 3s/.test(text)&&/SWAP 2s/.test(text)&&/ULT 3s/.test(text),'Rrvvfo cooldown HUD is incomplete');assert(model.statuses.includes('THROW PROTECTION')&&!model.breakerReady,'HUD omitted protection or breaker state')});
+await test('HUD model reports Rrvvfo cooldowns active volley Lens and breaker state',()=>{const{one}=pair();one.agonyActiveVolley=true;one.lens=121;one.dashCd=61;one.ultCd=180;one.throwProtection=20;one.breakerUsed=true;const model=fighterHudModel(one),text=cooldownText(model);assert(/SHOTS VOLLEY ACTIVE/.test(text)&&/LENS 3s/.test(text)&&/SWAP 2s/.test(text)&&/ULT 3s/.test(text),'Rrvvfo cooldown HUD is incomplete');assert(/LENS COSTS 25 HP/.test(text)&&!/50 HP/.test(text),'Lens HUD cost disagrees with combat');assert(model.statuses.includes('THROW PROTECTION')&&!model.breakerReady,'HUD omitted protection or breaker state')});
 await test('audio manager preserves separate volume and mute settings',()=>{const audio=new AudioManager({master:40,music:30,sfx:20,ui:10,voice:5,mute:true});assert(audio.settings.master===40&&audio.settings.music===30&&audio.settings.sfx===20&&audio.settings.ui===10&&audio.settings.voice===5&&audio.settings.mute,'audio channels did not configure independently');audio.configure({mute:false,ui:72});assert(!audio.settings.mute&&audio.settings.ui===72,'audio settings could not update without replacing the manager')});
 await test('loading manager exposes progress retry return and safe no-root fallback',()=>{const loading=new LoadingManager(null);assert(typeof loading.start==='function'&&typeof loading.set==='function'&&typeof loading.finish==='function'&&typeof loading.fail==='function','loading recovery API is incomplete');loading.start();loading.set(50);loading.finish();loading.fail()});
 await test('main page contains first-time start polished menu recovery and confirmation shells',async()=>{const html=await(await fetch('../index.html')).text();for(const id of ['startScreen','mainMenuScreen','quickContinue','pauseMenu','resultsScreen','loadingScreen','confirmDialog'])assert(html.includes(`id="${id}"`),`index omitted ${id}`);assert(/ARCADE MODE/.test(html)===false,'static markup should source Arcade availability from menu data');assert(html.includes('viewport-fit=cover'),'safe-area viewport support was removed')});
@@ -260,10 +348,11 @@ await test('hotbar Shots preserves four clones simultaneous fire cost and active
 await test('hotbar Lens preserves the fair 60 Energy 25 HP cost',()=>{localStorage.setItem('pxLensMasteryV1','0');try{const input=new InputManager(()=>[]),setup=pair(),command={down:action=>input.actionIsDown(1,action),pressed:action=>input.consumeAction(1,action)};setup.one.hp=42;setup.one.en=100;input.queueGameplayAction(1,'lensOfTruth','touch');setup.one.update(command);assert(setup.one.hp===17&&setup.one.en>40&&setup.one.en<41,'Lens hotbar changed its HP or Energy cost');assert(setup.one.lens===239&&setup.one.lensCooldown===300,'Lens duration or cooldown changed')}finally{localStorage.removeItem('pxLensMasteryV1')}});
 await test('hotbar actions remain buffered through brief hit-stop',()=>{const input=new InputManager(()=>[]),setup=pair(),command={down:action=>input.actionIsDown(1,action),pressed:action=>input.consumeAction(1,action)};input.queueGameplayAction(1,'fireBlast','touch');for(let frame=0;frame<4;frame++)input.poll();assert(setup.world.projectiles.length===0,'hit-stop advanced fighter simulation');setup.one.update(command);assert(setup.world.projectiles.length===1,'buffered hotbar ability did not activate after hit-stop')});
 await test('touch movement and Block remain held while a hotbar action is buffered',()=>{const input=new InputManager(()=>[]);input.setTouchAction(1,'r',true);input.setTouchAction(1,'b',true);input.poll();input.queueGameplayAction(1,'fireBlast','touch');assert(input.actionIsDown(1,'r')&&input.actionIsDown(1,'b'),'hotbar input cleared movement or Block');assert(input.consumeAction(1,'fireBlast'),'hotbar action was not buffered alongside held touch input')});
-await test('default landscape controls do not overlap the bottom hotbar',()=>{const width=844,height=390,settings=createDefaultTouchSettings(),hotbar={left:width*.255,right:width*.745,top:height-75,bottom:height-5};for(const id of ['movement','jump','light','heavy','grab','charge','interact','block','dash','breaker','launcher','throw','moveList','trainingReset','pause','settings']){const position=displayedControlPosition(settings,id),size=id==='movement'?settings.stickSize:position.size,rect={left:width*position.x/100-size/2,right:width*position.x/100+size/2,top:height*position.y/100-size/2,bottom:height*position.y/100+size/2};assert(!controlsOverlap(rect,hotbar,0),`${id} overlaps the hotbar`)}});
+await test('default landscape controls do not overlap the bottom hotbar',()=>{const width=844,height=390,settings=createDefaultTouchSettings(),hotbar={left:width*.255,right:width*.745,top:height-75,bottom:height-5};for(const id of ['movement','jump','light','heavy','grab','charge','interact','block','dash','breaker','launcher','throw','moveList','trainingReset','pause','settings']){const position=responsiveControlPosition(settings,id,{width,height}),size=position.size,rect={left:width*position.x/100-size/2,right:width*position.x/100+size/2,top:height*position.y/100-size/2,bottom:height*position.y/100+size/2};assert(!controlsOverlap(rect,hotbar,0),`${id} overlaps the hotbar`)}});
+await test('phone touch controls remain separated inside portrait and landscape safe bounds',()=>{const ids=['movement','jump','light','heavy','grab','charge','interact','block','dash','breaker','launcher','throw','counter','lens','moveList','trainingReset','pause','settings'];for(const [width,height] of [[320,568],[375,667],[390,844],[667,375],[844,390]]){const settings=createDefaultTouchSettings(),positions=Object.fromEntries(ids.map(id=>[id,responsiveControlPosition(settings,id,{width,height})]));for(const id of ids){const position=positions[id],x=width*position.x/100,y=height*position.y/100,half=position.size/2;assert(position.size>=(id==='movement'?92:44),`${id} is too small at ${width}x${height}`);assert(x-half>=0&&x+half<=width&&y-half>=0&&y+half<=height,`${id} is clipped at ${width}x${height}`)}for(let left=0;left<ids.length;left++)for(let right=left+1;right<ids.length;right++){const a=positions[ids[left]],b=positions[ids[right]],distance=Math.hypot((a.x-b.x)*width/100,(a.y-b.y)*height/100),required=(a.size+b.size)/2+4;assert(distance>=required,`${ids[left]} overlaps ${ids[right]} at ${width}x${height}`)}}});
 await test('new mobile hotbar presets preserve joystick D-Pad left-handed and tablet choices',()=>{for(const id of ['mobile-standard-hotbar','mobile-compact-hotbar','mobile-large-buttons','mobile-left-handed','tablet','desktop-hotbar','minimal-hud'])assert(TOUCH_PRESETS[id],`missing ${id} preset`);const left=applyTouchPreset(createDefaultTouchSettings(),'mobile-left-handed');assert(left.swapped&&left.movement==='joystick','left-handed hotbar preset was wrong');const dpad=applyTouchPreset(createDefaultTouchSettings(),'standard-dpad');assert(dpad.movement==='dpad','D-Pad support was lost')});
-await test('legacy default touch positions migrate away from the action hotbar',()=>{const migrated=createDefaultTouchSettings({version:1,positions:{trainingReset:{x:47,y:86,size:46},throw:{x:57,y:86,size:54},light:{x:83,y:68,size:68}}});assert(migrated.version===3,'touch layout schema did not migrate');assert(migrated.positions.trainingReset.y===34&&migrated.positions.throw.y===72&&migrated.positions.light.y===59,'legacy default positions still overlap the hotbar')});
-await test('Training Reset stays outside the mobile stage HUD',()=>{const width=844,height=390,settings=createDefaultTouchSettings(),layout=calculateResponsiveLayout({width,height,touch:true}),position=displayedControlPosition(settings,'trainingReset'),right=width*position.x/100+position.size/2,stageLeft=(width-layout.displayWidth)/2;assert(right<=stageLeft,`Training Reset reaches stage HUD at ${right.toFixed(1)} > ${stageLeft.toFixed(1)}`)});
+await test('legacy default touch positions migrate away from the action hotbar',()=>{const migrated=createDefaultTouchSettings({version:1,positions:{trainingReset:{x:47,y:86,size:46},throw:{x:57,y:86,size:54},light:{x:83,y:68,size:68}}});assert(migrated.version===4,'touch layout schema did not migrate');assert(migrated.positions.trainingReset.y===34&&migrated.positions.throw.y===72&&migrated.positions.light.y===59,'legacy default positions still overlap the hotbar')});
+await test('Training Reset stays outside the mobile stage HUD',()=>{const width=844,height=390,settings=createDefaultTouchSettings(),layout=calculateResponsiveLayout({width,height,touch:true}),position=responsiveControlPosition(settings,'trainingReset',{width,height}),right=width*position.x/100+position.size/2,stageLeft=(width-layout.displayWidth)/2;assert(right<=stageLeft,`Training Reset reaches stage HUD at ${right.toFixed(1)} > ${stageLeft.toFixed(1)}`)});
 await test('fullscreen is requested only through the explicit interaction method',async()=>{let requests=0,dismissed=0;const classes=new Set(),listeners={},doc={fullscreenElement:null,body:{classList:{add:value=>classes.add(value),remove:value=>classes.delete(value),toggle:(value,on)=>on?classes.add(value):classes.delete(value)}},addEventListener:(name,fn)=>{listeners[name]=fn},exitFullscreen:async()=>{doc.fullscreenElement=null}},element={requestFullscreen:async()=>{requests++;doc.fullscreenElement=element}};const manager=new FullscreenManager({root:null,doc,element,settings:createMobilePresentationSettings(),onDismiss:()=>dismissed++});manager.start({touch:true});assert(requests===0,'fullscreen was requested before user interaction');assert(fullscreenSupported(doc,element),'supported fullscreen was not detected');assert(await manager.enter()&&requests===1&&dismissed===1,'explicit fullscreen interaction failed')});
 await test('unsupported fullscreen falls back without failing the match',async()=>{const classes=new Set(),notices=[];const doc={fullscreenElement:null,body:{classList:{add:value=>classes.add(value),remove:value=>classes.delete(value),toggle:(value,on)=>on?classes.add(value):classes.delete(value)}},addEventListener:()=>{}},manager=new FullscreenManager({root:null,doc,element:{},settings:createMobilePresentationSettings(),onNotice:message=>notices.push(message)});assert(!fullscreenSupported(doc,{}),'unsupported fullscreen was marked available');assert(await manager.enter()===false&&classes.has('fullscreen-fallback')&&notices.length===1,'unsupported fullscreen did not enter safe fallback')});
 await test('fullscreen exit is explicit and Pause exposes it conditionally',async()=>{let exited=0;const element={requestFullscreen:async()=>{}},doc={fullscreenElement:element,body:{classList:{toggle:()=>{}}},addEventListener:()=>{},exitFullscreen:async()=>{exited++;doc.fullscreenElement=null}},manager=new FullscreenManager({root:null,doc,element,settings:createMobilePresentationSettings()});assert(await manager.exit()&&exited===1,'explicit fullscreen exit failed');assert(PAUSE_ACTIONS.some(action=>action.id==='exitFullscreen'&&action.fullscreenOnly),'Pause does not expose conditional Exit Fullscreen')});
@@ -273,6 +362,9 @@ await test('main page includes landscape fullscreen and hotbar presentation shel
 await test('menu confirm and cancel follow Nintendo Xbox and PlayStation layouts',()=>{const n=controllerMenuButtons('nintendo'),x=controllerMenuButtons('xbox'),p=controllerMenuButtons('playstation');assert(n.confirm===1&&n.cancel===0,'Nintendo did not use A confirm and B cancel');assert(x.confirm===0&&x.cancel===1,'Xbox confirm/cancel changed');assert(p.confirm===0&&p.cancel===1,'PlayStation confirm/cancel changed')});
 await test('controller settings track configured devices separately per player',()=>{const storage=memoryStorage(),settings=createDefaultControllerSettings();settings.configuredControllerIds=['Nintendo Pro Controller',null];saveControllerSettings(settings,storage);const loaded=loadControllerSettings(storage);assert(loaded.configuredControllerIds[0]==='Nintendo Pro Controller'&&loaded.configuredControllerIds[1]===null,'controller setup state remained global')});
 await test('controller assignment panel and separate controls panel are present',async()=>{const html=await(await fetch('../index.html')).text();assert(html.includes('id="controllerAssignments"'),'controller assignment panel missing');assert(html.includes('id="controlsPanel"'),'separate controls panel missing')});
+await test('touch-capable menus advertise tap before the first gameplay touch',()=>{const nav={maxTouchPoints:5},view={matchMedia:()=>({matches:true})};assert(mainMenuConfirmLabel('keyboard',nav,view)==='TAP TO CONFIRM','touch-capable menu still advertised Enter');assert(mainMenuConfirmLabel('mouse',{maxTouchPoints:0},{matchMedia:()=>({matches:false})})==='M1 / ENTER — CONFIRM','mouse prompt changed')});
+await test('Classic settings rail explains swiping and uses comfortable touch targets',async()=>{const [html,css]=await Promise.all([fetch('../index.html').then(response=>response.text()),fetch('../css/interface-unified-29a6.css').then(response=>response.text())]);assert(/Swipe left or right to see every setting/.test(html),'settings rail has no swipe cue');assert(/min-height:46px!important/.test(css),'coarse-pointer character select targets are undersized');assert(/max-height:520px/.test(css)&&/grid-template-columns:repeat\(3,minmax\(94px,1fr\)\)/.test(css),'short-phone mode layout was not defined')});
+await test('portrait phone main menu separates its header choices preview and touch hint',async()=>{const css=await fetch('../css/interface-unified-29a6.css').then(response=>response.text());assert(/pointer:coarse\) and \(orientation:portrait\) and \(max-width:620px\)/.test(css),'portrait phone menu rules are missing');assert(/grid-template-columns:96px minmax\(0,1fr\)/.test(css),'portrait preview was not compacted');assert(/\[data-main-menu-controls\]\{display:block!important\}/.test(css),'portrait touch hint remains hidden')});
 await test('hotbar exposes an information-close callback for pause recovery',()=>{let closed=0;const hotbar=new AbilityHotbar({root:null,onInfoClose:()=>closed++});hotbar.onInfoClose();assert(closed===1,'hotbar info close callback was not retained')});
 
 
@@ -292,7 +384,7 @@ await test('main menu renders character art, visible groups, and an honest Arcad
   const menu=new MainMenu(root,{storage:memoryStorage()});
   assert(root.querySelector('.menuFighter-rrvvfo'),'Story preview did not render Rrvvfo art');
   menu.select('arcade');
-  assert(root.querySelectorAll('.mainMenuGroupLabel').length===2,'Play/System groups were not rendered');assert(root.querySelectorAll('[data-main-menu-id]').length===MAIN_MENU_MODES.length,'a main-menu mode was hidden');assert(/Coming Later/i.test(root.querySelector('.comingTooltip')?.textContent||''),'Arcade tooltip did not say Coming Later');
+  assert(root.querySelectorAll('.mainMenuGroupLabel').length===2,'Play/System groups were not rendered');assert(root.querySelectorAll('[data-main-menu-id]').length===MAIN_MENU_MODES.length-STORY_CLEAR_MODE_IDS.length,'fresh Story locks were not hidden');assert(/Coming Later/i.test(root.querySelector('.comingTooltip')?.textContent||''),'Arcade tooltip did not say Coming Later');
   root.remove();
 });
 await test('loading manager reports task-derived progress and fighter identity',()=>{
@@ -392,7 +484,7 @@ await test('Chapter 2 tournament returns to the hub and exposes mandatory and op
 await test('Story chapters use one shared runtime controller without method monkey-patching',async()=>{
   const source=await(await fetch('../js/story/story-engine.js')).text();
   for(const token of ['useChapterProfile','installUnifiedRuntime','storyUnifiedRuntime','storyCommandForMode','invokeRuntime'])assert(source.includes(token),`Story Engine omitted ${token}`);
-  assert(source.includes("STORY_ENGINE_VERSION='2.9A.11'"),'Story Engine version is stale');
+  assert(source.includes("STORY_ENGINE_VERSION='2.9A.15'"),'Story Engine version is stale');
   const chapters=['rrvvfo-mission-0.js','rrvvfo-mission-1.js','rrvvfo-road-hub.js','rrvvfo-mission-2.js','rrvvfo-chapter-3-preview.js'];
   for(const file of chapters){const chapter=await(await fetch(`../js/story/${file}`)).text();assert(chapter.includes('useChapterProfile'),`${file} did not register a Story profile`);assert(!/battle\.(?:input|cpu|update|hud|draw|drawFighterLayer|drawFallback2D|flipFor|updateCamera|castAbility|applyDamage|updateSpecials|exit)\s*=/.test(chapter),`${file} still replaces an engine method`) }
 });

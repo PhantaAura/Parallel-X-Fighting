@@ -1,0 +1,38 @@
+{
+  "name": "Parallels X Prototype 2.9A.14 Complete Cumulative Build",
+  "version": "2.9A.14",
+  "build_label": "Prototype 2.9A.14 — Sage & Complete Polish Pass",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cache_id": "29a14-sage-complete-polish-20260729",
+  "save_schema": 250,
+  "story_unlock_requirement": {
+    "chapters_per_character": 6,
+    "current_full_rrvvfo_chapters": 2,
+    "chapter_3_status": "playable demo",
+    "classic_and_arena_currently_unlockable": false
+  },
+  "fixed_issues": [
+    "Story progress no longer reaches 100 percent after the Chapter 3 demo",
+    "Bark and Wade hub animation timing is refresh-rate independent",
+    "Sage uses a 36-frame production atlas derived from the supplied reference sheet",
+    "Hub cameras avoid solid scenery that blocks Rrvvfo",
+    "Lens HUD displays the authoritative 25 HP cost",
+    "Classic character select uses a stable responsive grid",
+    "Classic fighters render at a larger readable scale",
+    "Round introduction banners no longer cover most of the battlefield",
+    "Main menu spacing and character artwork are rebalanced",
+    "MODE SELECT controls remain inside the character-select header",
+    "Failed Story startup restores the previous progress state",
+    "Playable roster cards use real atlas portraits",
+    "Off-model turnaround cells are removed from active animation mappings"
+  ],
+  "preserved_systems": [
+    "six-chapter Classic and Arena unlock gate",
+    "automatic Story continuation",
+    "separate Chapter replay buttons",
+    "Story-only RPG stats",
+    "Tangai Dojo visual overhaul",
+    "Chapter 1 through 3 Rrvvfo camera follow"
+  ]
+}

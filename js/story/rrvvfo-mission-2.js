@@ -1,11 +1,12 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyConfirm} from './story-ux.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a15-mobile-controller-comfort-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a15-mobile-controller-comfort-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a15-mobile-controller-comfort-20260729';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyConfirm} from './story-ux.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a15-mobile-controller-comfort-20260729';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a15-mobile-controller-comfort-20260729';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a15-mobile-controller-comfort-20260729';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -244,6 +245,7 @@ class RrvvfoMission2{
     this.race={active:false,index:0,startedAt:0,countdownUntil:0,elapsed:0,wadeX:250,wadeZ:20,splits:[]};
     this.ambientSpeech={npc:null,until:0};
     this.hubActors=[];
+    this.hubAnimationClock=0;
     this.flameGame={active:false,heat:0,target:52,order:0,decay:0,lastPad:{add:false,serve:false}};
     this.lastLevelUpFrom=this.level;
     this.finalElapsed=0;
@@ -370,6 +372,7 @@ class RrvvfoMission2{
         }
         return next(slot);
       },
+      updateCamera:()=>this.updateCamera(),
       applyDamage:(next,attacker,target,damage,meta={})=>{
         let adjusted=damage;
         if(this.mode==='fight'&&this.currentFight?.final){
@@ -495,6 +498,7 @@ class RrvvfoMission2{
     applyStoryProgressionToFighter(player,{...this.progress,storyLevel:this.level,storyXp:this.xp});
     player.en=45;player.guard=100;
     this.hideSecondFighter();
+    snapHubCamera(this.battle,player,{distance:1120});
     this.prepareHubActors();
     this.updateLevelHud();
     this.updateHubObjective();
@@ -521,6 +525,16 @@ class RrvvfoMission2{
     foe.y=-1400;foe.x=this.battle.fighters[0].x-120;foe.z=this.battle.fighters[0].z-120;foe.hp=100;foe.attackState=null;foe.asset=null;
   }
 
+  updateCamera(){
+    const foe=this.battle.fighters[1];
+    updateHubCamera(this.battle,{
+      frameFight:this.mode!=='hub'&&foe.y>-500,
+      hubDistance:1120,
+      fightBaseDistance:930,
+      fightMaxDistance:1180
+    });
+  }
+
   prepareHubActors(){
     const specs=[
       {id:'bark',name:'Bark',accent:'#9a6a3a',x:120,z:130},
@@ -540,7 +554,7 @@ class RrvvfoMission2{
     const activeIds=new Set(this.activeNpcs().map(npc=>npc.id));
     for(const actor of this.hubActors){
       const npc=this.npcs.find(candidate=>candidate.id===actor.id);
-      actor.x=npc?.x??actor.x;actor.z=npc?.z??actor.z;actor.moving=false;actor.animationClock+=16.67;
+      actor.x=npc?.x??actor.x;actor.z=npc?.z??actor.z;actor.moving=false;actor.animationClock=this.hubAnimationClock;
       if(actor.id==='wade'&&this.race.active){
         actor.x=this.race.wadeX;actor.z=this.race.wadeZ;actor.moving=performance.now()>=this.race.countdownUntil;
         actor.moveX=1;actor.moveZ=0;
@@ -625,6 +639,7 @@ class RrvvfoMission2{
 
   updateHub(dt){
     const player=this.battle.fighters[0],quests=this.state.hubQuests;
+    this.hubAnimationClock+=Math.max(0,dt)*1000;
     this.bracketCartX=-1080+Math.sin(performance.now()/1300)*430;
     this.questToastTimer=Math.max(0,this.questToastTimer-dt);
     if(!this.questToastTimer)this.root.querySelector('[data-c2-quest-toast]').hidden=true;
@@ -920,6 +935,7 @@ class RrvvfoMission2{
     this.root.querySelector('[data-c2-prompt]').hidden=true;
     this.mode='hub';this.battle.phase='play';
     const player=this.battle.fighters[0];player.x=180;player.z=40;
+    snapHubCamera(this.battle,player,{distance:1120});
     this.questToast('MAIN QUEST','WADE’S SHORTCUT','Run through every glowing checkpoint.');
     this.updateWadeRaceHud();
     this.saveChapterState();
@@ -1035,6 +1051,7 @@ class RrvvfoMission2{
     const player=this.battle.fighters[0];
     this.battle.burst(player.x,player.z,'#63c9ff',20,65);
     player.x=shortcut.to.x;player.z=shortcut.to.z;player.vx=0;player.vz=0;
+    snapHubCamera(this.battle,player,{distance:1120});
     this.battle.burst(player.x,player.z,'#d9f7ff',24,75);
     this.showAreaTitle(shortcut.arrival);
     this.battle.notice(shortcut.label,1.1);

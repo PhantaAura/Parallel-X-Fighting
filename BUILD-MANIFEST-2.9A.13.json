@@ -1,0 +1,46 @@
+{
+  "name": "Parallels X Prototype 2.9A.13 Complete Cumulative Build",
+  "version": "2.9A.13",
+  "build_label": "Prototype 2.9A.13 — Six-Chapter Visual & Camera Pass",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cache_id": "29a13-six-chapter-visual-camera-20260729",
+  "save_schema": 250,
+  "story_unlock_requirement": {
+    "chapters_per_character": 6,
+    "current_rrvvfo_chapters": 3,
+    "classic_and_arena_currently_unlockable": false
+  },
+  "hidden_until_full_story_clear": [
+    "arena",
+    "cpu",
+    "local"
+  ],
+  "available_before_full_story_clear": [
+    "story",
+    "training",
+    "arcade",
+    "settings",
+    "extras",
+    "credits"
+  ],
+  "visual_repairs": [
+    "Rrvvfo atlas",
+    "Revvfo atlas",
+    "Bark atlas",
+    "Wade atlas",
+    "Sage atlas",
+    "Tangai Dojo 3D stage",
+    "Tangai Dojo Classic background"
+  ],
+  "hub_camera_follow": [
+    "Chapter 1 Tournament Road",
+    "Chapter 2 Tournament Hub",
+    "Chapter 3 Investigation Hub"
+  ],
+  "compatibility": {
+    "existing_story_saves": true,
+    "chapter_1_to_3_saves_remain_locked": true,
+    "quick_continue_bypass_blocked": true
+  }
+}

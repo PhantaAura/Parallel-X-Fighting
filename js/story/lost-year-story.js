@@ -5,16 +5,17 @@ import {
   rrvvfoChapterComplete,
   rrvvfoNextMission,
   rrvvfoRouteStarted,
+  routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a11-bark-wade-tournament-pacing-20260729';
+} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a15-mobile-controller-comfort-20260729';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a15-mobile-controller-comfort-20260729';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a15-mobile-controller-comfort-20260729';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a15-mobile-controller-comfort-20260729';
+import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=29a15-mobile-controller-comfort-20260729';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a15-mobile-controller-comfort-20260729';
+import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a15-mobile-controller-comfort-20260729';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -68,7 +69,13 @@ class LostYearStoryScreen{
     this.releaseLandscapeLock=requireLandscapeForStory({message:'Story Mode uses a horizontal layout for exploration, dialogue, combat, and RPG menus.'});
     this.showRoutes({focus:true});
   }
-  close(){this.releaseLandscapeLock?.();this.releaseLandscapeLock=null;this.root.hidden=true;document.getElementById('mainMenuScreen')?.classList.remove('hidden');document.querySelector('[data-main-menu-id="story"]')?.focus()}
+  close(){
+    this.releaseLandscapeLock?.();this.releaseLandscapeLock=null;this.root.hidden=true;
+    const mainMenu=document.getElementById('mainMenuScreen');
+    mainMenu?.classList.remove('hidden');
+    mainMenu?.dispatchEvent(new CustomEvent('storyprogressrefresh'));
+    document.querySelector('[data-main-menu-id="story"]')?.focus();
+  }
   handleBack(){if(!this.help.hidden){this.closeHelp();return}if(!this.routeHome.hidden)this.showRoutes({focus:true});else this.close()}
   onKey(event){if(event.key==='Escape'){event.preventDefault();this.handleBack()}if(event.key==='Enter'&&!this.routeView.hidden){event.preventDefault();this.openRoute()}}
   openHelp(){this.help.hidden=false;this.root.querySelector('[data-close-story-help]')?.focus()}
@@ -98,7 +105,6 @@ class LostYearStoryScreen{
   openRoute(){
     this.progress=loadLostYearProgress();const next=rrvvfoNextMission(this.progress);
     if(next){
-      if(!rrvvfoRouteStarted(this.progress))this.progress=saveLostYearProgress({...this.progress,routeStarted:true,lastCheckpoint:'rrvvfo-00',selectedRoute:'rrvvfo'});
       this.startStep(next,'route');return;
     }
     this.showRouteHome({focus:true});
@@ -108,6 +114,7 @@ class LostYearStoryScreen{
     this.progress=loadLostYearProgress();this.routeView.hidden=true;this.routePanel.hidden=true;this.routeHome.hidden=false;
     if(this.progress.completedMissions.includes('rrvvfo-01')&&!combatManualOwned())grantCombatManual({pages:['movement','basic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
     const next=rrvvfoNextMission(this.progress),manualReady=combatManualOwned(),c1=rrvvfoChapterComplete(RRVVFO_CHAPTERS[0],this.progress),c2=rrvvfoChapterComplete(RRVVFO_CHAPTERS[1],this.progress),c3=rrvvfoChapterComplete(RRVVFO_CHAPTERS[2],this.progress);
+    const progressPercent=routeProgress(LOST_YEAR_ROUTES[0],this.progress),completedFullChapters=[c1,c2].filter(Boolean).length;
     const primary=next?next==='rrvvfo-03-preview'?'BEGIN CHAPTER 3 DEMO':'CONTINUE STORY':'CHAPTER 3 DEMO COMPLETE';
     this.routeHome.innerHTML=`
       <div class="routeHomeTop"><button type="button" data-route-home-back>← RRVVFO STORY</button><h1>RRVVFO • RESTLESS FLAME</h1></div>
@@ -116,6 +123,8 @@ class LostYearStoryScreen{
           <div class="routeHeroPortrait" aria-hidden="true"></div>
           <small>RPG / FIGHTING STORY</small><h2>${next?'CURRENT ADVENTURE':'RELEASED STORY CLEARED'}</h2>
           <p>${next?'Continue automatically through the next unfinished section. The route menu appears only when you choose to leave, replay, or check Rrvvfo’s growth.':'Chapters 1 and 2 are complete, and the current Chapter 3 investigation demo has been cleared.'}</p>
+          <div class="routeProgressStatus"><strong>${progressPercent}% STORY COMPLETE</strong><span>${completedFullChapters} / 6 full chapters complete${c3?' • Chapter 3 demo complete':''}</span></div>
+          <div class="routeProgressTrack" style="--route-progress:${progressPercent}%"><i></i></div>
           ${storyStatsMarkup(this.progress)}${storyAttackStripMarkup()}
           <div class="routeHomeActions">
             <button type="button" class="primary" data-continue-route ${next?'':'disabled'}><strong>${primary}</strong><span>${next?'Loads the next unfinished section.':'Use Chapter Select to replay released content.'}</span></button>
@@ -152,8 +161,10 @@ class LostYearStoryScreen{
   startStep(stepId,chainMode='route',starterOptions={}){
     const starters={'rrvvfo-00':startRrvvfoMission0,'rrvvfo-01':startRrvvfoMission1,'rrvvfo-road':startRrvvfoRoadHub,'rrvvfo-02':startRrvvfoMission2,'rrvvfo-03-preview':startRrvvfoChapter3Preview};
     const starter=starters[stepId];if(!starter)return;
-    this.progress=saveLostYearProgress({...loadLostYearProgress(),routeStarted:true,lastCheckpoint:stepId,selectedRoute:'rrvvfo'});this.root.hidden=true;let completedThisRun=false;
-    try{starter({...starterOptions,onComplete:()=>{completedThisRun=true;this.progress=loadLostYearProgress()},onExit:()=>{
+    const progressBeforeStart=loadLostYearProgress();
+    this.root.hidden=true;let completedThisRun=false;
+    try{
+      starter({...starterOptions,onComplete:()=>{completedThisRun=true;this.progress=loadLostYearProgress()},onExit:()=>{
       this.progress=loadLostYearProgress();
       if(completedThisRun&&chainMode==='route'){
         const chain={'rrvvfo-00':'rrvvfo-01','rrvvfo-01':'rrvvfo-road','rrvvfo-road':'rrvvfo-02','rrvvfo-02':'rrvvfo-03-preview'};
@@ -163,7 +174,13 @@ class LostYearStoryScreen{
         const chain={'rrvvfo-00':'rrvvfo-01','rrvvfo-01':'rrvvfo-road'};if(chain[stepId]){this.startStep(chain[stepId],'chapter1');return}
       }
       this.root.hidden=false;this.showRouteHome({focus:true});
-    }});}catch(error){console.error('[Story] Chapter failed to start',error);this.root.hidden=true;showStoryStartupError(error,{onRetry:()=>{this.root.hidden=false;this.startStep(stepId,chainMode,starterOptions)},onReturn:()=>{this.root.hidden=false;this.showRouteHome({focus:true})}})}
+      }});
+      this.progress=saveLostYearProgress({...loadLostYearProgress(),routeStarted:true,lastCheckpoint:stepId,selectedRoute:'rrvvfo'});
+    }catch(error){
+      saveLostYearProgress(progressBeforeStart);
+      console.error('[Story] Chapter failed to start',error);this.root.hidden=true;
+      showStoryStartupError(error,{onRetry:()=>{this.root.hidden=false;this.startStep(stepId,chainMode,starterOptions)},onReturn:()=>{this.root.hidden=false;this.showRouteHome({focus:true})}});
+    }
   }
 }
 

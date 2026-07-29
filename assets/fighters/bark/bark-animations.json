@@ -17,7 +17,7 @@
       96,
       178
     ],
-    "scale": 0.62,
+    "scale": 0.74,
     "pixelSmoothing": true,
     "depthScale": 0.08,
     "maxAfterimages": 3
@@ -362,11 +362,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        46,
-        52,
-        100,
-        126
+        35,
+        42,
+        123,
+        136
       ],
+      "repairedFrom": "run_02",
       "source": [
         1536,
         0,
@@ -674,10 +675,10 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        44,
-        66,
-        104,
-        112
+        36,
+        39,
+        120,
+        139
       ],
       "source": [
         1344,
@@ -947,11 +948,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        43,
-        46,
-        107,
-        132
+        61,
+        45,
+        70,
+        133
       ],
+      "repairedFrom": "light_03",
       "source": [
         960,
         384,
@@ -986,11 +988,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        57,
-        48,
-        78,
-        130
+        61,
+        45,
+        70,
+        133
       ],
+      "repairedFrom": "light_03",
       "source": [
         1152,
         384,
@@ -1064,11 +1067,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        43,
-        58,
-        107,
-        120
+        38,
+        63,
+        117,
+        115
       ],
+      "repairedFrom": "air_light_02",
       "source": [
         1536,
         384,
@@ -1103,11 +1107,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        56,
-        40,
-        81,
-        138
+        61,
+        45,
+        70,
+        133
       ],
+      "repairedFrom": "light_03",
       "source": [
         0,
         576,
@@ -1142,11 +1147,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        53,
-        36,
-        86,
-        142
+        45,
+        48,
+        102,
+        130
       ],
+      "repairedFrom": "special_02",
       "source": [
         192,
         576,
@@ -1181,10 +1187,10 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        12,
-        60,
-        168,
-        118
+        32,
+        37,
+        129,
+        141
       ],
       "source": [
         384,
@@ -1220,11 +1226,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        12,
-        60,
-        168,
-        118
+        39,
+        42,
+        115,
+        136
       ],
+      "repairedFrom": "heavy_03",
       "source": [
         576,
         576,
@@ -1259,10 +1266,10 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        12,
-        61,
-        168,
-        117
+        39,
+        42,
+        115,
+        136
       ],
       "source": [
         768,
@@ -1337,9 +1344,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        42,
+        35,
         32,
-        109,
+        123,
         146
       ],
       "source": [
@@ -1494,9 +1501,9 @@
       "targetFacingDirection": "right",
       "contentBounds": [
         47,
-        61,
+        33,
         99,
-        117
+        145
       ],
       "source": [
         192,
@@ -1844,11 +1851,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        28,
+        36,
         30,
-        136,
+        120,
         148
       ],
+      "repairedFrom": "perfect_01",
       "source": [
         192,
         960,
@@ -2000,11 +2008,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        48,
-        85,
-        97,
-        93
+        50,
+        124,
+        93,
+        54
       ],
+      "repairedFrom": "hurt_05",
       "source": [
         960,
         960,
@@ -2196,9 +2205,9 @@
       "targetFacingDirection": "right",
       "contentBounds": [
         49,
-        120,
+        107,
         94,
-        58
+        71
       ],
       "source": [
         192,
@@ -2234,11 +2243,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        15,
-        50,
-        162,
-        128
+        53,
+        26,
+        87,
+        152
       ],
+      "repairedFrom": "power_01",
       "source": [
         384,
         1152,
@@ -2273,11 +2283,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        15,
-        50,
-        162,
-        128
+        55,
+        26,
+        83,
+        152
       ],
+      "repairedFrom": "power_02",
       "source": [
         576,
         1152,
@@ -2312,11 +2323,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        15,
-        46,
-        162,
-        132
+        47,
+        14,
+        99,
+        164
       ],
+      "repairedFrom": "power_03",
       "source": [
         768,
         1152,
@@ -2351,11 +2363,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        15,
-        48,
-        162,
-        130
+        45,
+        34,
+        102,
+        144
       ],
+      "repairedFrom": "beam_04",
       "source": [
         960,
         1152,
@@ -2390,11 +2403,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        18,
-        43,
-        157,
-        135
+        49,
+        107,
+        94,
+        71
       ],
+      "repairedFrom": "special_04",
       "source": [
         1152,
         1152,
@@ -2429,11 +2443,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        25,
+        48,
         10,
-        143,
+        96,
         168
       ],
+      "repairedFrom": "ultimate_05",
       "source": [
         1344,
         1152,
@@ -2702,9 +2717,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        57,
+        44,
         34,
-        78,
+        104,
         144
       ],
       "source": [
@@ -2741,11 +2756,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        53,
-        29,
-        87,
-        149
+        45,
+        34,
+        102,
+        144
       ],
+      "repairedFrom": "beam_04",
       "source": [
         1152,
         1344,
@@ -2780,9 +2796,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        53,
+        45,
         34,
-        86,
+        102,
         144
       ],
       "source": [
@@ -2897,9 +2913,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        46,
+        47,
         10,
-        100,
+        98,
         168
       ],
       "source": [
@@ -2937,10 +2953,11 @@
       "targetFacingDirection": "right",
       "contentBounds": [
         42,
-        13,
+        11,
         109,
-        165
+        167
       ],
+      "repairedFrom": "power_04",
       "source": [
         384,
         1536,
@@ -2975,11 +2992,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        48,
-        10,
-        96,
-        168
+        41,
+        14,
+        110,
+        164
       ],
+      "repairedFrom": "power_05",
       "source": [
         576,
         1536,
@@ -3053,9 +3071,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        36,
+        61,
         10,
-        121,
+        71,
         168
       ],
       "source": [
@@ -3092,11 +3110,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        37,
+        61,
         10,
-        118,
+        71,
         168
       ],
+      "repairedFrom": "victory_02",
       "source": [
         1152,
         1536,
@@ -3541,11 +3560,9 @@
     },
     "turn": {
       "frames": [
-        "turn_01",
-        "turn_02",
-        "turn_03",
-        "turn_04",
-        "turn_05"
+        "stance_01",
+        "idle_02",
+        "stance_02"
       ],
       "frameDuration": 55,
       "loop": false,

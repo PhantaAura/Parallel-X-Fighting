@@ -1,16 +1,16 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {StoryMap} from './story-map.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyConfirm} from './story-ux.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {openCombatManual} from './combat-manual.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a15-mobile-controller-comfort-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
+import {StoryMap} from './story-map.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyConfirm} from './story-ux.js?v=29a15-mobile-controller-comfort-20260729';
+import {openCombatManual} from './combat-manual.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a15-mobile-controller-comfort-20260729';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a15-mobile-controller-comfort-20260729';
 
 const MISSION_ID='rrvvfo-03-preview';
 const UI_ID='rrvvfoChapter3PreviewUI';
 let activeMission=null;
 
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
-function lerp(a,b,t){return a+(b-a)*t}
 function distance(a,b){return Math.hypot((a.x||0)-(b.x||0),(a.z||0)-(b.z||0))}
 
 function buildUI(){
@@ -73,6 +73,7 @@ function buildUI(){
           <span>THE EVIDENCE POINTS BENEATH THE TOURNAMENT GROUNDS</span>
           <span>THE STRANGE MAN KNOWS MORE THAN HE ADMITS</span>
           <span>THE INVESTIGATION HAS ONLY BEGUN</span>
+          <span>STORY PROGRESS • CHAPTER 3 OF 6</span>
         </div>
         <button type="button" data-c3-continue>RETURN TO STORY</button>
       </article>
@@ -162,6 +163,7 @@ class RrvvfoChapter3Preview{
     });
     this.patchBattle();
     this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','THE SAGE']});
+    snapHubCamera(this.battle,this.battle.fighters[0],{distance:1120});
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART CHAPTER 3 DEMO?',message:'Return Rrvvfo to the investigation starting point? Discovered evidence remains saved.',confirmLabel:'RESTART'});
     const badge=this.battle.root.querySelector('.badge');
     if(badge?.lastChild)badge.lastChild.textContent=' CHAPTER 3 DEMO • INVESTIGATION';
@@ -275,21 +277,7 @@ class RrvvfoChapter3Preview{
   }
 
   updateCamera(){
-    const player=this.battle.fighters[0];
-    const c=this.battle.stage.camera;
-    this.battle.camera.x=lerp(this.battle.camera.x,player.x,.085);
-    this.battle.camera.z=lerp(this.battle.camera.z,player.z,.085);
-    this.battle.camera.distance=lerp(this.battle.camera.distance,1120,.06);
-    const yaw=c.yawDeg*Math.PI/180;
-    const horizontal=this.battle.camera.distance*c.horizontalDistanceScale;
-    this.battle.camera.eye=[
-      this.battle.camera.x+Math.sin(yaw)*horizontal,
-      c.heightBase+this.battle.camera.distance*c.heightDistanceScale,
-      this.battle.camera.z+Math.cos(yaw)*horizontal
-    ];
-    this.battle.camera.target=[this.battle.camera.x,c.targetHeight+player.y*c.jumpTargetScale,this.battle.camera.z];
-    this.battle.cameraShake*=.86;
-    if(this.battle.cameraShake<.15)this.battle.cameraShake=0;
+    updateHubCamera(this.battle,{hubDistance:1120});
   }
 
   updateHub(previous){

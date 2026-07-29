@@ -112,7 +112,7 @@
 .px-dialogue-sprite.sprite-sage,
 .sbDialoguePortrait.sprite-sage{
   background-image:url('../assets/fighters/sage/sage-atlas.png');
-  background-size:768px 960px;
+  background-size:600% 600%;
   background-position:0 0;
 }
 
@@ -284,7 +284,7 @@
   .px-dialogue-sprite-wrap,.sbDialoguePortraitWrap{padding-left:12px;margin-bottom:-18px;}
   .px-dialogue-sprite,.sbDialoguePortrait{width:72px;height:72px;flex-basis:72px;}
   .px-dialogue-sprite.sprite-rrvvfo,.sbDialoguePortrait.sprite-rrvvfo{background-size:648px 1440px;}
-  .px-dialogue-sprite.sprite-sage,.sbDialoguePortrait.sprite-sage{background-size:576px 720px;}
+  .px-dialogue-sprite.sprite-sage,.sbDialoguePortrait.sprite-sage{background-size:600% 600%;}
   .px-dialogue-box,.sbDialogueBox{width:100%;padding:14px 16px;border-width:3px;}
   .px-dialogue-text,.sbDialogueText{font-size:14px;line-height:1.55;}
   .px-dialogue-speaker,.sbDialogueSpeaker{font-size:10px;padding:4px 10px;border-width:2px;}
@@ -293,7 +293,7 @@
 @media(max-width:460px){
   .px-dialogue-sprite,.sbDialoguePortrait{width:56px;height:56px;flex-basis:56px;}
   .px-dialogue-sprite.sprite-rrvvfo,.sbDialoguePortrait.sprite-rrvvfo{background-size:504px 1120px;}
-  .px-dialogue-sprite.sprite-sage,.sbDialoguePortrait.sprite-sage{background-size:448px 560px;}
+  .px-dialogue-sprite.sprite-sage,.sbDialoguePortrait.sprite-sage{background-size:600% 600%;}
   .px-dialogue-text,.sbDialogueText{font-size:13px;}
   .px-dialogue-prompt span,.sbDialoguePrompt span{font-size:10px;}
 }
@@ -439,6 +439,9 @@
 #lostYearStoryScreen .routeHomeHero p{margin:0;max-width:650px;font-weight:800;line-height:1.45}
 #lostYearStoryScreen .routeProgressTrack{height:16px;border:3px solid #090909;background:#dfe6ef;overflow:hidden}
 #lostYearStoryScreen .routeProgressTrack i{display:block;height:100%;width:var(--route-progress,0%);background:#e52b2f}
+#lostYearStoryScreen .routeProgressStatus{display:flex;justify-content:space-between;gap:12px;align-items:end}
+#lostYearStoryScreen .routeProgressStatus strong{font-size:13px}
+#lostYearStoryScreen .routeProgressStatus span{font-size:10px;font-weight:900;text-align:right}
 #lostYearStoryScreen .routeHomeActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
 #lostYearStoryScreen .routeHomeActions button{min-height:72px;text-align:left;padding:12px 15px!important}
 #lostYearStoryScreen .routeHomeActions button strong,#lostYearStoryScreen .routeHomeActions button span{display:block}
@@ -2530,7 +2533,7 @@
 #mainMenuScreen .menuFighter{position:absolute;width:150px;height:190px;bottom:8px;background-repeat:no-repeat;background-position:0 0;image-rendering:pixelated;filter:drop-shadow(0 14px 12px #000b) saturate(1.08);transform-origin:50% 100%}
 #mainMenuScreen .menuFighter-rrvvfo{background-image:url('../assets/fighters/rrvvfo/rrvvfo-atlas.png');background-size:900% 2000%}
 #mainMenuScreen .menuFighter-revvfo{background-image:url('../assets/fighters/revvfo/revvfo-atlas.png');background-size:900% 1000%}
-#mainMenuScreen .menuFighter-sage{background-image:url('../assets/fighters/sage/sage-atlas.png');background-size:800% 1000%}
+#mainMenuScreen .menuFighter-sage{background-image:url('../assets/fighters/sage/sage-atlas.png');background-size:600% 600%}
 #mainMenuScreen .menuFighter.hero{left:12%;transform:scale(1.18)}
 #mainMenuScreen .menuFighter.rival{right:10%;transform:scaleX(-1) scale(1.12)}
 #mainMenuScreen .menuFighter.mentor{right:8%;transform:scaleX(-1) scale(1.05);opacity:.9}
@@ -2558,7 +2561,7 @@
 .loadingFighterArt{position:relative;height:170px;border:1px solid var(--px-color-line);border-radius:var(--px-radius-md);overflow:hidden;background:radial-gradient(circle at 50% 78%,var(--loading-accent,#55d9ff) 0,transparent 54%),#080b14}
 .loadingFighterArt .loadingSprite{position:absolute;left:50%;bottom:-8px;width:160px;height:190px;transform:translateX(-50%);background:url('../assets/fighters/rrvvfo/rrvvfo-atlas.png') 0 0/900% 2000% no-repeat;image-rendering:pixelated;filter:drop-shadow(0 14px 10px #000c);animation:pxLoadingIdle 1.25s steps(2,end) infinite}
 .loadingFighterArt[data-fighter=revvfo] .loadingSprite{background-image:url('../assets/fighters/revvfo/revvfo-atlas.png');background-size:900% 1000%}
-.loadingFighterArt[data-fighter=sage] .loadingSprite{background-image:url('../assets/fighters/sage/sage-atlas.png');background-size:800% 1000%}
+.loadingFighterArt[data-fighter=sage] .loadingSprite{background-image:url('../assets/fighters/sage/sage-atlas.png');background-size:600% 600%}
 .loadingVs{position:absolute;right:8px;top:8px;padding:4px 6px;border-radius:5px;background:#05070dcc;color:#fff;font:900 10px var(--px-font-ui)}
 .loadingDetails strong,.loadingDetails span{display:block}.loadingDetails strong{font:italic 900 28px var(--px-font-display);letter-spacing:.04em}.loadingDetails span{margin-top:5px;color:var(--px-color-muted);font:800 12px var(--px-font-ui)}
 .loadingTrack{height:14px!important;border-color:var(--loading-accent,#55d9ff)!important}.loadingTrack>div{background:linear-gradient(90deg,var(--loading-accent,#55d9ff),#fff,var(--px-color-fire-hot))!important;box-shadow:0 0 18px var(--loading-accent,#55d9ff)}
@@ -2577,7 +2580,7 @@
 .storyUnifiedRuntime .arenaNotice{font-family:var(--px-font-ui)!important}
 
 #pxCombatManualUI .manualBookShell{background:linear-gradient(92deg,#f3ead0,#fffaf0 46%,#efe0bf)!important}
-#pxCombatManualUI .manualBookHeader h1:after{content:' • PROTOTYPE 2.9A.9';display:block;margin-top:6px;color:#8a2c2c;font:900 10px var(--px-font-ui);letter-spacing:.12em}
+#pxCombatManualUI .manualBookHeader h1:after{content:' • PROTOTYPE 2.9A.15';display:block;margin-top:6px;color:#8a2c2c;font:900 10px var(--px-font-ui);letter-spacing:.12em}
 #pxCombatManualUI .manualWelcome{margin:0 0 14px;padding:12px 14px;border:4px solid #090909;background:#ffe75f;font:900 14px/1.4 var(--px-font-ui)}
 #pxCombatManualUI .manualQuickActions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}#pxCombatManualUI .manualQuickActions button{padding:7px 10px;border:3px solid #090909;background:#fff;color:#111;font-weight:900}#pxCombatManualUI .manualQuickActions button.active{background:#e52b2f;color:#fff}
 #pxCombatManualUI .manualPage .manualDrill{margin-top:15px;padding:12px;border:4px solid #090909;background:#dff7ff}#pxCombatManualUI .manualPage .manualDrill strong{display:block;color:#0b5e7d}#pxCombatManualUI .manualPage .manualStatus{display:inline-block;margin-top:8px;padding:4px 7px;background:#111;color:#fff;font:900 10px var(--px-font-ui);letter-spacing:.08em}
@@ -2875,3 +2878,279 @@
   #rrvvfoMission2UI .flameGameActions button:last-child{grid-column:1/-1}
 }
 /* ===== END Prototype 2.9A.10 ===== */
+
+/* ===== Prototype 2.9A.14 — Complete polish pass ===== */
+#mainMenuScreen [data-main-menu-list]{
+  grid-template-columns:repeat(3,minmax(118px,1fr))!important;
+  align-content:start!important;
+}
+#mainMenuScreen [data-main-menu-preview]{min-height:0!important}
+#mainMenuScreen .modeArt{min-height:220px!important}
+#mainMenuScreen .menuFighter{
+  width:190px!important;
+  height:190px!important;
+  image-rendering:auto!important;
+}
+#mainMenuScreen .menuFighter.hero{left:9%!important;transform:scale(1.12)!important}
+#mainMenuScreen .menuFighter.rival{right:7%!important;transform:scaleX(-1) scale(1.08)!important}
+#mainMenuScreen .menuFighter.mentor{right:6%!important;transform:scaleX(-1) scale(1.03)!important}
+
+#menuScreen .screenHeading{
+  grid-template-columns:minmax(max-content,1fr) minmax(180px,2fr) minmax(max-content,1fr)!important;
+  padding-inline:8px!important;
+}
+#menuScreen .screenHeading button{
+  min-width:max-content!important;
+  white-space:nowrap!important;
+  line-height:1.1!important;
+}
+#menuScreen .roster{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+}
+#menuScreen .rosterGroup{width:100%!important;min-width:0!important}
+#menuScreen .playableRoster{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+#menuScreen .card{min-width:0!important}
+#menuScreen .card .origin{color:#183a67!important}
+#menuScreen .card .style{color:#102d54!important}
+#menuScreen .card .rating{color:#9a5c00!important}
+#menuScreen .card .fighterPortrait{
+  position:relative!important;
+  height:82px!important;
+  overflow:hidden!important;
+  border:1px solid #ffffff24!important;
+  background:radial-gradient(circle at 50% 72%,#2d4c69 0,transparent 64%)!important;
+}
+#menuScreen .fighterPortrait>span{
+  position:absolute;
+  left:50%;
+  bottom:-4px;
+  width:92px;
+  height:92px;
+  transform:translateX(-50%);
+  background-position:0 0;
+  background-repeat:no-repeat;
+  image-rendering:auto;
+  filter:drop-shadow(0 7px 5px #000b);
+}
+#menuScreen .fighterPortrait-rrvvfo>span{background-image:url('../assets/fighters/rrvvfo/rrvvfo-atlas.png');background-size:900% 2000%}
+#menuScreen .fighterPortrait-revvfo>span{background-image:url('../assets/fighters/revvfo/revvfo-atlas.png');background-size:900% 1000%}
+#menuScreen .fighterPortrait-bark>span{background-image:url('../assets/fighters/bark/bark-atlas.png');background-size:900% 1000%}
+#menuScreen .fighterPortrait-wade>span{background-image:url('../assets/fighters/wade/wade-atlas.png');background-size:900% 1000%}
+#menuScreen .fighterPortrait-sage>span{background-image:url('../assets/fighters/sage/sage-atlas.png');background-size:600% 600%}
+
+@media(max-width:1000px){
+  #menuScreen .playableRoster{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #mainMenuScreen .menuFighter{width:150px!important;height:150px!important}
+}
+@media(max-width:650px){
+  #mainMenuScreen [data-main-menu-list]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #mainMenuScreen .modeArt{min-height:120px!important}
+  #mainMenuScreen .menuFighter{width:106px!important;height:106px!important}
+  #menuScreen .screenHeading{grid-template-columns:1fr 1fr!important;padding-inline:4px!important}
+  #menuScreen .screenHeading>div{grid-column:1/-1!important}
+  #menuScreen .screenHeading button{min-width:0!important;font-size:9px!important}
+  #menuScreen .playableRoster{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+/* ===== END Prototype 2.9A.14 ===== */
+
+/* ===== Prototype 2.9A.15 — Mobile & controller comfort ===== */
+#menuScreen .optionRailHeading{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin:2px 0 6px!important;
+  color:#fff!important;
+}
+#menuScreen .optionRailHeading strong{
+  font:italic 900 13px/1 var(--pxb-display)!important;
+  letter-spacing:.08em!important;
+}
+#menuScreen .optionRailHeading span{
+  color:var(--pxb-yellow)!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+#menuScreen .options{
+  scroll-padding-inline:10px!important;
+  scrollbar-width:auto!important;
+  overscroll-behavior-inline:contain!important;
+}
+
+@media(pointer:coarse){
+  #menuScreen .screenHeading button,
+  #menuScreen .options select,
+  #menuScreen .advancedSetup summary,
+  #menuScreen .advancedActions button,
+  #menuScreen .primaryFightActions button{
+    min-height:46px!important;
+  }
+  #menuScreen .options{
+    padding-bottom:14px!important;
+    scroll-snap-type:x mandatory!important;
+  }
+  #menuScreen .opt{flex-basis:min(270px,78vw)!important}
+  #menuScreen .advancedSetup{
+    flex:0 0 min(320px,88vw)!important;
+    align-self:stretch!important;
+    scroll-snap-align:start!important;
+  }
+  #menuScreen .optionRailHeading span{display:block!important}
+}
+
+@media(max-width:650px){
+  #menuScreen{
+    padding:calc(env(safe-area-inset-top,0px) + 8px) max(8px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 24px) max(8px,env(safe-area-inset-left,0px))!important;
+  }
+  #menuScreen>.panel{margin-top:9px!important;padding:10px!important;border-width:3px!important;box-shadow:5px 5px 0 rgba(0,0,0,.48)!important}
+  #menuScreen .screenHeading{gap:7px!important;margin-bottom:9px!important;padding-bottom:8px!important}
+  #menuScreen .screenHeading h1{font-size:clamp(27px,10vw,42px)!important}
+  #menuScreen .screenHeading button{padding:7px 8px!important;font-size:10px!important}
+  #menuScreen .optionRailHeading{align-items:flex-end!important}
+  #menuScreen .optionRailHeading strong{font-size:11px!important}
+  #menuScreen .optionRailHeading span{max-width:52%;font-size:9px!important;text-align:right!important}
+  #menuScreen .options{margin-inline:-3px!important}
+}
+
+@media(orientation:portrait){
+  html[data-game-layout=portrait] body.touch-match-active #gameScreen{
+    justify-content:flex-start!important;
+    padding-top:calc(var(--safe-top) + 8px)!important;
+  }
+  html[data-game-layout=portrait] body.touch-match-active #gameWrap{
+    margin:0 auto!important;
+  }
+}
+
+@media(pointer:coarse) and (orientation:portrait) and (max-width:620px){
+  #mainMenuScreen{
+    grid-template-rows:auto auto auto!important;
+    align-content:start!important;
+    padding:max(7px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))!important;
+    overflow-y:auto!important;
+  }
+  #mainMenuScreen>header{
+    min-height:42px!important;
+    align-items:center!important;
+    gap:8px!important;
+    padding:0 2px 6px!important;
+  }
+  #mainMenuScreen .brandMark{font-size:24px!important}
+  #mainMenuScreen .brandMark small{display:none!important}
+  #mainMenuScreen .buildLabel{
+    max-width:46vw!important;
+    padding:4px 6px!important;
+    border-left-width:3px!important;
+    font-size:7px!important;
+    line-height:1.12!important;
+  }
+  #mainMenuScreen .mainMenuLayout{
+    grid-template-columns:1fr!important;
+    grid-template-rows:auto auto!important;
+    gap:7px!important;
+    padding:6px 0 4px!important;
+    overflow:visible!important;
+  }
+  #mainMenuScreen [data-main-menu-list]{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    align-content:start!important;
+    gap:4px!important;
+    height:auto!important;
+    overflow:visible!important;
+    padding:3px 4px 6px!important;
+    border-right:0!important;
+    border-bottom:2px solid rgba(255,255,255,.3)!important;
+  }
+  #mainMenuScreen .mainMenuGroupLabel{
+    min-height:11px!important;
+    font-size:8px!important;
+  }
+  #mainMenuScreen .mainMode{
+    min-height:46px!important;
+    padding:4px 6px!important;
+    grid-template-columns:20px 1fr!important;
+    gap:4px!important;
+    box-shadow:3px 3px 0 rgba(0,0,0,.42)!important;
+  }
+  #mainMenuScreen .modeIndex{width:20px!important;height:20px!important;font-size:9px!important}
+  #mainMenuScreen .modeWords>span{font-size:10px!important}
+  #mainMenuScreen .modeWords>small{margin-top:1px!important;font-size:7px!important}
+  #mainMenuScreen [data-main-menu-preview]{
+    grid-template-columns:96px minmax(0,1fr)!important;
+    min-height:142px!important;
+    height:auto!important;
+    overflow:hidden!important;
+    border-width:3px!important;
+    box-shadow:5px 5px 0 rgba(0,0,0,.42)!important;
+  }
+  #mainMenuScreen .modeArt{min-height:142px!important;height:142px!important}
+  #mainMenuScreen .modeArt:before{width:48px!important;height:48px!important}
+  #mainMenuScreen .modeArt:after{width:30px!important;height:30px!important}
+  #mainMenuScreen .menuFighter{width:76px!important;height:96px!important}
+  #mainMenuScreen .modeScene>b{left:5px!important;bottom:6px!important;padding:3px 5px!important;font-size:6px!important}
+  #mainMenuScreen .modeCopy{min-height:142px!important;padding:8px 9px!important;overflow:hidden!important}
+  #mainMenuScreen .modeCopy>small{font-size:8px!important}
+  #mainMenuScreen .modeCopy h2{margin:2px 0 4px!important;font-size:25px!important}
+  #mainMenuScreen .modeCopy p{display:none!important}
+  #mainMenuScreen .modeCopy dl{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:3px!important;
+    margin:4px 0 0!important;
+  }
+  #mainMenuScreen .modeCopy dl div{padding:3px 4px!important;border-width:1px!important}
+  #mainMenuScreen .modeCopy dt{font-size:6px!important}
+  #mainMenuScreen .modeCopy dd{margin-top:1px!important;font-size:8px!important;line-height:1.14!important}
+  #mainMenuScreen .modeConfirm{margin-top:4px!important;padding:4px 6px!important;font-size:8px!important}
+  #mainMenuScreen>footer{
+    display:flex!important;
+    padding-top:4px!important;
+    font-size:8px!important;
+  }
+  #mainMenuScreen>footer #touchStatus{display:none!important}
+  #mainMenuScreen>footer [data-main-menu-controls]{display:block!important}
+}
+
+@media(pointer:coarse) and (max-height:520px){
+  #mainMenuScreen{
+    padding:6px max(8px,env(safe-area-inset-right,0px)) 5px max(8px,env(safe-area-inset-left,0px))!important;
+    overflow-y:auto!important;
+  }
+  #mainMenuScreen>header{min-height:43px!important;padding-bottom:5px!important}
+  #mainMenuScreen .brandMark{font-size:24px!important}
+  #mainMenuScreen .brandMark small{display:none!important}
+  #mainMenuScreen .buildLabel{padding:4px 7px!important;font-size:8px!important}
+  #mainMenuScreen .mainMenuLayout{
+    grid-template-columns:minmax(315px,.95fr) minmax(220px,1.05fr)!important;
+    grid-template-rows:minmax(0,1fr)!important;
+    align-items:stretch!important;
+    gap:9px!important;
+    padding:6px 0 3px!important;
+  }
+  #mainMenuScreen [data-main-menu-list]{
+    grid-template-columns:repeat(3,minmax(94px,1fr))!important;
+    grid-auto-rows:min-content!important;
+    align-content:center!important;
+    gap:4px!important;
+    min-height:0!important;
+    overflow:visible!important;
+    padding:2px!important;
+  }
+  #mainMenuScreen .mainMenuGroupLabel{min-height:13px!important;font-size:8px!important}
+  #mainMenuScreen .mainMode{min-height:44px!important;padding:4px 6px!important;grid-template-columns:21px 1fr!important;gap:4px!important}
+  #mainMenuScreen .modeIndex{width:20px!important;height:20px!important;font-size:9px!important}
+  #mainMenuScreen .modeWords>span{font-size:10px!important}
+  #mainMenuScreen .modeWords>small{font-size:7px!important}
+  #mainMenuScreen [data-main-menu-preview]{min-height:0!important;overflow:auto!important}
+  #mainMenuScreen .modeArt{min-height:82px!important}
+  #mainMenuScreen .menuFighter{width:82px!important;height:82px!important}
+  #mainMenuScreen .modeCopy{padding:7px 9px!important}
+  #mainMenuScreen .modeCopy h2{font-size:25px!important}
+  #mainMenuScreen .modeCopy p{display:none!important}
+  #mainMenuScreen .modeCopy dl{margin-top:4px!important}
+  #mainMenuScreen .modeConfirm{margin-top:4px!important}
+  #mainMenuScreen>footer{padding-top:3px!important;font-size:8px!important}
+}
+/* ===== END Prototype 2.9A.15 ===== */

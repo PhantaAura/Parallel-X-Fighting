@@ -1,7 +1,13 @@
-export const BUILD_VERSION='Prototype 2.9A.11 — Bark, Wade & Tournament Pacing';
-export const SAVE_SCHEMA_VERSION=248;
+export const BUILD_VERSION='Prototype 2.9A.15 — Mobile & Controller Comfort';
+export const SAVE_SCHEMA_VERSION=250;
 export const BUILD_FEATURES=Object.freeze([
+  'responsive-no-overlap-touch-layout','portrait-safe-control-zone','short-phone-mode-layout',
+  'touch-first-menu-prompts','swipe-cued-classic-settings','comfortable-touch-targets',
   'unified-chapter-controls','shared-chapter-1-2-3-story-engine','automatic-story-chaining','rrvvfo-story-only-release-ui',
+  'six-chapter-classic-and-arena-unlocks','hidden-pre-clear-modes','quick-continue-unlock-guard',
+  'artifact-cleaned-core-fighter-atlases','tangai-dojo-visual-overhaul','rrvvfo-hub-camera-follow','hub-camera-occlusion-avoidance',
+  'sage-36-pose-production-atlas','atlas-backed-roster-portraits','classic-fighter-readability-scale',
+  'six-chapter-story-progress-meter','frame-rate-independent-hub-actors','startup-progress-rollback','compact-round-banners',
   'main-menu-visible-groups','device-aware-menu-prompts','rrvvfo-route-portrait','story-rpg-menu','shot-power-trick-signs',
   'chapter-1-direct-attempt-counter','chapter-1-tutorial-checkpoints','chapter-1-quick-refresher','confirmed-tutorial-grab',
   'living-tournament-road','optional-road-fight-exit','consistent-story-energy','device-aware-exploration-prompts',

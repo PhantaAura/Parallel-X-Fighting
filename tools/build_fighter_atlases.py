@@ -250,6 +250,102 @@ FIGHTER_EFFECT_CROPS = {
     },
 }
 
+# A concept sheet is not a true animation atlas: a handful of labelled cells
+# contain two poses, a cropped neighbour, or an effects-only panel.  Reuse a
+# nearby clean pose for those cells so every runtime frame remains readable.
+# The animation timing and frame names stay stable for gameplay code.
+FRAME_REPLACEMENTS = {
+    "rrvvfo": {
+        "jump_02": "jump_01",
+        "run_03": "run_02",
+        "hurt_04": "hurt_05",
+        "rush_02": "dash_01",
+        "rush_03": "dash_02",
+        "rush_04": "dash_03",
+        "rush_05": "dash_04",
+        "ultimate_01": "ultimate_02",
+        "victory_03": "victory_02",
+        "victory_04": "victory_01",
+        "turn_04": "turn_03",
+        "turn_05": "look_03",
+    },
+    "revvfo": {
+        "rush_01": "dash_01",
+        "rush_02": "dash_02",
+        "rush_03": "dash_03",
+        "rush_04": "dash_04",
+        "rush_05": "air_light_01",
+        "rush_06": "air_heavy_01",
+        "beam_04": "special_03",
+        "ultimate_01": "ultimate_02",
+        "turn_03": "look_02",
+        "turn_04": "look_03",
+        "turn_05": "look_01",
+    },
+    "wade": {
+        "light_01": "light_02",
+        "heavy_01": "light_04",
+        "heavy_02": "light_05",
+        "heavy_03": "light_06",
+        "heavy_04": "stance_01",
+        "block_02": "block_01",
+        "perfect_01": "block_01",
+        "perfect_02": "block_01",
+        "hurt_04": "hurt_05",
+        "special_03": "special_02",
+        "rush_01": "dash_01",
+        "rush_02": "dash_02",
+        "rush_03": "dash_03",
+        "rush_04": "dash_04",
+        "rush_05": "air_light_01",
+        "beam_01": "special_01",
+        "beam_02": "special_02",
+        "beam_04": "special_03",
+        "ultimate_01": "power_01",
+        "ultimate_02": "power_02",
+        "ultimate_03": "power_03",
+        "ultimate_04": "power_04",
+        "ultimate_05": "power_05",
+        "victory_03": "victory_02",
+        "victory_04": "victory_01",
+        "turn_01": "look_01",
+        "turn_02": "look_02",
+        "turn_03": "look_03",
+        "turn_04": "look_02",
+        "turn_05": "look_01",
+    },
+    "bark": {
+        "run_03": "run_02",
+        "light_01": "light_03",
+        "light_02": "light_03",
+        "light_04": "air_light_02",
+        "light_05": "light_03",
+        "light_06": "special_02",
+        "heavy_02": "heavy_03",
+        "perfect_02": "perfect_01",
+        "hurt_04": "hurt_05",
+        "rush_01": "power_01",
+        "rush_02": "power_02",
+        "rush_03": "power_03",
+        "rush_04": "beam_04",
+        "rush_05": "special_04",
+        "rush_06": "ultimate_05",
+        "beam_03": "beam_04",
+        "ultimate_04": "power_04",
+        "ultimate_05": "power_05",
+        "victory_03": "victory_02",
+    },
+}
+
+ALTERNATE_FRAME_REPLACEMENTS = {
+    "rrvvfo": {
+        "ultimate_03": "ultimate_02",
+        "ultimate_04": "ultimate_05",
+        "victory_03": "victory_02",
+        "victory_04": "victory_01",
+    },
+}
+
 
 def scaled_crop(
     crop: tuple[int, int, int, int],
@@ -268,33 +364,56 @@ def background_candidate(pixel: tuple[int, int, int, int]) -> bool:
 
 
 def remove_border_background(image: Image.Image) -> Image.Image:
+    """Remove the warm concept-sheet paper without eating bright effects.
+
+    The sheets are divided by printed borders, so a border-only flood fill can
+    leave large white islands trapped behind a section line.  Treat every large
+    connected paper-colour region as background while preserving the much
+    smaller white highlights inside a fighter or energy effect.
+    """
     rgba = image.convert("RGBA")
     pixels = rgba.load()
     width, height = rgba.size
-    queue: deque[tuple[int, int]] = deque()
     visited: set[tuple[int, int]] = set()
-    for x in range(width):
-        queue.extend(((x, 0), (x, height - 1)))
-    for y in range(height):
-        queue.extend(((0, y), (width - 1, y)))
-    while queue:
-        x, y = queue.popleft()
-        if (x, y) in visited:
-            continue
-        visited.add((x, y))
-        if not background_candidate(pixels[x, y]):
-            continue
-        r, g, b, _ = pixels[x, y]
-        pixels[x, y] = (r, g, b, 0)
-        if x:
-            queue.append((x - 1, y))
-        if x + 1 < width:
-            queue.append((x + 1, y))
-        if y:
-            queue.append((x, y - 1))
-        if y + 1 < height:
-            queue.append((x, y + 1))
+    minimum_island = max(36, round(width * height * 0.003))
+    for start_y in range(height):
+        for start_x in range(width):
+            if (start_x, start_y) in visited or not background_candidate(pixels[start_x, start_y]):
+                continue
+            queue = deque([(start_x, start_y)])
+            component: list[tuple[int, int]] = []
+            touches_border = False
+            while queue:
+                x, y = queue.popleft()
+                if (x, y) in visited or not background_candidate(pixels[x, y]):
+                    continue
+                visited.add((x, y))
+                component.append((x, y))
+                touches_border = touches_border or x in (0, width - 1) or y in (0, height - 1)
+                if x:
+                    queue.append((x - 1, y))
+                if x + 1 < width:
+                    queue.append((x + 1, y))
+                if y:
+                    queue.append((x, y - 1))
+                if y + 1 < height:
+                    queue.append((x, y + 1))
+            if touches_border or len(component) >= minimum_island:
+                for x, y in component:
+                    r, g, b, _ = pixels[x, y]
+                    pixels[x, y] = (r, g, b, 0)
     return rgba
+
+
+def component_gap(
+    first: tuple[int, int, int, int],
+    second: tuple[int, int, int, int],
+) -> float:
+    first_left, first_top, first_right, first_bottom = first
+    second_left, second_top, second_right, second_bottom = second
+    dx = max(first_left - second_right, second_left - first_right, 0)
+    dy = max(first_top - second_bottom, second_top - first_bottom, 0)
+    return (dx * dx + dy * dy) ** 0.5
 
 
 def remove_sheet_debris(image: Image.Image) -> Image.Image:
@@ -303,7 +422,7 @@ def remove_sheet_debris(image: Image.Image) -> Image.Image:
     pixels = alpha.load()
     width, height = rgba.size
     visited: set[tuple[int, int]] = set()
-    components: list[tuple[list[tuple[int, int]], int, int, int]] = []
+    components: list[dict[str, object]] = []
     for start_y in range(height):
         for start_x in range(width):
             if (start_x, start_y) in visited or pixels[start_x, start_y] < 18:
@@ -328,10 +447,54 @@ def remove_sheet_debris(image: Image.Image) -> Image.Image:
                     queue.append((x, y - 1))
                 if y + 1 < height:
                     queue.append((x, y + 1))
-            components.append((component, max_x - min_x + 1, max_y - min_y + 1, min_y))
-    largest = max((len(component) for component, _, _, _ in components), default=1)
-    minimum = max(150, round(largest * 0.26))
-    for component, box_w, box_h, min_y in components:
+            colorful_pixels = sum(
+                1
+                for x, y in component
+                if max(rgba.getpixel((x, y))[:3]) - min(rgba.getpixel((x, y))[:3]) >= 45
+            )
+            components.append({
+                "pixels": component,
+                "size": len(component),
+                "box": (min_x, min_y, max_x + 1, max_y + 1),
+                "width": max_x - min_x + 1,
+                "height": max_y - min_y + 1,
+                "colorRatio": colorful_pixels / max(1, len(component)),
+            })
+
+    candidates = [
+        entry for entry in components
+        if entry["size"] >= 60
+        and entry["box"][3] >= height * 0.34
+        and entry["box"][0] <= width * 0.72
+        and entry["box"][2] >= width * 0.28
+    ]
+    if candidates:
+        def primary_score(entry: dict[str, object]) -> float:
+            left, top, right, bottom = entry["box"]
+            center = (left + right) / 2
+            center_bonus = 1 - min(1, abs(center - width / 2) / max(1, width / 2))
+            bottom_bonus = bottom / max(1, height)
+            return float(entry["size"]) + float(entry["height"]) * 8 + center_bonus * 420 + bottom_bonus * 260
+
+        primary = max(candidates, key=primary_score)
+    else:
+        primary = max(components, key=lambda entry: entry["size"], default=None)
+
+    largest = max((int(entry["size"]) for entry in components), default=1)
+    primary_box = primary["box"] if primary else (width // 2, height // 2, width // 2, height // 2)
+    primary_size = int(primary["size"]) if primary else largest
+    minimum = max(18, round(primary_size * 0.025))
+
+    for entry in components:
+        component = entry["pixels"]
+        box_w = int(entry["width"])
+        box_h = int(entry["height"])
+        min_x, min_y, max_x, max_y = entry["box"]
+        size = int(entry["size"])
+        color_ratio = float(entry["colorRatio"])
+        is_primary = entry is primary
+        gap = component_gap(entry["box"], primary_box)
+        touches_side = min_x <= 2 or max_x >= width - 2
         is_header_fragment = box_h <= 28 and box_w >= 25 and min_y < height * 0.38
         colorful_pixels = sum(
             1
@@ -343,11 +506,39 @@ def remove_sheet_debris(image: Image.Image) -> Image.Image:
             and box_w >= 48
             and colorful_pixels / max(1, len(component)) < 0.16
         )
+        is_separator = (box_w <= 8 and box_h >= 24) or (box_h <= 7 and box_w >= 38)
+        is_caption_fragment = (
+            not is_primary
+            and box_h <= 20
+            and min_y < height * 0.42
+            and color_ratio < 0.13
+        )
+        fill_ratio = size / max(1, box_w * box_h)
+        is_panel_border = (
+            not is_primary
+            and color_ratio < 0.12
+            and fill_ratio < 0.22
+            and (
+                (box_w >= width * 0.72 and box_h >= height * 0.44)
+                or (box_h >= height * 0.72 and box_w >= width * 0.44)
+            )
+        )
+        is_edge_neighbor = touches_side and not is_primary and gap > 5
+        is_remote_fragment = (
+            not is_primary
+            and gap > max(18, min(width, height) * 0.14)
+            and color_ratio < 0.18
+            and not (min_y >= height * 0.72 and max_x >= width * 0.18 and min_x <= width * 0.82)
+        )
         if (
-            len(component) < minimum
-            or (box_w <= 10 and box_h >= 24)
+            (size < minimum and not is_primary)
+            or is_separator
             or is_header_fragment
+            or is_caption_fragment
+            or is_panel_border
             or is_printed_label
+            or is_edge_neighbor
+            or is_remote_fragment
         ):
             for x, y in component:
                 rgba.putpixel((x, y), (0, 0, 0, 0))
@@ -575,6 +766,27 @@ def crop_frames(source: Image.Image, fighter: str, prefix: str = "") -> tuple[di
     return images, metadata
 
 
+def apply_frame_replacements(
+    fighter: str,
+    images: dict[str, Image.Image],
+    metadata: dict[str, dict[str, object]],
+    prefix: str = "",
+) -> None:
+    replacements = dict(FRAME_REPLACEMENTS.get(fighter, {}))
+    if prefix:
+        replacements.update(ALTERNATE_FRAME_REPLACEMENTS.get(fighter, {}))
+    for destination, source in replacements.items():
+        destination_name = f"{prefix}{destination}"
+        source_name = f"{prefix}{source}"
+        if destination_name not in images or source_name not in images:
+            continue
+        images[destination_name] = images[source_name].copy()
+        metadata[destination_name] = {
+            **metadata[source_name],
+            "repairedFrom": source_name,
+        }
+
+
 def add_variants(animations: dict[str, dict[str, object]], available: Iterable[str]) -> None:
     available_set = set(available)
     for data in animations.values():
@@ -593,8 +805,10 @@ def build_fighter(fighter: str, source_path: Path, output_root: Path, alternate_
         alternate.save(output_root / f"{fighter}-hood-up-source-sheet.png", optimize=True)
 
     frame_images, frame_meta = crop_frames(source, fighter)
+    apply_frame_replacements(fighter, frame_images, frame_meta)
     if alternate:
         alt_images, alt_meta = crop_frames(alternate, fighter, "up_")
+        apply_frame_replacements(fighter, alt_images, alt_meta, "up_")
         frame_images.update(alt_images)
         frame_meta.update(alt_meta)
 
@@ -646,7 +860,7 @@ def build_fighter(fighter: str, source_path: Path, output_root: Path, alternate_
         "defaults": {
             "appearance": "down",
             "groundPivot": list(GROUND_PIVOT),
-            "scale": 0.62,
+            "scale": 0.74,
             "pixelSmoothing": True,
             "depthScale": 0.08,
             "maxAfterimages": 3,

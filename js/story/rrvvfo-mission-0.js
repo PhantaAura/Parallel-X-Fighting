@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {clampToStage} from '../arena/arena-stages.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyConfirm} from './story-ux.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a15-mobile-controller-comfort-20260729';
+import {clampToStage} from '../arena/arena-stages.js?v=29a15-mobile-controller-comfort-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyConfirm} from './story-ux.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a15-mobile-controller-comfort-20260729';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -28,8 +28,8 @@ function installMissionUI(){
 #${UI_ID} .dialogueWrap.hidden{display:none}
 #${UI_ID} .sonicDialogueBox{position:relative;display:grid;grid-template-columns:128px 1fr;gap:16px;align-items:stretch;width:min(980px,100%);min-height:138px;margin:0 auto;padding:10px 18px 10px 10px;border:5px solid #080808;border-radius:3px;background:#fff;color:#111;box-shadow:0 7px 0 #080808;text-align:left;cursor:pointer;pointer-events:auto}
 #${UI_ID} .sonicDialogueBox:focus-visible{outline:4px solid #6bbcff;outline-offset:5px}
-#${UI_ID} .dialoguePortrait{min-height:108px;border:4px solid #080808;background-color:#263550;background-image:url('./assets/fighters/sage/sage-atlas.png');background-repeat:no-repeat;background-size:800% 1000%;background-position:0 0;image-rendering:pixelated}
-#${UI_ID} .dialogueWrap[data-speaker="RRVVFO"] .dialoguePortrait{background-color:#74251f;background-image:url('./assets/fighters/rrvvfo/rrvvfo-atlas.png')}
+#${UI_ID} .dialoguePortrait{min-height:108px;border:4px solid #080808;background-color:#263550;background-image:url('./assets/fighters/sage/sage-atlas.png');background-repeat:no-repeat;background-size:600% 600%;background-position:0 0;image-rendering:auto}
+#${UI_ID} .dialogueWrap[data-speaker="RRVVFO"] .dialoguePortrait{background-color:#74251f;background-image:url('./assets/fighters/rrvvfo/rrvvfo-atlas.png');background-size:900% 2000%}
 #${UI_ID} .dialogueCopy{position:relative;min-width:0;padding:20px 42px 18px 2px}
 #${UI_ID} .speakerTab{position:absolute;left:0;top:-30px;min-width:180px;padding:6px 13px;border:4px solid #080808;border-bottom:0;background:#20202b;color:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;font-weight:1000;letter-spacing:.08em;text-align:center}
 #${UI_ID} .dialogueWrap[data-speaker="RRVVFO"] .speakerTab{background:#a52f27}

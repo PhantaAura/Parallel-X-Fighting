@@ -1,4 +1,5 @@
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
+export const STORY_CHAPTERS_PER_CHARACTER=6;
 
 export const LOST_YEAR_ROUTES=Object.freeze([
   {
@@ -117,8 +118,11 @@ export function missionUnlocked(mission,progress){
 export function routeProgress(route,progress){
   if(route?.id!=='rrvvfo')return 0;
   const completed=new Set(progress?.completedMissions||[]);
-  const released=['rrvvfo-00','rrvvfo-01','rrvvfo-road','rrvvfo-02','rrvvfo-03-preview'];
-  return Math.round(released.filter(id=>completed.has(id)).length/released.length*100);
+  const completedChapters=[
+    ['rrvvfo-00','rrvvfo-01','rrvvfo-road'],
+    ['rrvvfo-02']
+  ].filter(missions=>missions.every(id=>completed.has(id))).length;
+  return Math.round(completedChapters/STORY_CHAPTERS_PER_CHARACTER*100);
 }
 
 export function routeVisible(route){
@@ -165,4 +169,15 @@ export function rrvvfoNextMission(progress){
 export function rrvvfoChapterComplete(chapter,progress){
   const completed=new Set(progress?.completedMissions||[]);
   return Boolean(chapter?.missions?.length&&chapter.missions.every(id=>completed.has(id)));
+}
+
+const STORY_CHAPTERS_BY_ROUTE=Object.freeze({rrvvfo:RRVVFO_CHAPTERS});
+
+export function storyModeComplete(progress=loadLostYearProgress()){
+  const routes=LOST_YEAR_ROUTES.filter(route=>route.available);
+  return routes.length>0&&routes.every(route=>{
+    const chapters=STORY_CHAPTERS_BY_ROUTE[route.id]||[];
+    return chapters.length>=STORY_CHAPTERS_PER_CHARACTER
+      &&chapters.slice(0,STORY_CHAPTERS_PER_CHARACTER).every(chapter=>rrvvfoChapterComplete(chapter,progress));
+  });
 }

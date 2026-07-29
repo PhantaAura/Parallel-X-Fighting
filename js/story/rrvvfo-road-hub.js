@@ -1,11 +1,12 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {StoryMap} from './story-map.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyConfirm} from './story-ux.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a15-mobile-controller-comfort-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a15-mobile-controller-comfort-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a15-mobile-controller-comfort-20260729';
+import {StoryMap} from './story-map.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyConfirm} from './story-ux.js?v=29a15-mobile-controller-comfort-20260729';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a15-mobile-controller-comfort-20260729';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a15-mobile-controller-comfort-20260729';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -13,7 +14,6 @@ const SOFT_Z_LIMIT=640;
 let activeMission=null;
 
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
-function lerp(a,b,t){return a+(b-a)*t}
 function distance(a,b){return Math.hypot((a.x||0)-(b.x||0),(a.z||0)-(b.z||0))}
 
 function buildUI(){
@@ -187,6 +187,7 @@ class RrvvfoRoadHub{
     this.battle.phase='story';
     this.battle.time=9999;
     this.battle.hideBanner();
+    snapHubCamera(this.battle,this.battle.fighters[0],{distance:1010});
     this.root.hidden=false;
     this.showAreaTitle('TRAINING GROUNDS');
     this.showOpeningDialogue();
@@ -295,28 +296,7 @@ class RrvvfoRoadHub{
   }
 
   updateCamera(){
-    const player=this.battle.fighters[0];
-    const foe=this.battle.fighters[1];
-    const c=this.battle.stage.camera;
-    let focusX=player.x,focusZ=player.z,distanceTarget=1010;
-    if(this.mode==='fight'){
-      focusX=(player.x+foe.x)/2;
-      focusZ=(player.z+foe.z)/2;
-      distanceTarget=clamp(930+Math.hypot(player.x-foe.x,player.z-foe.z)*.36,930,1180);
-    }
-    this.battle.camera.x=lerp(this.battle.camera.x,focusX,.085);
-    this.battle.camera.z=lerp(this.battle.camera.z,focusZ,.085);
-    this.battle.camera.distance=lerp(this.battle.camera.distance,distanceTarget,.065);
-    const yaw=c.yawDeg*Math.PI/180;
-    const horizontal=this.battle.camera.distance*c.horizontalDistanceScale;
-    this.battle.camera.eye=[
-      this.battle.camera.x+Math.sin(yaw)*horizontal,
-      c.heightBase+this.battle.camera.distance*c.heightDistanceScale,
-      this.battle.camera.z+Math.cos(yaw)*horizontal
-    ];
-    this.battle.camera.target=[this.battle.camera.x,c.targetHeight+player.y*c.jumpTargetScale,this.battle.camera.z];
-    this.battle.cameraShake*=.86;
-    if(this.battle.cameraShake<.15)this.battle.cameraShake=0;
+    updateHubCamera(this.battle,{frameFight:this.mode==='fight',hubDistance:1010});
   }
 
   updateHub(dt,previous){
@@ -551,6 +531,7 @@ class RrvvfoRoadHub{
       player.visualActionTime=.45;
       this.battle.burst(oldX,oldZ,'#ffd079',20,55);
       this.battle.burst(targetX,targetZ,'#ffd079',20,55);
+      snapHubCamera(this.battle,player,{distance:1010});
       this.battle.notice('OBJECT SWAP • ROCK TRADED PLACES',1.5);
       this.step='cart';
       this.setObjective('FOLLOW THE ROAD TO THE WORKER','A supply cart is blocking the next section.');
@@ -780,6 +761,7 @@ class RrvvfoRoadHub{
     player.z=20;
     player.hp=player.maxHp;
     player.en=45;
+    snapHubCamera(this.battle,player,{distance:1010});
     this.step='checkpoint';
     this.setObjective('PASS THE TOURNAMENT CHECKPOINT','Continue east and speak with the checkpoint worker.');
     saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-encounter',roadEncounterResult:result});

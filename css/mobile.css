@@ -26,6 +26,8 @@ body.touch-match-active #app{height:var(--mobile-vh);overflow:hidden}
 body.touch-match-active #gameScreen{height:var(--mobile-vh);display:flex;flex-direction:column;justify-content:center}
 body.touch-match-active #gameWrap{max-height:calc(var(--mobile-vh) - var(--safe-top) - var(--safe-bottom));margin:auto}
 body.touch-match-active canvas{max-height:calc(var(--mobile-vh) - var(--safe-top) - var(--safe-bottom));object-fit:contain}
+body.touch-match-active #gameScreen>.controls,
+body.touch-match-active #gameScreen>.foot{display:none!important}
 
 .touchLayer{
   position:fixed;
@@ -247,6 +249,10 @@ html[data-mobile-orientation="portrait"] body.touch-match-active .rotateSuggesti
   body.touch-match-active #gameScreen{justify-content:flex-start;padding-top:calc(var(--safe-top) + 54px)}
   body.touch-match-active #gameWrap{margin:0 auto}
   .touchLayer .combatTouch{font-size:8px}
+  .touchLayer{
+    background:linear-gradient(to bottom,transparent 0 41%,rgba(3,7,16,.16) 41% 100%)
+  }
+  .rotateSuggestion{max-width:calc(100vw - var(--safe-left) - var(--safe-right) - 20px)}
 }
 @media(max-width:720px){
   .touchSettingsGrid{grid-template-columns:repeat(2,minmax(130px,1fr))}
@@ -256,4 +262,13 @@ html[data-mobile-orientation="portrait"] body.touch-match-active .rotateSuggesti
   .touchSettingsGrid{grid-template-columns:1fr}
   .layoutEditorPanel{grid-template-columns:1fr}
   .savedLayoutRow{grid-column:auto}
+}
+
+@media(pointer:coarse){
+  .mobileModalCard button,
+  .mobileModalCard select,
+  .mobileModalCard input:not([type="checkbox"]):not([type="range"]){
+    min-height:44px
+  }
+  .mobileModalHead button{width:44px;height:44px}
 }

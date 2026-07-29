@@ -1,10 +1,12 @@
-import {BUILD_VERSION} from './build-info.js?v=29a11-bark-wade-tournament-pacing-20260729';
-import {sharedInput} from './input-runtime.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {BUILD_VERSION} from './build-info.js?v=29a15-mobile-controller-comfort-20260729';
+import {sharedInput} from './input-runtime.js?v=29a15-mobile-controller-comfort-20260729';
+import {loadLostYearProgress,storyModeComplete} from './story/lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
 
-const MENU_MODULE_CACHE='29a11-bark-wade-tournament-pacing-20260729';
+const MENU_MODULE_CACHE='29a15-mobile-controller-comfort-20260729';
+export const STORY_CLEAR_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([
-  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Follow Rrvvfo through training, the Tournament Road, RPG growth, a living tournament hub, and the full local bracket. Chapters 1 and 2 are complete; Chapter 3 currently includes a playable investigation demo.',players:'1',availability:'Rrvvfo • Chapters 1–3'},
+  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Follow Rrvvfo through training, the Tournament Road, RPG growth, a living tournament hub, and the full local bracket. Complete all six Rrvvfo chapters to reveal Classic battles and Arena Mode.',players:'1',availability:'Rrvvfo • Chapters 1–3 of 6'},
   {id:'arena',label:'ARENA',kicker:'3D BATTLE',description:'Enter Tangai Dojo or the Global Tournament in continuous first-to-3-KO battles with adaptive AI, charging, parries, grabs, and projectile clashes.',players:'1',availability:'Tangai Dojo and Global Tournament'},
   {id:'cpu',label:'VS CPU',kicker:'SINGLE BATTLE',description:'Choose a fighter and choose Quick Battle or a full first-to-3 match against a fair 100-health rival.',players:'1',availability:'Available'},
   {id:'local',label:'2 PLAYER',kicker:'LOCAL VS',description:'Choose two finished fighters on the same device. Quick and full match formats use the same unified controls; separate assigned devices are recommended.',players:'2',availability:'Available'},
@@ -14,6 +16,11 @@ export const MAIN_MENU_MODES=Object.freeze([
   {id:'extras',label:'EXTRAS',kicker:'SAGE ARCHIVES',description:'Open the Sage’s Manual, move lists, fighter profiles, stage information, controls, and build details.',players:'—',availability:'Available'},
   {id:'credits',label:'CREDITS',kicker:'PARALLELS X',description:'View project and development credits for Parallels X: Clash of Souls.',players:'—',availability:'Available'}
 ]);
+
+export function mainMenuModesForProgress(storage=globalThis.localStorage){
+  const storyCleared=storyModeComplete(loadLostYearProgress(storage));
+  return MAIN_MENU_MODES.filter(mode=>storyCleared||!STORY_CLEAR_MODE_IDS.includes(mode.id));
+}
 
 function fighterSprite(id,extra=''){
   return`<span class="menuFighter menuFighter-${id} ${extra}" aria-hidden="true"></span>`;
@@ -31,8 +38,13 @@ function renderModeArt(mode){
   return`<div class="modeScene creditsScene"><span class="creditsX">X</span><b>CLASH OF SOULS</b></div>`;
 }
 
-function menuConfirmLabel(){
-  const device=sharedInput.lastInputDevice[0]||'keyboard';
+export function mainMenuConfirmLabel(
+  device=sharedInput.lastInputDevice[0]||'keyboard',
+  nav=globalThis.navigator,
+  view=globalThis.window
+){
+  const touchCapable=Number(nav?.maxTouchPoints||0)>0||!!view?.matchMedia?.('(pointer: coarse)')?.matches;
+  if(device==='keyboard'&&touchCapable)device='touch';
   if(device==='touch')return'TAP TO CONFIRM';
   if(device==='controller')return`${sharedInput.controllerMapping(1).labels.a.toUpperCase()} — CONFIRM`;
   if(device==='mouse')return'M1 / ENTER — CONFIRM';
@@ -40,16 +52,21 @@ function menuConfirmLabel(){
 }
 
 function renderModeButtons(){
+  const modes=this.modes;
   const groups=[
     {label:'PLAY',ids:['story','arena','cpu','local','training','arcade']},
     {label:'SYSTEM',ids:['settings','extras','credits']}
   ];
-  return groups.map(group=>`<div class="mainMenuGroupLabel" role="presentation"><span>${group.label}</span></div>${group.ids.map(id=>{
-    const index=MAIN_MENU_MODES.findIndex(mode=>mode.id===id),mode=MAIN_MENU_MODES[index];
+  return groups.map(group=>{
+    const groupModes=group.ids.map(id=>modes.find(mode=>mode.id===id)).filter(Boolean);
+    if(!groupModes.length)return'';
+    return`<div class="mainMenuGroupLabel" role="presentation"><span>${group.label}</span></div>${groupModes.map(mode=>{
+    const index=modes.findIndex(candidate=>candidate.id===mode.id);
     return `<button type="button" class="mainMode ${index===this.index?'selected':''}" data-main-menu-id="${mode.id}" aria-current="${index===this.index?'true':'false'}" ${mode.disabled?'aria-disabled="true" aria-describedby="arcade-coming-tooltip"':''}>
       <span class="modeIndex">${index+1}</span><span class="modeWords"><span>${mode.label}</span>${mode.disabled?'<small>COMING LATER</small>':`<small>${mode.kicker}</small>`}</span>
     </button>`;
-  }).join('')}`).join('');
+  }).join('')}`;
+  }).join('');
 }
 
 export class MainMenu{
@@ -58,6 +75,7 @@ export class MainMenu{
     this.onSelect=onSelect;
     this.storage=storage;
     this.now=now;
+    this.modes=mainMenuModesForProgress(this.storage);
     this.index=0;
     this.lockedUntil=0;
     this.list=root?.querySelector('[data-main-menu-list]');
@@ -69,10 +87,10 @@ export class MainMenu{
     this.list?.addEventListener('focusin',event=>{
       const button=event.target.closest('[data-main-menu-id]');
       if(!button)return;
-      const index=MAIN_MENU_MODES.findIndex(mode=>mode.id===button.dataset.mainMenuId);
+      const index=this.modes.findIndex(mode=>mode.id===button.dataset.mainMenuId);
       if(index<0||index===this.index)return;
       this.index=index;
-      this.root.dispatchEvent(new CustomEvent('menumove',{detail:MAIN_MENU_MODES[index]}));
+      this.root.dispatchEvent(new CustomEvent('menumove',{detail:this.modes[index]}));
       this.render({focus:true});
     });
 
@@ -81,17 +99,17 @@ export class MainMenu{
       if(!button||button.dataset.hovered==='true')return;
       this.list.querySelectorAll('[data-main-menu-id]').forEach(item=>delete item.dataset.hovered);
       button.dataset.hovered='true';
-      const index=MAIN_MENU_MODES.findIndex(mode=>mode.id===button.dataset.mainMenuId);
+      const index=this.modes.findIndex(mode=>mode.id===button.dataset.mainMenuId);
       if(index<0||index===this.index)return;
       this.index=index;
-      this.root.dispatchEvent(new CustomEvent('menumove',{detail:MAIN_MENU_MODES[index]}));
+      this.root.dispatchEvent(new CustomEvent('menumove',{detail:this.modes[index]}));
       this.render();
     });
 
     this.list?.addEventListener('click',event=>{
       const button=event.target.closest('[data-main-menu-id]');
       if(!button)return;
-      const index=MAIN_MENU_MODES.findIndex(mode=>mode.id===button.dataset.mainMenuId);
+      const index=this.modes.findIndex(mode=>mode.id===button.dataset.mainMenuId);
       if(index<0)return;
       this.index=index;
       this.render();
@@ -101,9 +119,13 @@ export class MainMenu{
 
   render({focus=false}={}){
     if(!this.root||!this.list||!this.preview)return;
+    const selectedId=this.modes[this.index]?.id;
+    this.modes=mainMenuModesForProgress(this.storage);
+    const refreshedIndex=this.modes.findIndex(mode=>mode.id===selectedId);
+    this.index=refreshedIndex>=0?refreshedIndex:Math.min(this.index,Math.max(0,this.modes.length-1));
     this.list.innerHTML=renderModeButtons.call(this);
 
-    const mode=MAIN_MENU_MODES[this.index];
+    const mode=this.modes[this.index];
     this.preview.dataset.mode=mode.id;
     this.preview.innerHTML=`
       <div class="modeArt" aria-hidden="true">${renderModeArt(mode)}</div>
@@ -116,7 +138,7 @@ export class MainMenu{
           <div><dt>Status</dt><dd>${mode.availability}</dd></div>
         </dl>
         ${mode.disabled?'<span id="arcade-coming-tooltip" class="comingTooltip" role="tooltip">ARCADE MODE IS COMING LATER</span>':''}
-        <span class="modeConfirm">${mode.disabled?'LOCKED — SELECT FOR DETAILS':menuConfirmLabel()}</span>
+        <span class="modeConfirm">${mode.disabled?'LOCKED — SELECT FOR DETAILS':mainMenuConfirmLabel()}</span>
       </div>`;
 
     const selected=this.list.querySelector(`[data-main-menu-id="${mode.id}"]`);
@@ -125,16 +147,16 @@ export class MainMenu{
   }
 
   move(direction){
-    const length=MAIN_MENU_MODES.length;
+    const length=this.modes.length;
     this.index=(this.index+direction+length)%length;
-    this.root?.dispatchEvent(new CustomEvent('menumove',{detail:MAIN_MENU_MODES[this.index]}));
+    this.root?.dispatchEvent(new CustomEvent('menumove',{detail:this.modes[this.index]}));
     this.render({focus:true});
   }
 
   async confirm(){
     if(this.now()<this.lockedUntil)return false;
     this.lockedUntil=this.now()+220;
-    const mode=MAIN_MENU_MODES[this.index];
+    const mode=this.modes[this.index];
     if(mode.disabled){
       this.root.dispatchEvent(new CustomEvent('menuerror',{detail:mode}));
       return false;
@@ -167,7 +189,8 @@ export class MainMenu{
   }
 
   select(id){
-    const index=MAIN_MENU_MODES.findIndex(mode=>mode.id===id);
+    this.modes=mainMenuModesForProgress(this.storage);
+    const index=this.modes.findIndex(mode=>mode.id===id);
     if(index<0)return false;
     this.index=index;
     this.render();

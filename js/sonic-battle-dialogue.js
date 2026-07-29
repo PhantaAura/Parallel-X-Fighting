@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {storyConfirm} from './story/story-ux.js?v=29a15-mobile-controller-comfort-20260729';
 
 /* ═══════════════════════════════════════════════════════════════
    PARALLELS X — COMPATIBLE SPRITE-ON-TOP DIALOGUE

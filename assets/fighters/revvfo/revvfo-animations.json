@@ -17,7 +17,7 @@
       96,
       178
     ],
-    "scale": 0.62,
+    "scale": 0.74,
     "pixelSmoothing": true,
     "depthScale": 0.08,
     "maxAfterimages": 3
@@ -362,10 +362,10 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        35,
-        45,
-        123,
-        133
+        38,
+        61,
+        116,
+        117
       ],
       "source": [
         1536,
@@ -674,10 +674,10 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        31,
-        48,
-        130,
-        130
+        38,
+        75,
+        116,
+        103
       ],
       "source": [
         1344,
@@ -1142,9 +1142,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        34,
+        30,
         39,
-        125,
+        133,
         139
       ],
       "source": [
@@ -1571,9 +1571,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        43,
+        35,
         87,
-        107,
+        123,
         91
       ],
       "source": [
@@ -1844,9 +1844,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        24,
+        34,
         62,
-        145,
+        125,
         116
       ],
       "source": [
@@ -1961,9 +1961,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        51,
+        45,
         76,
-        91,
+        102,
         102
       ],
       "source": [
@@ -2039,10 +2039,10 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        96,
-        177,
-        1,
-        1
+        51,
+        162,
+        91,
+        16
       ],
       "source": [
         1152,
@@ -2234,11 +2234,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        44,
-        90,
-        104,
-        88
+        30,
+        52,
+        133,
+        126
       ],
+      "repairedFrom": "dash_01",
       "source": [
         384,
         1152,
@@ -2273,11 +2274,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        40,
-        87,
-        113,
-        91
+        32,
+        58,
+        128,
+        120
       ],
+      "repairedFrom": "dash_02",
       "source": [
         576,
         1152,
@@ -2312,11 +2314,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
+        30,
         50,
-        87,
-        93,
-        91
+        133,
+        128
       ],
+      "repairedFrom": "dash_03",
       "source": [
         768,
         1152,
@@ -2351,11 +2354,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        40,
-        85,
-        113,
-        93
+        12,
+        89,
+        168,
+        89
       ],
+      "repairedFrom": "dash_04",
       "source": [
         960,
         1152,
@@ -2390,11 +2394,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        12,
-        90,
-        168,
-        88
+        48,
+        63,
+        96,
+        115
       ],
+      "repairedFrom": "air_light_01",
       "source": [
         1152,
         1152,
@@ -2429,11 +2434,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        12,
-        116,
-        168,
-        62
+        35,
+        65,
+        123,
+        113
       ],
+      "repairedFrom": "air_heavy_01",
       "source": [
         1344,
         1152,
@@ -2741,9 +2747,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        67,
-        88,
         58,
+        88,
+        77,
         90
       ],
       "source": [
@@ -2780,11 +2786,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        57,
-        79,
-        78,
-        99
+        38,
+        87,
+        116,
+        91
       ],
+      "repairedFrom": "special_03",
       "source": [
         1344,
         1344,
@@ -2819,11 +2826,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        55,
-        120,
-        83,
-        58
+        71,
+        69,
+        51,
+        109
       ],
+      "repairedFrom": "ultimate_02",
       "source": [
         1536,
         1344,
@@ -2858,9 +2866,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        40,
+        71,
         69,
-        113,
+        51,
         109
       ],
       "source": [
@@ -2897,9 +2905,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        40,
+        61,
         63,
-        113,
+        70,
         115
       ],
       "source": [
@@ -3014,10 +3022,10 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        45,
-        10,
-        102,
-        168
+        54,
+        21,
+        84,
+        157
       ],
       "source": [
         768,
@@ -3053,10 +3061,10 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        45,
-        10,
-        103,
-        168
+        67,
+        36,
+        59,
+        142
       ],
       "source": [
         960,
@@ -3092,9 +3100,9 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        31,
+        56,
         17,
-        130,
+        81,
         161
       ],
       "source": [
@@ -3248,11 +3256,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        76,
-        36,
-        41,
-        142
+        58,
+        30,
+        77,
+        148
       ],
+      "repairedFrom": "look_02",
       "source": [
         192,
         1728,
@@ -3287,11 +3296,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        45,
-        39,
-        103,
-        139
+        56,
+        32,
+        81,
+        146
       ],
+      "repairedFrom": "look_03",
       "source": [
         384,
         1728,
@@ -3326,11 +3336,12 @@
       ],
       "targetFacingDirection": "right",
       "contentBounds": [
-        79,
-        34,
-        35,
-        144
+        55,
+        33,
+        83,
+        145
       ],
+      "repairedFrom": "look_01",
       "source": [
         576,
         1728,
@@ -3541,11 +3552,9 @@
     },
     "turn": {
       "frames": [
-        "turn_01",
-        "turn_02",
-        "turn_03",
-        "turn_04",
-        "turn_05"
+        "stance_01",
+        "idle_02",
+        "stance_02"
       ],
       "frameDuration": 55,
       "loop": false,
@@ -3731,6 +3740,70 @@
       ],
       "frameDuration": 70,
       "loop": false,
+      "cancelable": true
+    },
+    "grab": {
+      "frames": [
+        "light_01",
+        "light_03",
+        "heavy_02"
+      ],
+      "frameDuration": 68,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "grabActive"
+        }
+      ]
+    },
+    "grabMiss": {
+      "frames": [
+        "light_01",
+        "light_02",
+        "stance_01"
+      ],
+      "frameDuration": 76,
+      "loop": false,
+      "cancelable": true
+    },
+    "counter": {
+      "frames": [
+        "block_01",
+        "perfect_01",
+        "heavy_02"
+      ],
+      "frameDuration": 72,
+      "loop": false,
+      "cancelable": true
+    },
+    "counterReady": {
+      "frames": [
+        "block_01",
+        "perfect_01"
+      ],
+      "frameDuration": 82,
+      "loop": true,
+      "cancelable": true
+    },
+    "counterStance": {
+      "frames": [
+        "block_01",
+        "perfect_01"
+      ],
+      "frameDuration": 82,
+      "loop": true,
+      "cancelable": true
+    },
+    "chargeEnergy": {
+      "frames": [
+        "ultimate_01",
+        "ultimate_02",
+        "ultimate_03"
+      ],
+      "frameDuration": 92,
+      "loop": true,
       "cancelable": true
     },
     "guardBreak": {

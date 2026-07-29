@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a15-mobile-controller-comfort-20260729';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a17-chapter123-repair-icon-20260729';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

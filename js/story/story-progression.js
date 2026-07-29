@@ -1,4 +1,4 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
 
 export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,240,420,650,930,1260,1640]);
 

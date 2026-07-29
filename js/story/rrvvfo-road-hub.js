@@ -1,12 +1,12 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a15-mobile-controller-comfort-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a15-mobile-controller-comfort-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a15-mobile-controller-comfort-20260729';
-import {StoryMap} from './story-map.js?v=29a15-mobile-controller-comfort-20260729';
-import {storyConfirm} from './story-ux.js?v=29a15-mobile-controller-comfort-20260729';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a15-mobile-controller-comfort-20260729';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a15-mobile-controller-comfort-20260729';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a15-mobile-controller-comfort-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a17-chapter123-repair-icon-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a17-chapter123-repair-icon-20260729';
+import {StoryMap} from './story-map.js?v=29a17-chapter123-repair-icon-20260729';
+import {storyConfirm} from './story-ux.js?v=29a17-chapter123-repair-icon-20260729';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a17-chapter123-repair-icon-20260729';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a17-chapter123-repair-icon-20260729';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a17-chapter123-repair-icon-20260729';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';

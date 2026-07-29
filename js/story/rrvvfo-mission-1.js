@@ -1,8 +1,8 @@
-import {CONTROL_MAPS} from '../input.js?v=29a15-mobile-controller-comfort-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
-import {grantCombatManual} from './combat-manual.js?v=29a15-mobile-controller-comfort-20260729';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a15-mobile-controller-comfort-20260729';
-import {storyConfirm} from './story-ux.js?v=29a15-mobile-controller-comfort-20260729';
+import {CONTROL_MAPS} from '../input.js?v=29a17-chapter123-repair-icon-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
+import {grantCombatManual} from './combat-manual.js?v=29a17-chapter123-repair-icon-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a17-chapter123-repair-icon-20260729';
+import {storyConfirm} from './story-ux.js?v=29a17-chapter123-repair-icon-20260729';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';

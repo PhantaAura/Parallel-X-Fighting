@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a15-mobile-controller-comfort-20260729';
+import {InputManager} from './input.js?v=29a17-chapter123-repair-icon-20260729';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

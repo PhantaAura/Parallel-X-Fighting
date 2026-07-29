@@ -1,4 +1,4 @@
-export const CHAPTER2_HUB_QUEST_VERSION='2.9A.11';
+export const CHAPTER2_HUB_QUEST_VERSION='2.9A.17';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([
   {id:'arrival',name:'WEST GATE',x:-1510,z:80,radius:300},
@@ -22,6 +22,12 @@ export const CHAPTER2_SHORTCUTS=Object.freeze([
   {id:'market-to-stadium',label:'WADE SHORTCUT • STADIUM',x:-500,z:420,to:{x:1030,z:150},arrival:'MAIN ARENA GATE'},
   {id:'practice-to-registration',label:'WADE SHORTCUT • REGISTRATION',x:-1000,z:390,to:{x:-140,z:-360},arrival:'REGISTRATION PLAZA'},
   {id:'stadium-to-west',label:'WADE SHORTCUT • WEST GATE',x:1010,z:150,to:{x:-1420,z:80},arrival:'WEST GATE'}
+]);
+
+export const CHAPTER2_BRACKET_CARDS=Object.freeze([
+  {id:'fan-card',label:"WADE'S CARD",source:'TOURNAMENT FAN',hint:'Ask the marked fan between Market Street and Central Plaza.'},
+  {id:'vendor-card',label:"BARK'S CARD",source:'MARKET ROOF',hint:'Check the glowing card above the Market Street stalls.'},
+  {id:'veteran-card',label:'QUALIFIER CARD',source:'MAINTENANCE CART',hint:'Catch the marked cart moving along the west path.'}
 ]);
 
 export const CHAPTER2_RING_SUPPORTS=Object.freeze([
@@ -81,6 +87,7 @@ function mergeObject(base,saved){
 
 export function normalizeChapter2QuestState(saved){
   const state=mergeObject(createChapter2QuestState(),saved||{});
+  if(!Array.isArray(state.mandatory.bracket.cards))state.mandatory.bracket.cards=[];
   const arrays=[
     state.mandatory.bracket.cards,
     state.mandatory.barkRing.supports,
@@ -94,7 +101,21 @@ export function normalizeChapter2QuestState(saved){
     const unique=[...new Set(list.filter(Boolean))];
     list.splice(0,list.length,...unique);
   }
+  const bracket=state.mandatory.bracket;
+  const validCardIds=new Set(CHAPTER2_BRACKET_CARDS.map(card=>card.id));
+  if(bracket.complete){
+    bracket.started=true;
+    bracket.cards.splice(0,bracket.cards.length,...validCardIds);
+  }else{
+    const validCards=bracket.cards.filter(cardId=>validCardIds.has(cardId));
+    bracket.cards.splice(0,bracket.cards.length,...validCards);
+  }
   return state;
+}
+
+export function missingChapter2BracketCards(state){
+  const recovered=new Set(state?.mandatory?.bracket?.cards||[]);
+  return CHAPTER2_BRACKET_CARDS.filter(card=>!recovered.has(card.id));
 }
 
 export function questCompleted(state,id){

@@ -1,5 +1,5 @@
-export const BUILD_VERSION='Prototype 2.9A.15 — Mobile & Controller Comfort';
-export const SAVE_SCHEMA_VERSION=250;
+export const BUILD_VERSION='Prototype 2.9A.17 — Chapter 1–3 Repair';
+export const SAVE_SCHEMA_VERSION=261;
 export const BUILD_FEATURES=Object.freeze([
   'responsive-no-overlap-touch-layout','portrait-safe-control-zone','short-phone-mode-layout',
   'touch-first-menu-prompts','swipe-cued-classic-settings','comfortable-touch-targets',
@@ -18,9 +18,14 @@ export const BUILD_FEATURES=Object.freeze([
   'milestone-enemy-levels','mechanics-verified-dummy','wade-race-countdown-splits','nearby-npc-chatter','performance-based-plouke-rewards',
   'persistent-side-quest-stat-rewards','wade-route-race','bark-ring-repair','controlled-flame-minigame','district-navigation',
   'chapter-2-story-assist','persistent-tournament-run-refusal','try-to-beat-plouke-objective','unified-story-overlays',
-  'chapter-3-investigation-demo','dynamic-objective-compass','required-and-optional-witnesses','investigation-ability-feedback',
+  'three-visible-bracket-cards','announcer-quest-save-recovery','sage-atlas-backed-hub-npc',
+  'full-chapter-3-investigation','after-hours-tournament-hub','three-mandatory-chapter-3-side-stories','ten-optional-chapter-3-quests',
+  'bracket-record-reconstruction','locked-night-shift-route','plouke-bag-investigation','lens-energy-trail',
+  'abandoned-resonance-facility','auxiliary-power-puzzle','recorded-attack-corridor','runaway-training-dummy',
+  'subject-r-files','unfinished-echo-boss','project-hollow-discovery','object-swap-security-door','remote-highlands-ending',
+  'dynamic-objective-compass','investigation-ability-feedback','chapter-3-autosave-checkpoints',
   'chapter-3-title-transition','living-story-hubs','story-menu-manual-tracker-keys','consistent-completion-language',
   'unique-arena-normal-profiles','kinetic-movement','launch-pursuit-system','arena-combo-scaling','juggle-protection',
   'visible-ringout-fall','three-hit-edge-pressure','shot-power-trick-techniques','momentum-finisher','fair-story-health',
-  'keyboard-mouse-controller-touch','showcase-sprites','sage-manual','arena-training','favicon'
+  'keyboard-mouse-controller-touch','showcase-sprites','sage-manual','arena-training','uploaded-site-icon','installable-web-icons'
 ]);

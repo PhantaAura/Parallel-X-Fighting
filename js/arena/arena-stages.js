@@ -581,13 +581,149 @@ const LOCAL_TOURNAMENT_HUB={
   }
 };
 
+const AFTER_HOURS_TOURNAMENT={
+  ...LOCAL_TOURNAMENT_HUB,
+  id:'after-hours-tournament',
+  name:'After-Hours Tournament',
+  subtitle:'Chapter 3 nighttime investigation hub',
+  performance:{...LOCAL_TOURNAMENT_HUB.performance,particleMultiplier:.66},
+  camera:{
+    ...LOCAL_TOURNAMENT_HUB.camera,
+    clear:'#071329',
+    fogColor:'#16263c',
+    fogRange:[760,2850]
+  },
+  floor:{
+    ...LOCAL_TOURNAMENT_HUB.floor,
+    base:{...LOCAL_TOURNAMENT_HUB.floor.base,color:'#182920'},
+    surface:{...LOCAL_TOURNAMENT_HUB.floor.surface,color:'#314b3a'},
+    grid:{...LOCAL_TOURNAMENT_HUB.floor.grid,color:'#9ab29a',alphaX:.025,alphaZ:.02},
+    centerMark:{...LOCAL_TOURNAMENT_HUB.floor.centerMark,color:'#b49e5a',alpha:.3,crossAlpha:.12}
+  }
+};
+
+const RESONANCE_FACILITY={
+  schema:ARENA_STAGE_SCHEMA_VERSION,
+  id:'resonance-facility',
+  name:'Abandoned Resonance Facility',
+  subtitle:'Chapter 3 underground investigation and combat',
+  available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.72},
+  bounds:{minX:-1180,maxX:1180,minZ:-720,maxZ:720},
+  spawnPoints:[{x:-880,z:0},{x:430,z:0}],
+  projectileLimits:{padding:220,minY:-45,maxY:680},
+  ai:{wallMargin:120},
+  camera:{
+    yawDeg:34,fov:46,clear:'#101526',fogColor:'#18253a',fogRange:[760,2200],
+    focusClampX:1100,focusClampZ:650,baseDistance:940,separationScale:.18,
+    minDistance:880,maxDistance:1120,heightBase:390,heightDistanceScale:.14,
+    horizontalDistanceScale:.8,targetHeight:42,jumpTargetScale:.16,
+    focusSmoothing:.1,zoomSmoothing:.08
+  },
+  floor:{
+    base:{x:0,y:-30,z:0,sx:2520,sy:60,sz:1660,color:'#111827'},
+    surface:{x:0,y:1,z:0,sx:2420,sy:5,sz:1560,color:'#28364a'},
+    grid:{stepX:180,stepZ:160,y:4,widthX:1.2,widthZ:1.2,height:.8,color:'#85d9ff',alphaX:.08,alphaZ:.06},
+    centerMark:{x:310,y:5,z:0,radius:180,segments:36,width:4,height:1.4,color:'#74e4f4',alpha:.32,crossRadius:215,crossWidth:2,crossAlpha:.18}
+  },
+  scenery:{
+    boxes:[
+      {x:0,y:-43,z:0,sx:2740,sy:30,sz:1860,color:'#0b111d'},
+      {x:-1060,y:130,z:0,sx:90,sy:260,sz:1500,color:'#172234'},
+      {x:1060,y:130,z:0,sx:90,sy:260,sz:1500,color:'#172234'},
+      {x:0,y:130,z:-650,sx:2200,sy:260,sz:90,color:'#172234'},
+      {x:0,y:130,z:650,sx:2200,sy:260,sz:90,color:'#172234'},
+      {x:-720,y:74,z:-420,sx:260,sy:148,sz:160,color:'#243b50'},
+      {x:-720,y:74,z:420,sx:260,sy:148,sz:160,color:'#243b50'},
+      {x:-340,y:62,z:-430,sx:210,sy:124,sz:180,color:'#3b263b'},
+      {x:-340,y:62,z:430,sx:210,sy:124,sz:180,color:'#253e47'},
+      {x:40,y:86,z:-470,sx:280,sy:172,sz:130,color:'#1e3348'},
+      {x:40,y:86,z:470,sx:280,sy:172,sz:130,color:'#1e3348'},
+      {x:420,y:70,z:-440,sx:240,sy:140,sz:160,color:'#3b2d48'},
+      {x:420,y:70,z:440,sx:240,sy:140,sz:160,color:'#3b2d48'},
+      {x:790,y:105,z:-410,sx:250,sy:210,sz:190,color:'#222a3d'},
+      {x:790,y:105,z:410,sx:250,sy:210,sz:190,color:'#222a3d'},
+      {x:-845,y:170,z:0,sx:28,sy:320,sz:1030,color:'#516476',alpha:.55},
+      {x:-480,y:170,z:0,sx:24,sy:320,sz:1030,color:'#516476',alpha:.48},
+      {x:650,y:170,z:0,sx:24,sy:320,sz:1030,color:'#516476',alpha:.48},
+      {x:890,y:130,z:0,sx:90,sy:260,sz:500,color:'#191c2d'},
+      {x:900,y:95,z:0,sx:48,sy:190,sz:180,color:'#6c4d8a',alpha:.82}
+    ],
+    lamps:[
+      {x:-850,z:-300},{x:-850,z:300},{x:-430,z:-300},{x:-430,z:300},
+      {x:0,z:-300},{x:0,z:300},{x:440,z:-300},{x:440,z:300},{x:820,z:0}
+    ],
+    lamp:{post:{y:80,sx:10,sy:160,sz:10,color:'#243345'},light:{y:164,sx:30,sy:30,sz:30,color:'#8fe8ff',alpha:.86,lit:false}}
+  }
+};
+
+const REMOTE_HIGHLANDS={
+  schema:ARENA_STAGE_SCHEMA_VERSION,
+  id:'remote-highlands',
+  name:'Remote Highlands',
+  subtitle:'Chapter 3 destination near Shadow’s Lookout',
+  available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.7},
+  bounds:{minX:-1250,maxX:1250,minZ:-820,maxZ:820},
+  spawnPoints:[{x:-820,z:130},{x:-900,z:40}],
+  projectileLimits:{padding:220,minY:-45,maxY:820},
+  ai:{wallMargin:120},
+  camera:{
+    yawDeg:39,fov:44,clear:'#6589ad',fogColor:'#a9bfd0',fogRange:[1000,3100],
+    focusClampX:1180,focusClampZ:750,baseDistance:1040,separationScale:.15,
+    minDistance:980,maxDistance:1210,heightBase:475,heightDistanceScale:.16,
+    horizontalDistanceScale:.8,targetHeight:48,jumpTargetScale:.17,
+    focusSmoothing:.09,zoomSmoothing:.07
+  },
+  floor:{
+    base:{x:0,y:-38,z:0,sx:2720,sy:76,sz:1800,color:'#30483a'},
+    surface:{x:0,y:1,z:0,sx:2600,sy:5,sz:1680,color:'#55765a'},
+    grid:{stepX:260,stepZ:220,y:4,widthX:1,widthZ:1,height:.8,color:'#d9e6d4',alphaX:.03,alphaZ:.025},
+    centerMark:{x:-820,y:5,z:130,radius:120,segments:36,width:3,height:1.4,color:'#acc7d6',alpha:.24,crossRadius:145,crossWidth:2,crossAlpha:.12}
+  },
+  scenery:{
+    boxes:[
+      {x:0,y:-52,z:0,sx:2920,sy:32,sz:2020,color:'#25392e'},
+      {x:-260,y:8,z:100,sx:1850,sy:10,sz:190,color:'#7a735d'},
+      {x:700,y:72,z:-420,sx:380,sy:144,sz:300,color:'#4a5260'},
+      {x:790,y:182,z:-440,sx:180,sy:220,sz:150,color:'#343945'},
+      {x:1020,y:310,z:-560,sx:100,sy:620,sz:100,color:'#242a38'},
+      {x:1020,y:640,z:-560,sx:180,sy:80,sz:180,color:'#bcdcff',alpha:.58},
+      {x:300,y:46,z:470,sx:360,sy:92,sz:220,color:'#4e554d'},
+      {x:360,y:112,z:470,sx:210,sy:70,sz:160,color:'#60635a'},
+      {x:-300,y:38,z:-430,sx:210,sy:76,sz:150,color:'#4b504a'},
+      {x:-80,y:54,z:-520,sx:260,sy:108,sz:190,color:'#444b47'},
+      {x:590,y:42,z:290,sx:240,sy:84,sz:170,color:'#4b514d'},
+      ...Array.from({length:14},(_,index)=>{
+        const x=-1120+index*170;
+        return{x,y:70+(index%3)*10,z:index%2?-690:690,sx:28,sy:140,sz:28,color:'#4d3d2b'};
+      }),
+      ...Array.from({length:14},(_,index)=>{
+        const x=-1120+index*170;
+        return{x,y:162+(index%3)*14,z:index%2?-690:690,sx:118,sy:110,sz:118,color:index%2?'#315c3f':'#3e6948'};
+      })
+    ],
+    lamps:[]
+  }
+};
+
 export const ARENA_STAGE_CATALOG=deepFreeze([
   {id:'dojo',name:'Tangai Dojo',status:'Playable',available:true,role:'Medium closed arena'},
   {id:'tournament',name:'Global Tournament',status:'Playable',available:true,role:'Large long-range arena • 1500 × 900'},
   {id:'asrylyte',name:'Asrylyte Zone',status:'Next effects checkpoint',available:false,role:'Small effects-heavy arena'}
 ]);
 
-export const ARENA_STAGES=deepFreeze({dojo:TANGAI_DOJO,tournament:GLOBAL_TOURNAMENT,'training-field':TRAINING_FIELD,'training-road':TRAINING_ROAD,'expanded-training-region':EXPANDED_TRAINING_REGION,'tournament-hub':LOCAL_TOURNAMENT_HUB});
+export const ARENA_STAGES=deepFreeze({
+  dojo:TANGAI_DOJO,
+  tournament:GLOBAL_TOURNAMENT,
+  'training-field':TRAINING_FIELD,
+  'training-road':TRAINING_ROAD,
+  'expanded-training-region':EXPANDED_TRAINING_REGION,
+  'tournament-hub':LOCAL_TOURNAMENT_HUB,
+  'after-hours-tournament':AFTER_HOURS_TOURNAMENT,
+  'resonance-facility':RESONANCE_FACILITY,
+  'remote-highlands':REMOTE_HIGHLANDS
+});
 
 export function validateArenaStage(stage){
   const errors=[];

@@ -1,8 +1,8 @@
-import {BUILD_VERSION} from './build-info.js?v=29a15-mobile-controller-comfort-20260729';
-import {sharedInput} from './input-runtime.js?v=29a15-mobile-controller-comfort-20260729';
-import {loadLostYearProgress,storyModeComplete} from './story/lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
+import {BUILD_VERSION} from './build-info.js?v=29a17-chapter123-repair-icon-20260729';
+import {sharedInput} from './input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
+import {loadLostYearProgress,storyModeComplete} from './story/lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
 
-const MENU_MODULE_CACHE='29a15-mobile-controller-comfort-20260729';
+const MENU_MODULE_CACHE='29a17-chapter123-repair-icon-20260729';
 export const STORY_CLEAR_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([

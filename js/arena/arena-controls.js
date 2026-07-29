@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a15-mobile-controller-comfort-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a15-mobile-controller-comfort-20260729';
+import {CONTROL_MAPS} from '../input.js?v=29a17-chapter123-repair-icon-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

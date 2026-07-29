@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a15-mobile-controller-comfort-20260729';
+import {storyConfirm} from './story/story-ux.js?v=29a17-chapter123-repair-icon-20260729';
 
 /* ═══════════════════════════════════════════════════════════════
    PARALLELS X — COMPATIBLE SPRITE-ON-TOP DIALOGUE

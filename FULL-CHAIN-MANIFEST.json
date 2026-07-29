@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X Prototype 2.9A.15 Complete Cumulative Build",
-  "version": "2.9A.15",
+  "name": "Parallels X Prototype 2.9A.17 Complete Cumulative Build",
+  "version": "2.9A.17",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -18,8 +18,10 @@
     "2.9A.12 Story Clear Unlocks: Classic battles and Arena remain hidden until all released Story content is complete",
     "2.9A.13 Six-Chapter Visual & Camera Pass: six-chapter unlock target, cleaned core fighter atlases, rebuilt Tangai Dojo, and Rrvvfo-focused hub cameras",
     "2.9A.14 Sage & Complete Polish Pass: 36-pose Sage atlas, camera occlusion avoidance, correct Story progress, fixed hub animation timing, readable Classic scale, real roster portraits, compact round banners, and startup progress rollback",
-    "2.9A.15 Mobile & Controller Comfort: safe responsive touch layouts, portrait battle separation, compact phone menus, swipe cues, and touch-first prompts"
+    "2.9A.15 Mobile & Controller Comfort: safe responsive touch layouts, portrait battle separation, compact phone menus, swipe cues, and touch-first prompts",
+    "2.9A.16 Full Chapter 3: after-hours investigation hub, three mandatory stories, ten optional quests, Abandoned Resonance Facility, Unfinished Echo, Project Hollow, Object Swap escape, and Remote Highlands ending",
+    "2.9A.17 Chapter 1–3 Repair: visible announcer cards, resilient bracket saves, atlas-backed Sage hub NPC, and the uploaded Parallels X site icon"
   ],
-  "cache_tag": "29a15-mobile-controller-comfort-20260729",
-  "save_schema": 250
+  "cache_tag": "29a17-chapter123-repair-icon-20260729",
+  "save_schema": 261
 }

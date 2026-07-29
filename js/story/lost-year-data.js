@@ -65,17 +65,17 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         note:'The bracket, Wade’s hub tour, Bark’s ring repair, and the Plouke rumor thread are mandatory. Food, fan, challenger, dummy, prize-cart, fake-champion, grunt, and Bark-spar quests remain optional.'
       },
       {
-        id:'rrvvfo-03-preview',
+        id:'rrvvfo-03',
         number:3,
-        title:'CLOSED OFF',
+        title:'SOMETHING UNDER THE RING',
         available:true,
         playable:true,
         unlockAfter:'rrvvfo-02',
-        status:'CHAPTER 3 DEMO',
-        description:'After the tournament, Rrvvfo returns to a much larger Training Region and finds several routes exploded, barricaded, or sealed. He questions locals until a strange man offers a lead into an underground teleporter base.',
-        objectives:['Explore the expanded Training Region in any order','Inspect at least two blocked routes','Question local NPCs','Meet the strange man in the central plaza','Find the underground base entrance'],
-        stage:'Expanded Training Region',
-        note:'This playable demo tests the opening investigation systems and is not the full Chapter 3.'
+        status:'PLAYABLE FULL CHAPTER',
+        description:'After the Plouke reveal, Rrvvfo investigates the closing tournament, uncovers stolen fighter data, follows the Sage beneath the ring, and discovers Project Hollow.',
+        objectives:['Investigate the after-hours tournament','Complete three mandatory side stories','Follow the Lens trail beneath the arena','Defeat the Runaway Training Dummy and Unfinished Echo','Use Object Swap to reach the strange teleporter','Arrive near Shadow’s Lookout'],
+        stage:'After-Hours Tournament + Abandoned Resonance Facility + Remote Highlands',
+        note:'The operator remains anonymous. Project Hollow is discovered but not explained.'
       }
     ]
 
@@ -83,7 +83,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},updatedAt:Date.now()};
 }
 
 export function loadLostYearProgress(storage=localStorage){
@@ -120,7 +120,8 @@ export function routeProgress(route,progress){
   const completed=new Set(progress?.completedMissions||[]);
   const completedChapters=[
     ['rrvvfo-00','rrvvfo-01','rrvvfo-road'],
-    ['rrvvfo-02']
+    ['rrvvfo-02'],
+    ['rrvvfo-03']
   ].filter(missions=>missions.every(id=>completed.has(id))).length;
   return Math.round(completedChapters/STORY_CHAPTERS_PER_CHARACTER*100);
 }
@@ -146,9 +147,9 @@ export const RRVVFO_CHAPTERS=Object.freeze([
     missions:['rrvvfo-02']
   },
   {
-    id:'rrvvfo-chapter-3',number:3,title:'CLOSED OFF',
-    description:'Playable demo: investigate sealed roads, question witnesses, and follow the underground lead.',
-    missions:['rrvvfo-03-preview'],demo:true
+    id:'rrvvfo-chapter-3',number:3,title:'SOMETHING UNDER THE RING',
+    description:'Investigate the after-hours tournament, follow stolen fighter energy underground, defeat the Unfinished Echo, and reach the Remote Highlands.',
+    missions:['rrvvfo-03']
   }
 ]);
 
@@ -162,7 +163,7 @@ export function rrvvfoNextMission(progress){
   if(!completed.has('rrvvfo-01'))return'rrvvfo-01';
   if(!completed.has('rrvvfo-road'))return'rrvvfo-road';
   if(!completed.has('rrvvfo-02'))return'rrvvfo-02';
-  if(!completed.has('rrvvfo-03-preview'))return'rrvvfo-03-preview';
+  if(!completed.has('rrvvfo-03'))return'rrvvfo-03';
   return null;
 }
 

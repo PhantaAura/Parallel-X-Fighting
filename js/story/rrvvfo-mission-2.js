@@ -1,16 +1,17 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a15-mobile-controller-comfort-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a15-mobile-controller-comfort-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a15-mobile-controller-comfort-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a15-mobile-controller-comfort-20260729';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a15-mobile-controller-comfort-20260729';
-import {storyConfirm} from './story-ux.js?v=29a15-mobile-controller-comfort-20260729';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a15-mobile-controller-comfort-20260729';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a15-mobile-controller-comfort-20260729';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a15-mobile-controller-comfort-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a17-chapter123-repair-icon-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a17-chapter123-repair-icon-20260729';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a17-chapter123-repair-icon-20260729';
+import {storyConfirm} from './story-ux.js?v=29a17-chapter123-repair-icon-20260729';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a17-chapter123-repair-icon-20260729';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a17-chapter123-repair-icon-20260729';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a17-chapter123-repair-icon-20260729';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
 const LEVEL_THRESHOLDS=STORY_LEVEL_THRESHOLDS;
+const HUB_SPRITE_NPC_IDS=new Set(['sage','bark','wade']);
 let activeMission=null;
 
 function freshChapter2State(){
@@ -197,9 +198,9 @@ function buildUI(){
         <div class="routeEndRewards">
           <span>FULL TOURNAMENT HUB CLEARED</span>
           <span>TRAINING LEVELS UNLOCKED</span>
-          <span>CHAPTER 3 DEMO UNLOCKED</span>
+          <span>CHAPTER 3 • SOMETHING UNDER THE RING UNLOCKED</span>
         </div>
-        <button type="button" data-end-route>CONTINUE TO CHAPTER 3 DEMO</button>
+        <button type="button" data-end-route>CONTINUE TO CHAPTER 3</button>
       </article>
     </div>`;
   document.body.appendChild(root);
@@ -537,6 +538,7 @@ class RrvvfoMission2{
 
   prepareHubActors(){
     const specs=[
+      {id:'sage',name:'The Sage',accent:'#d9e7f3',x:-1340,z:-20},
       {id:'bark',name:'Bark',accent:'#9a6a3a',x:120,z:130},
       {id:'wade',name:'Wade',accent:'#2f91e3',x:250,z:20}
     ];
@@ -598,7 +600,11 @@ class RrvvfoMission2{
     if(!q.bracket.started){
       this.setObjective('FIND THE TOURNAMENT ANNOUNCER','Registration is stalled. Speak to the announcer in Registration Plaza.');
     }else if(!q.bracket.complete){
-      this.setObjective('REBUILD THE LOST BRACKET',`Recover contestant cards around the grounds. ${q.bracket.cards.length} / 3`);
+      const missing=missingChapter2BracketCards(this.state.hubQuests);
+      this.setObjective(
+        'REBUILD THE LOST BRACKET',
+        `${q.bracket.cards.length} / 3 recovered • ${missing.map(card=>card.source).join(' • ')||'Return to the announcer'}`
+      );
     }else if(!this.state.sageVanished){
       this.setObjective('RETURN TO THE ANNOUNCER','The missing cards are recovered. Bring them back to Registration Plaza.');
     }else if(!this.state.firstBrawlComplete){
@@ -2233,22 +2239,28 @@ class RrvvfoMission2{
   drawHubExtras(){
     if(!this.battle?.renderer)return;
     const r=this.battle.renderer,time=performance.now()/1000,quests=this.state.hubQuests;
+    const missingCards=missingChapter2BracketCards(quests);
     for(const npc of this.activeNpcs()){
       const bob=Math.sin(time*2+npc.x*.01)*2;
       r.disc({x:npc.x,y:5,z:npc.z,rx:27,rz:18,color:'#000',alpha:.24});
-      const hasSprite=(npc.id==='bark'||npc.id==='wade')&&this.hubActors.some(actor=>actor.id===npc.id&&actor.asset);
+      const usesSprite=HUB_SPRITE_NPC_IDS.has(npc.id);
+      const hasSprite=usesSprite&&this.hubActors.some(actor=>actor.id===npc.id&&actor.asset);
       if(npc.kind==='bracket'){
         r.box({x:npc.x,y:80,z:npc.z,sx:120,sy:150,sz:18,color:npc.color});
         r.box({x:npc.x,y:155,z:npc.z,sx:135,sy:18,sz:28,color:npc.hair});
-      }else if(!hasSprite){
+      }else if(!usesSprite){
         r.box({x:npc.x,y:48+bob,z:npc.z,sx:32,sy:64,sz:25,color:npc.color});
         r.box({x:npc.x,y:92+bob,z:npc.z,sx:29,sy:29,sz:27,color:'#946044'});
         r.box({x:npc.x,y:112+bob,z:npc.z,sx:35,sy:16,sz:31,color:npc.hair});
+      }else if(!hasSprite){
+        r.billboard({x:npc.x,y:86+bob,z:npc.z,size:42,color:npc.id==='sage'?'#dff5ff':npc.id==='bark'?'#c69258':'#6ed6ff',alpha:.28});
       }
       if(npc.id==='sage')r.billboard({x:npc.x,y:145,z:npc.z,size:48,color:'#dff5ff',alpha:.22});
       if(npc.kind==='grunt'||npc.kind==='ringSaboteur')r.disc({x:npc.x,y:7,z:npc.z,rx:42,rz:28,color:'#ffcf4d',alpha:.18});
       if(npc.id==='bark'||npc.id==='wade')r.disc({x:npc.x,y:7,z:npc.z,rx:40,rz:26,color:npc.id==='bark'?'#b88750':'#59b7ff',alpha:.18});
-      const mainTarget=(npc.id==='announcer'&&!quests.mandatory.bracket.complete)||(npc.id==='wade'&&this.state.metBarkWade&&!quests.mandatory.wadeRace.complete)||(npc.id==='bark'&&quests.mandatory.wadeRace.complete&&!quests.mandatory.barkRing.complete)||(npc.id==='ring-saboteur'&&!quests.mandatory.barkRing.complete)||(npc.id==='bracket'&&this.state.intermission);
+      const announcerTarget=npc.id==='announcer'&&(!quests.mandatory.bracket.started||(!quests.mandatory.bracket.complete&&!missingCards.length));
+      const fanCardTarget=npc.id==='fan'&&missingCards.some(card=>card.id==='fan-card');
+      const mainTarget=announcerTarget||fanCardTarget||(npc.id==='wade'&&this.state.metBarkWade&&!quests.mandatory.wadeRace.complete)||(npc.id==='bark'&&quests.mandatory.wadeRace.complete&&!quests.mandatory.barkRing.complete)||(npc.id==='ring-saboteur'&&!quests.mandatory.barkRing.complete)||(npc.id==='bracket'&&this.state.intermission);
       const sideTarget=['vendor','fake-champion','lost-fan','mechanic','cashier','challenger'].includes(npc.id);
       if(mainTarget)r.billboard({x:npc.x,y:165+bob,z:npc.z,size:34,color:'#ffd34f',alpha:.88});
       else if(sideTarget)r.billboard({x:npc.x,y:155+bob,z:npc.z,size:24,color:'#6ed6ff',alpha:.72});
@@ -2269,14 +2281,22 @@ class RrvvfoMission2{
     }
 
     const bracket=quests.mandatory.bracket;
+    if(bracket.started&&!bracket.complete&&!bracket.cards.includes('fan-card')){
+      const fan=this.npcs.find(npc=>npc.id==='fan'),pulse=1+Math.sin(time*5+.8)*.1;
+      r.box({x:fan.x+24,y:112,z:fan.z,sx:24,sy:3,sz:32,color:'#fff3b0',alpha:.96});
+      r.billboard({x:fan.x,y:158,z:fan.z,size:38*pulse,color:'#ffd34f',alpha:.92});
+      r.disc({x:fan.x,y:7,z:fan.z,rx:44*pulse,rz:30*pulse,color:'#ffd34f',alpha:.34});
+    }
     if(bracket.started&&!bracket.complete&&!bracket.cards.includes('vendor-card')){
       const pulse=1+Math.sin(time*5)*.1;
-      r.billboard({x:-430,y:125,z:760,size:44*pulse,color:'#6ed6ff',alpha:.9});
-      r.disc({x:-430,y:7,z:760,rx:42*pulse,rz:28*pulse,color:'#6ed6ff',alpha:.3});
+      r.box({x:-430,y:82,z:760,sx:26,sy:3,sz:34,color:'#fff3b0',alpha:.96});
+      r.billboard({x:-430,y:125,z:760,size:44*pulse,color:'#ffd34f',alpha:.92});
+      r.disc({x:-430,y:7,z:760,rx:42*pulse,rz:28*pulse,color:'#ffd34f',alpha:.34});
     }
     if(bracket.started&&!bracket.complete&&!bracket.cards.includes('veteran-card')){
       r.box({x:this.bracketCartX,y:28,z:-300,sx:105,sy:48,sz:68,color:'#527288',alpha:.9});
-      r.billboard({x:this.bracketCartX,y:92,z:-300,size:34,color:'#6ed6ff',alpha:.84});
+      r.box({x:this.bracketCartX,y:58,z:-300,sx:26,sy:3,sz:34,color:'#fff3b0',alpha:.96});
+      r.billboard({x:this.bracketCartX,y:100,z:-300,size:38,color:'#ffd34f',alpha:.9});
     }
 
     if(quests.mandatory.barkRing.started&&!quests.mandatory.barkRing.complete){

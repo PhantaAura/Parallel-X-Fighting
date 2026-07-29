@@ -1,24 +1,21 @@
 {
-  "name": "PX 2.5C1 Known Working Full Chain",
-  "base": "Parallel-X-Fighting prototype 2.3.5b rival sprite reimport",
-  "overlays": [
-    "PX_2_4A_Checkpoint_1.zip",
-    "PX_2_4A_Checkpoint_2_True_Isometric.zip",
-    "PX_2_4A_Checkpoint_3_WebGL_3D_Arena.zip",
-    "PX_2_4A_Checkpoint_4_WebGL_Hotbar_Restored.zip",
-    "PX_2_4B_Checkpoint_1_Depth_Combat.zip",
-    "PX_2_4B_Checkpoint_2_Control_Layouts.zip",
-    "PX_2_4B_Checkpoint_2_1_Mouse_Shift_Controls.zip",
-    "PX_2_4C_Checkpoint_1_Reusable_Arena_Pipeline.zip",
-    "PX_2_4C_Checkpoint_2_Global_Tournament.zip",
-    "PX_2_4C_Stage_Select_Hotfix.zip",
-    "PX_2_4C_Fighter_Visibility_Hotfix.zip",
-    "PX_2_4C_Lens_of_Truth_Blindness_Hotfix.zip",
-    "PX_2_4C_Lens_Blindness_Hotfix_2.zip",
-    "PX_2_5A_Lost_Year_Foundation.zip",
-    "PX_2_5B_Sonic_Battle_Movement.zip",
-    "PX_2_5C_Mission_0_No_Maximums.zip",
-    "PX_2_5C1_Story_Select_Battle_Dialogue_Hotfix.zip"
+  "name": "Parallels X Prototype 2.9A.7 Complete Cumulative Build",
+  "version": "2.9A.7",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "foundation": "Prototype 2.3.5b rival sprite reimport",
+  "included_milestones": [
+    "2.4A-2.4C 3D arena and tournament pipeline",
+    "2.5A-2.8B Story route, replay, and chapter foundations",
+    "2.9A combat-depth overhaul",
+    "2.9A.1 Story repair",
+    "2.9A.2 combat HUD and Story Menu repair",
+    "2.9A.3 shared Story Engine foundation",
+    "2.9A.4 Story playtest polish",
+    "2.9A.5 presentation foundation",
+    "2.9A.6 unified Chapter 1-3 runtime, controls, loading, audio, CSS, and release cleanup",
+    "2.9A.6.1 restored M1 attack and M2 block across every player mode",
+    "2.9A.7 casual retention pass: fair health, Quick Battle, truthful Lens, finished roster, simpler setup and Training, compact Manual unlocks, dedicated Interact, and shorter optional encounters"
   ],
-  "cache_tag": "25c1-known-working-full-chain"
+  "cache_tag": "29a7-casual-retention-20260729"
 }

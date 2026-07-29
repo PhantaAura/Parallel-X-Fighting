@@ -17,6 +17,7 @@ export const ROSTER = {
 };
 
 export const ROSTER_IDS = Object.keys(ROSTER);
+export const PLAYABLE_ROSTER_IDS=Object.freeze(['rrvvfo','revvfo','wade','bark','sage']);
 export const isMirrorMatch=(playerOne,playerTwo)=>playerOne===playerTwo;
 
 export const FIGHTER_META={
@@ -36,3 +37,21 @@ export const FIGHTER_META={
   jonathan:{style:'Chaotic close-range pressure',difficulty:2},
   rev:{style:'Cocky mechanical zoning',difficulty:3}
 };
+
+export const FIGHTER_STATUS=Object.freeze({
+  rrvvfo:Object.freeze({id:'showcase',label:'SHOWCASE READY',selectable:true}),
+  revvfo:Object.freeze({id:'showcase',label:'SHOWCASE READY',selectable:true}),
+  sage:Object.freeze({id:'showcase',label:'SHOWCASE READY',selectable:true}),
+  wade:Object.freeze({id:'playable',label:'PLAYABLE',selectable:true}),
+  bark:Object.freeze({id:'playable',label:'PLAYABLE',selectable:true}),
+  alt:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  robert:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  virek:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  shadow:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  phanta:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  creed:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  raggie:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  jimmy:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  jonathan:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false}),
+  rev:Object.freeze({id:'in-development',label:'COMING SOON',selectable:false})
+});

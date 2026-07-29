@@ -1,10 +1,9 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a2-story-hud-20260728';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a2-story-hud-20260728';
-import {StoryMap} from './story-map.js?v=29a2-story-hud-20260728';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a2-story-hud-20260728';
-import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a7-casual-retention-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a7-casual-retention-20260729';
+import {StoryMap} from './story-map.js?v=29a7-casual-retention-20260729';
+import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -33,7 +32,7 @@ function buildUI(){
       </div>
     </div>
     <div class="roadAreaTitle" data-road-area hidden><small>THE LOST YEAR</small><strong data-road-area-name>TRAINING GROUNDS</strong></div>
-    <div class="roadPrompt" data-road-prompt hidden><strong data-road-prompt-title>INTERACT</strong><span data-road-prompt-detail>PRESS LIGHT / ENTER</span></div>
+    <div class="roadPrompt" data-road-prompt hidden><strong data-road-prompt-title>INTERACT</strong><span data-road-prompt-detail>PRESS INTERACT</span></div>
     <div class="roadChoice" data-road-choice hidden>
       <article>
         <small>NON-STORY ENCOUNTER</small>
@@ -48,9 +47,9 @@ function buildUI(){
         <h2 data-qte-title>FOLLOW THE INPUTS</h2>
         <div class="qteSequence" data-qte-sequence></div>
         <div class="qteButtons">
-          <button type="button" data-qte-input="ArrowLeft">←</button>
+          <button type="button" data-qte-input="KeyA">←</button>
           <button type="button" data-qte-input="Space">JUMP</button>
-          <button type="button" data-qte-input="ArrowRight">→</button>
+          <button type="button" data-qte-input="KeyD">→</button>
         </div>
         <div class="qteTimer"><i data-qte-timer></i></div>
       </article>
@@ -107,10 +106,11 @@ class RrvvfoRoadHub{
     this.finishDialogueShown=false;
     this.checkpointDialogueShown=false;
     this.warmupMarkers=[
-      {x:-1260,z:250,label:'NORTH FLAG',done:false},
-      {x:-980,z:330,label:'EAST FLAG',done:false},
-      {x:-875,z:-240,label:'FOREST FLAG',done:false}
+      {x:-1260,z:250,label:'MOVE FLAG',requirement:'move',done:false},
+      {x:-980,z:330,label:'JUMP FLAG',requirement:'jump',done:false},
+      {x:-875,z:-240,label:'DASH FLAG',requirement:'dash',done:false}
     ];
+    this.lastCommand={};this.runAttempts=0;
     this.qteSequence=[];
     this.qteIndex=0;
     this.qteDeadline=0;
@@ -136,23 +136,18 @@ class RrvvfoRoadHub{
   }
 
   start(){
-    resetArenaBattleInstance();
-    this.battle=new ArenaBattle('training-road');
-    const sage=this.battle.fighters[1];
-    sage.id='sage';
-    sage.name='The Sage';
-    sage.accent='#d9e7f3';
-    sage.cpu=true;
-    sage.appearance='down';
+    this.battle=createStoryBattle({stageId:'training-road',opponent:{id:'sage',name:'The Sage',accent:'#d9e7f3',cpu:true,appearance:'down'}});
+    this.engine=attachStoryEngine(this.battle,{
+      chapterLabel:'RRVVFO CHAPTER 1 ROAD',
+      stageName:'TRAINING GROUNDS • TOURNAMENT ROAD',
+      rootClasses:['storyRoadHub'],
+      getMode:()=>this.engine?.dialogue?'dialogue':this.mode
+    });
     this.patchBattle();
-    this.battle.start();
+    this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','THE SAGE']});
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART ROAD?',message:'Restart the current Tournament Road section? Completed checkpoints remain saved.',confirmLabel:'RESTART'});
-    this.battle.root.classList.add('storyRoadHub');
-    this.battle.root.querySelector('[data-stage-name]').textContent='TRAINING GROUNDS • TOURNAMENT ROAD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.2 • CHAPTER 1 ROAD';
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' LIVING TOURNAMENT ROAD • STORY EXPLORATION';
-    applyStoryProgressionToFighter(this.battle.fighters[0]);
+    if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • LIVING TOURNAMENT ROAD';
     this.map=new StoryMap({
       title:'TOURNAMENT ROAD MAP',
       bounds:{minX:-1550,maxX:1450,minZ:-720,maxZ:720},
@@ -176,111 +171,72 @@ class RrvvfoRoadHub{
 
   patchBattle(){
     const battle=this.battle;
-    const baseInput=battle.input.bind(battle);
-    const baseCpu=battle.cpu.bind(battle);
-    const baseCast=battle.castAbility.bind(battle);
-    const baseUpdate=battle.update.bind(battle);
-    const baseApplyDamage=battle.applyDamage.bind(battle);
-    const baseDraw=battle.draw.bind(battle);
-    const baseDrawFighterLayer=battle.drawFighterLayer.bind(battle);
-    const baseFlipFor=battle.flipFor.bind(battle);
-    const defaultExit=battle.exit.bind(battle);
-
-    battle.input=()=>{
-      const command=baseInput();
-      const interact=Boolean(command.light);
-      if(this.mode==='hub'){
-        if(interact&&!this.interactHeld)this.tryInteract();
-        this.interactHeld=interact;
-        return{...command,light:false,heavy:false,launcher:false,block:false,special:false};
-      }
-      this.interactHeld=interact;
-      if(this.mode==='fight')return command;
-      return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,special:false};
-    };
-
-    battle.cpu=(fighter,foe,dt)=>{
-      if(this.mode==='fight'){
-        const command=baseCpu(fighter,foe,dt);
-        return{...command,special:false};
-      }
-      return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,special:false};
-    };
-
-    battle.castAbility=slot=>{
-      if(this.mode==='fight')return baseCast(slot);
-      if(this.mode!=='hub')return false;
-      return this.castFieldAbility(slot);
-    };
-
-    battle.updateCamera=()=>this.updateCamera();
-
-    battle.applyDamage=(attacker,target,damage,meta={})=>{
-      const connected=baseApplyDamage(attacker,target,damage,meta);
-      if(!connected||this.mode!=='fight')return connected;
-      if(target===battle.fighters[1]&&target.hp<=0){
-        target.hp=1;
-        queueMicrotask(()=>this.handleRoadFightKo(true));
-      }else if(target===battle.fighters[0]&&target.hp<=0){
-        target.hp=1;
-        queueMicrotask(()=>this.handleRoadFightKo(false));
-      }
-      return connected;
-    };
-
-    battle.flipFor=fighter=>{
-      if(this.mode!=='fight'&&fighter===battle.fighters[0]){
-        const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
-        if(speed>.05){
-          const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
-          const ahead=battle.renderer.project(fighter.x+(fighter.moveX||fighter.aimX||1)*120,80+fighter.y,fighter.z+(fighter.moveZ||fighter.aimZ||0)*120);
-          this.playerFlip=ahead.x<self.x;
+    this.engine.useChapterProfile({
+      input:next=>{
+        const command=next();this.lastCommand=command;
+        const interact=Boolean(command.interact);
+        if(this.mode==='hub'){
+          if(interact&&!this.interactHeld)this.tryInteract();
+          this.interactHeld=interact;
+          return this.engine.commandForMode(command,'exploration',{allowJump:true,allowDash:true,allowInteract:true});
         }
-        return this.playerFlip;
+        this.interactHeld=interact;
+        return this.engine.commandForMode(command,this.mode==='fight'?'combat':'cinematic');
+      },
+      cpu:(next,fighter,foe,dt)=>{
+        if(this.mode==='fight')return{...next(fighter,foe,dt),special:false};
+        return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false};
+      },
+      castAbility:(next,slot)=>{
+        if(this.mode==='fight')return next(slot);
+        if(this.mode!=='hub')return false;
+        return this.castFieldAbility(slot);
+      },
+      updateCamera:()=>this.updateCamera(),
+      applyDamage:(next,attacker,target,damage,meta={})=>{
+        const connected=next(attacker,target,damage,meta);
+        if(!connected||this.mode!=='fight')return connected;
+        if(target===battle.fighters[1]&&target.hp<=0){target.hp=1;queueMicrotask(()=>this.handleRoadFightKo(true))}
+        else if(target===battle.fighters[0]&&target.hp<=0){target.hp=1;queueMicrotask(()=>this.handleRoadFightKo(false))}
+        return connected;
+      },
+      flipFor:(next,fighter)=>{
+        if(this.mode!=='fight'&&fighter===battle.fighters[0]){
+          const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
+          if(speed>.05){
+            const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
+            const ahead=battle.renderer.project(fighter.x+(fighter.moveX||fighter.aimX||1)*120,80+fighter.y,fighter.z+(fighter.moveZ||fighter.aimZ||0)*120);
+            this.playerFlip=ahead.x<self.x;
+          }
+          return this.playerFlip;
+        }
+        return next(fighter);
+      },
+      drawFighterLayer:(next,fighters)=>{
+        const visible=this.mode==='fight'?fighters:fighters.filter(fighter=>fighter===battle.fighters[0]||this.fighterVisible);
+        return next(visible);
+      },
+      draw:next=>{next();this.drawHubExtras()},
+      update:(next,dt)=>{
+        const player=battle.fighters[0],previous={x:player.x,z:player.z};
+        next(dt);
+        if(!battle.active||this.aborted)return;
+        this.noticeCooldown=Math.max(0,this.noticeCooldown-dt);
+        this.areaTimer=Math.max(0,this.areaTimer-dt);
+        if(!this.areaTimer)this.area.hidden=true;
+        if(this.mode==='hub'){
+          player.hp=100;player.en=100;battle.time=9999;this.updateHub(dt,previous);
+        }else if(this.mode==='fight'){
+          battle.time=9999;battle.fighters[1].en=Math.min(battle.fighters[1].en,45);
+        }else if(this.mode==='qte')this.updateQte();
+        this.updateNpcMotion(dt);this.map?.draw();
+      },
+      exit:async next=>{
+        const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Tournament Road? Completed checkpoints remain saved.',confirmLabel:'RETURN TO ROUTE'});
+        if(!leave)return;
+        next();this.cleanup();this.onExit();
       }
-      return baseFlipFor(fighter);
-    };
-
-    battle.drawFighterLayer=fighters=>{
-      const visible=this.mode==='fight'?fighters:fighters.filter(fighter=>fighter===battle.fighters[0]||this.fighterVisible);
-      baseDrawFighterLayer(visible);
-    };
-
-    battle.draw=()=>{
-      baseDraw();
-      this.drawHubExtras();
-    };
-
-    battle.update=dt=>{
-      const player=battle.fighters[0];
-      const previous={x:player.x,z:player.z};
-      baseUpdate(dt);
-      if(!battle.active||this.aborted)return;
-      this.noticeCooldown=Math.max(0,this.noticeCooldown-dt);
-      this.areaTimer=Math.max(0,this.areaTimer-dt);
-      if(!this.areaTimer)this.area.hidden=true;
-      if(this.mode==='hub'){
-        player.hp=100;
-        player.en=100;
-        battle.time=9999;
-        this.updateHub(dt,previous);
-      }else if(this.mode==='fight'){
-        battle.time=9999;
-        battle.fighters[1].en=Math.min(battle.fighters[1].en,45);
-      }else if(this.mode==='qte'){
-        this.updateQte();
-      }
-      this.updateNpcMotion(dt);
-      this.map?.draw();
-    };
-
-    battle.exit=async()=>{
-      const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Tournament Road? Completed checkpoints remain saved.',confirmLabel:'RETURN TO ROUTE'});
-      if(!leave)return;
-      defaultExit();
-      this.cleanup();
-      this.onExit();
-    };
+    });
   }
 
   showOpeningDialogue(){
@@ -299,25 +255,19 @@ class RrvvfoRoadHub{
       this.hideSecondFighter();
       this.mode='hub';
       this.battle.phase='play';
-      this.setObjective('COMPLETE THE WARM-UP LOOP','Touch all three red training flags around the dojo.');
-      this.battle.notice('3 TRAINING FLAGS • MOVE / JUMP / DASH',2);
+      this.setObjective('COMPLETE THE MOVEMENT WARM-UP','Walk through MOVE, jump through JUMP, then dash through DASH.');
+      this.battle.notice('MOVE • JUMP • DASH',2);
     });
   }
 
   showDialogue(lines,onComplete){
     this.mode='dialogue';
-    this.battle.phase='story';
-    if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
-    this.dialogue?.overlay?.remove();
-    const dialogue=new SonicBattleDialogue({typeSpeed:18,onComplete:()=>{
-      document.removeEventListener('keydown',dialogue._onKey);
-      dialogue.overlay?.remove();
+    this.engine?.setGameplayState('dialogue',{phase:'story'});
+    const dialogue=this.engine.showDialogue(lines,{typeSpeed:18,onComplete:()=>{
       this.dialogue=null;
       onComplete?.();
     }});
     this.dialogue=dialogue;
-    dialogue.show(lines);
-    if(dialogue.overlay)dialogue.overlay.style.zIndex='2300';
   }
 
   updateCamera(){
@@ -402,12 +352,10 @@ class RrvvfoRoadHub{
     if(this.step!=='warmup')return;
     let changed=false;
     for(const marker of this.warmupMarkers){
-      if(!marker.done&&distance(player,marker)<62){
-        marker.done=true;
-        changed=true;
-        const done=this.warmupMarkers.filter(item=>item.done).length;
-        this.battle.notice(`TRAINING FLAG ${done}/3`,1.1);
-      }
+      if(marker.done||distance(player,marker)>=68)continue;
+      const passed=marker.requirement==='move'||(marker.requirement==='jump'&&(player.y>8||Math.abs(player.vy||0)>35))||(marker.requirement==='dash'&&(player.dashTime>0||player.visualAction==='dash'));
+      if(passed){marker.done=true;changed=true;const done=this.warmupMarkers.filter(item=>item.done).length;this.battle.notice(`${marker.label} COMPLETE • ${done}/3`,1.1)}
+      else if(!this.noticeCooldown){this.noticeCooldown=.9;this.battle.notice(marker.requirement==='jump'?'JUMP THROUGH THIS FLAG':'DASH THROUGH THIS FLAG',.8)}
     }
     if(changed&&this.warmupMarkers.every(marker=>marker.done)){
       this.step='leave-training';
@@ -503,19 +451,23 @@ class RrvvfoRoadHub{
     }
   }
 
+
+  abilityPrompt(slot,label){return `${this.engine?.prompt?.(`ability${slot}`,`PRESS ${slot}`)||`PRESS ${slot}`} • ${label}`}
+  interactionPrompt(){return this.engine?.prompt?.('interact','E')||'E'}
+
   updatePrompt(player){
     let visible=false,title='',detail='';
     if(this.step==='bridge-ready'&&player.x>-170&&player.x<5){
-      visible=true;title='MARKED ROCK';detail='PRESS 3 • OBJECT SWAP';
+      visible=true;title='MARKED ROCK';detail=this.abilityPrompt(3,'OBJECT SWAP');
     }else if(this.step==='cart-ready'&&player.x>210&&player.x<300){
-      visible=true;title='FALLEN PRACTICE LOG';detail='PRESS 1 • FIRE BLAST';
+      visible=true;title='FALLEN PRACTICE LOG';detail=this.abilityPrompt(1,'FIRE BLAST');
     }else if(this.step==='gate-ready'&&player.x>410&&player.x<555){
-      visible=true;title='FOUR TARGETS';detail='PRESS 2 • SHOTS OF AGONY';
+      visible=true;title='FOUR TARGETS';detail=this.abilityPrompt(2,'SHOTS OF AGONY');
     }else if(this.step==='lens-ready'&&player.x>920&&player.x<1045){
-      visible=true;title='SUSPICIOUS ROADBLOCK';detail='PRESS 4 • LENS OF TRUTH';
+      visible=true;title='SUSPICIOUS ROADBLOCK';detail=this.abilityPrompt(4,'LENS OF TRUTH');
     }else{
       const nearby=this.npcs.find(npc=>distance(player,npc)<115);
-      if(nearby){visible=true;title=nearby.label;detail='PRESS LIGHT / ENTER';}
+      if(nearby){visible=true;title=nearby.label;detail=this.interactionPrompt().toUpperCase();}
     }
     this.prompt.hidden=!visible;
     if(visible){this.promptTitle.textContent=title;this.promptDetail.textContent=detail;}
@@ -637,15 +589,11 @@ class RrvvfoRoadHub{
 
   pauseForManual(pageId,onClose,reactionLines=null){
     this.manualPending=true;
-    this.mode='manual';
-    this.battle.phase='story';
-    discoverCombatManualPage(pageId,{reactionLines,onClose:()=>{
-      this.manualPending=false;
-      if(this.aborted)return;
-      this.mode='hub';
-      this.battle.phase='play';
-      onClose?.();
-    }});
+    discoverCombatManualPage(pageId,{reactionLines,open:false,onClose:()=>{}});
+    const pageNames={'hub-exploration':'EXPLORATION','field-object-swap':'OBJECT SWAP','field-fire':'FIRE BLAST','field-shots':'SHOTS OF AGONY','run-encounters':'FIGHT OR RUN','lens-secrets':'LENS OF TRUTH'};
+    const manualHint=['controller','touch'].includes(this.engine?.activeInput?.())?'OPEN FROM PAUSE':'M TO READ';this.battle.notice(`NEW MANUAL PAGE • ${pageNames[pageId]||'COMBAT LESSON'} • ${manualHint}`,1.8);
+    this.manualPending=false;
+    if(!this.aborted){this.mode='hub';this.battle.phase='play';onClose?.()}
   }
 
   beginEncounter(){
@@ -659,15 +607,16 @@ class RrvvfoRoadHub{
     this.choice.hidden=true;
     this.mode='qte';
     this.battle.phase='story';
-    this.qteSequence=['ArrowLeft','Space','ArrowRight'];
+    this.qteSequence=['KeyA','Space','KeyD'];
     this.qteIndex=0;
-    this.qteDeadline=performance.now()+3600;
+    this.qteDeadline=performance.now()+4500;
     this.qte.hidden=false;
     this.renderQte();
   }
 
   renderQte(){
-    const labels={ArrowLeft:'←',ArrowRight:'→',Space:'JUMP'};
+    const device=this.engine?.activeInput?.()||'keyboard';
+    const labels={KeyA:device==='keyboard'?'A':'←',KeyD:device==='keyboard'?'D':'→',Space:this.engine?.prompt?.('jump','SPACE')||'SPACE'};
     this.root.querySelector('[data-qte-sequence]').innerHTML=this.qteSequence.map((key,index)=>`<span class="${index<this.qteIndex?'done':index===this.qteIndex?'current':''}">${labels[key]}</span>`).join('');
   }
 
@@ -681,16 +630,16 @@ class RrvvfoRoadHub{
   }
 
   updateQte(){
-    const remaining=clamp((this.qteDeadline-performance.now())/3600,0,1);
+    const remaining=clamp((this.qteDeadline-performance.now())/4500,0,1);
     this.root.querySelector('[data-qte-timer]').style.width=`${remaining*100}%`;
     if(remaining<=0){this.finishRunQte(false);return}
-    const pads=navigator.getGamepads?.()||[];
-    for(const pad of pads){
-      if(!pad)continue;
+    const pads=navigator.getGamepads?.()||[],assignment=sharedInput.getControllerAssignment(1);
+    const activePads=assignment===null?[...pads].filter(Boolean):[pads[assignment]].filter(Boolean);
+    for(const pad of activePads){
       const left=(pad.buttons[14]?.pressed||pad.axes[0]<-.55);
       const right=(pad.buttons[15]?.pressed||pad.axes[0]>.55);
-      const jump=pad.buttons[0]?.pressed;
-      for(const [key,pressed] of [['ArrowLeft',left],['ArrowRight',right],['Space',jump]]){
+      const jump=pad.buttons[sharedInput.controllerMapping(1).buttons.j]?.pressed;
+      for(const [key,pressed] of [['KeyA',left],['KeyD',right],['Space',jump]]){
         const previous=this.qteGamepadState[key];
         this.qteGamepadState[key]=pressed;
         if(pressed&&!previous){this.acceptQteInput(key);return}
@@ -708,8 +657,12 @@ class RrvvfoRoadHub{
         {speaker:'ROADSIDE FIGHTER',speakerClass:'rival',text:'That was definitely running.',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'You saw nothing.',tail:'down'}
       ],()=>this.resolveEncounter('escaped'));
+    }else if(this.runAttempts<1){
+      this.runAttempts++;
+      this.battle.notice('ESCAPE MISSED • ONE RETRY',1.4);
+      setTimeout(()=>{if(!this.aborted)this.startRunQte()},650);
     }else{
-      this.battle.notice('ESCAPE FAILED • FIGHT FORCED',1.6);
+      this.battle.notice('ESCAPE FAILED • QUICK FIGHT STARTING',1.6);
       this.startRoadFight();
     }
   }
@@ -730,12 +683,12 @@ class RrvvfoRoadHub{
     foe.name='Roadside Fighter';
     foe.accent='#7f6cff';
     foe.asset=null;
-    foe.maxHp=120;foe.reset(940,-70);
+    foe.maxHp=100;foe.reset(940,-70);
     foe.en=70;
-    this.battle.koTarget=3;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';
+    this.battle.koTarget=1;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';
     this.battle.time=Infinity;
     this.battle.hideBanner();
-    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 3 KOs','Defeat the roadside fighter three times. Opponent health: 120 per life.');
+    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 1 KO','Score one KO. Both fighters have 100 health.');
     this.battle.notice('ROAD FIGHT • RUN IS NO LONGER AVAILABLE',1.8);
   }
 
@@ -744,24 +697,24 @@ class RrvvfoRoadHub{
     this.roadKoLocked=true;if(playerWon)this.roadPlayerKOs++;else this.roadFoeKOs++;
     this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.phase='story';this.mode='fight-ko';
     this.battle.banner(`K.O. • ${this.roadPlayerKOs}–${this.roadFoeKOs}`);this.battle.audio.play('ko');this.battle.hud();
-    const complete=(playerWon?this.roadPlayerKOs:this.roadFoeKOs)>=3;clearTimeout(this.roadKoTimer);
+    const complete=(playerWon?this.roadPlayerKOs:this.roadFoeKOs)>=1;clearTimeout(this.roadKoTimer);
     this.roadKoTimer=window.setTimeout(()=>{if(this.aborted)return;if(complete){this.mode='fight';if(playerWon)this.finishRoadFight(true);else this.restartRoadFight();return}this.respawnRoadFight();},1100);
   }
 
   respawnRoadFight(){
     if(this.aborted)return;
     this.roadKoLocked=false;this.mode='fight';
-    this.battle.koTarget=3;this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.round=this.roadPlayerKOs+this.roadFoeKOs+1;
+    this.battle.koTarget=1;this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.round=this.roadPlayerKOs+this.roadFoeKOs+1;
     const loser=this.battle.fighters[0].hp<=1?0:1;
     this.battle.respawnAfterKo(loser);
     this.battle.phase='play';this.battle.time=Infinity;
-    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 3 KOs',`Current score: ${this.roadPlayerKOs}–${this.roadFoeKOs}. Only the defeated fighter respawned.`);
+    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 1 KO',`Current score: ${this.roadPlayerKOs}–${this.roadFoeKOs}. Only the defeated fighter respawned.`);
   }
 
   restartRoadFight(){
     if(this.aborted)return;this.mode='fight';this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;
-    this.battle.koTarget=3;this.battle.scores=[0,0];this.battle.round=1;this.battle.newRound();this.battle.time=Infinity;
-    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 3 KOs','Score three KOs before the roadside fighter does.');
+    this.battle.koTarget=1;this.battle.scores=[0,0];this.battle.round=1;this.battle.newRound();this.battle.time=Infinity;
+    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 1 KO','Score one KO before the roadside fighter does.');
     this.battle.notice('MATCH RESTARTED',1.2);
   }
 
@@ -931,15 +884,15 @@ class RrvvfoRoadHub{
   onKey(event){
     if(this.root.hidden)return;
     if(this.mode==='qte'){
-      const key=event.code==='Space'?'Space':event.key;
-      if(['ArrowLeft','ArrowRight','Space'].includes(key)){
+      const key=event.code;
+      if(['KeyA','KeyD','Space'].includes(key)){
         event.preventDefault();
         event.stopImmediatePropagation();
         this.acceptQteInput(key);
       }
       return;
     }
-    if(this.mode==='hub'&&(event.key==='Enter'||event.key.toLowerCase()==='e')){
+    if(this.mode==='hub'&&(event.key==='Enter'||event.code==='KeyE')){
       event.preventDefault();
       this.tryInteract();
     }
@@ -997,9 +950,8 @@ class RrvvfoRoadHub{
     document.removeEventListener('keydown',this.keyHandler,true);
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
     this.dialogue?.overlay?.remove();
-    resetArenaBattleInstance();
+    destroyStoryBattle(this.battle);
     this.root.remove();
-    this.battle?.root.classList.remove('storyRoadHub','storyRoadFight');
     activeMission=null;
   }
 }

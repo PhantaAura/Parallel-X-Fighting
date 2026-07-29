@@ -1,5 +1,5 @@
 export const TOUCH_CONTROL_IDS = Object.freeze([
-  'movement', 'jump', 'light', 'heavy', 'special', 'block', 'dash',
+  'movement', 'jump', 'light', 'heavy', 'grab', 'charge', 'interact', 'block', 'dash',
   'ultimate', 'breaker', 'launcher', 'throw', 'moveList', 'trainingReset',
   'counter', 'lens', 'pause', 'settings'
 ]);
@@ -9,7 +9,9 @@ const BASE_POSITIONS = Object.freeze({
   jump:{x:88,y:39,size:62},
   light:{x:84,y:59,size:66},
   heavy:{x:94,y:57,size:66},
-  special:{x:89,y:88,size:58},
+  grab:{x:89,y:88,size:58},
+  charge:{x:78,y:87,size:52},
+  interact:{x:48,y:50,size:58},
   block:{x:75,y:68,size:58},
   dash:{x:74,y:42,size:56},
   ultimate:{x:94,y:22,size:58},
@@ -24,11 +26,14 @@ const BASE_POSITIONS = Object.freeze({
   settings:{x:54,y:10,size:42}
 });
 const LEGACY_HOTBAR_POSITIONS=Object.freeze({
-  movement:{x:13,y:70,size:150},jump:{x:88,y:41,size:64},light:{x:83,y:68,size:68},heavy:{x:93,y:65,size:68},special:{x:89,y:86,size:62},block:{x:70,y:76,size:62},dash:{x:69,y:52,size:58},ultimate:{x:94,y:22,size:58},breaker:{x:80,y:22,size:56},launcher:{x:59,y:66,size:60},throw:{x:57,y:86,size:54},moveList:{x:52,y:18,size:46},trainingReset:{x:47,y:86,size:46},counter:{x:63,y:34,size:52},lens:{x:63,y:34,size:52},pause:{x:48,y:10,size:42},settings:{x:54,y:10,size:42}
+  movement:{x:13,y:70,size:150},jump:{x:88,y:41,size:64},light:{x:83,y:68,size:68},heavy:{x:93,y:65,size:68},grab:{x:89,y:86,size:62},charge:{x:78,y:86,size:52},interact:{x:55,y:82,size:58},block:{x:70,y:76,size:62},dash:{x:69,y:52,size:58},ultimate:{x:94,y:22,size:58},breaker:{x:80,y:22,size:56},launcher:{x:59,y:66,size:60},throw:{x:57,y:86,size:54},moveList:{x:52,y:18,size:46},trainingReset:{x:47,y:86,size:46},counter:{x:63,y:34,size:52},lens:{x:63,y:34,size:52},pause:{x:48,y:10,size:42},settings:{x:54,y:10,size:42}
 });
 
 function clonePositions(source = BASE_POSITIONS) {
-  return Object.fromEntries(TOUCH_CONTROL_IDS.map(id => [id, { ...BASE_POSITIONS[id], ...(source[id] || {}) }]));
+  return Object.fromEntries(TOUCH_CONTROL_IDS.map(id => {
+    const migrated=id==='grab'?(source.grab||source.special):source[id];
+    return[id,{...BASE_POSITIONS[id],...(migrated||{})}];
+  }));
 }
 
 export const TOUCH_PRESETS = Object.freeze({
@@ -78,7 +83,7 @@ export const TOUCH_PRESETS = Object.freeze({
 
 export function createDefaultTouchSettings(stored = {}) {
   const defaults = {
-    version:2,
+    version:3,
     touchMode:'auto',
     movement:'joystick',
     movementChosen:false,
@@ -106,7 +111,9 @@ export function createDefaultTouchSettings(stored = {}) {
   };
   const merged = { ...defaults, ...(stored || {}) };
   merged.positions = clonePositions(stored?.positions);
-  if(Number(stored?.version||1)<2){for(const id of TOUCH_CONTROL_IDS){const saved=stored?.positions?.[id],legacy=LEGACY_HOTBAR_POSITIONS[id];if(saved&&legacy&&saved.x===legacy.x&&saved.y===legacy.y&&saved.size===legacy.size)merged.positions[id]={...BASE_POSITIONS[id]}}merged.version=2}
+  if(Number(stored?.version||1)<2){for(const id of TOUCH_CONTROL_IDS){const saved=stored?.positions?.[id],legacy=LEGACY_HOTBAR_POSITIONS[id];if(saved&&legacy&&saved.x===legacy.x&&saved.y===legacy.y&&saved.size===legacy.size)merged.positions[id]={...BASE_POSITIONS[id]}}}
+  if(Number(stored?.version||1)<3){const saved=stored?.positions?.interact;if(!saved||(saved.x===55&&saved.y===82&&saved.size===58))merged.positions.interact={...BASE_POSITIONS.interact}}
+  merged.version=3;
   merged.savedLayouts = Array.isArray(stored?.savedLayouts) ? stored.savedLayouts.slice(0,8) : [];
   if (!['joystick','dpad'].includes(merged.movement)) merged.movement='joystick';
   if (!['auto','on','off'].includes(merged.touchMode)) merged.touchMode='auto';
@@ -128,7 +135,7 @@ export function applyTouchPreset(settings, presetId) {
   }
   if (presetId==='tablet') {
     settings.positions.movement.x=15;settings.positions.movement.y=72;
-    for(const id of ['jump','light','heavy','special','block','dash','ultimate','breaker'])settings.positions[id].x=Math.min(95,settings.positions[id].x+1);
+    for(const id of ['jump','light','heavy','grab','charge','block','dash','ultimate','breaker'])settings.positions[id].x=Math.min(95,settings.positions[id].x+1);
   }
   if(presetId==='mobile-left-handed')settings.swapped=true;
   return settings;

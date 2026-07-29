@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a2-story-hud-20260728';
+import {storyConfirm} from './story/story-ux.js?v=29a7-casual-retention-20260729';
 
 /* ═══════════════════════════════════════════════════════════════
    PARALLELS X — COMPATIBLE SPRITE-ON-TOP DIALOGUE
@@ -245,6 +245,9 @@ export class SonicBattleDialogue{
 
     this.tailEl.dataset.direction=entry.tail||'';
     this.renderSprite(entry,key);
+    if(typeof entry.onShow==='function'){
+      try{entry.onShow(entry,this)}catch(error){console.error('[Story Dialogue] onShow failed',error)}
+    }
 
     this.textEl.textContent='';
     this.textEl.classList.add('typing');
@@ -390,13 +393,12 @@ export class SonicBattleDialogue{
     this.isTyping=false;
 
     const finish=()=>{
-      this.overlay?.classList.remove('active');
-      this.box?.classList.remove('exit');
+      if(this.completed)return;
+      this.completed=true;
+      const callback=this.onComplete;
+      this.destroy();
       this.isClosing=false;
-      if(!this.completed){
-        this.completed=true;
-        this.onComplete();
-      }
+      callback();
     };
 
     if(this.box){

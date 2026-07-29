@@ -1,0 +1,52 @@
+{
+  "name": "Parallels X Prototype 2.9A.7 Complete Cumulative Build",
+  "version": "2.9A.7",
+  "build_label": "Prototype 2.9A.7 \u2014 Chapter Controls Hotfix",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cache_tag": "29a7-casual-retention-20260729",
+  "save_schema": 244,
+  "file_count": 173,
+  "uncompressed_bytes": 11183620,
+  "active_stylesheets": 8,
+  "javascript_files": 67,
+  "json_files": 8,
+  "official_player_1_controls": {
+    "move_depth": "WASD",
+    "jump": "Space",
+    "primary_attack": "Mouse 1 (Light by default)",
+    "light": "J",
+    "heavy": "K",
+    "launcher": "I",
+    "block": "Mouse 2 or L",
+    "dash": "Shift",
+    "special_or_grab": "U",
+    "breaker_or_charge": "C",
+    "ultimate_or_ability": "O",
+    "counter": "E",
+    "lens": "Z",
+    "arena_abilities": "1-5"
+  },
+  "story_runtime": {
+    "engine": "StoryEngineSession 2.9A.7",
+    "foundation": "ArenaBattle",
+    "chapters": [
+      "Chapter 1",
+      "Tournament Road",
+      "Chapter 2",
+      "Chapter 3 preview"
+    ],
+    "direct_chapter_method_overrides": 0
+  },
+  "validation": [
+    "All game and smoke-test JavaScript files passed node --check",
+    "All JSON files parsed successfully",
+    "HTML local references passed",
+    "Relative JavaScript imports passed",
+    "Duplicate HTML ID check passed",
+    "Single active cache identifier confirmed",
+    "Direct mouse semantic input test passed for M1 Light, configurable M1 Heavy, M2 Block hold, and M2 release",
+    "Smoke suite includes a shared mouse-control regression test"
+  ],
+  "browser_validation_limit": "A full WebGL browser playthrough was not completed in this environment; physical mouse/controller and complete Story testing remain required."
+}

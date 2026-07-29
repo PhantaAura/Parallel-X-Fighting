@@ -7,8 +7,9 @@ import {SpriteRenderer} from './sprite-renderer.js';
 export const RRVVFO_VISUAL_SAVE_KEY='pxRrvvfoVisualsV1';
 export const RRVVFO_MANIFEST_URL=new URL('../assets/fighters/rrvvfo/rrvvfo-animations.json',import.meta.url).href;
 export const REVVFO_MANIFEST_URL=new URL('../assets/fighters/revvfo/revvfo-animations.json',import.meta.url).href;
-export const SPRITE_FIGHTER_IDS=Object.freeze(['rrvvfo','revvfo']);
-const RRVVFO_VISUAL_SCHEMA_VERSION=4;
+export const SAGE_MANIFEST_URL=new URL('../assets/fighters/sage/sage-animations.json',import.meta.url).href;
+export const SPRITE_FIGHTER_IDS=Object.freeze(['rrvvfo','revvfo','sage']);
+const RRVVFO_VISUAL_SCHEMA_VERSION=5;
 export const RRVVFO_APPEARANCE_SLOTS=Object.freeze(['player1','player2','trainingPlayer1','trainingDummy']);
 export const RRVVFO_APPEARANCES=Object.freeze({
   down:Object.freeze({id:'down',label:'Hood Down',prototype:false}),
@@ -24,14 +25,14 @@ export function isDeveloperSpriteBuild(locationLike=globalThis.location){
 export function availableRrvvfoAppearances(){return[RRVVFO_APPEARANCES.down,RRVVFO_APPEARANCES.up]}
 
 export function defaultRrvvfoVisualSettings(){
-  return{schemaVersion:RRVVFO_VISUAL_SCHEMA_VERSION,enabled:false,quality:'full',developerViewer:false,exposePrototypeAppearances:false,appearances:defaultAppearances()};
+  return{schemaVersion:RRVVFO_VISUAL_SCHEMA_VERSION,enabled:true,quality:'full',developerViewer:false,exposePrototypeAppearances:false,appearances:defaultAppearances()};
 }
 
 export function loadRrvvfoVisualSettings(storage=globalThis.localStorage){
   const defaults=defaultRrvvfoVisualSettings();
   try{
     const saved=JSON.parse(storage?.getItem(RRVVFO_VISUAL_SAVE_KEY)||'{}');
-    const enabled=typeof saved.enabled==='boolean'?saved.enabled:defaults.enabled;
+    const enabled=Number(saved.schemaVersion)>=RRVVFO_VISUAL_SCHEMA_VERSION&&typeof saved.enabled==='boolean'?saved.enabled:true;
     const legacyAppearance=normalizeRrvvfoAppearance(saved.appearance);
     const appearances={...defaults.appearances};
     for(const slot of RRVVFO_APPEARANCE_SLOTS)appearances[slot]=normalizeRrvvfoAppearance(saved.appearances?.[slot]??legacyAppearance);
@@ -80,7 +81,7 @@ export const resolveRrvvfoAnimation=resolveFighterAnimation;
 export class FighterVisuals{
   constructor({settings=loadRrvvfoVisualSettings(),manifestUrl=null,manifestUrls={},onStatus=()=>{}}={}){
     this.settings={...defaultRrvvfoVisualSettings(),...settings};
-    this.manifestUrls={rrvvfo:manifestUrl||RRVVFO_MANIFEST_URL,revvfo:REVVFO_MANIFEST_URL,...manifestUrls};
+    this.manifestUrls={rrvvfo:manifestUrl||RRVVFO_MANIFEST_URL,revvfo:REVVFO_MANIFEST_URL,sage:SAGE_MANIFEST_URL,...manifestUrls};
     this.onStatus=onStatus;this.status='idle';this.error=null;
     this.atlases=new Map();this.renderers=new Map();this.animators=new WeakMap();this.afterimages=new WeakMap();
     // Compatibility aliases used by the Rrvvfo debug viewer.

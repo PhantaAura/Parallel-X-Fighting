@@ -1,0 +1,2622 @@
+/*
+ * Parallels X Prototype 2.9A.6 — Unified Interface Layer
+ *
+ * Consolidated in the exact previous cascade order. Screen-specific sections
+ * remain clearly labeled so future cleanup can happen one feature at a time
+ * without relying on ten separate patch files and unpredictable load order.
+ */
+
+/* ===== BEGIN sonic-battle-dialogue.css ===== */
+/* ═══════════════════════════════════════════════════════════════
+   PARALLELS X — COMPATIBLE SPRITE-ON-TOP DIALOGUE
+   Prototype 2.6.5
+
+   The visual design is preserved from the uploaded PX dialogue package:
+   character sprite above the box, angular white panel, thick black border,
+   colored speaker tag, typewriter cursor, prompt, and choice buttons.
+
+   Compatibility changes are limited to layering, input, existing class aliases,
+   and responsive behavior required by the current game.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  --dia-white:#ffffff;
+  --dia-black:#111111;
+  --dia-gray:#666677;
+  --dia-red:#e62020;
+  --dia-yellow:#ffcc00;
+  --dia-blue:#0055cc;
+  --dia-font:'Segoe UI',Arial,sans-serif;
+  --dia-pixel:'Press Start 2P',cursive;
+}
+
+/* Overlay. 2200 is required because the arena is layered around 1200. */
+.px-dialogue-overlay,
+.sbDialogueOverlay{
+  position:fixed;
+  inset:0;
+  z-index:2200 !important;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  padding:20px max(20px,env(safe-area-inset-right)) max(30px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));
+  pointer-events:none;
+  background:linear-gradient(to top,rgba(0,20,60,.25) 0%,transparent 30%);
+}
+.px-dialogue-overlay.active,
+.sbDialogueOverlay.active{pointer-events:auto !important;}
+
+/* Character sprite sits on top of the box. */
+.px-dialogue-sprite-wrap,
+.sbDialoguePortraitWrap{
+  position:relative;
+  z-index:2202;
+  margin-bottom:-24px;
+  display:flex;
+  justify-content:flex-start;
+  width:min(860px,96%);
+  padding-left:20px;
+  pointer-events:none;
+}
+
+.px-dialogue-sprite,
+.sbDialoguePortrait{
+  width:96px;
+  height:96px;
+  flex:0 0 96px;
+  overflow:hidden;
+  background-repeat:no-repeat;
+  background-position:0 0;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+  filter:drop-shadow(3px 3px 0 rgba(0,0,0,.4));
+  transition:transform .15s ease;
+  color:#111;
+  font:800 11px/1.2 var(--dia-font);
+  text-transform:uppercase;
+  text-align:center;
+}
+.px-dialogue-sprite img,
+.sbDialoguePortrait img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+}
+.px-dialogue-sprite.is-fallback,
+.sbDialoguePortrait.is-fallback{
+  display:grid;
+  place-items:center;
+  padding:8px;
+  border:3px solid var(--dia-black);
+  background:#8899aa;
+}
+.px-dialogue-sprite.bounce,
+.sbDialoguePortrait.bounce{animation:pxSpriteBounce .3s ease;}
+@keyframes pxSpriteBounce{
+  0%{transform:translateY(0)}
+  40%{transform:translateY(-8px)}
+  100%{transform:translateY(0)}
+}
+
+/* Existing fighter atlases are used directly. No portrait images are generated. */
+.px-dialogue-sprite.sprite-rrvvfo,
+.sbDialoguePortrait.sprite-rrvvfo{
+  background-image:url('../assets/fighters/rrvvfo/rrvvfo-atlas.png');
+  background-size:864px 1920px;
+  background-position:0 0;
+}
+.px-dialogue-sprite.sprite-sage,
+.sbDialoguePortrait.sprite-sage{
+  background-image:url('../assets/fighters/sage/sage-atlas.png');
+  background-size:768px 960px;
+  background-position:0 0;
+}
+
+/* Main dialogue box — original uploaded geometry. */
+.px-dialogue-box,
+.sbDialogueBox{
+  position:relative;
+  z-index:2201;
+  width:min(860px,96%);
+  background:var(--dia-white);
+  border:4px solid var(--dia-black);
+  padding:20px 24px 18px;
+  box-shadow:6px 6px 0 rgba(0,0,0,.25);
+  font-family:var(--dia-font);
+  color:var(--dia-black);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+  animation:pxDiaSlideUp .22s ease-out;
+  pointer-events:auto;
+}
+@keyframes pxDiaSlideUp{
+  from{opacity:0;transform:translateY(25px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Speaker name tag. */
+.px-dialogue-speaker,
+.sbDialogueSpeaker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:5px 12px;
+  margin-bottom:10px;
+  background:var(--dia-red);
+  border:3px solid var(--dia-black);
+  color:var(--dia-white);
+  font-family:var(--dia-font);
+  font-size:12px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  box-shadow:3px 3px 0 rgba(0,0,0,.2);
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.px-dialogue-speaker.rrvvfo,.sbDialogueSpeaker.rrvvfo,.sbDialogueSpeaker.p1{background:linear-gradient(135deg,#ff4422,#ff8800);}
+.px-dialogue-speaker.revvfo,.sbDialogueSpeaker.revvfo{background:linear-gradient(135deg,#4455ff,#88aaff);}
+.px-dialogue-speaker.wade,.sbDialogueSpeaker.wade{background:linear-gradient(135deg,#ffcc00,#ffaa00);color:#111;}
+.px-dialogue-speaker.bark,.sbDialogueSpeaker.bark{background:linear-gradient(135deg,#44aa44,#88cc66);}
+.px-dialogue-speaker.sage,.sbDialogueSpeaker.sage{background:linear-gradient(135deg,#fff,#c4a35a);color:#111;}
+.px-dialogue-speaker.alt,.sbDialogueSpeaker.alt{background:linear-gradient(135deg,#aa44aa,#cc88cc);}
+.px-dialogue-speaker.rover,.sbDialogueSpeaker.rover{background:linear-gradient(135deg,#6600cc,#111);}
+.px-dialogue-speaker.robert,.sbDialogueSpeaker.robert{background:linear-gradient(135deg,#44ccff,#88ddff);color:#111;}
+.px-dialogue-speaker.narrator,.sbDialogueSpeaker.narrator,.sbDialogueSpeaker.neutral{background:var(--dia-gray);}
+.px-dialogue-speaker.system,.sbDialogueSpeaker.system{background:#111;color:var(--dia-yellow);}
+.px-dialogue-speaker-icon,.sbDialogueSpeakerIcon{width:20px;height:20px;border:2px solid #111;flex:0 0 auto;}
+
+/* Dialogue text. */
+.px-dialogue-text,
+.sbDialogueText{
+  font-size:16px;
+  font-weight:600;
+  line-height:1.65;
+  color:var(--dia-black);
+  min-height:44px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.px-dialogue-text.typing::after,
+.sbDialogueText.typing::after{
+  content:'▋';
+  display:inline-block;
+  margin-left:2px;
+  animation:pxDiaCursor .55s step-end infinite;
+  color:var(--dia-red);
+  font-weight:800;
+}
+@keyframes pxDiaCursor{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Continue prompt. */
+.px-dialogue-prompt,
+.sbDialoguePrompt{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:8px;
+  margin-top:12px;
+  padding-top:10px;
+  border-top:2px dashed #ccddee;
+}
+.px-dialogue-prompt span,
+.sbDialoguePrompt span{
+  font-size:11px;
+  font-weight:700;
+  color:var(--dia-gray);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  animation:pxPromptPulse 1.1s ease-in-out infinite;
+}
+.px-dialogue-prompt .px-key,
+.sbDialoguePrompt .sbKey{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:28px;
+  height:24px;
+  padding:0 6px;
+  background:var(--dia-white);
+  border:2px solid var(--dia-black);
+  border-radius:4px;
+  font-size:11px;
+  font-weight:800;
+  color:var(--dia-black);
+  box-shadow:0 2px 0 var(--dia-gray);
+}
+@keyframes pxPromptPulse{0%,100%{opacity:.55}50%{opacity:1}}
+
+/* Choices. */
+.px-dialogue-choices,
+.sbDialogueChoices{display:grid;gap:6px;margin-top:10px;}
+.px-dialogue-choice,
+.sbDialogueChoice{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  background:var(--dia-white);
+  border:3px solid var(--dia-black);
+  color:var(--dia-black);
+  font-family:var(--dia-font);
+  font-size:14px;
+  font-weight:700;
+  text-align:left;
+  cursor:pointer;
+  transition:transform .1s,background .1s;
+  box-shadow:3px 3px 0 var(--dia-gray);
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.px-dialogue-choice:hover,.px-dialogue-choice.selected,
+.sbDialogueChoice:hover,.sbDialogueChoice.selected{
+  transform:translateX(6px);
+  background:var(--dia-yellow);
+  border-color:var(--dia-black);
+  box-shadow:3px 3px 0 #cc9900;
+}
+.px-dialogue-choice:focus-visible,
+.sbDialogueChoice:focus-visible{outline:4px solid #0055cc;outline-offset:3px;}
+.px-dialogue-choice .px-choice-marker,
+.sbDialogueChoice .sbChoiceMarker{
+  width:10px;
+  height:10px;
+  background:var(--dia-black);
+  clip-path:polygon(0 0,100% 50%,0 100%);
+  flex-shrink:0;
+}
+.px-dialogue-choice.selected .px-choice-marker,
+.sbDialogueChoice.selected .sbChoiceMarker{background:var(--dia-red);}
+
+.px-dialogue-emotion{display:inline-block;padding:2px 7px;background:var(--dia-yellow);border:2px solid var(--dia-black);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-left:4px;vertical-align:middle;}
+
+/* The old directional tail is accepted by the JS API but intentionally hidden,
+   because the uploaded sprite-on-top design does not use one. */
+.sbDialogueTail{display:none !important;}
+
+.px-dialogue-box.exit,
+.sbDialogueBox.exit{animation:pxDiaSlideDown .18s ease-in forwards;}
+@keyframes pxDiaSlideDown{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(18px)}}
+
+@media(max-width:760px){
+  .px-dialogue-overlay,.sbDialogueOverlay{padding:14px max(14px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));}
+  .px-dialogue-sprite-wrap,.sbDialoguePortraitWrap{padding-left:12px;margin-bottom:-18px;}
+  .px-dialogue-sprite,.sbDialoguePortrait{width:72px;height:72px;flex-basis:72px;}
+  .px-dialogue-sprite.sprite-rrvvfo,.sbDialoguePortrait.sprite-rrvvfo{background-size:648px 1440px;}
+  .px-dialogue-sprite.sprite-sage,.sbDialoguePortrait.sprite-sage{background-size:576px 720px;}
+  .px-dialogue-box,.sbDialogueBox{width:100%;padding:14px 16px;border-width:3px;}
+  .px-dialogue-text,.sbDialogueText{font-size:14px;line-height:1.55;}
+  .px-dialogue-speaker,.sbDialogueSpeaker{font-size:10px;padding:4px 10px;border-width:2px;}
+  .px-dialogue-choice,.sbDialogueChoice{font-size:13px;padding:8px 10px;}
+}
+@media(max-width:460px){
+  .px-dialogue-sprite,.sbDialoguePortrait{width:56px;height:56px;flex-basis:56px;}
+  .px-dialogue-sprite.sprite-rrvvfo,.sbDialoguePortrait.sprite-rrvvfo{background-size:504px 1120px;}
+  .px-dialogue-sprite.sprite-sage,.sbDialoguePortrait.sprite-sage{background-size:448px 560px;}
+  .px-dialogue-text,.sbDialogueText{font-size:13px;}
+  .px-dialogue-prompt span,.sbDialoguePrompt span{font-size:10px;}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .px-dialogue-box,.sbDialogueBox,.px-dialogue-sprite,.sbDialoguePortrait,
+  .px-dialogue-prompt span,.sbDialoguePrompt span{animation:none !important;transition:none !important;}
+}
+
+/* ===== END sonic-battle-dialogue.css ===== */
+
+/* ===== BEGIN lost-year-v2-story.css ===== */
+/* Parallels X — Lost Year V2 story layer */
+#lostYearStoryScreen{
+  --ly-blue:#0066cc;
+  --ly-blue-dark:#003388;
+  --ly-yellow:#ffd400;
+  --ly-red:#e52b2f;
+  --ly-ink:#090909;
+  --ly-paper:#fff;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.11) 0 12%,transparent 12% 100%),
+    radial-gradient(circle at 15% 12%,#0e8df3 0,#0066cc 36%,#003388 100%)!important;
+  font-family:var(--sb-font,"Chakra Petch",Segoe UI,Arial,sans-serif)!important;
+}
+#lostYearStoryScreen:before{
+  background:repeating-linear-gradient(-14deg,transparent 0 31px,rgba(255,255,255,.08) 32px 34px)!important;
+}
+#lostYearStoryScreen .lyBrand h1{
+  color:#fff!important;
+  text-shadow:4px 4px 0 #000!important;
+  letter-spacing:-.025em!important;
+}
+#lostYearStoryScreen .lyBrand h1 span{color:var(--ly-yellow)!important}
+#lostYearStoryScreen .lyBrand small,
+#lostYearStoryScreen .routePanel small,
+#lostYearStoryScreen .missionPanel small{color:var(--ly-yellow)!important;text-shadow:2px 2px 0 #000}
+#lostYearStoryScreen .lyBrand p{color:#fff!important;text-shadow:2px 2px 0 #00306c}
+#lostYearStoryScreen button{
+  border:4px solid #090909!important;
+  border-radius:0!important;
+  background:#fff!important;
+  color:#090909!important;
+  box-shadow:5px 5px 0 #090909!important;
+  clip-path:polygon(0 0,94% 0,100% 22%,100% 100%,6% 100%,0 78%)!important;
+}
+#lostYearStoryScreen button:hover,#lostYearStoryScreen button:focus-visible{
+  background:var(--ly-yellow)!important;
+  border-color:#090909!important;
+  outline:3px solid #fff!important;
+  transform:translate(-1px,-1px);
+}
+#lostYearStoryScreen button:active{transform:translate(4px,4px);box-shadow:1px 1px 0 #090909!important}
+#lostYearStoryScreen button.primary{background:var(--ly-red)!important;color:#fff!important}
+#lostYearStoryScreen .lyChip{background:#fff!important;color:#080808!important;border:3px solid #080808!important;border-radius:0!important;box-shadow:3px 3px 0 #080808}
+#lostYearStoryScreen .routeCard,
+#lostYearStoryScreen .routePanel,
+#lostYearStoryScreen .missionPanel{
+  background:#fff!important;
+  color:#090909!important;
+  border:5px solid #090909!important;
+  border-radius:0!important;
+  box-shadow:8px 8px 0 #090909!important;
+}
+#lostYearStoryScreen .routeCard:before{width:12px!important;background:var(--route-color,var(--ly-red))!important}
+#lostYearStoryScreen .routeCard.selected{background:var(--ly-yellow)!important;box-shadow:8px 8px 0 #090909!important}
+#lostYearStoryScreen .routeCard h2,
+#lostYearStoryScreen .routePanel h2,
+#lostYearStoryScreen .missionPanel h2{color:#090909!important;text-shadow:none!important}
+#lostYearStoryScreen .routeCard h3,
+#lostYearStoryScreen .routeCard p,
+#lostYearStoryScreen .routePanel h3,
+#lostYearStoryScreen .routePanel p,
+#lostYearStoryScreen .missionPanel p,
+#lostYearStoryScreen dt,
+#lostYearStoryScreen dd{color:#171717!important}
+#lostYearStoryScreen .missionCard{background:#fff!important}
+#lostYearStoryScreen .missionCard:not(:disabled):hover{background:var(--ly-yellow)!important}
+#lostYearStoryScreen .missionNumber{border:3px solid #090909!important;border-radius:0!important;background:var(--ly-red)!important}
+#lostYearStoryScreen .missionCard em{color:#b30f1b!important}
+#lostYearStoryScreen .canonNote{background:#fff0a8!important;border:4px solid #090909!important;color:#090909!important}
+#lostYearStoryScreen .lockedBanner{background:#dfe5ec!important;color:#090909!important;border:3px dashed #090909!important;border-radius:0!important}
+
+#rrvvfoMission1UI,#rrvvfoMission2UI{font-family:var(--sb-font,"Chakra Petch",Segoe UI,Arial,sans-serif)}
+.storyTutorialTag{position:fixed;left:18px;top:112px;z-index:1680;width:min(470px,calc(100vw - 36px));padding:14px 16px;border:4px solid #080808;background:#fff;color:#080808;box-shadow:7px 7px 0 #080808;clip-path:polygon(0 0,96% 0,100% 18%,100% 100%,4% 100%,0 82%);pointer-events:none}
+.storyTutorialTag small{display:block;color:#d91d2b;font-size:11px;font-weight:1000;letter-spacing:.12em}
+.storyTutorialTag strong{display:block;margin-top:3px;font-size:18px;line-height:1.1}
+.storyTutorialTag span{display:block;margin-top:5px;font-size:12px;font-weight:800}
+.storyManualOverlay{position:fixed;inset:0;z-index:1900;display:grid;place-items:center;padding:20px;background:rgba(0,34,88,.84)}
+.storyManualOverlay[hidden]{display:none!important}
+.storyManualCard{width:min(900px,96vw);max-height:92vh;overflow:auto;padding:24px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:12px 12px 0 #080808;clip-path:polygon(0 0,96% 0,100% 5%,100% 100%,4% 100%,0 95%)}
+.storyManualCard header{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:5px solid #080808;padding-bottom:13px}
+.storyManualCard h2{margin:0;font-size:clamp(30px,6vw,62px);line-height:.9;font-style:italic}
+.storyManualCard .manualGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.storyManualCard section{padding:14px;border:4px solid #080808;background:#eef7ff}
+.storyManualCard h3{margin:0 0 9px;color:#d91d2b}
+.storyManualCard dl{margin:0;display:grid;gap:7px}
+.storyManualCard dl div{display:flex;justify-content:space-between;gap:18px;border-bottom:2px solid #bfc9d7;padding-bottom:5px}
+.storyManualCard dt{font-weight:900}.storyManualCard dd{margin:0;text-align:right;font-weight:1000}
+.storyManualActions{display:flex;gap:12px;flex-wrap:wrap}
+.storyManualActions button,.storyCompleteCard button,.tournamentAction{border:4px solid #080808;background:#fff;color:#080808;padding:12px 18px;font:900 14px inherit;box-shadow:5px 5px 0 #080808;cursor:pointer}
+.storyManualActions button.primary,.storyCompleteCard button.primary{background:#e52b2f;color:#fff}
+.storyManualActions button:hover,.storyCompleteCard button:hover,.tournamentAction:hover{background:#ffd400}
+.storyCompleteOverlay{position:fixed;inset:0;z-index:1880;display:grid;place-items:center;padding:18px;background:rgba(0,31,83,.82)}
+.storyCompleteOverlay[hidden]{display:none!important}
+.storyCompleteCard{width:min(650px,94vw);padding:25px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:12px 12px 0 #080808;text-align:center}
+.storyCompleteCard h2{margin:4px 0 10px;font-size:clamp(34px,7vw,64px);line-height:.92}
+.storyCompleteCard small{color:#d91d2b;font-weight:1000;letter-spacing:.14em}
+.storyMissionDialogueOpen .top,.storyMissionDialogueOpen .badge,.storyMissionDialogueOpen .arenaHotbar,.storyMissionDialogueOpen .bottom,.storyMissionDialogueOpen .arenaNotice{opacity:0!important;pointer-events:none!important}
+
+#rrvvfoMission2UI{position:fixed;inset:0;z-index:1720;overflow:auto;color:#080808;background:linear-gradient(155deg,#1f8ae5,#0055a8 55%,#00356f)}
+#rrvvfoMission2UI[hidden]{display:none!important}
+#rrvvfoMission2UI .tournamentShell{width:min(1180px,100%);min-height:100%;margin:auto;padding:28px clamp(16px,4vw,48px)}
+#rrvvfoMission2UI .tournamentHeader{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;color:#fff;text-shadow:3px 3px 0 #000}
+#rrvvfoMission2UI .tournamentHeader h1{margin:0;font-size:clamp(38px,7vw,82px);font-style:italic;line-height:.9}
+#rrvvfoMission2UI .tournamentHeader p{max-width:650px;font-weight:900}
+#rrvvfoMission2UI .tournamentPlaza{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:24px}
+#rrvvfoMission2UI .venueArt,#rrvvfoMission2UI .hubPanel{border:6px solid #080808;background:#fff;box-shadow:10px 10px 0 #080808}
+#rrvvfoMission2UI .venueArt{position:relative;min-height:420px;overflow:hidden;background:linear-gradient(#9be6ff 0 42%,#e8c875 42% 100%)}
+#rrvvfoMission2UI .venueArt:before{content:'';position:absolute;left:9%;right:9%;top:16%;height:46%;border:8px solid #080808;border-bottom-width:18px;border-radius:50% 50% 8% 8%;background:linear-gradient(180deg,#fff 0 18%,#d32737 18% 26%,#fff 26% 100%);box-shadow:inset 0 -36px #d7d7d7}
+#rrvvfoMission2UI .venueArt:after{content:'GLOBAL TOURNAMENT';position:absolute;left:50%;top:25%;transform:translateX(-50%) rotate(-2deg);padding:10px 16px;border:5px solid #080808;background:#ffd400;font-size:clamp(20px,4vw,44px);font-weight:1000;white-space:nowrap}
+#rrvvfoMission2UI .crowdStrip{position:absolute;left:0;right:0;bottom:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 20px}
+#rrvvfoMission2UI .crowdStrip i{width:28px;height:55px;border:4px solid #080808;border-radius:50% 50% 10% 10%;background:var(--c,#e52b2f)}
+#rrvvfoMission2UI .hubPanel{padding:20px}
+#rrvvfoMission2UI .hubPanel h2{margin:0 0 12px;font-size:34px}
+#rrvvfoMission2UI .hubTasks{display:grid;gap:12px}
+#rrvvfoMission2UI .tournamentAction{width:100%;text-align:left;background:#eef7ff}
+#rrvvfoMission2UI .tournamentAction.done{background:#9af0a8}
+#rrvvfoMission2UI .tournamentAction strong{display:block;font-size:16px}
+#rrvvfoMission2UI .tournamentAction span{display:block;margin-top:3px;font-size:12px}
+#rrvvfoMission2UI .hubStatus{margin-top:15px;padding:10px;border:4px solid #080808;background:#ffd400;font-weight:1000}
+@media(max-width:760px){.storyManualCard .manualGrid{grid-template-columns:1fr}#rrvvfoMission2UI .tournamentPlaza{grid-template-columns:1fr}#rrvvfoMission2UI .venueArt{min-height:330px}}
+
+/* ===== END lost-year-v2-story.css ===== */
+
+/* ===== BEGIN story-overhaul-27a.css ===== */
+/* Prototype 2.7A — continuous chapters and persistent Combat Manual */
+#lostYearStoryScreen .routeHomeView{width:100%;min-width:0}
+#lostYearStoryScreen .routeHomePanel{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:18px;padding:22px;border:5px solid #090909;background:#fff;color:#090909;box-shadow:8px 8px 0 #090909}
+#lostYearStoryScreen .routeHomeHero{display:grid;align-content:start;gap:13px;padding:20px;border:4px solid #090909;background:linear-gradient(145deg,#fff 0 58%,#ffe9e4 58% 100%)}
+#lostYearStoryScreen .routeHomeHero small{color:#c81724!important;text-shadow:none!important;font-weight:1000;letter-spacing:.12em}
+#lostYearStoryScreen .routeHomeHero h2{margin:0;font-size:clamp(38px,7vw,76px);line-height:.88;font-style:italic}
+#lostYearStoryScreen .routeHomeHero p{margin:0;max-width:650px;font-weight:800;line-height:1.45}
+#lostYearStoryScreen .routeProgressTrack{height:16px;border:3px solid #090909;background:#dfe6ef;overflow:hidden}
+#lostYearStoryScreen .routeProgressTrack i{display:block;height:100%;width:var(--route-progress,0%);background:#e52b2f}
+#lostYearStoryScreen .routeHomeActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+#lostYearStoryScreen .routeHomeActions button{min-height:72px;text-align:left;padding:12px 15px!important}
+#lostYearStoryScreen .routeHomeActions button strong,#lostYearStoryScreen .routeHomeActions button span{display:block}
+#lostYearStoryScreen .routeHomeActions button span{margin-top:4px;font-size:11px;font-weight:800}
+#lostYearStoryScreen .routeHomeActions button[disabled]{opacity:.5;filter:grayscale(.7);cursor:not-allowed}
+#lostYearStoryScreen .chapterRail{display:grid;gap:12px;align-content:start}
+#lostYearStoryScreen .chapterRow{display:grid;grid-template-columns:minmax(0,1fr) 132px;gap:10px;align-items:stretch}
+#lostYearStoryScreen .chapterCard{display:grid;grid-template-columns:66px 1fr;gap:12px;align-items:center;padding:13px!important;text-align:left}
+#lostYearStoryScreen .chapterCard .chapterNumber{display:grid;place-items:center;aspect-ratio:1;border:4px solid #090909;background:#e52b2f;color:#fff;font-size:28px;font-weight:1000}
+#lostYearStoryScreen .chapterCard small,#lostYearStoryScreen .chapterCard strong,#lostYearStoryScreen .chapterCard span{display:block}
+#lostYearStoryScreen .chapterCard small{color:#b20d18!important;text-shadow:none!important;font-weight:1000}
+#lostYearStoryScreen .chapterCard strong{font-size:17px}
+#lostYearStoryScreen .chapterCard span{margin-top:3px;font-size:11px;font-weight:800}
+#lostYearStoryScreen .chapterRow.isComplete .chapterCard:disabled{opacity:1!important;filter:none!important;cursor:default!important;background:#fff!important;color:#090909!important}
+#lostYearStoryScreen .chapterReplay{display:grid;align-content:center;min-height:100%;padding:12px!important;text-align:center;background:var(--ly-yellow)!important}
+#lostYearStoryScreen .chapterReplay strong,#lostYearStoryScreen .chapterReplay span{display:block}
+#lostYearStoryScreen .chapterReplay strong{font-size:16px}
+#lostYearStoryScreen .chapterReplay span{margin-top:5px;font-size:10px;font-weight:850;line-height:1.25}
+#lostYearStoryScreen .routeCompleteNote{padding:13px;border:4px solid #090909;background:#fff0a8;font-weight:900;line-height:1.4}
+#lostYearStoryScreen .routeHomeTop{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}
+#lostYearStoryScreen .routeHomeTop h1{margin:0;color:#fff;font-size:clamp(28px,5vw,52px);font-style:italic;text-shadow:4px 4px 0 #000}
+
+#pxCombatManualUI{position:fixed;inset:0;z-index:2450;display:grid;place-items:center;padding:18px;background:rgba(0,27,67,.9);font-family:Segoe UI,Arial,sans-serif;color:#090909}
+#pxCombatManualUI[hidden]{display:none!important}
+#pxCombatManualUI .manualBookShell{width:min(1050px,96vw);max-height:94vh;overflow:auto;padding:20px;border:6px solid #090909;background:#fff;box-shadow:14px 14px 0 #090909;clip-path:polygon(0 0,97% 0,100% 5%,100% 100%,3% 100%,0 95%)}
+#pxCombatManualUI .manualBookHeader{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:6px solid #090909;padding-bottom:13px}
+#pxCombatManualUI .manualBookHeader small{color:#cf1523;font-weight:1000;letter-spacing:.12em}
+#pxCombatManualUI .manualBookHeader h1{margin:2px 0 0;font-size:clamp(28px,5vw,58px);line-height:.9;font-style:italic}
+#pxCombatManualUI button{border:4px solid #090909;background:#fff;color:#090909;padding:10px 13px;font:900 13px inherit;box-shadow:5px 5px 0 #090909;cursor:pointer}
+#pxCombatManualUI button:hover,#pxCombatManualUI button:focus-visible{background:#ffd400;outline:3px solid #1777d8}
+#pxCombatManualUI .manualBookLayout{display:grid;grid-template-columns:260px 1fr;gap:16px;margin-top:16px}
+#pxCombatManualUI .manualPageList{display:grid;gap:9px;align-content:start}
+#pxCombatManualUI .manualPageTab{text-align:left}
+#pxCombatManualUI .manualPageTab small,#pxCombatManualUI .manualPageTab strong{display:block}
+#pxCombatManualUI .manualPageTab small{color:#c81724;font-size:10px;letter-spacing:.1em}
+#pxCombatManualUI .manualPageTab.selected{background:#ffd400}
+#pxCombatManualUI .manualPage{min-height:420px;padding:20px;border:5px solid #090909;background:#eef7ff}
+#pxCombatManualUI .manualPage>small{color:#c81724;font-weight:1000;letter-spacing:.1em}
+#pxCombatManualUI .manualPage h2{margin:4px 0 8px;font-size:clamp(38px,7vw,76px);line-height:.9;font-style:italic}
+#pxCombatManualUI .manualPage p{font-weight:800;line-height:1.45}
+#pxCombatManualUI .manualPage dl{display:grid;gap:9px;margin:18px 0 0}
+#pxCombatManualUI .manualPage dl div{display:grid;grid-template-columns:minmax(120px,.35fr) 1fr;gap:14px;padding:10px;border:3px solid #090909;background:#fff}
+#pxCombatManualUI .manualPage dt{font-weight:1000;text-transform:uppercase}
+#pxCombatManualUI .manualPage dd{margin:0;font-weight:800}
+#pxCombatManualUI .manualReaction{display:grid;grid-template-columns:100px 1fr;gap:13px;align-items:start;margin-top:15px;padding:13px;border:5px solid #090909;background:#ffe9e4}
+#pxCombatManualUI .manualReaction[hidden]{display:none!important}
+#pxCombatManualUI .manualReaction strong{padding:8px;border:3px solid #090909;background:#e52b2f;color:#fff;text-align:center}
+#pxCombatManualUI .manualReaction p{margin:0 0 5px;font-weight:900}
+#pxCombatManualUI .manualBookFooter{display:flex;justify-content:space-between;gap:16px;margin-top:13px;font-size:11px;font-weight:900}
+
+#rrvvfoMission2UI .tournamentHeaderActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+#rrvvfoMission2UI .routeEndOverlay{position:fixed;inset:0;z-index:2380;display:grid;place-items:center;padding:18px;background:rgba(0,28,75,.88)}
+#rrvvfoMission2UI .routeEndOverlay[hidden]{display:none!important}
+#rrvvfoMission2UI .routeEndCard{width:min(720px,95vw);padding:26px;border:6px solid #090909;background:#fff;color:#090909;box-shadow:12px 12px 0 #090909;text-align:center}
+#rrvvfoMission2UI .routeEndCard small{color:#d91d2b;font-weight:1000;letter-spacing:.14em}
+#rrvvfoMission2UI .routeEndCard h2{margin:5px 0 10px;font-size:clamp(38px,7vw,70px);line-height:.88;font-style:italic}
+#rrvvfoMission2UI .routeEndCard p{font-weight:800;line-height:1.5}
+#rrvvfoMission2UI .routeEndActions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+#rrvvfoMission2UI .routeEndActions button{width:auto;min-width:210px;text-align:center}
+
+@media(max-width:820px){
+  #lostYearStoryScreen .routeHomePanel{grid-template-columns:1fr}
+  #lostYearStoryScreen .routeHomeActions{grid-template-columns:1fr}
+  #lostYearStoryScreen .chapterRow{grid-template-columns:1fr}
+  #lostYearStoryScreen .chapterReplay{min-height:54px}
+  #pxCombatManualUI .manualBookLayout{grid-template-columns:1fr}
+  #pxCombatManualUI .manualPageList{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #pxCombatManualUI .manualPage{min-height:0}
+}
+@media(max-width:520px){
+  #pxCombatManualUI{padding:8px}
+  #pxCombatManualUI .manualBookShell{padding:13px;box-shadow:7px 7px 0 #090909}
+  #pxCombatManualUI .manualBookHeader{display:grid}
+  #pxCombatManualUI .manualPageList{grid-template-columns:1fr}
+  #pxCombatManualUI .manualPage dl div{grid-template-columns:1fr;gap:4px}
+  #pxCombatManualUI .manualReaction{grid-template-columns:1fr}
+  #pxCombatManualUI .manualBookFooter{display:grid}
+}
+
+/* ===== END story-overhaul-27a.css ===== */
+
+/* ===== BEGIN story-hub-27b.css ===== */
+/* Prototype 2.7B — playable living Training Grounds and road */
+#arenaModeScreen.storyRoadHub .top,
+#arenaModeScreen.storyRoadHub .clock,
+#arenaModeScreen.storyRoadHub .bottom,
+#arenaModeScreen.storyRoadHub .comboCallout,
+#arenaModeScreen.storyRoadHub .lensBlindness,
+#arenaModeScreen.storyRoadHub .arenaNotice{transition:opacity .16s}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .top,
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .clock,
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .bottom{opacity:0;pointer-events:none}
+#arenaModeScreen.storyRoadHub .badge{top:auto;right:14px;bottom:104px;max-width:320px}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaHotbar{width:min(520px,76vw)}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaSlots{grid-template-columns:repeat(5,minmax(58px,1fr))}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbility{height:64px}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbility:nth-child(1),
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbility:nth-child(5){opacity:.34;filter:grayscale(1)}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaIcon{font-size:19px;line-height:20px}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbilityName{font-size:9px}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaCost{display:none}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaState{font-size:7px}
+#arenaModeScreen.storyRoadHub.storyRoadFight .badge{bottom:118px}
+
+#rrvvfoRoadHubUI{position:fixed;inset:0;z-index:1760;pointer-events:none;color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif}
+#rrvvfoRoadHubUI[hidden]{display:none!important}
+#rrvvfoRoadHubUI *{box-sizing:border-box}
+#rrvvfoRoadHubUI .roadHud{position:absolute;inset:16px 16px auto;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+#rrvvfoRoadHubUI .roadObjective{width:min(520px,calc(100vw - 32px));padding:12px 15px;border:4px solid #080808;background:#fff;color:#080808;box-shadow:7px 7px 0 #080808;clip-path:polygon(0 0,97% 0,100% 15%,100% 100%,3% 100%,0 85%)}
+#rrvvfoRoadHubUI .roadObjective small,#rrvvfoRoadHubUI .roadObjective strong,#rrvvfoRoadHubUI .roadObjective span{display:block}
+#rrvvfoRoadHubUI .roadObjective small{color:#d51f2b;font-size:10px;font-weight:1000;letter-spacing:.12em}
+#rrvvfoRoadHubUI .roadObjective strong{margin-top:4px;font-size:clamp(19px,3vw,31px);line-height:.95;font-style:italic}
+#rrvvfoRoadHubUI .roadObjective span{margin-top:7px;font-size:12px;font-weight:850}
+#rrvvfoRoadHubUI .roadHudActions{display:flex;gap:8px;pointer-events:auto}
+#rrvvfoRoadHubUI button{border:4px solid #080808;background:#fff;color:#080808;padding:10px 13px;font:1000 12px inherit;box-shadow:5px 5px 0 #080808;cursor:pointer}
+#rrvvfoRoadHubUI button:hover,#rrvvfoRoadHubUI button:focus-visible{background:#ffd557;outline:3px solid #187bdb;outline-offset:2px}
+#rrvvfoRoadHubUI .roadAreaTitle{position:absolute;left:50%;top:22%;transform:translate(-50%,-50%);min-width:min(680px,90vw);padding:17px 26px;border-block:6px solid #080808;background:#ffffffe8;color:#080808;text-align:center;box-shadow:0 8px 0 #080808;animation:roadTitleIn .26s ease-out}
+#rrvvfoRoadHubUI .roadAreaTitle[hidden]{display:none!important}
+#rrvvfoRoadHubUI .roadAreaTitle small,#rrvvfoRoadHubUI .roadAreaTitle strong{display:block}
+#rrvvfoRoadHubUI .roadAreaTitle small{color:#d51f2b;font-weight:1000;letter-spacing:.18em}
+#rrvvfoRoadHubUI .roadAreaTitle strong{font-size:clamp(33px,7vw,72px);line-height:.9;font-style:italic}
+@keyframes roadTitleIn{from{opacity:0;transform:translate(-50%,-42%)}to{opacity:1;transform:translate(-50%,-50%)}}
+#rrvvfoRoadHubUI .roadPrompt{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);min-width:260px;padding:8px 14px;border:4px solid #080808;background:#ffd557;color:#080808;box-shadow:6px 6px 0 #080808;text-align:center}
+#rrvvfoRoadHubUI .roadPrompt[hidden]{display:none!important}
+#rrvvfoRoadHubUI .roadPrompt strong,#rrvvfoRoadHubUI .roadPrompt span{display:block}
+#rrvvfoRoadHubUI .roadPrompt strong{font-size:14px}
+#rrvvfoRoadHubUI .roadPrompt span{margin-top:2px;font-size:10px;font-weight:900;letter-spacing:.08em}
+
+#rrvvfoRoadHubUI .roadChoice,
+#rrvvfoRoadHubUI .roadQte,
+#rrvvfoRoadHubUI .roadComplete{position:absolute;inset:0;display:grid;place-items:center;padding:18px;background:rgba(0,28,75,.88);pointer-events:auto}
+#rrvvfoRoadHubUI .roadChoice[hidden],
+#rrvvfoRoadHubUI .roadQte[hidden],
+#rrvvfoRoadHubUI .roadComplete[hidden]{display:none!important}
+#rrvvfoRoadHubUI .roadChoice article,
+#rrvvfoRoadHubUI .roadQte article,
+#rrvvfoRoadHubUI .roadComplete article{width:min(720px,95vw);padding:25px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:12px 12px 0 #080808;text-align:center}
+#rrvvfoRoadHubUI .roadChoice small,
+#rrvvfoRoadHubUI .roadQte small,
+#rrvvfoRoadHubUI .roadComplete small{color:#d51f2b;font-weight:1000;letter-spacing:.14em}
+#rrvvfoRoadHubUI .roadChoice h2,
+#rrvvfoRoadHubUI .roadQte h2,
+#rrvvfoRoadHubUI .roadComplete h2{margin:5px 0 10px;font-size:clamp(38px,7vw,70px);line-height:.88;font-style:italic}
+#rrvvfoRoadHubUI .roadChoice p,
+#rrvvfoRoadHubUI .roadComplete p{font-weight:850;line-height:1.5}
+#rrvvfoRoadHubUI .roadChoice article>div{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+#rrvvfoRoadHubUI .roadChoice button,#rrvvfoRoadHubUI .roadComplete button{min-height:64px;font-size:16px}
+#rrvvfoRoadHubUI .qteSequence{display:flex;justify-content:center;gap:12px;margin:22px 0}
+#rrvvfoRoadHubUI .qteSequence span{display:grid;place-items:center;min-width:82px;height:74px;border:5px solid #080808;background:#e9eef5;font-size:24px;font-weight:1000;box-shadow:4px 4px 0 #080808}
+#rrvvfoRoadHubUI .qteSequence span.current{background:#ffd557;transform:translateY(-5px)}
+#rrvvfoRoadHubUI .qteSequence span.done{background:#79dc8e}
+#rrvvfoRoadHubUI .qteButtons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#rrvvfoRoadHubUI .qteButtons button{min-height:58px;font-size:18px}
+#rrvvfoRoadHubUI .qteTimer{height:17px;margin-top:18px;border:4px solid #080808;background:#dfe6ef;overflow:hidden}
+#rrvvfoRoadHubUI .qteTimer i{display:block;height:100%;width:100%;background:#e52b2f;transition:width .05s linear}
+#rrvvfoRoadHubUI .roadRewards{display:grid;gap:8px;margin:18px 0;text-align:left}
+#rrvvfoRoadHubUI .roadRewards span{padding:10px 12px;border:3px solid #080808;background:#eef7ff;font-weight:1000}
+
+@media(max-width:760px){
+  #rrvvfoRoadHubUI .roadHud{display:grid}
+  #rrvvfoRoadHubUI .roadHudActions{justify-content:flex-end}
+  #rrvvfoRoadHubUI .roadHudActions button{padding:8px 10px;font-size:10px}
+  #rrvvfoRoadHubUI .roadObjective{max-width:calc(100vw - 32px)}
+  #rrvvfoRoadHubUI .qteSequence span{min-width:64px;height:60px}
+}
+@media(max-width:520px){
+  #rrvvfoRoadHubUI .roadHud{inset:8px 8px auto}
+  #rrvvfoRoadHubUI .roadObjective{padding:9px 11px;box-shadow:4px 4px 0 #080808}
+  #rrvvfoRoadHubUI .roadHudActions{display:none}
+  #rrvvfoRoadHubUI .roadPrompt{bottom:82px;min-width:220px}
+  #rrvvfoRoadHubUI .roadChoice article,
+  #rrvvfoRoadHubUI .roadQte article,
+  #rrvvfoRoadHubUI .roadComplete article{padding:18px;box-shadow:7px 7px 0 #080808}
+  #rrvvfoRoadHubUI .roadChoice article>div{grid-template-columns:1fr}
+  #rrvvfoRoadHubUI .qteButtons{grid-template-columns:1fr 1fr 1fr}
+}
+
+/* ===== END story-hub-27b.css ===== */
+
+/* ===== BEGIN sonic-battle-menu-v3.css ===== */
+/*
+  Parallels X — Battle Menu Flow V3
+  Original Parallels X interface inspired by fast handheld battle-menu pacing.
+  This file is intentionally scoped to menus and story screens. It does not
+  restyle the combat canvas or combat HUD.
+*/
+
+:root{
+  --pxb-ink:#070b18;
+  --pxb-navy:#07183f;
+  --pxb-blue:#075ec7;
+  --pxb-blue-2:#1599ed;
+  --pxb-cyan:#69dcff;
+  --pxb-white:#f7fbff;
+  --pxb-paper:#e9f5ff;
+  --pxb-yellow:#ffe54d;
+  --pxb-orange:#ff9d2e;
+  --pxb-red:#f33f49;
+  --pxb-violet:#6b48d7;
+  --pxb-line:rgba(255,255,255,.23);
+  --pxb-display:"Arial Black",Impact,Haettenschweiler,system-ui,sans-serif;
+  --pxb-copy:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+
+@keyframes pxb-screen-in{
+  from{opacity:0;transform:translateY(12px) scale(.99)}
+  to{opacity:1;transform:none}
+}
+@keyframes pxb-pulse{
+  0%,100%{transform:translateX(0)}
+  50%{transform:translateX(5px)}
+}
+@keyframes pxb-scan{
+  from{background-position:0 0}
+  to{background-position:70px 0}
+}
+
+/* ---------- shared menu typography and focus ---------- */
+#startScreen,
+#mainMenuScreen,
+#menuScreen,
+#lostYearStoryScreen,
+#stageSelectPanel,
+#settingsPanel,
+#extrasPanel{
+  font-family:var(--pxb-copy)!important;
+}
+
+#startScreen button:focus-visible,
+#mainMenuScreen button:focus-visible,
+#menuScreen button:focus-visible,
+#menuScreen select:focus-visible,
+#lostYearStoryScreen button:focus-visible,
+#stageSelectPanel button:focus-visible,
+#settingsPanel button:focus-visible,
+#extrasPanel button:focus-visible{
+  outline:4px solid var(--pxb-yellow)!important;
+  outline-offset:3px!important;
+}
+
+/* ---------- start screen / future intro landing ---------- */
+#startScreen{
+  position:fixed!important;
+  inset:0!important;
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 52% 42%,rgba(18,127,239,.75),transparent 34%),
+    linear-gradient(135deg,#020b27 0,#071f52 54%,#05122f 100%)!important;
+  color:var(--pxb-white)!important;
+}
+#startScreen.hidden{display:none!important}
+#startScreen:before,
+#mainMenuScreen:before,
+#menuScreen:before,
+#lostYearStoryScreen:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px),
+    repeating-linear-gradient(115deg,transparent 0 52px,rgba(88,208,255,.08) 53px 55px,transparent 56px 86px);
+  mix-blend-mode:screen;
+  opacity:.68;
+}
+#startScreen .menuBackdrop{display:none!important}
+#startScreen .startCard{
+  position:relative!important;
+  z-index:1!important;
+  width:min(900px,92vw)!important;
+  min-height:440px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  padding:54px 24px 36px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  text-align:center!important;
+  animation:pxb-screen-in .32s ease-out both;
+}
+#startScreen .brandMark{
+  font-family:var(--pxb-display)!important;
+  font-size:clamp(54px,10vw,132px)!important;
+  font-style:italic!important;
+  line-height:.75!important;
+  letter-spacing:-.09em!important;
+  color:var(--pxb-white)!important;
+  text-shadow:7px 7px 0 #04102d,0 0 22px rgba(92,209,255,.65)!important;
+  transform:skewX(-7deg)!important;
+}
+#startScreen .brandMark b{
+  display:inline-block!important;
+  margin-left:.08em!important;
+  color:var(--pxb-yellow)!important;
+  text-shadow:7px 7px 0 #b6301d!important;
+}
+#startScreen .brandMark small{
+  display:block!important;
+  margin-top:24px!important;
+  font-size:clamp(18px,3.1vw,38px)!important;
+  letter-spacing:.34em!important;
+  color:var(--pxb-cyan)!important;
+  text-shadow:3px 3px 0 #04102d!important;
+}
+#startPrompt{
+  margin:56px 0 18px!important;
+  padding:12px 22px 12px 44px!important;
+  font-family:var(--pxb-display)!important;
+  font-size:clamp(18px,2.5vw,31px)!important;
+  letter-spacing:.05em!important;
+  color:#07183f!important;
+  background:var(--pxb-white)!important;
+  clip-path:polygon(18px 0,100% 0,calc(100% - 18px) 100%,0 100%)!important;
+  box-shadow:0 8px 0 rgba(0,0,0,.35)!important;
+}
+#startPrompt:before{
+  content:"▶";
+  display:inline-block;
+  margin-right:12px;
+  color:var(--pxb-orange);
+  animation:pxb-pulse .8s ease-in-out infinite;
+}
+#startScreen [data-build-version]{
+  color:rgba(255,255,255,.78)!important;
+  font-size:14px!important;
+  letter-spacing:.08em!important;
+}
+
+/* ---------- horizontal mode select ---------- */
+#mainMenuScreen{
+  position:fixed!important;
+  inset:0!important;
+  z-index:200!important;
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr) auto!important;
+  min-height:100dvh!important;
+  overflow:auto!important;
+  padding:18px clamp(14px,3vw,44px) 14px!important;
+  color:var(--pxb-white)!important;
+  background:
+    radial-gradient(circle at 72% 52%,rgba(63,182,255,.45),transparent 37%),
+    linear-gradient(148deg,#031237,#0753ac 57%,#071a46 100%)!important;
+}
+#mainMenuScreen.hidden{display:none!important}
+#mainMenuScreen .menuBackdrop{display:none!important}
+#mainMenuScreen>header{
+  position:relative!important;
+  z-index:2!important;
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:flex-start!important;
+  gap:20px!important;
+  padding:0 4px 13px!important;
+  border-bottom:2px solid rgba(255,255,255,.2)!important;
+}
+#mainMenuScreen .brandMark{
+  font-family:var(--pxb-display)!important;
+  font-size:clamp(27px,4.3vw,56px)!important;
+  font-style:italic!important;
+  letter-spacing:-.07em!important;
+  line-height:.83!important;
+  color:#fff!important;
+  text-shadow:4px 4px 0 #06112b!important;
+}
+#mainMenuScreen .brandMark b{color:var(--pxb-yellow)!important}
+#mainMenuScreen .brandMark small{
+  display:block!important;
+  margin-top:8px!important;
+  font-size:11px!important;
+  letter-spacing:.27em!important;
+  color:var(--pxb-cyan)!important;
+}
+#mainMenuScreen .buildLabel{
+  max-width:42vw!important;
+  padding:8px 12px!important;
+  border-left:4px solid var(--pxb-yellow)!important;
+  background:rgba(0,0,0,.26)!important;
+  color:#fff!important;
+  font-size:12px!important;
+  line-height:1.35!important;
+  text-align:right!important;
+}
+#mainMenuScreen .mainMenuLayout{
+  position:relative!important;
+  z-index:1!important;
+  display:grid!important;
+  grid-template-rows:auto minmax(290px,1fr)!important;
+  grid-template-columns:1fr!important;
+  gap:16px!important;
+  min-height:0!important;
+  padding:16px 0 8px!important;
+  animation:pxb-screen-in .26s ease-out both;
+}
+#mainMenuScreen [data-main-menu-list]{
+  position:relative!important;
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  gap:8px!important;
+  width:100%!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  padding:28px 8px 12px!important;
+  scrollbar-width:thin!important;
+  scroll-snap-type:x proximity!important;
+  border-bottom:4px solid rgba(255,255,255,.28)!important;
+}
+#mainMenuScreen [data-main-menu-list]:before{
+  content:"CHOOSE YOUR MODE";
+  position:absolute;
+  top:0;
+  left:8px;
+  font-family:var(--pxb-display);
+  font-size:16px;
+  font-style:italic;
+  letter-spacing:.08em;
+  color:#fff;
+  text-shadow:2px 2px 0 #071228;
+}
+#mainMenuScreen .mainMode{
+  flex:0 0 clamp(132px,15vw,206px)!important;
+  min-height:72px!important;
+  scroll-snap-align:start!important;
+  display:grid!important;
+  grid-template-columns:auto 1fr!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:10px 14px!important;
+  border:3px solid #fff!important;
+  border-radius:0!important;
+  background:linear-gradient(145deg,#0b2c6d,#041940)!important;
+  color:#fff!important;
+  box-shadow:5px 5px 0 rgba(0,0,0,.45)!important;
+  clip-path:polygon(0 0,92% 0,100% 24%,100% 100%,8% 100%,0 76%)!important;
+  text-align:left!important;
+  cursor:pointer!important;
+  transition:transform .12s ease,background .12s ease!important;
+}
+#mainMenuScreen .mainMode:hover,
+#mainMenuScreen .mainMode.selected{
+  transform:translateY(-4px)!important;
+  border-color:var(--pxb-yellow)!important;
+  background:linear-gradient(145deg,#1793ea,#075bbd)!important;
+  box-shadow:6px 8px 0 rgba(0,0,0,.48)!important;
+}
+#mainMenuScreen .mainMode[aria-disabled="true"]{filter:saturate(.35);opacity:.58!important}
+#mainMenuScreen .modeIndex{
+  display:grid!important;
+  place-items:center!important;
+  width:32px!important;
+  height:32px!important;
+  border:2px solid #fff!important;
+  background:var(--pxb-orange)!important;
+  color:#07183f!important;
+  font:900 15px/1 var(--pxb-display)!important;
+  transform:skewX(-8deg)!important;
+}
+#mainMenuScreen .modeWords{min-width:0!important}
+#mainMenuScreen .modeWords>span{
+  display:block!important;
+  font-family:var(--pxb-display)!important;
+  font-size:clamp(12px,1.3vw,18px)!important;
+  font-style:italic!important;
+  line-height:1.05!important;
+  letter-spacing:.015em!important;
+  white-space:normal!important;
+}
+#mainMenuScreen .modeWords>small{
+  display:block!important;
+  margin-top:4px!important;
+  color:var(--pxb-yellow)!important;
+  font-size:9px!important;
+  letter-spacing:.08em!important;
+}
+#mainMenuScreen [data-main-menu-preview]{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:minmax(190px,.55fr) minmax(280px,1.45fr)!important;
+  align-items:stretch!important;
+  gap:0!important;
+  min-height:310px!important;
+  padding:0!important;
+  overflow:hidden!important;
+  border:5px solid #fff!important;
+  border-radius:0!important;
+  background:linear-gradient(120deg,#e9f6ff 0 38%,#0a2c69 38% 100%)!important;
+  color:var(--pxb-ink)!important;
+  box-shadow:10px 10px 0 rgba(0,0,0,.48)!important;
+  clip-path:polygon(0 0,97% 0,100% 8%,100% 100%,3% 100%,0 92%)!important;
+}
+#mainMenuScreen .modeArt{
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  min-height:300px!important;
+  overflow:hidden!important;
+  background:
+    repeating-linear-gradient(145deg,transparent 0 28px,rgba(7,94,199,.12) 29px 31px),
+    linear-gradient(160deg,#fff,#bee9ff)!important;
+}
+#mainMenuScreen .modeArt:before,
+#mainMenuScreen .modeArt:after{
+  content:"";
+  position:absolute;
+  border:4px solid #08245a;
+  border-radius:50%;
+  background:#1599ed;
+  box-shadow:0 0 0 8px rgba(255,255,255,.8),0 0 0 12px #08245a;
+}
+#mainMenuScreen .modeArt:before{width:112px;height:112px;transform:translate(-26px,20px)}
+#mainMenuScreen .modeArt:after{width:64px;height:64px;transform:translate(66px,-54px);background:var(--pxb-yellow)}
+#mainMenuScreen .modeGlyph{
+  position:relative!important;
+  z-index:1!important;
+  font:900 clamp(58px,8vw,108px)/1 var(--pxb-display)!important;
+  font-style:italic!important;
+  letter-spacing:-.08em!important;
+  color:#fff!important;
+  text-shadow:6px 6px 0 #07183f!important;
+  transform:skewX(-9deg)!important;
+}
+#mainMenuScreen .modeCopy{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-width:0!important;
+  padding:clamp(22px,4vw,54px)!important;
+  color:#fff!important;
+  background:
+    linear-gradient(113deg,transparent 0 8%,rgba(255,255,255,.07) 8% 10%,transparent 10% 100%),
+    linear-gradient(145deg,#0b4b9c,#071c4b)!important;
+}
+#mainMenuScreen .modeCopy>small{
+  color:var(--pxb-yellow)!important;
+  font-family:var(--pxb-display)!important;
+  font-size:13px!important;
+  font-style:italic!important;
+  letter-spacing:.12em!important;
+}
+#mainMenuScreen .modeCopy h2{
+  margin:5px 0 12px!important;
+  font:italic 900 clamp(34px,5vw,72px)/.9 var(--pxb-display)!important;
+  letter-spacing:-.055em!important;
+  text-shadow:5px 5px 0 #020b22!important;
+}
+#mainMenuScreen .modeCopy p{
+  max-width:760px!important;
+  margin:0!important;
+  color:#e7f5ff!important;
+  font-size:clamp(14px,1.5vw,18px)!important;
+  line-height:1.5!important;
+}
+#mainMenuScreen .modeCopy dl{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin:18px 0 0!important;
+}
+#mainMenuScreen .modeCopy dl div{
+  padding:10px 12px!important;
+  border:2px solid rgba(255,255,255,.3)!important;
+  background:rgba(0,0,0,.18)!important;
+}
+#mainMenuScreen .modeCopy dt{
+  color:var(--pxb-cyan)!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+#mainMenuScreen .modeCopy dd{
+  margin:4px 0 0!important;
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  line-height:1.35!important;
+}
+#mainMenuScreen .modeConfirm{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  align-self:flex-start!important;
+  margin-top:18px!important;
+  padding:9px 14px!important;
+  border:2px solid #fff!important;
+  background:var(--pxb-orange)!important;
+  color:#07183f!important;
+  font-weight:1000!important;
+  transform:skewX(-7deg)!important;
+}
+#mainMenuScreen .quickContinue{
+  position:relative!important;
+  right:auto!important;
+  bottom:auto!important;
+  z-index:2!important;
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:12px!important;
+  margin:8px 0!important;
+  padding:10px 12px!important;
+  border:2px solid rgba(255,255,255,.5)!important;
+  background:rgba(2,11,35,.72)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+#mainMenuScreen .quickContinue.hidden{display:none!important}
+#mainMenuScreen .quickContinue small{color:var(--pxb-yellow)!important;font-weight:900!important}
+#mainMenuScreen .quickContinue strong{font-size:14px!important}
+#mainMenuScreen .quickContinue span{font-size:12px!important;color:#d9edff!important}
+#mainMenuScreen .quickContinue button{
+  padding:9px 14px!important;
+  border:2px solid #fff!important;
+  background:var(--pxb-yellow)!important;
+  color:#07183f!important;
+  font-weight:1000!important;
+}
+#mainMenuScreen>footer{
+  position:relative!important;
+  z-index:2!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:space-between!important;
+  gap:7px 18px!important;
+  padding-top:8px!important;
+  border-top:1px solid rgba(255,255,255,.24)!important;
+  color:#d9edff!important;
+  font-size:12px!important;
+}
+
+/* ---------- VS / character select screen ---------- */
+#menuScreen{
+  position:fixed!important;
+  inset:0!important;
+  z-index:190!important;
+  overflow:auto!important;
+  min-height:100dvh!important;
+  padding:18px clamp(12px,2.7vw,42px) 40px!important;
+  color:#fff!important;
+  background:
+    radial-gradient(circle at 50% 34%,rgba(78,184,255,.42),transparent 38%),
+    linear-gradient(145deg,#061437,#0757ae 58%,#061437)!important;
+  animation:pxb-screen-in .24s ease-out both;
+}
+#menuScreen.hidden{display:none!important}
+#menuScreen>.title{
+  position:relative!important;
+  z-index:1!important;
+  display:inline-block!important;
+  margin:0!important;
+  font:italic 900 clamp(28px,4vw,54px)/.84 var(--pxb-display)!important;
+  letter-spacing:-.07em!important;
+  color:#fff!important;
+  text-shadow:4px 4px 0 #05102a!important;
+}
+#menuScreen>.title span{color:var(--pxb-yellow)!important}
+#menuScreen>.sub{
+  position:relative!important;
+  z-index:1!important;
+  display:inline-block!important;
+  margin-left:18px!important;
+  color:var(--pxb-cyan)!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+#menuScreen>.panel{
+  position:relative!important;
+  z-index:1!important;
+  width:min(1260px,100%)!important;
+  margin:18px auto 0!important;
+  padding:18px!important;
+  border:5px solid #fff!important;
+  border-radius:0!important;
+  background:linear-gradient(135deg,rgba(3,21,62,.96),rgba(7,67,139,.93))!important;
+  box-shadow:10px 10px 0 rgba(0,0,0,.48)!important;
+  clip-path:polygon(0 0,98% 0,100% 4%,100% 100%,2% 100%,0 96%)!important;
+}
+#menuScreen .screenHeading{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:14px!important;
+  margin:0 0 14px!important;
+  padding:0 0 12px!important;
+  border-bottom:4px solid rgba(255,255,255,.3)!important;
+}
+#menuScreen .screenHeading>div{text-align:center!important}
+#menuScreen .screenHeading small{
+  color:var(--pxb-yellow)!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  letter-spacing:.12em!important;
+}
+#menuScreen .screenHeading h1{
+  margin:2px 0 0!important;
+  font:italic 900 clamp(32px,5vw,64px)/.9 var(--pxb-display)!important;
+  letter-spacing:-.04em!important;
+  color:#fff!important;
+  text-shadow:4px 4px 0 #03102a!important;
+}
+#menuScreen button,
+#menuScreen select{
+  border-radius:0!important;
+}
+#menuScreen .secondary,
+#menuScreen .primary{
+  border:3px solid #fff!important;
+  background:#092e70!important;
+  color:#fff!important;
+  box-shadow:4px 4px 0 #020918!important;
+  font-weight:900!important;
+}
+#menuScreen .primary{background:var(--pxb-orange)!important;color:#07183f!important}
+#menuScreen .slots{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:72px!important;
+  margin:16px 0!important;
+  padding:18px clamp(12px,3vw,42px)!important;
+  background:
+    linear-gradient(105deg,rgba(40,143,234,.72) 0 48%,rgba(255,255,255,.16) 48% 52%,rgba(239,64,74,.7) 52% 100%)!important;
+  border:4px solid #fff!important;
+}
+#menuScreen .slots:after{
+  content:"VS";
+  position:absolute;
+  left:50%;
+  top:50%;
+  z-index:4;
+  transform:translate(-50%,-50%) rotate(-8deg);
+  font:italic 900 clamp(48px,8vw,96px)/1 var(--pxb-display);
+  color:var(--pxb-yellow);
+  text-shadow:6px 6px 0 #07183f,-2px -2px 0 #fff,2px 2px 0 #fff;
+}
+#menuScreen .slotWrap{min-width:0!important}
+#menuScreen .slot{
+  width:100%!important;
+  min-height:126px!important;
+  padding:16px!important;
+  border:5px solid #fff!important;
+  background:linear-gradient(145deg,#0a4eae,#092458)!important;
+  color:#fff!important;
+  box-shadow:7px 7px 0 rgba(0,0,0,.5)!important;
+  clip-path:polygon(0 0,95% 0,100% 18%,100% 100%,5% 100%,0 82%)!important;
+}
+#menuScreen .slotWrap:nth-child(2) .slot{background:linear-gradient(145deg,#c83b4d,#681a34)!important}
+#menuScreen .slot.active{border-color:var(--pxb-yellow)!important;transform:translateY(-4px)!important}
+#menuScreen .slot small{color:var(--pxb-cyan)!important;font-size:10px!important;font-weight:900!important}
+#menuScreen .slot strong{
+  display:block!important;
+  margin-top:7px!important;
+  font:italic 900 clamp(28px,4vw,50px)/.9 var(--pxb-display)!important;
+  text-shadow:4px 4px 0 rgba(0,0,0,.5)!important;
+}
+#menuScreen .slot em{
+  display:block!important;
+  margin-top:8px!important;
+  color:#fff!important;
+  font-size:12px!important;
+  font-style:normal!important;
+  line-height:1.35!important;
+}
+#menuScreen .roster{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fill,minmax(108px,1fr))!important;
+  gap:9px!important;
+  margin:14px 0!important;
+  padding:12px!important;
+  border:4px solid #fff!important;
+  background:rgba(2,14,43,.68)!important;
+}
+#menuScreen .card{
+  min-height:134px!important;
+  padding:8px!important;
+  border:3px solid rgba(255,255,255,.68)!important;
+  background:linear-gradient(150deg,#eaf8ff,#a8d8f8)!important;
+  color:#061437!important;
+  box-shadow:3px 3px 0 rgba(0,0,0,.45)!important;
+  text-align:center!important;
+  transition:transform .1s ease!important;
+}
+#menuScreen .card:hover,#menuScreen .card:focus-visible{transform:translateY(-3px)!important;border-color:var(--pxb-yellow)!important}
+#menuScreen .card.p1{box-shadow:0 0 0 4px #28a8ff,4px 4px 0 #020918!important}
+#menuScreen .card.p2{box-shadow:0 0 0 4px #ff4d61,4px 4px 0 #020918!important}
+#menuScreen .card .portrait{height:58px!important;margin-bottom:5px!important}
+#menuScreen .card b{font-family:var(--pxb-display)!important;font-size:13px!important}
+#menuScreen .card .origin,#menuScreen .card .style,#menuScreen .card .rating{font-size:9px!important;line-height:1.25!important}
+#menuScreen .options{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  gap:9px!important;
+  overflow-x:auto!important;
+  padding:10px!important;
+  border:3px solid rgba(255,255,255,.45)!important;
+  background:rgba(1,10,33,.58)!important;
+  scroll-snap-type:x proximity!important;
+}
+#menuScreen .opt{
+  flex:0 0 min(240px,72vw)!important;
+  scroll-snap-align:start!important;
+  padding:9px!important;
+  border:2px solid rgba(255,255,255,.24)!important;
+  background:rgba(8,41,96,.68)!important;
+}
+#menuScreen .opt label{display:block!important;color:var(--pxb-cyan)!important;font-size:10px!important;font-weight:900!important;letter-spacing:.06em!important}
+#menuScreen .opt select{width:100%!important;margin-top:5px!important;padding:8px!important;background:#fff!important;color:#07183f!important;font-size:13px!important}
+#menuScreen .buttons{display:flex!important;flex-wrap:wrap!important;gap:8px!important;justify-content:center!important;margin-top:14px!important}
+#menuScreen .buttons button{min-width:150px!important;padding:11px 14px!important}
+#menuScreen .notice{font-size:13px!important;line-height:1.45!important}
+
+/* ---------- story character / episode select ---------- */
+#lostYearStoryScreen{
+  position:fixed!important;
+  inset:0!important;
+  z-index:1400!important;
+  overflow:auto!important;
+  color:#fff!important;
+  background:
+    radial-gradient(circle at 64% 28%,rgba(105,220,255,.45),transparent 32%),
+    linear-gradient(148deg,#041238,#0a61bc 58%,#06173e)!important;
+  font-family:var(--pxb-copy)!important;
+  animation:pxb-screen-in .24s ease-out both;
+}
+#lostYearStoryScreen[hidden]{display:none!important}
+#lostYearStoryScreen *{box-sizing:border-box!important}
+#lostYearStoryScreen .lyShell{
+  position:relative!important;
+  z-index:1!important;
+  width:min(1320px,100%)!important;
+  min-height:100%!important;
+  margin:auto!important;
+  padding:18px clamp(12px,3vw,42px) 40px!important;
+}
+#lostYearStoryScreen .lyTop{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:16px!important;
+  margin:0 0 13px!important;
+  padding:0 0 12px!important;
+  border-bottom:4px solid rgba(255,255,255,.32)!important;
+}
+#lostYearStoryScreen .lyTop .storyModeTitle{text-align:center!important}
+#lostYearStoryScreen .lyTop small{
+  color:var(--pxb-yellow)!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  letter-spacing:.14em!important;
+}
+#lostYearStoryScreen .lyTop h1{
+  margin:1px 0 0!important;
+  font:italic 900 clamp(36px,5.4vw,70px)/.88 var(--pxb-display)!important;
+  letter-spacing:-.05em!important;
+  color:#fff!important;
+  text-shadow:5px 5px 0 #04102d!important;
+}
+#lostYearStoryScreen .lyTop h1 span{color:var(--pxb-yellow)!important}
+#lostYearStoryScreen button{
+  border:3px solid #fff!important;
+  border-radius:0!important;
+  background:#092e70!important;
+  color:#fff!important;
+  box-shadow:4px 4px 0 #020918!important;
+  font-family:var(--pxb-copy)!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+}
+#lostYearStoryScreen button:hover{border-color:var(--pxb-yellow)!important;background:#0f77d4!important}
+#lostYearStoryScreen button.primary{background:var(--pxb-orange)!important;color:#061437!important}
+#lostYearStoryScreen button:disabled{opacity:.46!important;filter:saturate(.35)!important;cursor:not-allowed!important}
+#lostYearStoryScreen .lyMeta{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+  margin:0 0 14px!important;
+}
+#lostYearStoryScreen .lyChip{
+  padding:7px 10px!important;
+  border:2px solid #fff!important;
+  border-radius:0!important;
+  background:rgba(1,12,37,.58)!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+#lostYearStoryScreen .lyLayout{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:14px!important;
+}
+#lostYearStoryScreen .routeView[hidden],
+#lostYearStoryScreen .routePanel[hidden],
+#lostYearStoryScreen .missionView[hidden]{display:none!important}
+#lostYearStoryScreen .routeView{
+  position:relative!important;
+  padding-top:30px!important;
+}
+#lostYearStoryScreen .routeView:before{
+  content:"CHOOSE YOUR CHARACTER / EPISODE";
+  position:absolute;
+  top:0;
+  left:0;
+  color:#fff;
+  font:italic 900 16px/1 var(--pxb-display);
+  letter-spacing:.06em;
+  text-shadow:2px 2px 0 #04102d;
+}
+#lostYearStoryScreen .routeGrid{
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  gap:11px!important;
+  overflow-x:auto!important;
+  padding:8px 8px 16px!important;
+  border-bottom:4px solid rgba(255,255,255,.3)!important;
+  scroll-snap-type:x mandatory!important;
+}
+#lostYearStoryScreen .routeCard{
+  position:relative!important;
+  flex:0 0 clamp(164px,19vw,244px)!important;
+  min-height:226px!important;
+  display:grid!important;
+  grid-template-rows:126px auto!important;
+  gap:8px!important;
+  overflow:hidden!important;
+  scroll-snap-align:center!important;
+  padding:9px!important;
+  border:4px solid #fff!important;
+  background:linear-gradient(155deg,#eefaff,#a9dcfa)!important;
+  color:#061437!important;
+  box-shadow:6px 6px 0 rgba(0,0,0,.46)!important;
+  text-align:left!important;
+  clip-path:polygon(0 0,94% 0,100% 12%,100% 100%,6% 100%,0 88%)!important;
+  transition:transform .12s ease!important;
+}
+#lostYearStoryScreen .routeCard.selected{
+  transform:translateY(-6px)!important;
+  border-color:var(--pxb-yellow)!important;
+  background:linear-gradient(155deg,#fff8b3,#ffd64f)!important;
+}
+#lostYearStoryScreen .routeCard .routePortrait{
+  position:relative!important;
+  display:grid!important;
+  place-items:end center!important;
+  overflow:hidden!important;
+  border:3px solid #07183f!important;
+  background:
+    radial-gradient(circle at 50% 30%,rgba(255,255,255,.95) 0 14%,transparent 15%),
+    linear-gradient(145deg,var(--route-color,#1599ed),#07183f)!important;
+}
+#lostYearStoryScreen .routeCard .routePortrait:before{
+  content:"";
+  width:70px;
+  height:92px;
+  margin-bottom:-10px;
+  border:4px solid #07183f;
+  border-radius:42% 42% 16% 16%;
+  background:linear-gradient(#fff 0 34%,#0a2d6d 34% 100%);
+  box-shadow:0 0 0 5px rgba(255,255,255,.7);
+}
+#lostYearStoryScreen .routeCard .routePortrait b{
+  position:absolute!important;
+  left:8px!important;
+  bottom:6px!important;
+  z-index:2!important;
+  font:italic 900 18px/1 var(--pxb-display)!important;
+  color:#fff!important;
+  text-shadow:3px 3px 0 #07183f!important;
+}
+#lostYearStoryScreen .routeCard .routeCopy{min-width:0!important}
+#lostYearStoryScreen .routeCard .status{
+  display:block!important;
+  margin:0 0 3px!important;
+  color:#b3212d!important;
+  font-size:9px!important;
+  font-weight:1000!important;
+  letter-spacing:.08em!important;
+}
+#lostYearStoryScreen .routeCard h2{
+  margin:0!important;
+  color:#061437!important;
+  font:italic 900 20px/1 var(--pxb-display)!important;
+  text-shadow:none!important;
+}
+#lostYearStoryScreen .routeCard h3{
+  margin:4px 0 0!important;
+  color:#164e91!important;
+  font-size:11px!important;
+  letter-spacing:.05em!important;
+}
+#lostYearStoryScreen .routeCard p{display:none!important}
+#lostYearStoryScreen .routeCard .percent{
+  position:absolute!important;
+  right:8px!important;
+  top:8px!important;
+  z-index:3!important;
+  padding:4px 6px!important;
+  border:2px solid #fff!important;
+  background:#061437!important;
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+#lostYearStoryScreen .routePanel{
+  position:relative!important;
+  top:auto!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,.75fr) minmax(280px,1.25fr)!important;
+  gap:0!important;
+  overflow:hidden!important;
+  padding:0!important;
+  border:5px solid #fff!important;
+  border-radius:0!important;
+  background:linear-gradient(120deg,#eaf8ff 0 41%,#082a68 41% 100%)!important;
+  color:#061437!important;
+  box-shadow:9px 9px 0 rgba(0,0,0,.48)!important;
+}
+#lostYearStoryScreen .routePanel .routeFeature{
+  min-height:236px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:20px!important;
+  background:
+    repeating-linear-gradient(145deg,transparent 0 28px,rgba(7,94,199,.12) 29px 31px),
+    linear-gradient(150deg,#fff,#b9e5ff)!important;
+}
+#lostYearStoryScreen .routePanel .routeFeature b{
+  font:italic 900 clamp(54px,8vw,110px)/.8 var(--pxb-display)!important;
+  letter-spacing:-.08em!important;
+  color:var(--route-color,var(--pxb-blue))!important;
+  text-shadow:6px 6px 0 #07183f,8px 8px 0 #fff!important;
+}
+#lostYearStoryScreen .routePanel .routeDetails{
+  padding:clamp(18px,3vw,34px)!important;
+  color:#fff!important;
+}
+#lostYearStoryScreen .routePanel small{color:var(--pxb-yellow)!important;font-weight:900!important;letter-spacing:.1em!important}
+#lostYearStoryScreen .routePanel h2{
+  margin:4px 0 0!important;
+  color:#fff!important;
+  font:italic 900 clamp(31px,4.5vw,60px)/.9 var(--pxb-display)!important;
+  text-shadow:4px 4px 0 #020b22!important;
+}
+#lostYearStoryScreen .routePanel h3{margin:7px 0 12px!important;color:var(--pxb-cyan)!important;font-size:14px!important;letter-spacing:.08em!important}
+#lostYearStoryScreen .routePanel p{margin:0!important;color:#e4f3ff!important;font-size:15px!important;line-height:1.5!important}
+#lostYearStoryScreen .routePanel dl{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:16px 0!important}
+#lostYearStoryScreen .routePanel dl div{display:block!important;padding:8px!important;border:2px solid rgba(255,255,255,.28)!important;background:rgba(0,0,0,.17)!important}
+#lostYearStoryScreen .routePanel dt{color:var(--pxb-cyan)!important;font-size:10px!important;font-weight:900!important;text-transform:uppercase!important}
+#lostYearStoryScreen .routePanel dd{margin:4px 0 0!important;color:#fff!important;font-size:12px!important;font-weight:800!important;text-align:left!important}
+#lostYearStoryScreen .routeActions{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin-top:14px!important}
+#lostYearStoryScreen .routeActions button{padding:11px 16px!important}
+#lostYearStoryScreen .lockedBanner{padding:12px!important;border:2px dashed rgba(255,255,255,.55)!important;background:rgba(0,0,0,.18)!important;color:#fff!important;font-size:12px!important;line-height:1.4!important}
+
+/* ---------- mission select ---------- */
+#lostYearStoryScreen .missionView{grid-column:1/-1!important}
+#lostYearStoryScreen .missionPanel{
+  padding:18px!important;
+  border:5px solid #fff!important;
+  border-radius:0!important;
+  background:linear-gradient(145deg,#06245b,#0a5cb3)!important;
+  color:#fff!important;
+  box-shadow:9px 9px 0 rgba(0,0,0,.48)!important;
+}
+#lostYearStoryScreen .missionHeader{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:start!important;
+  gap:14px!important;
+  margin-bottom:12px!important;
+  padding-bottom:12px!important;
+  border-bottom:4px solid rgba(255,255,255,.3)!important;
+}
+#lostYearStoryScreen .missionHeader small{color:var(--pxb-yellow)!important;font-weight:900!important;letter-spacing:.12em!important}
+#lostYearStoryScreen .missionHeader h2{
+  margin:2px 0 0!important;
+  color:#fff!important;
+  font:italic 900 clamp(34px,5vw,64px)/.9 var(--pxb-display)!important;
+  text-shadow:4px 4px 0 #020b22!important;
+}
+#lostYearStoryScreen [data-mission-description]{
+  max-width:850px!important;
+  margin:0 0 14px!important;
+  color:#e4f3ff!important;
+  font-size:15px!important;
+  line-height:1.5!important;
+}
+#lostYearStoryScreen .missionList{
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  gap:12px!important;
+  overflow-x:auto!important;
+  padding:8px 7px 17px!important;
+  scroll-snap-type:x mandatory!important;
+}
+#lostYearStoryScreen .missionCard{
+  position:relative!important;
+  flex:0 0 clamp(235px,30vw,390px)!important;
+  min-height:188px!important;
+  scroll-snap-align:start!important;
+  display:grid!important;
+  grid-template-columns:64px 1fr!important;
+  grid-template-rows:auto 1fr auto!important;
+  gap:9px!important;
+  align-items:start!important;
+  padding:14px!important;
+  border:4px solid #fff!important;
+  background:linear-gradient(150deg,#eaf8ff,#9cd7ff)!important;
+  color:#061437!important;
+  box-shadow:6px 6px 0 rgba(0,0,0,.45)!important;
+  text-align:left!important;
+  clip-path:polygon(0 0,95% 0,100% 15%,100% 100%,5% 100%,0 85%)!important;
+}
+#lostYearStoryScreen .missionCard:not(:disabled):hover{background:linear-gradient(150deg,#fff8ad,#ffd646)!important;transform:translateY(-4px)!important}
+#lostYearStoryScreen .missionNumber{
+  grid-row:1/4!important;
+  display:grid!important;
+  place-items:center!important;
+  width:58px!important;
+  height:76px!important;
+  border:4px solid #07183f!important;
+  border-radius:0!important;
+  background:var(--pxb-orange)!important;
+  color:#061437!important;
+  font:italic 900 32px/1 var(--pxb-display)!important;
+  box-shadow:3px 3px 0 rgba(0,0,0,.35)!important;
+}
+#lostYearStoryScreen .missionCard strong{
+  display:block!important;
+  color:#061437!important;
+  font:italic 900 22px/1 var(--pxb-display)!important;
+}
+#lostYearStoryScreen .missionCard span span{
+  display:block!important;
+  margin-top:7px!important;
+  color:#174c85!important;
+  font-size:13px!important;
+  line-height:1.4!important;
+}
+#lostYearStoryScreen .missionCard em{
+  grid-column:2!important;
+  align-self:end!important;
+  color:#b52330!important;
+  font-size:10px!important;
+  font-style:normal!important;
+  font-weight:1000!important;
+  letter-spacing:.06em!important;
+}
+#lostYearStoryScreen .briefing[hidden]{display:none!important}
+#lostYearStoryScreen .briefing{
+  margin-top:15px!important;
+  padding:18px!important;
+  border:5px solid #07183f!important;
+  background:#f3faff!important;
+  color:#061437!important;
+  box-shadow:6px 6px 0 rgba(0,0,0,.45)!important;
+}
+#lostYearStoryScreen .briefing small{color:#b52330!important;font-weight:900!important;letter-spacing:.1em!important}
+#lostYearStoryScreen .briefing h2{margin:4px 0 10px!important;color:#061437!important;font:italic 900 clamp(28px,4vw,48px)/.9 var(--pxb-display)!important;text-shadow:none!important}
+#lostYearStoryScreen .briefing p,#lostYearStoryScreen .briefing li{color:#183c67!important;font-size:14px!important;line-height:1.5!important}
+#lostYearStoryScreen .briefing h3{color:#061437!important}
+#lostYearStoryScreen .briefing dl div{border-bottom:2px solid #bed5ea!important}
+#lostYearStoryScreen .briefing dt{color:#4c6d91!important}
+#lostYearStoryScreen .briefing dd{color:#061437!important}
+#lostYearStoryScreen .canonNote{padding:12px!important;border:3px solid #07183f!important;border-left:9px solid var(--pxb-orange)!important;background:#fff2aa!important;color:#061437!important;font-size:13px!important;line-height:1.45!important}
+
+/* ---------- other setup / modal screens use the same visual language ---------- */
+#stageSelectPanel .qolCard,
+#settingsPanel .qolCard,
+#extrasPanel .qolCard{
+  border:5px solid #fff!important;
+  border-radius:0!important;
+  background:linear-gradient(145deg,#061b49,#0b5eb6)!important;
+  color:#fff!important;
+  box-shadow:9px 9px 0 rgba(0,0,0,.5)!important;
+}
+#stageSelectPanel h2,
+#settingsPanel h2,
+#extrasPanel h2{
+  font:italic 900 clamp(28px,4vw,54px)/.9 var(--pxb-display)!important;
+  color:#fff!important;
+  text-shadow:4px 4px 0 #020b22!important;
+}
+#stageSelectPanel p,#settingsPanel p,#extrasPanel p{font-size:14px!important;line-height:1.5!important}
+#stageSelectPanel button,#settingsPanel button,#extrasPanel button{
+  border:3px solid #fff!important;
+  border-radius:0!important;
+  background:#092e70!important;
+  color:#fff!important;
+  box-shadow:4px 4px 0 #020918!important;
+}
+#stageSelectPanel button.primary,#settingsPanel button.primary,#extrasPanel button.primary{background:var(--pxb-orange)!important;color:#061437!important}
+
+/* ---------- mobile and smaller windows ---------- */
+@media(max-width:860px){
+  #mainMenuScreen [data-main-menu-preview]{grid-template-columns:1fr!important}
+  #mainMenuScreen .modeArt{min-height:150px!important}
+  #mainMenuScreen .modeArt:before{width:76px;height:76px}
+  #mainMenuScreen .modeArt:after{width:45px;height:45px}
+  #mainMenuScreen .modeCopy{padding:20px!important}
+  #mainMenuScreen .modeCopy dl{grid-template-columns:1fr!important}
+  #mainMenuScreen .quickContinue{grid-template-columns:1fr!important}
+  #mainMenuScreen .quickContinue button{justify-self:start!important}
+  #menuScreen .slots{gap:42px!important}
+  #lostYearStoryScreen .routePanel{grid-template-columns:1fr!important}
+  #lostYearStoryScreen .routePanel .routeFeature{min-height:130px!important}
+  #lostYearStoryScreen .routePanel dl{grid-template-columns:1fr!important}
+}
+@media(max-width:620px){
+  #mainMenuScreen{padding:12px 10px!important}
+  #mainMenuScreen>header{align-items:flex-start!important}
+  #mainMenuScreen .buildLabel{max-width:48vw!important;font-size:10px!important}
+  #mainMenuScreen .mainMode{flex-basis:132px!important;min-height:66px!important}
+  #mainMenuScreen [data-main-menu-preview]{display:grid!important;min-height:0!important}
+  #mainMenuScreen .modeCopy h2{font-size:34px!important}
+  #mainMenuScreen>footer{font-size:10px!important}
+  #menuScreen{padding:12px 8px 28px!important}
+  #menuScreen>.sub{display:block!important;margin:7px 0 0!important}
+  #menuScreen>.panel{padding:10px!important}
+  #menuScreen .screenHeading{grid-template-columns:1fr 1fr!important}
+  #menuScreen .screenHeading>div{grid-column:1/-1;grid-row:1;text-align:left!important}
+  #menuScreen .screenHeading button{grid-row:2}
+  #menuScreen .slots{grid-template-columns:1fr!important;gap:54px!important;padding:12px!important}
+  #menuScreen .slots:after{font-size:52px!important}
+  #menuScreen .roster{grid-template-columns:repeat(3,minmax(0,1fr))!important;padding:7px!important}
+  #menuScreen .card{min-height:118px!important;padding:6px!important}
+  #menuScreen .card .origin,#menuScreen .card .style{display:none!important}
+  #lostYearStoryScreen .lyShell{padding:12px 8px 28px!important}
+  #lostYearStoryScreen .lyTop{grid-template-columns:1fr 1fr!important}
+  #lostYearStoryScreen .lyTop .storyModeTitle{grid-column:1/-1;grid-row:1;text-align:left!important}
+  #lostYearStoryScreen .lyTop button{grid-row:2}
+  #lostYearStoryScreen .routeCard{flex-basis:172px!important;min-height:210px!important}
+  #lostYearStoryScreen .missionHeader{grid-template-columns:1fr!important}
+  #lostYearStoryScreen .missionHeader button{justify-self:start!important}
+  #lostYearStoryScreen .missionCard{flex-basis:82vw!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #startScreen .startCard,
+  #mainMenuScreen .mainMenuLayout,
+  #menuScreen,
+  #lostYearStoryScreen{animation:none!important}
+  #startPrompt:before{animation:none!important}
+}
+
+/* ===== END sonic-battle-menu-v3.css ===== */
+
+/* ===== BEGIN chapter-2-tournament.css ===== */
+/* Prototype 2.8B — Chapter 2 open tournament hub and full bracket */
+#rrvvfoMission2UI{position:fixed;inset:0;z-index:2100;overflow:hidden!important;pointer-events:none;font-family:Inter,Segoe UI,Arial,sans-serif;color:#080808;background:transparent!important}
+#rrvvfoMission2UI[hidden]{display:none!important}
+#rrvvfoMission2UI button{border:4px solid #080808;background:#fff;color:#080808;padding:10px 14px;font:1000 12px inherit;box-shadow:5px 5px 0 #080808;cursor:pointer}
+#rrvvfoMission2UI button:hover,#rrvvfoMission2UI button:focus-visible{background:#ffd557;outline:3px solid #1a79d2}
+#rrvvfoMission2UI button.primary{background:#d9232f;color:#fff}
+#rrvvfoMission2UI .chapter2Hud{position:absolute;inset:14px 14px auto;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+#rrvvfoMission2UI .chapter2Objective{width:min(560px,calc(100vw - 30px));padding:12px 15px;border:5px solid #080808;background:#fff;color:#080808;box-shadow:7px 7px 0 #080808;clip-path:polygon(0 0,97% 0,100% 16%,100% 100%,3% 100%,0 84%)}
+#rrvvfoMission2UI .chapter2Objective small,#rrvvfoMission2UI .chapter2Objective strong,#rrvvfoMission2UI .chapter2Objective span{display:block}
+#rrvvfoMission2UI .chapter2Objective small{color:#d51e2a;font-size:10px;font-weight:1000;letter-spacing:.13em}
+#rrvvfoMission2UI .chapter2Objective strong{margin-top:4px;font-size:clamp(19px,3vw,31px);line-height:.92;font-style:italic}
+#rrvvfoMission2UI .chapter2Objective span{margin-top:7px;font-size:12px;font-weight:850;line-height:1.35}
+#rrvvfoMission2UI .chapter2Stats{display:flex;gap:8px;align-items:stretch;pointer-events:auto}
+#rrvvfoMission2UI .chapter2Stats>span{min-width:100px;padding:8px 10px;border:4px solid #080808;background:#fff;box-shadow:5px 5px 0 #080808;text-align:center}
+#rrvvfoMission2UI .chapter2Stats small,#rrvvfoMission2UI .chapter2Stats strong{display:block}
+#rrvvfoMission2UI .chapter2Stats small{font-size:8px;color:#c81724;font-weight:1000;letter-spacing:.08em}
+#rrvvfoMission2UI .chapter2Stats strong{margin-top:2px;font-size:18px}
+#rrvvfoMission2UI .chapter2AreaTitle{position:absolute;left:50%;top:23%;transform:translate(-50%,-50%);min-width:min(720px,92vw);padding:18px 28px;border-block:6px solid #080808;background:#fffffff0;color:#080808;text-align:center;box-shadow:0 8px 0 #080808;animation:c2TitleIn .24s ease-out}
+#rrvvfoMission2UI .chapter2AreaTitle[hidden]{display:none!important}
+#rrvvfoMission2UI .chapter2AreaTitle small,#rrvvfoMission2UI .chapter2AreaTitle strong{display:block}
+#rrvvfoMission2UI .chapter2AreaTitle small{color:#d51e2a;font-weight:1000;letter-spacing:.18em}
+#rrvvfoMission2UI .chapter2AreaTitle strong{font-size:clamp(35px,7vw,76px);line-height:.88;font-style:italic}
+@keyframes c2TitleIn{from{opacity:0;transform:translate(-50%,-42%)}to{opacity:1;transform:translate(-50%,-50%)}}
+#rrvvfoMission2UI .chapter2Prompt{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);min-width:280px;padding:9px 15px;border:4px solid #080808;background:#ffd557;color:#080808;box-shadow:6px 6px 0 #080808;text-align:center}
+#rrvvfoMission2UI .chapter2Prompt[hidden]{display:none!important}
+#rrvvfoMission2UI .chapter2Prompt strong,#rrvvfoMission2UI .chapter2Prompt span{display:block}
+#rrvvfoMission2UI .chapter2Prompt span{margin-top:2px;font-size:9px;font-weight:1000;letter-spacing:.08em}
+#rrvvfoMission2UI .tournamentRunButton{position:absolute;right:18px;bottom:108px;min-width:120px;background:#fff0a8;pointer-events:auto;animation:runPulse .8s steps(2,end) infinite}
+#rrvvfoMission2UI .tournamentRunButton[hidden]{display:none!important}
+@keyframes runPulse{50%{transform:translateY(-2px)}}
+#rrvvfoMission2UI .chapter2Choice,
+#rrvvfoMission2UI .chapter2Qte,
+#rrvvfoMission2UI .levelUpOverlay,
+#rrvvfoMission2UI .tournamentCard,
+#rrvvfoMission2UI .beamClashOverlay,
+#rrvvfoMission2UI .routeEndOverlay{position:absolute;inset:0;display:grid;place-items:center;padding:18px;background:rgba(0,27,69,.9);pointer-events:auto}
+#rrvvfoMission2UI .chapter2Choice[hidden],
+#rrvvfoMission2UI .chapter2Qte[hidden],
+#rrvvfoMission2UI .levelUpOverlay[hidden],
+#rrvvfoMission2UI .tournamentCard[hidden],
+#rrvvfoMission2UI .beamClashOverlay[hidden],
+#rrvvfoMission2UI .routeEndOverlay[hidden]{display:none!important}
+#rrvvfoMission2UI .chapter2Choice article,
+#rrvvfoMission2UI .chapter2Qte article,
+#rrvvfoMission2UI .levelUpOverlay article,
+#rrvvfoMission2UI .tournamentCard article,
+#rrvvfoMission2UI .beamClashOverlay article,
+#rrvvfoMission2UI .routeEndCard{width:min(760px,95vw);padding:26px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:13px 13px 0 #080808;text-align:center}
+#rrvvfoMission2UI article>small{color:#d51e2a;font-weight:1000;letter-spacing:.14em}
+#rrvvfoMission2UI article h2{margin:6px 0 10px;font-size:clamp(38px,7vw,72px);line-height:.86;font-style:italic}
+#rrvvfoMission2UI article p{font-weight:850;line-height:1.5}
+#rrvvfoMission2UI [data-c2-choice-buttons]{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+#rrvvfoMission2UI [data-c2-choice-buttons] button{min-height:64px;font-size:15px}
+#rrvvfoMission2UI .qteSequence{display:flex;justify-content:center;gap:12px;margin:20px 0}
+#rrvvfoMission2UI .qteSequence span{display:grid;place-items:center;min-width:86px;height:62px;border:4px solid #080808;background:#fff;font-size:20px;font-weight:1000}
+#rrvvfoMission2UI .qteSequence span.current{background:#ffd557;transform:translateY(-4px)}
+#rrvvfoMission2UI .qteSequence span.done{background:#90de8b}
+#rrvvfoMission2UI .qteButtons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#rrvvfoMission2UI .qteTimer,#rrvvfoMission2UI .clashMeter{height:18px;margin-top:16px;border:4px solid #080808;background:#dfe6ef;overflow:hidden}
+#rrvvfoMission2UI .qteTimer i{display:block;height:100%;width:100%;background:#e52b2f}
+#rrvvfoMission2UI .levelRewards,#rrvvfoMission2UI .routeEndRewards{display:grid;gap:8px;margin:18px 0;text-align:left}
+#rrvvfoMission2UI .levelRewards span,#rrvvfoMission2UI .routeEndRewards span{display:flex;justify-content:space-between;gap:12px;padding:11px 13px;border:3px solid #080808;background:#eef7ff;font-weight:1000}
+#rrvvfoMission2UI .tournamentCard article{background:linear-gradient(145deg,#fff 0 64%,#ffe6ef 64% 100%)}
+#rrvvfoMission2UI .tournamentCard button,#rrvvfoMission2UI .levelUpOverlay button,#rrvvfoMission2UI .routeEndOverlay button{min-width:250px;min-height:60px;margin-top:8px}
+#rrvvfoMission2UI .beamClashOverlay{background:rgba(20,5,28,.96)}
+#rrvvfoMission2UI .beamClashVisual{position:relative;height:110px;margin:22px 0;border:5px solid #080808;background:#130c1d;overflow:hidden}
+#rrvvfoMission2UI .beamClashVisual .rrBeam,#rrvvfoMission2UI .beamClashVisual .ploukeBeam{position:absolute;top:34px;height:36px}
+#rrvvfoMission2UI .beamClashVisual .rrBeam{left:0;width:55%;background:linear-gradient(90deg,#ff3d25,#ffba45)}
+#rrvvfoMission2UI .beamClashVisual .ploukeBeam{right:0;width:55%;background:linear-gradient(90deg,#e8e2d4,#8d75d7)}
+#rrvvfoMission2UI .beamClashVisual b{position:absolute;left:18%;top:15px;width:26px;height:74px;border:4px solid #fff;background:#ffd877;box-shadow:0 0 28px #fff;transform:translateX(-50%)}
+#rrvvfoMission2UI .clashMeter i{display:block;height:100%;width:18%;background:#ff7b31}
+#rrvvfoMission2UI .beamClashOverlay [data-clash-input]{min-width:220px;min-height:66px;background:#d9232f;color:#fff;font-size:20px}
+#rrvvfoMission2UI .beamClashOverlay [data-clash-time]{display:block;margin-top:12px;color:#080808;font-size:18px}
+#arenaModeScreen.chapter2HubMode .top,
+#arenaModeScreen.chapter2HubMode .arenaHotbar,
+#arenaModeScreen.chapter2HubMode .bottom,
+#arenaModeScreen.chapter2HubMode .arenaTouchControls,
+#arenaModeScreen.chapter2HubMode .arenaTouchUtilities,
+#arenaModeScreen.chapter2HubMode .clock{opacity:0!important;pointer-events:none!important}
+#arenaModeScreen.chapter2HubMode .badge{top:auto;bottom:15px;right:15px;opacity:.82}
+@media(max-width:900px){
+  #rrvvfoMission2UI .chapter2Hud{display:grid}
+  #rrvvfoMission2UI .chapter2Stats{justify-content:flex-end}
+  #rrvvfoMission2UI .chapter2Stats>span{min-width:82px}
+}
+@media(max-width:620px){
+  #rrvvfoMission2UI .chapter2Hud{inset:8px 8px auto}
+  #rrvvfoMission2UI .chapter2Objective{padding:9px 11px;box-shadow:4px 4px 0 #080808}
+  #rrvvfoMission2UI .chapter2Stats>span{display:none}
+  #rrvvfoMission2UI .chapter2Stats button{padding:8px 10px;font-size:9px}
+  #rrvvfoMission2UI .chapter2Prompt{bottom:82px;min-width:230px}
+  #rrvvfoMission2UI [data-c2-choice-buttons],#rrvvfoMission2UI .qteButtons{grid-template-columns:1fr}
+  #rrvvfoMission2UI .qteSequence span{min-width:64px;height:54px}
+  #rrvvfoMission2UI .chapter2Choice article,#rrvvfoMission2UI .chapter2Qte article,#rrvvfoMission2UI .levelUpOverlay article,#rrvvfoMission2UI .tournamentCard article,#rrvvfoMission2UI .beamClashOverlay article,#rrvvfoMission2UI .routeEndCard{padding:18px;box-shadow:7px 7px 0 #080808}
+}
+
+/* ===== END chapter-2-tournament.css ===== */
+
+/* ===== BEGIN chapter-3-preview.css ===== */
+/* Prototype 2.8A — Chapter 3 opening investigation preview */
+#arenaModeScreen.storyChapter3Hub .top,
+#arenaModeScreen.storyChapter3Hub .clock,
+#arenaModeScreen.storyChapter3Hub .bottom,
+#arenaModeScreen.storyChapter3Hub .comboCallout,
+#arenaModeScreen.storyChapter3Hub .lensBlindness,
+#arenaModeScreen.storyChapter3Hub .arenaNotice{transition:opacity .16s}
+#arenaModeScreen.storyChapter3Hub .top,
+#arenaModeScreen.storyChapter3Hub .clock,
+#arenaModeScreen.storyChapter3Hub .bottom{opacity:0;pointer-events:none}
+#arenaModeScreen.storyChapter3Hub .badge{top:auto;right:14px;bottom:104px;max-width:330px}
+#arenaModeScreen.storyChapter3Hub .arenaHotbar{opacity:.35;filter:grayscale(.8);pointer-events:none}
+
+#rrvvfoChapter3PreviewUI{position:fixed;inset:0;z-index:1760;pointer-events:none;color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif}
+#rrvvfoChapter3PreviewUI[hidden]{display:none!important}
+#rrvvfoChapter3PreviewUI *{box-sizing:border-box}
+#rrvvfoChapter3PreviewUI .c3Hud{position:absolute;inset:16px 16px auto;display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+#rrvvfoChapter3PreviewUI .c3Objective{width:min(580px,calc(100vw - 32px));padding:12px 15px;border:4px solid #080808;background:#fff;color:#080808;box-shadow:7px 7px 0 #080808;clip-path:polygon(0 0,97% 0,100% 15%,100% 100%,3% 100%,0 85%)}
+#rrvvfoChapter3PreviewUI .c3Objective small,#rrvvfoChapter3PreviewUI .c3Objective strong,#rrvvfoChapter3PreviewUI .c3Objective span{display:block}
+#rrvvfoChapter3PreviewUI .c3Objective small{color:#d51f2b;font-size:10px;font-weight:1000;letter-spacing:.12em}
+#rrvvfoChapter3PreviewUI .c3Objective strong{margin-top:4px;font-size:clamp(19px,3vw,31px);line-height:.95;font-style:italic}
+#rrvvfoChapter3PreviewUI .c3Objective span{margin-top:7px;font-size:12px;font-weight:850}
+#rrvvfoChapter3PreviewUI .c3HudActions{display:flex;gap:8px;pointer-events:auto}
+#rrvvfoChapter3PreviewUI button{border:4px solid #080808;background:#fff;color:#080808;padding:10px 13px;font:1000 12px inherit;box-shadow:5px 5px 0 #080808;cursor:pointer}
+#rrvvfoChapter3PreviewUI button:hover,#rrvvfoChapter3PreviewUI button:focus-visible{background:#ffd557;outline:3px solid #187bdb;outline-offset:2px}
+#rrvvfoChapter3PreviewUI .c3AreaTitle{position:absolute;left:50%;top:22%;transform:translate(-50%,-50%);min-width:min(760px,90vw);padding:17px 26px;border-block:6px solid #080808;background:#ffffffe8;color:#080808;text-align:center;box-shadow:0 8px 0 #080808;animation:c3TitleIn .26s ease-out}
+#rrvvfoChapter3PreviewUI .c3AreaTitle[hidden]{display:none!important}
+#rrvvfoChapter3PreviewUI .c3AreaTitle small,#rrvvfoChapter3PreviewUI .c3AreaTitle strong{display:block}
+#rrvvfoChapter3PreviewUI .c3AreaTitle small{color:#d51f2b;font-weight:1000;letter-spacing:.18em}
+#rrvvfoChapter3PreviewUI .c3AreaTitle strong{font-size:clamp(33px,7vw,72px);line-height:.9;font-style:italic}
+@keyframes c3TitleIn{from{opacity:0;transform:translate(-50%,-42%)}to{opacity:1;transform:translate(-50%,-50%)}}
+#rrvvfoChapter3PreviewUI .c3Prompt{position:absolute;left:50%;bottom:92px;transform:translateX(-50%);min-width:280px;padding:8px 14px;border:4px solid #080808;background:#ffd557;color:#080808;box-shadow:6px 6px 0 #080808;text-align:center}
+#rrvvfoChapter3PreviewUI .c3Prompt[hidden]{display:none!important}
+#rrvvfoChapter3PreviewUI .c3Prompt strong,#rrvvfoChapter3PreviewUI .c3Prompt span{display:block}
+#rrvvfoChapter3PreviewUI .c3Prompt strong{font-size:14px}
+#rrvvfoChapter3PreviewUI .c3Prompt span{margin-top:2px;font-size:10px;font-weight:900;letter-spacing:.08em}
+
+#rrvvfoChapter3PreviewUI .c3Tracker{position:absolute;right:18px;top:108px;width:min(390px,calc(100vw - 36px));padding:18px;border:5px solid #080808;background:#fff;color:#080808;box-shadow:9px 9px 0 #080808;pointer-events:auto}
+#rrvvfoChapter3PreviewUI .c3Tracker[hidden]{display:none!important}
+#rrvvfoChapter3PreviewUI .c3Tracker header small{color:#d51f2b;font-weight:1000;letter-spacing:.12em}
+#rrvvfoChapter3PreviewUI .c3Tracker h2{margin:3px 0 14px;font-size:34px;line-height:.9;font-style:italic}
+#rrvvfoChapter3PreviewUI .c3TrackerRows{display:grid;gap:8px}
+#rrvvfoChapter3PreviewUI .c3TrackerRows div{display:flex;justify-content:space-between;gap:12px;padding:9px 10px;border:3px solid #080808;background:#eef4f8}
+#rrvvfoChapter3PreviewUI .c3TrackerRows span{font-size:11px;font-weight:900}
+#rrvvfoChapter3PreviewUI .c3TrackerRows strong{font-size:12px}
+#rrvvfoChapter3PreviewUI .c3Tracker p{font-size:12px;font-weight:800;line-height:1.45}
+#rrvvfoChapter3PreviewUI .c3Tracker button{width:100%}
+
+#rrvvfoChapter3PreviewUI .c3Complete{position:absolute;inset:0;display:grid;place-items:center;padding:18px;background:rgba(0,28,75,.88);pointer-events:auto}
+#rrvvfoChapter3PreviewUI .c3Complete[hidden]{display:none!important}
+#rrvvfoChapter3PreviewUI .c3Complete article{width:min(760px,95vw);padding:25px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:12px 12px 0 #080808;text-align:center}
+#rrvvfoChapter3PreviewUI .c3Complete small{color:#d51f2b;font-weight:1000;letter-spacing:.14em}
+#rrvvfoChapter3PreviewUI .c3Complete h2{margin:5px 0 10px;font-size:clamp(38px,7vw,70px);line-height:.88;font-style:italic}
+#rrvvfoChapter3PreviewUI .c3Complete p{font-weight:850;line-height:1.5}
+#rrvvfoChapter3PreviewUI .c3Rewards{display:grid;gap:8px;margin:18px 0;text-align:left}
+#rrvvfoChapter3PreviewUI .c3Rewards span{padding:10px 12px;border:3px solid #080808;background:#eef7ff;font-weight:1000}
+#rrvvfoChapter3PreviewUI .c3Complete button{min-height:64px;font-size:16px}
+
+@media(max-width:760px){
+  #rrvvfoChapter3PreviewUI .c3Hud{display:grid}
+  #rrvvfoChapter3PreviewUI .c3HudActions{justify-content:flex-end}
+  #rrvvfoChapter3PreviewUI .c3HudActions button{padding:8px 10px;font-size:10px}
+  #rrvvfoChapter3PreviewUI .c3Tracker{top:150px}
+}
+@media(max-width:520px){
+  #rrvvfoChapter3PreviewUI .c3Hud{inset:8px 8px auto}
+  #rrvvfoChapter3PreviewUI .c3Objective{padding:9px 11px;box-shadow:4px 4px 0 #080808}
+  #rrvvfoChapter3PreviewUI .c3HudActions{display:none}
+  #rrvvfoChapter3PreviewUI .c3Prompt{bottom:82px;min-width:230px}
+  #rrvvfoChapter3PreviewUI .c3Tracker{top:126px;right:8px;width:calc(100vw - 16px)}
+  #rrvvfoChapter3PreviewUI .c3Complete article{padding:18px;box-shadow:7px 7px 0 #080808}
+}
+
+/* ===== END chapter-3-preview.css ===== */
+
+/* ===== BEGIN story-repair-29a1.css ===== */
+/* Prototype 2.9A.6 — Story stability, navigation, readability, save repair, and Chapter 2 HUD menu */
+.storyConfirmOverlay,.storyStartupError,.storyLandscapeLock{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;padding:18px;background:rgba(0,18,48,.92);font-family:Inter,Segoe UI,Arial,sans-serif;color:#080808}
+.storyConfirmOverlay[hidden]{display:none!important}
+.storyConfirmCard,.storyStartupError article,.storyLandscapeLock article{width:min(680px,95vw);padding:24px;border:6px solid #080808;background:#fff;box-shadow:12px 12px 0 #080808;text-align:center}
+.storyConfirmCard small,.storyStartupError small{color:#d51e2a;font-weight:1000;letter-spacing:.14em}
+.storyConfirmCard h2,.storyStartupError h2,.storyLandscapeLock h2{margin:6px 0 10px;font-size:clamp(34px,7vw,68px);line-height:.88;font-style:italic}
+.storyConfirmCard p,.storyStartupError p,.storyLandscapeLock p{font-size:16px;font-weight:800;line-height:1.5}
+.storyConfirmCard>div,.storyStartupError article>div{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+.storyConfirmOverlay button,.storyStartupError button{min-width:170px;padding:12px 18px;border:4px solid #080808;background:#fff;color:#080808;box-shadow:5px 5px 0 #080808;font:1000 14px inherit;cursor:pointer}
+.storyConfirmOverlay button.primary,.storyStartupError button.primary{background:#d9232f;color:#fff}
+.storyStartupError code{display:block;max-height:130px;overflow:auto;margin-top:14px;padding:10px;border:3px solid #080808;background:#eef7ff;text-align:left;white-space:pre-wrap}
+.storyLandscapeLock{background:linear-gradient(155deg,#0b6dc7,#07336f)}
+.storyLandscapeLock article{max-width:520px}
+.storyLandscapeLock .rotateIcon{font-size:80px;line-height:1;animation:storyRotate 1.2s ease-in-out infinite}
+@keyframes storyRotate{50%{transform:rotate(90deg)}}
+
+/* The metadata is descriptive, not interactive. */
+#lostYearStoryScreen .lyMeta{pointer-events:none}
+#lostYearStoryScreen .lyChip{box-shadow:none!important;border-width:2px!important;opacity:.9}
+#lostYearStoryScreen .routeView:before{content:"DISCOVERED CHARACTER ROUTES"!important}
+#lostYearStoryScreen .routeCard.isDiscovered .status{color:#8a4c00!important}
+#lostYearStoryScreen .routeCard.isDiscovered .percent{display:none!important}
+#lostYearStoryScreen .routeCard.isLocked{cursor:default!important}
+#lostYearStoryScreen .routeCard.isLocked:hover{transform:none!important;background:linear-gradient(155deg,#eefaff,#a9dcfa)!important}
+#lostYearStoryScreen .futureRoutesNote{padding:10px 13px;border:3px dashed #080808;background:#eef7ff;font-size:13px;font-weight:900;line-height:1.4}
+#lostYearStoryScreen .chapterRow.isFuture{display:none}
+#lostYearStoryScreen .chapterRow.isPreview .chapterCard{background:#fff0a8!important}
+#lostYearStoryScreen .chapterRow.isPreview .chapterNumber{background:#d79517!important}
+#lostYearStoryScreen .chapterCard span,#lostYearStoryScreen .chapterReplay span,#lostYearStoryScreen .routeHomeActions button span{font-size:12px!important;line-height:1.35!important}
+#lostYearStoryScreen .routeCard .status{font-size:10px!important}
+#lostYearStoryScreen .routeCard h3{font-size:12px!important}
+#lostYearStoryScreen .routeHomePanel{max-width:1180px;margin:0 auto}
+
+/* Story HUD readability and viewport safety. */
+.storyTutorialTag{top:92px!important;width:min(520px,calc(100vw - 36px))!important}
+.storyTutorialTag small{font-size:12px!important}.storyTutorialTag strong{font-size:20px!important}.storyTutorialTag span{font-size:13px!important}
+#arenaModeScreen.storyMission1 .arenaHotbar,#arenaModeScreen.storyMission0 .arenaHotbar{bottom:max(12px,env(safe-area-inset-bottom))!important;transform:translateX(-50%) scale(.9)!important;transform-origin:bottom center!important}
+#arenaModeScreen.storyMission1 .arenaControlHelp,#arenaModeScreen.storyMission0 .arenaControlHelp{bottom:116px!important;max-width:390px!important;font-size:11px!important}
+#arenaModeScreen.storyMission1 .badge,#arenaModeScreen.storyMission0 .badge{font-size:11px!important}
+
+/* Exploration HUD: small until combat, with an expandable map. */
+.storyExplorationMapButton{position:fixed;left:14px;top:132px;z-index:2160;display:grid;place-items:center;width:54px;height:54px;border:4px solid #080808;background:#ffd557;color:#080808;box-shadow:5px 5px 0 #080808;font:1000 13px Inter,Arial,sans-serif;cursor:pointer}
+.storyMiniMap{position:fixed;left:14px;top:198px;z-index:2155;width:180px;padding:8px;border:4px solid #080808;background:#fff;color:#080808;box-shadow:6px 6px 0 #080808;font:900 11px Inter,Arial,sans-serif}
+.storyMiniMap[hidden]{display:none!important}
+.storyMiniMap canvas{display:block;width:100%;aspect-ratio:1;border:3px solid #080808;background:#dff1ff}
+.storyMiniMap strong,.storyMiniMap span{display:block;margin-top:5px}
+.storyMapOverlay{position:fixed;inset:0;z-index:4800;display:grid;place-items:center;padding:18px;background:rgba(0,18,48,.93)}
+.storyMapOverlay[hidden]{display:none!important}
+.storyMapOverlay article{width:min(920px,96vw);padding:16px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:12px 12px 0 #080808}
+.storyMapOverlay header{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.storyMapOverlay h2{margin:0;font-size:clamp(28px,5vw,56px);font-style:italic}
+.storyMapOverlay canvas{display:block;width:100%;max-height:68vh;aspect-ratio:16/10;margin-top:12px;border:5px solid #080808;background:#dff1ff}
+.storyMapOverlay button{padding:10px 14px;border:4px solid #080808;background:#ffd557;box-shadow:4px 4px 0 #080808;font-weight:1000}
+.storyObjectiveCompass{position:fixed;left:50%;top:82px;z-index:2140;transform:translateX(-50%);display:flex;align-items:center;gap:8px;max-width:min(620px,70vw);padding:7px 12px;border:3px solid #080808;background:#fff;color:#080808;box-shadow:4px 4px 0 #080808;font:900 12px Inter,Arial,sans-serif;pointer-events:none}
+.storyObjectiveCompass i{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#d9232f;color:#fff;font-style:normal;transition:transform .12s}
+
+/* Chapter 2 presentation repairs. */
+#arenaModeScreen.chapter2HubMode .badge{max-width:260px!important}
+#rrvvfoMission2UI .chapter2Objective small,#rrvvfoMission2UI .chapter2Stats small{font-size:11px!important}
+#rrvvfoMission2UI .chapter2Objective span{font-size:13px!important}
+#rrvvfoMission2UI .chapter2Stats strong{font-size:19px!important}
+#rrvvfoMission2UI .awakeningCountdown{display:block;margin-top:6px;color:#b91522;font-size:13px;font-weight:1000}
+#rrvvfoMission2UI .replayXpNotice{position:absolute;right:14px;top:94px;padding:8px 11px;border:3px solid #080808;background:#fff0a8;box-shadow:4px 4px 0 #080808;font-size:12px;font-weight:1000}
+
+/* Chapter 3 layered opening and exploration HUD. */
+#arenaModeScreen.storyChapter3Preview:not(.storyChapter3Combat) .top,
+#arenaModeScreen.storyChapter3Preview:not(.storyChapter3Combat) .bottom,
+#arenaModeScreen.storyChapter3Preview:not(.storyChapter3Combat) .clock,
+#arenaModeScreen.storyChapter3Preview:not(.storyChapter3Combat) .arenaHotbar{opacity:0!important;pointer-events:none!important}
+#rrvvfoChapter3PreviewUI .c3AreaTitle{z-index:2190}
+#rrvvfoChapter3PreviewUI .c3Hud{z-index:2180}
+#rrvvfoChapter3PreviewUI .c3Objective small{font-size:11px!important}
+#rrvvfoChapter3PreviewUI .c3Objective span{font-size:13px!important}
+
+/* Horizontal mobile layout is required for Story Mode. */
+@media (pointer:coarse) and (orientation:portrait){
+  #lostYearStoryScreen{overflow:hidden!important}
+}
+@media (pointer:coarse) and (orientation:landscape){
+  #lostYearStoryScreen .lyShell{padding:8px 10px 18px!important}
+  #lostYearStoryScreen .lyTop{grid-template-columns:auto 1fr auto!important;margin-bottom:8px!important;padding-bottom:6px!important}
+  #lostYearStoryScreen .lyTop .storyModeTitle{grid-column:auto!important;grid-row:auto!important;text-align:center!important}
+  #lostYearStoryScreen .lyTop h1{font-size:38px!important}
+  #lostYearStoryScreen .lyMeta{margin-bottom:7px!important}
+  #lostYearStoryScreen .routeView{padding-top:24px!important}
+  #lostYearStoryScreen .routeGrid{gap:8px!important;padding:5px 6px 10px!important}
+  #lostYearStoryScreen .routeCard{flex-basis:150px!important;min-height:172px!important;grid-template-rows:88px auto!important}
+  #lostYearStoryScreen .routePanel{grid-template-columns:.55fr 1.45fr!important;max-height:42vh!important}
+  #lostYearStoryScreen .routeFeature{min-height:0!important}
+  #lostYearStoryScreen .routeDetails{padding:12px!important;overflow:auto!important}
+  #lostYearStoryScreen .routeHomePanel{grid-template-columns:1fr 1fr!important;padding:12px!important;gap:10px!important}
+  #lostYearStoryScreen .routeHomeHero{padding:12px!important;gap:8px!important}
+  #lostYearStoryScreen .routeHomeHero h2{font-size:40px!important}
+  #lostYearStoryScreen .chapterRail{max-height:69vh;overflow:auto;padding-right:6px}
+  #lostYearStoryScreen .chapterCard{grid-template-columns:48px 1fr!important;padding:8px!important}
+  #lostYearStoryScreen .chapterCard .chapterNumber{font-size:20px!important}
+  #lostYearStoryScreen .chapterReplay{min-height:46px!important}
+  .px-dialogue-overlay{padding:8px 12px!important}
+  .px-dialogue-box{max-height:42vh!important}
+  .px-dialogue-text{font-size:16px!important;line-height:1.35!important}
+  .px-dialogue-sprite-wrap{max-height:30vh!important}
+}
+
+@media(max-height:760px){
+  #arenaModeScreen .arenaHotbar{bottom:8px!important;transform:translateX(-50%) scale(.78)!important;transform-origin:bottom center!important}
+  #arenaModeScreen .arenaControlHelp{display:none!important}
+  .storyObjectiveCompass{top:64px}
+}
+
+/* Keep exploration readable without removing the field-technique hotbar. */
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .top,
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .bottom,
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .clock{opacity:0!important;pointer-events:none!important}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaHotbar{left:auto!important;right:10px!important;bottom:10px!important;transform:scale(.62)!important;transform-origin:bottom right!important}
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaAbilityName,
+#arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaCost{display:none!important}
+
+/* Mission 0 now visually matches the later sprite-above-dialogue presentation. */
+#rrvvfoMission0UI .dialogueWrap{padding:20px 20px 28px!important}
+#rrvvfoMission0UI .sonicDialogueBox{display:block!important;position:relative!important;width:min(900px,100%)!important;min-height:122px!important;padding:22px 24px 18px!important;border:5px solid #080808!important;border-radius:0!important;background:#fff!important;box-shadow:8px 8px 0 #080808!important;overflow:visible!important}
+#rrvvfoMission0UI .dialoguePortrait{position:absolute!important;left:24px!important;bottom:calc(100% + 8px)!important;width:112px!important;height:112px!important;min-height:0!important;border:5px solid #080808!important;background-color:#263550!important;box-shadow:6px 6px 0 #080808!important}
+#rrvvfoMission0UI .dialogueCopy{display:block!important;padding:18px 42px 10px 0!important}
+#rrvvfoMission0UI .speakerTab{top:-34px!important;left:150px!important;border:4px solid #080808!important;background:#20202b!important}
+#rrvvfoMission0UI .dialogueText{min-height:62px!important;font-family:Inter,Segoe UI,Arial,sans-serif!important;font-size:18px!important;line-height:1.45!important}
+
+/* Keep the map compact on shorter landscape screens. */
+@media(max-height:760px){
+  .storyMiniMap{width:132px;top:138px}
+  .storyExplorationMapButton{top:76px}
+  .storyMiniMap strong,.storyMiniMap span{font-size:9px}
+  #arenaModeScreen.storyRoadHub:not(.storyRoadFight) .arenaHotbar{transform:scale(.5)!important}
+}
+
+/* Prototype 2.9A.6 — keep Chapter 2 combat HUD clear and move progression into a Mario & Luigi-style story menu. */
+#rrvvfoMission2UI .chapter2Hud{z-index:72;align-items:flex-start}
+#rrvvfoMission2UI .chapter2MenuButton{pointer-events:auto;min-width:132px;white-space:nowrap;background:#ffd557}
+#rrvvfoMission2UI.isFight .chapter2Hud{inset:122px 18px auto;align-items:start}
+#rrvvfoMission2UI.isFight .chapter2Objective{width:min(390px,calc(100vw - 190px));padding:8px 11px;border-width:4px;box-shadow:5px 5px 0 #080808;clip-path:none}
+#rrvvfoMission2UI.isFight .chapter2Objective small{font-size:9px!important}
+#rrvvfoMission2UI.isFight .chapter2Objective strong{margin-top:2px;font-size:18px;line-height:1}
+#rrvvfoMission2UI.isFight .chapter2Objective span{margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px!important}
+#rrvvfoMission2UI.isFight .chapter2MenuButton{padding:8px 11px;border-width:3px;box-shadow:4px 4px 0 #080808;font-size:10px}
+
+#rrvvfoMission2UI .chapter2StoryMenu{position:absolute;z-index:180;inset:0;display:grid;place-items:center;padding:18px;background:rgba(5,12,29,.9);pointer-events:auto}
+#rrvvfoMission2UI .chapter2StoryMenu[hidden]{display:none!important}
+#rrvvfoMission2UI .chapter2StoryMenu>article{width:min(760px,95vw);padding:22px;border:6px solid #080808;background:#f8fbff;color:#080808;box-shadow:13px 13px 0 #080808;text-align:left}
+#rrvvfoMission2UI .chapter2StoryMenu header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding-bottom:12px;border-bottom:4px solid #080808}
+#rrvvfoMission2UI .chapter2StoryMenu header small{display:block;color:#d51e2a;font-size:11px;font-weight:1000;letter-spacing:.12em}
+#rrvvfoMission2UI .chapter2StoryMenu h2{margin:3px 0 0;font-size:clamp(38px,7vw,68px);line-height:.86;font-style:italic}
+#rrvvfoMission2UI .chapter2StoryMenu [data-c2-menu-close]{min-width:48px;padding:7px 10px;font-size:22px}
+#rrvvfoMission2UI .chapter2MenuProgress{display:grid;grid-template-columns:.7fr 1.3fr;gap:12px;margin:16px 0}
+#rrvvfoMission2UI .chapter2MenuProgress section{min-width:0;padding:14px;border:4px solid #080808;background:#fff;box-shadow:5px 5px 0 #080808}
+#rrvvfoMission2UI .chapter2MenuProgress small,#rrvvfoMission2UI .chapter2MenuProgress strong,#rrvvfoMission2UI .chapter2MenuProgress span{display:block}
+#rrvvfoMission2UI .chapter2MenuProgress small{color:#c81724;font-size:10px;font-weight:1000;letter-spacing:.1em}
+#rrvvfoMission2UI .chapter2MenuProgress strong{margin-top:3px;font-size:clamp(28px,5vw,46px);line-height:1}
+#rrvvfoMission2UI .chapter2MenuProgress span{margin-top:7px;font-size:11px;font-weight:850;line-height:1.35}
+#rrvvfoMission2UI .chapter2XpTrack{height:16px;margin-top:10px;border:3px solid #080808;background:#dfe6ef;overflow:hidden}
+#rrvvfoMission2UI .chapter2XpTrack i{display:block;width:0;height:100%;background:linear-gradient(90deg,#d9232f,#ffd557);transition:width .2s}
+#rrvvfoMission2UI .chapter2MenuActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#rrvvfoMission2UI .chapter2MenuActions button{min-height:54px;font-size:13px}
+#rrvvfoMission2UI .chapter2MenuActions button:disabled{cursor:not-allowed;opacity:.45;filter:grayscale(1);box-shadow:none}
+#rrvvfoMission2UI .chapter2MenuHint{margin:14px 0 0;padding:9px 11px;border:3px dashed #080808;background:#eef7ff;font-size:12px;font-weight:850;line-height:1.4;text-align:center}
+
+/* Chapter 2 owns its exit/restart actions through the story menu. Keep only Controls in the arena utility strip. */
+#arenaModeScreen.chapter2StoryActive .desktopUtility [data-restart],
+#arenaModeScreen.chapter2StoryActive .desktopUtility [data-exit]{display:none!important}
+#arenaModeScreen.chapter2FightMode .badge{display:none!important}
+
+@media(max-width:900px){
+  #rrvvfoMission2UI .chapter2Hud{display:flex!important}
+  #rrvvfoMission2UI .chapter2Objective{min-width:0}
+  #rrvvfoMission2UI .chapter2MenuProgress{grid-template-columns:1fr 1.35fr}
+}
+@media(pointer:coarse) and (orientation:landscape), (max-height:760px){
+  #rrvvfoMission2UI.isFight .chapter2Hud{inset:76px 9px auto}
+  #rrvvfoMission2UI.isFight .chapter2Objective{width:min(330px,calc(100vw - 150px));padding:6px 9px;border-width:3px;box-shadow:3px 3px 0 #080808}
+  #rrvvfoMission2UI.isFight .chapter2Objective small{display:none}
+  #rrvvfoMission2UI.isFight .chapter2Objective strong{font-size:14px}
+  #rrvvfoMission2UI.isFight .chapter2Objective span{font-size:9px!important}
+  #rrvvfoMission2UI.isFight .chapter2MenuButton{min-width:102px;padding:6px 8px;font-size:8px}
+  #rrvvfoMission2UI .chapter2StoryMenu>article{width:min(720px,94vw);max-height:88vh;overflow:auto;padding:14px;border-width:4px;box-shadow:7px 7px 0 #080808}
+  #rrvvfoMission2UI .chapter2StoryMenu header{padding-bottom:8px;border-width:3px}
+  #rrvvfoMission2UI .chapter2StoryMenu h2{font-size:38px}
+  #rrvvfoMission2UI .chapter2MenuProgress{gap:8px;margin:10px 0}
+  #rrvvfoMission2UI .chapter2MenuProgress section{padding:9px;border-width:3px;box-shadow:3px 3px 0 #080808}
+  #rrvvfoMission2UI .chapter2MenuProgress strong{font-size:25px}
+  #rrvvfoMission2UI .chapter2MenuProgress span{font-size:9px}
+  #rrvvfoMission2UI .chapter2MenuActions button{min-height:42px;padding:7px;font-size:10px}
+  #rrvvfoMission2UI .chapter2MenuHint{margin-top:9px;padding:6px;font-size:9px}
+}
+@media(max-width:620px){
+  #rrvvfoMission2UI .chapter2MenuProgress,#rrvvfoMission2UI .chapter2MenuActions{grid-template-columns:1fr}
+}
+
+/* ===== END story-repair-29a1.css ===== */
+
+/* ===== BEGIN story-engine.css ===== */
+/* Prototype 2.9A.6 — shared Chapter 1/2/3 Story Arena Engine */
+#arenaModeScreen.storyEngineActive{--story-ui-top:92px;--story-card-border:4px solid #080808;--story-card-shadow:6px 6px 0 #080808}
+#arenaModeScreen.storyEngineActive .badge{display:none!important}
+#arenaModeScreen.storyEngineActive.storyEngineMode-dialogue .top,
+#arenaModeScreen.storyEngineActive.storyEngineMode-dialogue .bottom,
+#arenaModeScreen.storyEngineActive.storyEngineMode-dialogue .arenaHotbar,
+#arenaModeScreen.storyEngineActive.storyEngineMode-dialogue .arenaNotice,
+#arenaModeScreen.storyEngineActive.storyEngineMode-cinematic .top,
+#arenaModeScreen.storyEngineActive.storyEngineMode-cinematic .bottom,
+#arenaModeScreen.storyEngineActive.storyEngineMode-cinematic .arenaHotbar,
+#arenaModeScreen.storyEngineActive.storyEngineMode-complete .top,
+#arenaModeScreen.storyEngineActive.storyEngineMode-complete .bottom,
+#arenaModeScreen.storyEngineActive.storyEngineMode-complete .arenaHotbar{opacity:0!important;pointer-events:none!important}
+
+/* Every exploration chapter now uses the same minimal HUD rules. */
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .top{right:auto;width:min(430px,44vw);grid-template-columns:1fr!important}
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .top .clock,
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .top .side.r,
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .arenaHotbar{display:none!important}
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .bottom{bottom:14px}
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .arenaControlHelp{max-width:360px;font-size:10px;opacity:.82}
+#arenaModeScreen.storyEngineActive.storyEngineMode-combat .top,
+#arenaModeScreen.storyEngineActive.storyEngineMode-tutorial .top{opacity:1!important}
+
+/* Unified objective-card language across Chapters 1, 2, and 3. */
+#rrvvfoMission0UI .missionTag,
+#rrvvfoMission1UI .storyTutorialTag,
+#rrvvfoRoadHubUI .roadObjective,
+#rrvvfoMission2UI .chapter2Objective,
+#rrvvfoChapter3PreviewUI .c3Objective{
+  border:var(--story-card-border)!important;
+  border-left-width:8px!important;
+  border-radius:0!important;
+  clip-path:none!important;
+  background:#fff!important;
+  color:#080808!important;
+  box-shadow:var(--story-card-shadow)!important;
+}
+#rrvvfoMission0UI .missionTag small,
+#rrvvfoMission1UI .storyTutorialTag small,
+#rrvvfoRoadHubUI .roadObjective small,
+#rrvvfoMission2UI .chapter2Objective small,
+#rrvvfoChapter3PreviewUI .c3Objective small{color:#d51e2a!important;font-size:10px!important;font-weight:1000!important;letter-spacing:.11em!important}
+#rrvvfoMission0UI .missionTag strong,
+#rrvvfoMission1UI .storyTutorialTag strong,
+#rrvvfoRoadHubUI .roadObjective strong,
+#rrvvfoMission2UI .chapter2Objective strong,
+#rrvvfoChapter3PreviewUI .c3Objective strong{font-size:18px!important;line-height:1.05!important}
+#rrvvfoMission0UI .missionTag span,
+#rrvvfoMission1UI .storyTutorialTag span,
+#rrvvfoRoadHubUI .roadObjective span,
+#rrvvfoMission2UI .chapter2Objective span,
+#rrvvfoChapter3PreviewUI .c3Objective span{color:#26364b!important;font-size:11px!important;font-weight:850!important;line-height:1.35!important}
+
+/* Guided tutorial: the current action is impossible to miss. */
+#rrvvfoMission1UI .storyTutorialTag{left:18px!important;top:96px!important;width:min(510px,calc(100vw - 36px))!important}
+.storyTutorialCoach{position:fixed;z-index:1765;right:18px;top:96px;width:min(390px,calc(100vw - 36px));padding:14px;border:5px solid #080808;background:#fff;color:#080808;box-shadow:8px 8px 0 #080808;pointer-events:none;transition:transform .12s,filter .12s}
+.storyTutorialCoach[hidden]{display:none!important}
+.storyTutorialCoach header{display:flex;justify-content:space-between;gap:10px;align-items:center;padding-bottom:8px;border-bottom:3px solid #080808}
+.storyTutorialCoach header small{font-size:11px;font-weight:1000;letter-spacing:.1em}
+.storyTutorialCoach header span{padding:4px 7px;border:3px solid #080808;background:#ffd557;font-size:10px;font-weight:1000;letter-spacing:.06em}
+.storyTutorialCoach h2{margin:11px 0 7px;font-size:26px;line-height:.92;font-style:italic}
+.storyTutorialKeys{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.storyTutorialKeys kbd{padding:6px 8px;border:3px solid #080808;background:#e7f5ff;box-shadow:3px 3px 0 #080808;font:1000 11px Inter,Arial,sans-serif}
+.storyTutorialCoach p{margin:10px 0;font-size:12px;font-weight:850;line-height:1.4}
+.storyTutorialChecklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.storyTutorialChecklist span{display:flex;gap:6px;align-items:center;min-width:0;padding:6px 7px;border:2px solid #080808;background:#f3f5f8;font-size:10px;font-weight:1000}
+.storyTutorialChecklist span.done{background:#c9f3c5}
+.storyTutorialChecklist b{font-size:15px;line-height:1}
+.storyTutorialProgress{height:13px;margin-top:10px;border:3px solid #080808;background:#dfe6ef;overflow:hidden}
+.storyTutorialProgress i{display:block;width:0;height:100%;background:linear-gradient(90deg,#d9232f,#ffd557);transition:width .18s}
+.storyTutorialHint{display:block;margin-top:7px;color:#3c4a5e;font-size:9px;font-weight:850;line-height:1.35}
+.storyTutorialCoach.urgent header span{background:#ff3447;color:#fff;animation:tutorialUrgent .32s steps(2,end) infinite}
+.storyTutorialCoach.needsAttention{animation:tutorialAttention .55s steps(2,end) infinite}
+.storyTutorialCoach.isComplete{filter:saturate(1.2)}
+@keyframes tutorialUrgent{50%{transform:scale(1.08)}}
+@keyframes tutorialAttention{50%{transform:translateX(-8px)}}
+#arenaModeScreen.storyMission1 .arenaAbility.tutorialTarget{border-color:#ffd557!important;box-shadow:0 0 0 4px #080808,0 0 24px #ffd557!important;animation:tutorialSlotPulse .65s steps(2,end) infinite}
+@keyframes tutorialSlotPulse{50%{transform:translateY(-5px)}}
+
+/* Keep tutorial cards below combat bars and away from the hotbar. */
+#arenaModeScreen.storyEngineActive.storyEngineMode-tutorial .arenaHotbar{bottom:max(10px,env(safe-area-inset-bottom))!important;transform:translateX(-50%) scale(.86)!important;transform-origin:bottom center!important}
+#arenaModeScreen.storyEngineActive.storyEngineMode-tutorial .arenaControlHelp{bottom:108px!important;max-width:350px!important;font-size:9px!important}
+
+@media(max-width:1050px){
+  .storyTutorialCoach{top:auto;right:12px;bottom:104px;width:min(350px,44vw);padding:10px;border-width:4px;box-shadow:5px 5px 0 #080808}
+  .storyTutorialCoach h2{font-size:20px}.storyTutorialCoach p{font-size:10px}.storyTutorialChecklist span{font-size:9px}
+  #rrvvfoMission1UI .storyTutorialTag{width:min(440px,48vw)!important}
+}
+@media(pointer:coarse) and (orientation:landscape), (max-height:760px){
+  #arenaModeScreen.storyEngineActive{--story-ui-top:72px}
+  #rrvvfoMission0UI .missionTag,#rrvvfoMission1UI .storyTutorialTag,#rrvvfoRoadHubUI .roadObjective,#rrvvfoMission2UI .chapter2Objective,#rrvvfoChapter3PreviewUI .c3Objective{top:74px!important;left:8px!important;max-width:44vw!important;padding:6px 9px!important;border-width:3px!important;border-left-width:6px!important;box-shadow:3px 3px 0 #080808!important}
+  #rrvvfoMission0UI .missionTag small,#rrvvfoMission1UI .storyTutorialTag small,#rrvvfoRoadHubUI .roadObjective small,#rrvvfoMission2UI .chapter2Objective small,#rrvvfoChapter3PreviewUI .c3Objective small{display:none!important}
+  #rrvvfoMission0UI .missionTag strong,#rrvvfoMission1UI .storyTutorialTag strong,#rrvvfoRoadHubUI .roadObjective strong,#rrvvfoMission2UI .chapter2Objective strong,#rrvvfoChapter3PreviewUI .c3Objective strong{font-size:13px!important}
+  #rrvvfoMission0UI .missionTag span,#rrvvfoMission1UI .storyTutorialTag span,#rrvvfoRoadHubUI .roadObjective span,#rrvvfoMission2UI .chapter2Objective span,#rrvvfoChapter3PreviewUI .c3Objective span{font-size:8px!important}
+  .storyTutorialCoach{top:74px;right:8px;bottom:auto;width:43vw;max-height:44vh;overflow:hidden;padding:7px;border-width:3px;box-shadow:3px 3px 0 #080808}
+  .storyTutorialCoach header{padding-bottom:4px;border-width:2px}.storyTutorialCoach header small{font-size:8px}.storyTutorialCoach header span{padding:2px 4px;border-width:2px;font-size:7px}
+  .storyTutorialCoach h2{margin:5px 0 3px;font-size:15px}.storyTutorialKeys{margin:4px 0;gap:3px}.storyTutorialKeys kbd{padding:3px 5px;border-width:2px;box-shadow:2px 2px 0 #080808;font-size:7px}
+  .storyTutorialCoach p{margin:5px 0;font-size:8px}.storyTutorialChecklist{gap:3px}.storyTutorialChecklist span{padding:3px 4px;border-width:1px;font-size:7px}.storyTutorialChecklist b{font-size:10px}
+  .storyTutorialProgress{height:8px;margin-top:5px;border-width:2px}.storyTutorialHint{display:none}
+  #arenaModeScreen.storyEngineActive.storyEngineMode-tutorial .arenaHotbar{transform:translateX(-50%) scale(.68)!important}
+  #arenaModeScreen.storyEngineActive.storyEngineMode-tutorial .arenaControlHelp{display:none!important}
+}
+
+/* --------------------------------------------------------------------------
+   Prototype 2.9A.6 polish pass
+   -------------------------------------------------------------------------- */
+
+/* The route metadata is a section label, not a row of fake buttons. */
+#lostYearStoryScreen .lyMeta{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:6px 14px!important;
+  padding:0 2px 8px!important;
+  border-bottom:1px solid rgba(255,255,255,.22)!important;
+  pointer-events:none!important;
+}
+#lostYearStoryScreen .lyChip{
+  position:relative!important;
+  padding:0 0 0 11px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#d9edff!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.1em!important;
+  opacity:.88!important;
+}
+#lostYearStoryScreen .lyChip:before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--pxb-yellow,#ffd557);
+  transform:translateY(-50%);
+}
+
+/* Route details become a deliberate full-screen reading view on short screens. */
+#lostYearStoryScreen .storyRouteDetailsOverlay{
+  position:fixed!important;
+  inset:0!important;
+  z-index:2600!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:clamp(12px,3vw,34px)!important;
+  background:rgba(2,9,27,.86)!important;
+  backdrop-filter:blur(5px)!important;
+}
+#lostYearStoryScreen .storyRouteDetailsOverlay[hidden]{display:none!important}
+#lostYearStoryScreen .storyRouteDetailsCard{
+  width:min(720px,100%)!important;
+  max-height:min(82dvh,720px)!important;
+  overflow:auto!important;
+  padding:clamp(18px,3vw,30px)!important;
+  border:5px solid #fff!important;
+  background:linear-gradient(145deg,#0b4c9d,#061b49)!important;
+  color:#fff!important;
+  box-shadow:10px 10px 0 #020817!important;
+}
+#lostYearStoryScreen .storyRouteDetailsCard header{
+  display:flex!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  align-items:flex-start!important;
+  padding-bottom:13px!important;
+  border-bottom:3px solid rgba(255,255,255,.35)!important;
+}
+#lostYearStoryScreen .storyRouteDetailsCard small{color:var(--pxb-yellow,#ffd557)!important;font-weight:1000!important;letter-spacing:.12em!important}
+#lostYearStoryScreen .storyRouteDetailsCard h2{margin:4px 0 0!important;font:italic 900 clamp(34px,7vw,66px)/.9 var(--pxb-display,Arial)!important;text-shadow:4px 4px 0 #020817!important}
+#lostYearStoryScreen .storyRouteDetailsCard h3{margin:15px 0 8px!important;color:var(--pxb-cyan,#73d9ff)!important;letter-spacing:.08em!important}
+#lostYearStoryScreen .storyRouteDetailsCard p{margin:0!important;color:#e5f3ff!important;font-size:15px!important;line-height:1.55!important}
+#lostYearStoryScreen .storyRouteDetailsCard dl{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:9px!important;margin:18px 0 0!important}
+#lostYearStoryScreen .storyRouteDetailsCard dl div{padding:10px!important;border:2px solid rgba(255,255,255,.3)!important;background:rgba(0,0,0,.2)!important}
+#lostYearStoryScreen .storyRouteDetailsCard dt{color:var(--pxb-cyan,#73d9ff)!important;font-size:10px!important;font-weight:1000!important;text-transform:uppercase!important}
+#lostYearStoryScreen .storyRouteDetailsCard dd{margin:4px 0 0!important;font-size:12px!important;font-weight:850!important}
+
+/* Guided refresher has a purpose-built HUD rather than a normal stock HUD. */
+#rrvvfoMission1UI.tutorialActive .storyTutorialTag{display:none!important}
+#arenaModeScreen.tutorialHudActive .clock{display:none!important}
+#arenaModeScreen.tutorialHudActive .name span:last-child{display:none!important}
+#arenaModeScreen.tutorialHudActive .side.r{display:none!important}
+#arenaModeScreen.tutorialHudActive.tutorialShowOpponent .side.r{display:block!important}
+#arenaModeScreen.tutorialHudActive .side > .resourceLine,
+#arenaModeScreen.tutorialHudActive .side > .resourceTrack{display:none!important}
+#arenaModeScreen.tutorialHudActive.tutorialShowEnergy .side:not(.r) > :nth-child(3),
+#arenaModeScreen.tutorialHudActive.tutorialShowEnergy .side:not(.r) > :nth-child(4){display:flex!important}
+#arenaModeScreen.tutorialHudActive.tutorialShowEnergy .side:not(.r) > :nth-child(4){display:block!important}
+#arenaModeScreen.tutorialHudActive.tutorialShowGuard .side:not(.r) > :nth-child(5),
+#arenaModeScreen.tutorialHudActive.tutorialShowGuard .side:not(.r) > :nth-child(6){display:flex!important}
+#arenaModeScreen.tutorialHudActive.tutorialShowGuard .side:not(.r) > :nth-child(6){display:block!important}
+#arenaModeScreen.tutorialHudActive .arenaHotbar{display:none!important}
+#arenaModeScreen.tutorialHudActive.tutorialShowHotbar .arenaHotbar{display:block!important}
+#arenaModeScreen.tutorialHudActive .arenaControlHelp,
+#arenaModeScreen.tutorialHudActive .help{display:none!important}
+#arenaModeScreen.tutorialHudActive .top{
+  inset:12px 14px auto!important;
+  grid-template-columns:minmax(230px,390px) 1fr minmax(230px,390px)!important;
+  pointer-events:none!important;
+}
+#arenaModeScreen.tutorialHudActive:not(.tutorialShowOpponent) .top{grid-template-columns:minmax(230px,390px) 1fr!important}
+#arenaModeScreen.tutorialHudActive .arenaAbility.storyAbilityLocked{
+  pointer-events:none!important;
+  filter:grayscale(.95) brightness(.52)!important;
+  opacity:.5!important;
+}
+#arenaModeScreen.tutorialHudActive .arenaAbility.storyAbilityLocked .arenaState{font-size:0!important}
+#arenaModeScreen.tutorialHudActive .arenaAbility.storyAbilityLocked .arenaState:after{
+  content:"LEARN LATER";
+  font-size:8px!important;
+  color:#fff!important;
+}
+#arenaModeScreen.tutorialHudActive .arenaAbility.storyAbilityLocked:after{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:4!important;
+  background:repeating-linear-gradient(135deg,transparent 0 8px,rgba(0,0,0,.22) 9px 13px)!important;
+}
+#arenaModeScreen.tutorialHudActive .arenaAbility.tutorialTarget{opacity:1!important;filter:none!important}
+.storyTutorialCoach{
+  left:50%!important;
+  right:auto!important;
+  top:105px!important;
+  bottom:auto!important;
+  width:min(430px,calc(100vw - 32px))!important;
+  max-height:calc(100dvh - 230px)!important;
+  overflow:auto!important;
+  transform:translateX(-50%)!important;
+}
+.storyTutorialCoach.needsAttention{animation:tutorialAttentionCentered .55s steps(2,end) infinite!important}
+@keyframes tutorialAttentionCentered{50%{transform:translateX(calc(-50% - 8px))}}
+#arenaModeScreen.tutorialHudActive.tutorialShowHotbar .arenaHotbar{
+  bottom:max(7px,env(safe-area-inset-bottom))!important;
+  width:min(720px,77vw)!important;
+  transform:translateX(-50%) scale(.82)!important;
+  transform-origin:bottom center!important;
+}
+
+/* Landscape phone/tablet main menu: navigation and preview never overlap. */
+@media (pointer:coarse) and (orientation:landscape) and (max-width:960px),
+       (orientation:landscape) and (max-height:500px) and (max-width:1000px){
+  #mainMenuScreen{
+    grid-template-rows:auto minmax(0,1fr)!important;
+    overflow:hidden!important;
+    padding:max(7px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) max(7px,env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left))!important;
+  }
+  #mainMenuScreen>header{min-height:44px!important;padding:0 2px 6px!important;align-items:center!important}
+  #mainMenuScreen .brandMark{font-size:25px!important}
+  #mainMenuScreen .brandMark small{display:none!important}
+  #mainMenuScreen .buildLabel{max-width:48vw!important;padding:4px 7px!important;font-size:8px!important;line-height:1.15!important}
+  #mainMenuScreen .mainMenuLayout{
+    grid-template-columns:minmax(174px,29vw) minmax(0,1fr)!important;
+    grid-template-rows:minmax(0,1fr)!important;
+    gap:9px!important;
+    min-height:0!important;
+    padding:7px 0 0!important;
+    overflow:hidden!important;
+  }
+  #mainMenuScreen [data-main-menu-list]{
+    display:grid!important;
+    grid-auto-flow:row!important;
+    align-content:start!important;
+    gap:5px!important;
+    min-width:0!important;
+    height:100%!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    padding:24px 5px 8px!important;
+    border-right:2px solid rgba(255,255,255,.3)!important;
+    border-bottom:0!important;
+    scroll-snap-type:y proximity!important;
+  }
+  #mainMenuScreen [data-main-menu-list]:before{top:2px!important;left:5px!important;font-size:12px!important}
+  #mainMenuScreen .mainMode{
+    width:100%!important;
+    min-width:0!important;
+    min-height:48px!important;
+    flex:none!important;
+    grid-template-columns:25px 1fr!important;
+    gap:7px!important;
+    padding:6px 8px!important;
+    box-shadow:3px 3px 0 rgba(0,0,0,.45)!important;
+    scroll-snap-align:start!important;
+  }
+  #mainMenuScreen .mainMode:hover,#mainMenuScreen .mainMode.selected{transform:translateX(3px)!important}
+  #mainMenuScreen .modeIndex{width:24px!important;height:24px!important;font-size:11px!important}
+  #mainMenuScreen .modeWords>span{font-size:11px!important}
+  #mainMenuScreen .modeWords>small{margin-top:2px!important;font-size:7px!important}
+  #mainMenuScreen [data-main-menu-preview]{
+    position:relative!important;
+    z-index:1!important;
+    grid-template-columns:minmax(112px,.42fr) minmax(0,1fr)!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:100%!important;
+    max-height:100%!important;
+    overflow:hidden!important;
+    border-width:3px!important;
+    box-shadow:5px 5px 0 rgba(0,0,0,.46)!important;
+  }
+  #mainMenuScreen .modeArt{min-height:0!important;height:100%!important}
+  #mainMenuScreen .modeArt:before{width:58px!important;height:58px!important}
+  #mainMenuScreen .modeArt:after{width:36px!important;height:36px!important}
+  #mainMenuScreen .modeGlyph{font-size:50px!important}
+  #mainMenuScreen .modeCopy{justify-content:flex-start!important;min-height:0!important;overflow:auto!important;padding:12px 14px!important}
+  #mainMenuScreen .modeCopy>small{font-size:9px!important}
+  #mainMenuScreen .modeCopy h2{margin:3px 0 6px!important;font-size:30px!important}
+  #mainMenuScreen .modeCopy p{font-size:10px!important;line-height:1.3!important}
+  #mainMenuScreen .modeCopy dl{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;margin:8px 0 0!important}
+  #mainMenuScreen .modeCopy dl div{padding:5px 6px!important;border-width:1px!important}
+  #mainMenuScreen .modeCopy dt{font-size:7px!important}
+  #mainMenuScreen .modeCopy dd{margin-top:2px!important;font-size:9px!important}
+  #mainMenuScreen .modeConfirm{margin-top:8px!important;padding:5px 8px!important;font-size:9px!important}
+  #mainMenuScreen .quickContinue,#mainMenuScreen>footer{display:none!important}
+
+  #lostYearStoryScreen .lyShell{padding:7px 9px 10px!important}
+  #lostYearStoryScreen .lyTop{grid-template-columns:auto 1fr auto!important;margin-bottom:5px!important;padding-bottom:4px!important}
+  #lostYearStoryScreen .lyTop .storyModeTitle{grid-column:auto!important;grid-row:auto!important;text-align:center!important}
+  #lostYearStoryScreen .lyTop h1{font-size:30px!important}
+  #lostYearStoryScreen .lyTop button{grid-row:auto!important;padding:6px 8px!important;font-size:9px!important}
+  #lostYearStoryScreen .lyMeta{gap:5px 10px!important;padding-bottom:4px!important}
+  #lostYearStoryScreen .lyChip{font-size:7px!important}
+  #lostYearStoryScreen .routeView{padding-top:18px!important}
+  #lostYearStoryScreen .routeGrid{gap:7px!important;padding:3px 5px 7px!important}
+  #lostYearStoryScreen .routeCard{flex-basis:138px!important;min-height:146px!important;grid-template-rows:70px auto!important;padding:6px!important}
+  #lostYearStoryScreen .routeCard .routePortrait:before{width:42px!important;height:58px!important}
+  #lostYearStoryScreen .routeCard h2{font-size:15px!important}
+  #lostYearStoryScreen .routeCard h3{font-size:8px!important}
+  #lostYearStoryScreen .routeCard .status{font-size:7px!important}
+  #lostYearStoryScreen .routePanel{
+    grid-template-columns:110px minmax(0,1fr)!important;
+    max-height:none!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    border-width:3px!important;
+    box-shadow:5px 5px 0 rgba(0,0,0,.46)!important;
+  }
+  #lostYearStoryScreen .routePanel .routeFeature{min-height:0!important;padding:7px!important}
+  #lostYearStoryScreen .routePanel .routeFeature b{font-size:45px!important}
+  #lostYearStoryScreen .routeDetails{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-content:center!important;column-gap:8px!important;padding:8px 10px!important;overflow:visible!important}
+  #lostYearStoryScreen .routeDetails>small,#lostYearStoryScreen .routeDetails>h2,#lostYearStoryScreen .routeDetails>h3{grid-column:1!important}
+  #lostYearStoryScreen .routeDetails>p,#lostYearStoryScreen .routeDetails>dl,#lostYearStoryScreen .futureRoutesNote{display:none!important}
+  #lostYearStoryScreen .routeDetails h2{font-size:27px!important}
+  #lostYearStoryScreen .routeDetails h3{margin:3px 0!important;font-size:9px!important}
+  #lostYearStoryScreen .routeActions{grid-column:2!important;grid-row:1/5!important;display:grid!important;align-content:center!important;margin:0!important}
+  #lostYearStoryScreen .routeActions button{padding:7px 9px!important;font-size:8px!important}
+  #lostYearStoryScreen .lockedBanner{grid-column:1!important;padding:5px 7px!important;font-size:8px!important}
+  #lostYearStoryScreen .routeHomeTop{margin-bottom:5px!important}
+  #lostYearStoryScreen .routeHomeTop h1{font-size:25px!important}
+  #lostYearStoryScreen .routeHomePanel{display:grid!important;grid-template-columns:minmax(210px,.78fr) minmax(0,1.22fr)!important;gap:7px!important;padding:7px!important;max-height:calc(100dvh - 82px)!important;overflow:hidden!important}
+  #lostYearStoryScreen .routeHomeHero{padding:8px!important;gap:5px!important;overflow:hidden!important}
+  #lostYearStoryScreen .routeHomeHero h2{font-size:28px!important}
+  #lostYearStoryScreen .routeHomeHero>p{display:none!important}
+  #lostYearStoryScreen .routeHomeHero>strong{font-size:8px!important}
+  #lostYearStoryScreen .routeCompleteNote{padding:5px!important;border-width:2px!important;font-size:8px!important}
+  #lostYearStoryScreen .routeHomeActions{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+  #lostYearStoryScreen .routeHomeActions button{min-height:42px!important;padding:5px 7px!important}
+  #lostYearStoryScreen .routeHomeActions button strong{font-size:9px!important}
+  #lostYearStoryScreen .routeHomeActions button span{display:none!important}
+  #lostYearStoryScreen .chapterRail{
+    display:flex!important;
+    flex-flow:row nowrap!important;
+    gap:7px!important;
+    max-height:none!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    padding:2px 5px 7px!important;
+    scroll-snap-type:x mandatory!important;
+  }
+  #lostYearStoryScreen .chapterRow{flex:0 0 min(260px,72vw)!important;display:grid!important;grid-template-columns:1fr!important;gap:4px!important;scroll-snap-align:start!important}
+  #lostYearStoryScreen .chapterCard{grid-template-columns:40px 1fr!important;min-height:92px!important;padding:7px!important}
+  #lostYearStoryScreen .chapterCard .chapterNumber{font-size:17px!important}
+  #lostYearStoryScreen .chapterCard small{font-size:7px!important}
+  #lostYearStoryScreen .chapterCard strong{font-size:12px!important}
+  #lostYearStoryScreen .chapterCard span{font-size:8px!important}
+  #lostYearStoryScreen .chapterReplay{min-height:34px!important;padding:5px!important}
+  #lostYearStoryScreen .chapterReplay strong{font-size:10px!important}
+  #lostYearStoryScreen .chapterReplay span{display:none!important}
+  #lostYearStoryScreen .storyRouteDetailsCard{max-height:88dvh!important;padding:12px!important}
+  #lostYearStoryScreen .storyRouteDetailsCard h2{font-size:35px!important}
+  #lostYearStoryScreen .storyRouteDetailsCard p{font-size:11px!important}
+  #lostYearStoryScreen .storyRouteDetailsCard dl{grid-template-columns:1fr 1fr 1fr!important;gap:5px!important}
+}
+
+@media (max-width:1050px), (max-height:760px){
+  .storyTutorialCoach{
+    left:50%!important;
+    right:auto!important;
+    top:92px!important;
+    bottom:auto!important;
+    width:min(390px,42vw)!important;
+    max-height:calc(100dvh - 190px)!important;
+    transform:translateX(-50%)!important;
+  }
+  #arenaModeScreen.tutorialHudActive.tutorialShowHotbar .arenaHotbar{transform:translateX(-50%) scale(.72)!important}
+}
+
+@media (pointer:coarse) and (orientation:landscape), (max-height:520px){
+  .storyTutorialCoach{
+    top:63px!important;
+    width:min(360px,43vw)!important;
+    max-height:calc(100dvh - 132px)!important;
+    padding:6px 8px!important;
+    border-width:3px!important;
+    box-shadow:3px 3px 0 #080808!important;
+  }
+  .storyTutorialCoach header{padding-bottom:3px!important;border-bottom-width:2px!important}
+  .storyTutorialCoach header small{font-size:7px!important}
+  .storyTutorialCoach header span{padding:2px 4px!important;border-width:2px!important;font-size:7px!important}
+  .storyTutorialCoach h2{margin:4px 0 2px!important;font-size:14px!important}
+  .storyTutorialKeys{margin:3px 0!important;gap:3px!important}
+  .storyTutorialKeys kbd{padding:2px 4px!important;border-width:2px!important;box-shadow:1px 1px 0 #080808!important;font-size:7px!important}
+  .storyTutorialCoach p{margin:3px 0!important;font-size:7px!important;line-height:1.2!important}
+  .storyTutorialChecklist{gap:2px!important}
+  .storyTutorialChecklist span{padding:2px 3px!important;border-width:1px!important;font-size:6px!important}
+  .storyTutorialChecklist b{font-size:8px!important}
+  .storyTutorialProgress{height:6px!important;margin-top:3px!important;border-width:1px!important}
+  .storyTutorialHint{display:none!important}
+  #arenaModeScreen.tutorialHudActive .top{inset:5px 7px auto!important;grid-template-columns:minmax(165px,30vw) 1fr minmax(165px,30vw)!important}
+  #arenaModeScreen.tutorialHudActive:not(.tutorialShowOpponent) .top{grid-template-columns:minmax(165px,30vw) 1fr!important}
+  #arenaModeScreen.tutorialHudActive.tutorialShowHotbar .arenaHotbar{width:min(600px,70vw)!important;transform:translateX(-50%) scale(.58)!important}
+}
+
+@media (max-width:620px) and (orientation:portrait){
+  #lostYearStoryScreen .storyRouteDetailsCard dl{grid-template-columns:1fr!important}
+}
+
+/* ===== END story-engine.css ===== */
+
+/* ===== BEGIN presentation-polish section ===== */
+/* Prototype 2.9A.6 presentation layer. Loaded last on purpose. */
+
+#startScreen .startCard{
+  animation:pxStartCardIn .72s cubic-bezier(.16,.84,.28,1) both!important;
+  overflow:visible!important;
+}
+#startScreen .brandMark{animation:pxLogoStrike .86s cubic-bezier(.15,.82,.22,1) both!important;transform-origin:center}
+#startScreen .brandMark b{display:inline-block;animation:pxLogoX .9s .16s cubic-bezier(.1,.9,.2,1) both!important}
+#startScreen #startPrompt{animation:pxPromptPulse 1.45s ease-in-out infinite!important;letter-spacing:.18em!important}
+#startScreen .startTagline{display:block;margin-top:8px;color:#d8e9ff;font:800 11px/1.35 var(--px-font-ui);letter-spacing:.08em;text-transform:uppercase;text-shadow:0 2px 10px #000}
+#startScreen .startParticles{position:absolute;inset:-16vh -12vw;overflow:hidden;pointer-events:none;z-index:-1}
+#startScreen .startParticles i{position:absolute;left:var(--x);top:110%;width:var(--s);height:var(--s);border-radius:50%;background:radial-gradient(circle,#fff 0 12%,#67dfff 32%,#ef3f2e 68%,transparent 70%);opacity:.55;filter:blur(.2px);animation:pxSparkRise var(--d) linear infinite;animation-delay:var(--delay)}
+#startScreen .startParticles i:nth-child(3n){border-radius:2px;transform:rotate(45deg)}
+#startScreen .startParticles i:nth-child(4n){background:radial-gradient(circle,#fff 0 10%,#ffd447 42%,transparent 68%)}
+@keyframes pxStartCardIn{0%{opacity:0;transform:translateY(24px) scale(.96)}100%{opacity:1;transform:none}}
+@keyframes pxLogoStrike{0%{opacity:0;transform:skewX(-12deg) translateX(-42px)}58%{opacity:1;transform:skewX(3deg) translateX(5px)}100%{transform:none}}
+@keyframes pxLogoX{0%{opacity:0;transform:scale(2.1) rotate(-12deg)}75%{opacity:1;transform:scale(.92) rotate(2deg)}100%{transform:none}}
+@keyframes pxPromptPulse{0%,100%{opacity:.6;transform:translateY(0)}50%{opacity:1;transform:translateY(-2px);text-shadow:0 0 18px #66ddff}}
+@keyframes pxSparkRise{0%{transform:translate3d(0,0,0) scale(.55);opacity:0}12%{opacity:.58}78%{opacity:.4}100%{transform:translate3d(var(--drift),-132vh,0) scale(1.2);opacity:0}}
+
+#mainMenuScreen .mainMode{transition:transform var(--px-transition-fast),filter var(--px-transition-fast),box-shadow var(--px-transition-fast),background var(--px-transition-fast)!important}
+#mainMenuScreen .mainMode:hover,#mainMenuScreen .mainMode.selected{transform:translateX(6px) scale(1.018)!important;filter:saturate(1.1)!important;box-shadow:var(--px-glow-fire)!important}
+#mainMenuScreen .mainMode[aria-disabled=true].selected{box-shadow:0 0 22px rgba(255,212,71,.3)!important}
+#mainMenuScreen [data-main-menu-preview]{overflow:hidden!important}
+#mainMenuScreen .modeArt{position:relative!important;isolation:isolate;min-height:250px!important;background:
+  radial-gradient(circle at 50% 88%,rgba(85,217,255,.22),transparent 42%),
+  linear-gradient(160deg,#151e35,#070a13 72%)!important}
+#mainMenuScreen .modeArt:before,#mainMenuScreen .modeArt:after{opacity:.32!important;filter:blur(1px)}
+#mainMenuScreen .modeScene{position:absolute;inset:0;overflow:hidden;display:grid;place-items:center}
+#mainMenuScreen .modeScene>b{position:absolute;left:16px;bottom:14px;z-index:4;padding:5px 9px;border-left:4px solid var(--px-color-gold);background:#060911c9;color:#fff;font:900 10px var(--px-font-ui);letter-spacing:.12em}
+#mainMenuScreen .menuFighter{position:absolute;width:150px;height:190px;bottom:8px;background-repeat:no-repeat;background-position:0 0;image-rendering:pixelated;filter:drop-shadow(0 14px 12px #000b) saturate(1.08);transform-origin:50% 100%}
+#mainMenuScreen .menuFighter-rrvvfo{background-image:url('../assets/fighters/rrvvfo/rrvvfo-atlas.png');background-size:900% 2000%}
+#mainMenuScreen .menuFighter-revvfo{background-image:url('../assets/fighters/revvfo/revvfo-atlas.png');background-size:900% 1000%}
+#mainMenuScreen .menuFighter-sage{background-image:url('../assets/fighters/sage/sage-atlas.png');background-size:800% 1000%}
+#mainMenuScreen .menuFighter.hero{left:12%;transform:scale(1.18)}
+#mainMenuScreen .menuFighter.rival{right:10%;transform:scaleX(-1) scale(1.12)}
+#mainMenuScreen .menuFighter.mentor{right:8%;transform:scaleX(-1) scale(1.05);opacity:.9}
+#mainMenuScreen .storyScene .hero{left:17%}
+#mainMenuScreen .storyScene .mentor{right:12%;opacity:.76;filter:drop-shadow(0 14px 12px #000b) grayscale(.15)}
+#mainMenuScreen .sceneTrail{position:absolute;left:21%;right:21%;bottom:42px;height:5px;background:linear-gradient(90deg,var(--px-color-fire),var(--px-color-energy));filter:blur(3px);opacity:.6}
+#mainMenuScreen .stageRing{position:absolute;left:9%;right:9%;bottom:22px;height:56px;border:7px solid #d2b88a;border-radius:50%;background:#715d45;box-shadow:0 0 0 11px #241b15,0 18px 35px #000c;transform:perspective(420px) rotateX(55deg)}
+#mainMenuScreen .versusMark{position:absolute;z-index:5;color:var(--px-color-gold);font:italic 900 58px var(--px-font-display);text-shadow:4px 5px 0 #111,0 0 20px #ff5c2e}
+#mainMenuScreen .localSilhouette{position:absolute;bottom:24px;width:105px;height:170px;border-radius:48% 48% 18% 18%;background:linear-gradient(#172b52,#070a12);clip-path:polygon(35% 0,65% 0,78% 18%,82% 44%,100% 100%,0 100%,18% 44%,22% 18%);filter:drop-shadow(0 10px 9px #000)}
+#mainMenuScreen .localSilhouette.p1{left:18%;box-shadow:inset 0 0 32px #3b8cff}
+#mainMenuScreen .localSilhouette.p2{right:18%;box-shadow:inset 0 0 32px #ef3f2e;transform:scaleX(-1)}
+#mainMenuScreen .trainingDummy{position:absolute;right:14%;bottom:24px;width:92px;height:150px;border:4px dashed #dbe6ff;border-radius:46% 46% 20% 20%;opacity:.55}
+#mainMenuScreen .targetRing{position:absolute;width:58px;height:58px;border:5px solid #ff5d4c;border-radius:50%;box-shadow:0 0 18px #ff5d4c}
+#mainMenuScreen .targetRing.one{right:29%;top:18%}#mainMenuScreen .targetRing.two{right:7%;top:42%;transform:scale(.7)}
+#mainMenuScreen .arcadeRoad{position:absolute;left:-8%;right:-8%;bottom:-40px;height:190px;border:18px solid #2a2f3a;border-radius:50%;transform:perspective(420px) rotateX(64deg);box-shadow:inset 0 0 0 5px #777}
+#mainMenuScreen .arcadeLock{position:absolute;z-index:5;padding:11px 16px;border:3px solid #ffe077;background:#19150b;color:#ffe077;font:900 18px var(--px-font-ui);letter-spacing:.12em;transform:rotate(-6deg)}
+#mainMenuScreen .gear{position:absolute;color:#d9e6ff;text-shadow:0 0 20px #6ee2ff;font-size:110px;line-height:1;animation:pxGear 10s linear infinite}.gearA{left:17%;top:20%}.gearB{right:15%;bottom:14%;font-size:78px!important;animation-direction:reverse!important}
+@keyframes pxGear{to{transform:rotate(360deg)}}
+#mainMenuScreen .manualBook{position:absolute;left:12%;top:16%;padding:26px 20px;border:5px solid #141414;background:#f4ecd3;color:#171717;box-shadow:10px 10px 0 #090909;font:900 22px/1.15 var(--px-font-display);transform:rotate(-5deg)}
+#mainMenuScreen .creditsX{color:var(--px-color-fire);font:italic 900 150px var(--px-font-display);text-shadow:8px 8px 0 #10121a,0 0 28px #ff5b32}
+#mainMenuScreen .comingTooltip{display:block;margin:12px 0 0;padding:9px 10px;border:1px solid #ffe27a;background:#3e330d;color:#fff3b2;font:900 11px var(--px-font-ui);letter-spacing:.07em}
+
+.loadingCard{position:relative;overflow:hidden!important;max-width:560px!important}
+.loadingIdentity{display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center;margin:10px 0 14px;text-align:left}
+.loadingFighterArt{position:relative;height:170px;border:1px solid var(--px-color-line);border-radius:var(--px-radius-md);overflow:hidden;background:radial-gradient(circle at 50% 78%,var(--loading-accent,#55d9ff) 0,transparent 54%),#080b14}
+.loadingFighterArt .loadingSprite{position:absolute;left:50%;bottom:-8px;width:160px;height:190px;transform:translateX(-50%);background:url('../assets/fighters/rrvvfo/rrvvfo-atlas.png') 0 0/900% 2000% no-repeat;image-rendering:pixelated;filter:drop-shadow(0 14px 10px #000c);animation:pxLoadingIdle 1.25s steps(2,end) infinite}
+.loadingFighterArt[data-fighter=revvfo] .loadingSprite{background-image:url('../assets/fighters/revvfo/revvfo-atlas.png');background-size:900% 1000%}
+.loadingFighterArt[data-fighter=sage] .loadingSprite{background-image:url('../assets/fighters/sage/sage-atlas.png');background-size:800% 1000%}
+.loadingVs{position:absolute;right:8px;top:8px;padding:4px 6px;border-radius:5px;background:#05070dcc;color:#fff;font:900 10px var(--px-font-ui)}
+.loadingDetails strong,.loadingDetails span{display:block}.loadingDetails strong{font:italic 900 28px var(--px-font-display);letter-spacing:.04em}.loadingDetails span{margin-top:5px;color:var(--px-color-muted);font:800 12px var(--px-font-ui)}
+.loadingTrack{height:14px!important;border-color:var(--loading-accent,#55d9ff)!important}.loadingTrack>div{background:linear-gradient(90deg,var(--loading-accent,#55d9ff),#fff,var(--px-color-fire-hot))!important;box-shadow:0 0 18px var(--loading-accent,#55d9ff)}
+.loadingPercent{display:block;margin-top:7px;color:#fff;font:900 12px var(--px-font-mono);letter-spacing:.08em}
+.loadingTaskList{display:grid;gap:5px;margin:10px 0;text-align:left}.loadingTask{display:flex;justify-content:space-between;gap:12px;padding:5px 8px;border-left:3px solid #414c65;color:#aeb8cf;font:800 10px var(--px-font-ui);letter-spacing:.06em}.loadingTask.done{border-color:#6ee09d;color:#eafff1}.loadingTask.active{border-color:var(--loading-accent,#55d9ff);color:#fff;background:#ffffff0a}
+@keyframes pxLoadingIdle{50%{transform:translateX(-50%) translateY(-3px)}}
+
+.roster .card{position:relative;overflow:hidden;transition:transform var(--px-transition-fast),border-color var(--px-transition-fast),filter var(--px-transition-fast)}
+.roster .card:hover{transform:translateY(-3px)}
+.roster .card .fighterStatus{position:absolute;right:6px;top:6px;z-index:3;padding:3px 6px;border-radius:999px;background:#090c14e8;color:#fff;font:900 8px var(--px-font-ui);letter-spacing:.08em}
+.roster .card[data-status=showcase] .fighterStatus{background:#185e38;color:#caffdf}.roster .card[data-status=visual-prototype] .fighterStatus{background:#56400f;color:#ffedac}.roster .card[data-status=in-development]{filter:saturate(.62)}.roster .card[data-status=in-development] .fighterStatus{background:#4a2930;color:#ffd1d8}
+
+.storyUnifiedRuntime{--story-hud-accent:var(--px-color-energy)}
+.storyUnifiedRuntime.storyHudExploration .top .side:nth-child(2){opacity:.2;transition:opacity var(--px-transition-ui)}
+.storyUnifiedRuntime.storyHudCinematic .arenaHotbar,.storyUnifiedRuntime.storyHudCinematic .bottom{opacity:.12;pointer-events:none}
+.storyUnifiedRuntime .arenaNotice{font-family:var(--px-font-ui)!important}
+
+#pxCombatManualUI .manualBookShell{background:linear-gradient(92deg,#f3ead0,#fffaf0 46%,#efe0bf)!important}
+#pxCombatManualUI .manualBookHeader h1:after{content:' • PROTOTYPE 2.9A.7';display:block;margin-top:6px;color:#8a2c2c;font:900 10px var(--px-font-ui);letter-spacing:.12em}
+#pxCombatManualUI .manualWelcome{margin:0 0 14px;padding:12px 14px;border:4px solid #090909;background:#ffe75f;font:900 14px/1.4 var(--px-font-ui)}
+#pxCombatManualUI .manualQuickActions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}#pxCombatManualUI .manualQuickActions button{padding:7px 10px;border:3px solid #090909;background:#fff;color:#111;font-weight:900}#pxCombatManualUI .manualQuickActions button.active{background:#e52b2f;color:#fff}
+#pxCombatManualUI .manualPage .manualDrill{margin-top:15px;padding:12px;border:4px solid #090909;background:#dff7ff}#pxCombatManualUI .manualPage .manualDrill strong{display:block;color:#0b5e7d}#pxCombatManualUI .manualPage .manualStatus{display:inline-block;margin-top:8px;padding:4px 7px;background:#111;color:#fff;font:900 10px var(--px-font-ui);letter-spacing:.08em}
+
+.perfectParryPulse{animation:pxPerfectPulse .34s ease-out}.perfectParryPulse:after{content:'PERFECT PARRY';position:absolute;left:50%;top:31%;z-index:100;transform:translate(-50%,-50%);padding:7px 14px;border:2px solid #fff;background:#10212fe8;color:#d9fbff;font:italic 900 22px var(--px-font-display);letter-spacing:.08em;text-shadow:0 0 8px #76e8ff;pointer-events:none}
+@keyframes pxPerfectPulse{0%{filter:brightness(1.8)}100%{filter:none}}
+
+@media(max-width:900px){
+  #mainMenuScreen .modeArt{min-height:160px!important}
+  #mainMenuScreen .menuFighter{width:112px;height:145px}
+  .loadingIdentity{grid-template-columns:112px 1fr}.loadingFighterArt{height:132px}.loadingFighterArt .loadingSprite{width:125px;height:150px}
+}
+@media(max-width:650px){
+  #startScreen .startTagline{font-size:9px}
+  #mainMenuScreen .modeArt{min-height:120px!important}
+  #mainMenuScreen .modeScene>b{font-size:8px}
+  #mainMenuScreen .menuFighter{width:90px;height:116px}
+  #mainMenuScreen .versusMark{font-size:38px}
+  .loadingIdentity{grid-template-columns:90px 1fr;gap:10px}.loadingFighterArt{height:108px}.loadingFighterArt .loadingSprite{width:100px;height:120px}.loadingDetails strong{font-size:22px}
+}
+@media(prefers-reduced-motion:reduce){
+  #startScreen .brandMark,#startScreen .brandMark b,#startScreen #startPrompt,#startScreen .startParticles i,#mainMenuScreen .gear,.loadingFighterArt .loadingSprite{animation:none!important}
+}
+.trainingHud .trainingDrills{display:grid;grid-template-columns:auto minmax(160px,1fr) auto;gap:7px;align-items:center;margin:8px 0;padding:9px;border:1px solid #4d5f80;border-left:4px solid var(--px-color-gold);border-radius:var(--px-radius-sm);background:#08101de8}.trainingHud .trainingDrills strong{color:var(--px-color-gold);font-size:10px;letter-spacing:.1em}.trainingHud .trainingDrills select{min-width:0;padding:6px;background:#050912;color:#fff;border:1px solid #556782;border-radius:5px}.trainingHud .trainingDrills button{padding:6px 9px}.trainingHud .trainingDrills small{grid-column:1/-1;color:#c4d6ec;font-size:10px}@media(max-width:760px){.trainingHud .trainingDrills{grid-template-columns:1fr}.trainingHud .trainingDrills small{grid-column:auto}}
+
+/* ===== END presentation-polish section ===== */
+
+/* 2.9A.7 casual-player retention */
+.advancedSetup{grid-column:1/-1;border:1px solid var(--px-border-soft,#ffffff33);border-radius:10px;background:#080b13aa}.advancedSetup>summary{cursor:pointer;padding:11px 14px;font-weight:900;letter-spacing:.06em}.advancedSetupGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;padding:0 12px 12px}.card.lockedFighter{opacity:.42;filter:grayscale(.75);cursor:not-allowed}.card.lockedFighter .fighterStatus{background:#2b2d37}.card.lockedFighter .rating{color:#aaa}.guardFill.fatigue{animation:pxGuardFatigue .25s steps(2,end) infinite}@keyframes pxGuardFatigue{50%{opacity:.3}}@media(max-width:760px){.advancedSetupGrid{grid-template-columns:1fr}.arenaTrainingPanel{width:38vw!important;top:72px!important}}
+
+/* 2.9A.7 casual setup: keep utility and destructive actions behind Advanced Settings. */
+#menuScreen .advancedActions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--px-border-soft,#53617f)}
+#menuScreen .advancedActions button{flex:1 1 150px;min-height:40px}
+#menuScreen .advancedActions .dangerUtility{border-color:#a84b56;color:#ffd9df}
+#menuScreen .primaryFightActions{justify-content:center;gap:10px}
+#menuScreen .primaryFightActions button{min-width:min(240px,45%)}
+#menuScreen .roster{display:block}
+#menuScreen .rosterGroup{display:grid;grid-template-columns:repeat(auto-fit,minmax(116px,1fr));gap:8px}
+#menuScreen .comingSoonRoster{margin-top:10px;border:1px solid var(--px-border-soft,#53617f);border-radius:10px;background:#080c16a8}
+#menuScreen .comingSoonRoster>summary{cursor:pointer;padding:10px 12px;color:#bfc9df;font-weight:900;letter-spacing:.06em}
+#menuScreen .comingSoonRoster .lockedRoster{padding:0 10px 10px}
+#menuScreen .comingSoonRoster:not([open]) .lockedRoster{display:none}

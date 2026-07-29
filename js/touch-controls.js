@@ -1,8 +1,8 @@
-import {TouchLayoutEditor,displayedControlPosition} from './touch-layout-editor.js?v=2.3.5-landscape-hotbar-x16';
+import {TouchLayoutEditor,displayedControlPosition} from './touch-layout-editor.js?v=29a7-casual-retention-20260729';
 
 const COMBAT_ACTIONS = Object.freeze({
-  jump:'j',light:'a',heavy:'h',special:'s',block:'b',dash:'d',
-  ultimate:'u',breaker:'k',launcher:'x',throw:'t',counter:'c',lens:'n'
+  jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',
+  ultimate:'u',breaker:'q',launcher:'x',throw:'t',counter:'c',lens:'n'
 });
 
 export const CLASH_TAP_CAP_PER_SECOND = 8;
@@ -41,11 +41,12 @@ export function touchTutorialSteps(movement='joystick') {
     {title:'Light attacks',text:'Tap Light three times for the full light chain. The final hit locks the chain to prevent loops.'},
     {title:'Heavy attacks',text:'Heavy is slower and stronger. Light, Light, Heavy creates a grounded finisher.'},
     {title:'Launcher and air combo',text:'Tap Launcher—or hold Up and tap Heavy—then Jump, Air Light, and Air Heavy.'},
-    {title:'Special attacks',text:'Use the numbered bottom hotbar for character abilities. Supported routes can still cancel into them.'},
+    {title:'Charge and abilities',text:'Hold Charge while standing still to rebuild energy. Use the numbered bottom hotbar for character abilities.'},
+    {title:'Grab and interact',text:'Tap Grab to beat blocking opponents. During exploration, the separate Interact button appears near people and objects.'},
     {title:'Block and perfect block',text:'Hold Block without losing movement or other touches. Start blocking just before impact for a perfect block.'},
     {title:'Dash',text:'Tap Dash for the fighter’s movement ability. Poorly timed dashes remain punishable.'},
-    {title:'Throw',text:'Press Light and Heavy together, or use the optional Throw button. Both trigger the exact same throw.'},
-    {title:'Combo breaker',text:'While in hitstun, tap Breaker. It costs 85 energy and is limited to one use per round.'},
+    {title:'Grab',text:'Tap Grab to beat guarding opponents. Missing a grab leaves you open, so use it as a read rather than a constant attack.'},
+    {title:'Combo breaker',text:'While in hitstun, tap Breaker. It costs 35 energy and is limited to one use per round.'},
     {title:'Ultimate',text:'With enough energy, tap Ultimate. Missed ultimates have punishable recovery.'},
     {title:'Clashes',text:'When attacks clash, use the large Clash button. Choose Repeated Tap, Timed Tap, or Hold and Pulse in Touch Settings.'}
   ];

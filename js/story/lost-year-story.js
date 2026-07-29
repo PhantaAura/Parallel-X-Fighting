@@ -9,14 +9,14 @@ import {
   rrvvfoNextMission,
   rrvvfoRouteStarted,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a2-story-hud-20260728';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a2-story-hud-20260728';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a2-story-hud-20260728';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a2-story-hud-20260728';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a2-story-hud-20260728';
-import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=29a2-story-hud-20260728';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a2-story-hud-20260728';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
+} from './lost-year-data.js?v=29a7-casual-retention-20260729';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a7-casual-retention-20260729';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a7-casual-retention-20260729';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a7-casual-retention-20260729';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a7-casual-retention-20260729';
+import {startRrvvfoChapter3Preview} from './rrvvfo-chapter-3-preview.js?v=29a7-casual-retention-20260729';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a7-casual-retention-20260729';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -50,6 +50,14 @@ function buildScreen(){
         <aside class="routePanel" data-route-panel></aside>
         <main class="routeHomeView" data-route-home hidden></main>
       </div>
+      <div class="storyRouteDetailsOverlay" data-route-details-modal hidden role="dialog" aria-modal="true" aria-labelledby="routeDetailsTitle">
+        <article class="storyRouteDetailsCard">
+          <header><div><small data-route-details-kicker>ROUTE DETAILS</small><h2 id="routeDetailsTitle" data-route-details-title></h2></div><button type="button" data-close-route-details aria-label="Close route details">CLOSE</button></header>
+          <h3 data-route-details-subtitle></h3>
+          <p data-route-details-description></p>
+          <dl data-route-details-stats></dl>
+        </article>
+      </div>
     </div>`;
   document.body.appendChild(root);
   return root;
@@ -57,6 +65,13 @@ function buildScreen(){
 
 function hideGameScreens(){
   ['startScreen','mainMenuScreen','menuScreen','gameScreen','arenaModeScreen'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));
+}
+
+function hideLegacyMobileOverlays(){
+  // Story Mode owns its own landscape prompt and Arena touch controls. Old global
+  // onboarding/settings overlays must never remain above the route screen.
+  ['touchChoice','touchTutorial','touchSettingsModal','touchMoveList','hotbarCustomizeModal','orientationPrompt','fullscreenPrompt']
+    .forEach(id=>document.getElementById(id)?.classList.add('hidden'));
 }
 
 class LostYearStoryScreen{
@@ -67,6 +82,11 @@ class LostYearStoryScreen{
     this.routeView=this.root.querySelector('[data-route-view]');
     this.routePanel=this.root.querySelector('[data-route-panel]');
     this.routeHome=this.root.querySelector('[data-route-home]');
+    this.detailsModal=this.root.querySelector('[data-route-details-modal]');
+    this.detailsClose=this.root.querySelector('[data-close-route-details]');
+    this.lastDetailsTrigger=null;
+    this.detailsClose.addEventListener('click',()=>this.closeRouteDetails());
+    this.detailsModal.addEventListener('pointerdown',event=>{if(event.target===this.detailsModal)this.closeRouteDetails()});
     this.root.querySelector('[data-ly-back]').addEventListener('click',()=>this.handleBack());
     this.root.querySelector('[data-story-help]').addEventListener('click',()=>this.showHelp());
     this.root.addEventListener('keydown',event=>this.onKey(event));
@@ -75,6 +95,8 @@ class LostYearStoryScreen{
 
   open(){
     hideGameScreens();
+    hideLegacyMobileOverlays();
+    this.closeRouteDetails();
     this.root.hidden=false;
     this.releaseLandscapeLock?.();
     this.releaseLandscapeLock=requireLandscapeForStory({message:'Story Mode uses a horizontal layout so the route menu, dialogue, and combat HUD remain readable.'});
@@ -88,14 +110,39 @@ class LostYearStoryScreen{
 
   close(){
     this.releaseLandscapeLock?.();this.releaseLandscapeLock=null;
+    this.closeRouteDetails();
+    hideLegacyMobileOverlays();
     this.root.hidden=true;
     document.getElementById('mainMenuScreen')?.classList.remove('hidden');
     document.querySelector('[data-main-menu-id="story"]')?.focus();
   }
 
   handleBack(){
+    if(!this.detailsModal.hidden){this.closeRouteDetails();return}
     if(!this.routeHome.hidden)this.showRoutes({focus:true});
     else this.close();
+  }
+
+  openRouteDetails(route=LOST_YEAR_ROUTES[this.selectedIndex],trigger=document.activeElement){
+    if(!route)return;
+    this.lastDetailsTrigger=trigger instanceof HTMLElement?trigger:null;
+    this.detailsModal.querySelector('[data-route-details-kicker]').textContent=route.availability;
+    this.detailsModal.querySelector('[data-route-details-title]').textContent=route.lead;
+    this.detailsModal.querySelector('[data-route-details-subtitle]').textContent=route.title;
+    this.detailsModal.querySelector('[data-route-details-description]').textContent=route.description;
+    this.detailsModal.querySelector('[data-route-details-stats]').innerHTML=`
+      <div><dt>Perspective</dt><dd>${route.perspective}</dd></div>
+      <div><dt>Unlock</dt><dd>${route.unlock}</dd></div>
+      <div><dt>Current build</dt><dd>${routeProgress(route,this.progress)}%</dd></div>`;
+    this.detailsModal.hidden=false;
+    this.detailsClose.focus();
+  }
+
+  closeRouteDetails(){
+    if(this.detailsModal.hidden)return;
+    this.detailsModal.hidden=true;
+    this.lastDetailsTrigger?.focus?.();
+    this.lastDetailsTrigger=null;
   }
 
   showHelp(){
@@ -210,9 +257,14 @@ class LostYearStoryScreen{
           <div><dt>Unlock</dt><dd>${route.unlock}</dd></div>
           <div><dt>Current build</dt><dd>${routeProgress(route,this.progress)}%</dd></div>
         </dl>
-        ${playable?`<div class="routeActions"><button type="button" class="primary" data-open-route>${started?'OPEN RRVVFO ROUTE':'BEGIN RRVVFO ROUTE'}</button></div>`:`<div class="lockedBanner">DISCOVERED THROUGH RRVVFO'S STORY. THIS ROUTE BECOMES PLAYABLE AFTER HIS SIX-CHAPTER ROUTE IS COMPLETE.</div><div class="futureRoutesNote">Like Sonic Adventure, new perspectives appear when Rrvvfo meets their characters. Their playable stories stay locked until the main route is finished.</div>`}
+        <div class="routeActions">
+          ${playable?`<button type="button" class="primary" data-open-route>${started?'OPEN RRVVFO ROUTE':'BEGIN RRVVFO ROUTE'}</button>`:''}
+          <button type="button" data-open-route-details>MORE DETAILS</button>
+        </div>
+        ${playable?'':`<div class="lockedBanner">DISCOVERED THROUGH RRVVFO'S STORY. THIS ROUTE BECOMES PLAYABLE AFTER HIS SIX-CHAPTER ROUTE IS COMPLETE.</div><div class="futureRoutesNote">Like Sonic Adventure, new perspectives appear when Rrvvfo meets their characters. Their playable stories stay locked until the main route is finished.</div>`}
       </div>`;
     panel.querySelector('[data-open-route]')?.addEventListener('click',()=>this.openRoute(route));
+    panel.querySelector('[data-open-route-details]')?.addEventListener('click',event=>this.openRouteDetails(route,event.currentTarget));
   }
 
   showRoutes({focus=false}={}){
@@ -260,6 +312,7 @@ class LostYearStoryScreen{
             <button type="button" class="primary" data-continue-route ${complete?'disabled':''}><strong>${complete?'CURRENT RELEASE COMPLETE':'CONTINUE STORY'}</strong><span>${complete?'Use Chapter Select for replays or the Chapter 3 preview.':'Loads the next unfinished checkpoint.'}</span></button>
             <button type="button" data-open-manual ${manualReady?'':'disabled'}><strong>COMBAT MANUAL</strong><span>${manualReady?'Review every unlocked page.':'Sage has not given it to Rrvvfo yet.'}</span></button>
             <button type="button" data-free-explore ${this.progress.completedMissions.includes('rrvvfo-road')?'':'disabled'}><strong>FREE EXPLORE</strong><span>${this.progress.completedMissions.includes('rrvvfo-road')?'Replay the Training Grounds road.':'Complete the living road first.'}</span></button>
+            <button type="button" data-route-home-details><strong>ROUTE DETAILS</strong><span>Read the full route description without crowding the chapter screen.</span></button>
             <button type="button" data-route-home-back-2><strong>CHARACTER ROUTES</strong><span>Return to the shared Lost Year timeline.</span></button>
           </div>
         </div>
@@ -282,6 +335,7 @@ class LostYearStoryScreen{
     this.routeHome.querySelector('[data-continue-route]')?.addEventListener('click',()=>this.continueRoute());
     this.routeHome.querySelector('[data-open-manual]')?.addEventListener('click',()=>openCombatManual());
     this.routeHome.querySelector('[data-free-explore]:not(:disabled)')?.addEventListener('click',()=>this.startStep('rrvvfo-road','freeExplore'));
+    this.routeHome.querySelector('[data-route-home-details]')?.addEventListener('click',event=>this.openRouteDetails(LOST_YEAR_ROUTES[0],event.currentTarget));
     this.routeHome.querySelectorAll('[data-chapter-number]:not(:disabled)').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.chapterNumber))));
     this.routeHome.querySelectorAll('[data-replay-chapter]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.replayChapter),{replay:true})));
     if(focus)(this.routeHome.querySelector('[data-continue-route]:not(:disabled)')||this.routeHome.querySelector('[data-chapter-number]:not(:disabled)')||this.routeHome.querySelector('[data-replay-chapter]'))?.focus();

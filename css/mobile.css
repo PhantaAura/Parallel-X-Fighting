@@ -68,7 +68,10 @@ body.touch-match-active canvas{max-height:calc(var(--mobile-vh) - var(--safe-top
 .combatTouch{border-radius:50%;font-size:clamp(8px,1.45vw,12px);padding:2px}
 .combatTouch.light{border-color:#ffb36c;background:radial-gradient(circle at 35% 25%,#ff934de8,#75270de8 72%)}
 .combatTouch.heavy{border-color:#ffe585;background:radial-gradient(circle at 35% 25%,#e5a83de8,#614012e8 72%)}
-.combatTouch.special{border-color:#7de9ff;background:radial-gradient(circle at 35% 25%,#298fd8e8,#183163e8 72%)}
+.combatTouch.grab{border-color:#ffaaa0;background:radial-gradient(circle at 35% 25%,#c34e4ee8,#4d1b23e8 72%)}
+.combatTouch.charge{border-color:#ffe69a;background:radial-gradient(circle at 35% 25%,#b58b37e8,#49350fe8 72%)}
+.combatTouch.interact{display:none!important;border-color:#b9f8d2;background:radial-gradient(circle at 35% 25%,#39996de8,#123d2ce8 72%)}
+.combatTouch.interact.storyVisible{display:flex!important}
 .combatTouch.block{border-color:#a8f4ff;background:radial-gradient(circle at 35% 25%,#2e7798e8,#142e49e8 72%)}
 .combatTouch.ultimate{border-color:#ff75ec;background:radial-gradient(circle at 35% 25%,#b32ba6e8,#40164fe8 72%)}
 .combatTouch.breaker{border-color:#fff;background:radial-gradient(circle at 35% 25%,#7e89a8e8,#272b3de8 72%)}
@@ -78,7 +81,6 @@ body.touch-match-active canvas{max-height:calc(var(--mobile-vh) - var(--safe-top
 .utilityTouch{border-radius:11px;font-size:9px;background:#101522df}
 .control-disabled{display:none!important}
 .touchLayer:not(.training-touch) #touchTrainingReset{display:none}
-.touchLayer:not([data-fighter="bark"]) #touchCounter{display:none}
 .touchLayer:not([data-fighter="rrvvfo"]) #touchLens{display:none}
 .touchLayer.touch-controls-disabled [data-control-id]:not(#touchPause):not(#touchSettingsGame),
 .touchLayer.touch-controls-disabled .touchClashButton{display:none!important}

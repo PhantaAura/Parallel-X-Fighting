@@ -1,5 +1,5 @@
-export const BUILD_VERSION='Prototype 2.9A.2 — Chapter 2 HUD & Story Menu Hotfix';
-export const SAVE_SCHEMA_VERSION=241;
+export const BUILD_VERSION='Prototype 2.9A.7 — Casual Player Retention Pass';
+export const SAVE_SCHEMA_VERSION=244;
 export const BUILD_FEATURES=Object.freeze([
   'combat-2.9A','controller-mobile','rrvvfo-sprites-v2','revvfo-sprites','qol-2.3.5b',
   'arena-pipeline','lost-year-story','mission-0','mission-1-tutorial','mission-2-full-tournament',
@@ -24,6 +24,12 @@ export const BUILD_FEATURES=Object.freeze([
   'story-startup-error-screen','dialogue-skip-confirmation','exit-restart-confirmations','forced-landscape-story',
   'story-mobile-menu-repair','story-minimap','fullscreen-story-map','objective-compass','exploration-hud-mode',
   'chapter2-story-menu','chapter2-clear-combat-hud','chapter2-progression-in-menu',
+  'shared-chapter-1-2-3-story-engine','unified-story-input-modes','unified-story-hud-modes','unified-story-dialogue-presentation',
+  'guided-eight-step-combat-tutorial','live-tutorial-checklist','tutorial-control-highlights','tutorial-inactivity-help','fixed-charge-step','fixed-lens-final-step','tutorial-restart-repair',
   'chapter3-progress-restore','chapter3-development-preview','expanded-training-region','nonlinear-investigation-hub',
-  'multiple-blocked-routes','npc-clue-tracking','strange-man-lead','underground-base-entrance','favicon'
+  'unified-story-runtime-adoption','single-story-runtime-controller','shared-story-command-filter','shared-story-hud-controller','shared-story-transition-api','dialogue-lifecycle-cleanup','legacy-mobile-overlay-suppression','tutorial-focus-safe-ability-locks','tutorial-success-detection','adaptive-tutorial-prompts','tutorial-progressive-ability-unlocks','tutorial-clean-hud','landscape-main-menu-repair','mobile-route-details-modal','design-token-foundation','animated-title-presentation','menu-character-silhouettes','arcade-3x-tooltip','task-based-loading-progress','procedural-original-menu-dojo-tournament-music','consistent-perfect-parry-presentation','fighter-development-status','sage-manual-public-guide','training-suggested-drills','single-release-cache-id','plain-story-section-labels','multiple-blocked-routes','npc-clue-tracking','strange-man-lead','underground-base-entrance','chapter-controls-source-of-truth','shared-mouse-semantic-input','mouse-tutorial-prompts',
+  'casual-quick-battle','fair-100-hp-cpu','finished-roster-filter','truthful-lens-predictions','reduced-lens-cost',
+  'compact-manual-unlocks','movement-jump-dash-warmup','road-escape-retry','first-to-one-road-fight','dedicated-interact-action',
+  'device-aware-exploration-prompts','arena-training-default','classic-training-advanced-lab','guard-fatigue-warning','selected-ability-hotbar',
+  'simplified-fighter-setup','advanced-settings-collapse','touch-hotbar-safe-layout','favicon'
 ]);

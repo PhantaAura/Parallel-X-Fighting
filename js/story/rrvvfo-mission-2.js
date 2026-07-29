@@ -1,9 +1,9 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a2-story-hud-20260728';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a2-story-hud-20260728';
-import {applyStoryProgressionToFighter,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a2-story-hud-20260728';
-import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a7-casual-retention-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a7-casual-retention-20260729';
+import {applyStoryProgressionToFighter,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a7-casual-retention-20260729';
+import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -62,7 +62,7 @@ function buildUI(){
     </div>
 
     <div class="chapter2Prompt" data-c2-prompt hidden>
-      <strong data-c2-prompt-title>INTERACT</strong><span>LIGHT ATTACK / ENTER</span>
+      <strong data-c2-prompt-title>INTERACT</strong><span data-c2-prompt-detail>PRESS INTERACT</span>
     </div>
 
     <button class="tournamentRunButton" type="button" data-tournament-run hidden>RUN</button>
@@ -81,9 +81,9 @@ function buildUI(){
         <small>NON-STORY ENCOUNTER</small><h2>ESCAPE SEQUENCE</h2>
         <div class="qteSequence" data-c2-qte-sequence></div>
         <div class="qteButtons">
-          <button type="button" data-c2-qte-input="ArrowLeft">←</button>
+          <button type="button" data-c2-qte-input="KeyA">←</button>
           <button type="button" data-c2-qte-input="Space">JUMP</button>
-          <button type="button" data-c2-qte-input="ArrowRight">→</button>
+          <button type="button" data-c2-qte-input="KeyD">→</button>
         </div>
         <div class="qteTimer"><i data-c2-qte-timer></i></div>
       </article>
@@ -214,8 +214,13 @@ class RrvvfoMission2{
   }
 
   start(){
-    resetArenaBattleInstance();
-    this.battle=new ArenaBattle('tournament-hub');
+    this.battle=createStoryBattle({stageId:'tournament-hub'});
+    this.engine=attachStoryEngine(this.battle,{
+      chapterLabel:'RRVVFO CHAPTER 2',
+      stageName:'LOCAL TOURNAMENT GROUNDS',
+      rootClasses:['chapter2StoryActive'],
+      getMode:()=>this.engine?.dialogue?'dialogue':this.mode
+    });
     this.patchBattle();
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART MATCH?',message:'Restart the active tournament fight at 0–0?',confirmLabel:'RESTART'});
     if(this.replayMode){
@@ -231,187 +236,116 @@ class RrvvfoMission2{
     }else{
       this.enterHub({opening:true});
     }
+    this.engine.sync(true);
     return this;
   }
 
   patchBattle(){
     const battle=this.battle;
-    const baseInput=battle.input.bind(battle);
-    const baseCpu=battle.cpu.bind(battle);
-    const baseCast=battle.castAbility.bind(battle);
-    const baseUpdate=battle.update.bind(battle);
-    const baseApplyDamage=battle.applyDamage.bind(battle);
-    const baseDraw=battle.draw.bind(battle);
-    const baseDrawFighterLayer=battle.drawFighterLayer.bind(battle);
-    const baseFlipFor=battle.flipFor.bind(battle);
-    const baseDrawFallback2D=battle.drawFallback2D.bind(battle);
-    const baseExit=battle.exit.bind(battle);
-
-    battle.input=()=>{
-      if(this.mode==='hub'){
-        const command=baseInput();
-        const interact=Boolean(command.light);
-        if(interact&&!this.interactHeld)this.tryInteract();
-        this.interactHeld=interact;
-        return{...command,light:false,heavy:false,launcher:false,block:false,charge:false,grab:false,special:false};
-      }
-      if(this.mode==='fight'){
-        const command=baseInput();
-        if(this.currentFight?.final&&this.finalPhase==='fatigue'){
-          return{...command,x:(command.x||0)*.82,z:(command.z||0)*.82,dash:false};
+    this.engine.useChapterProfile({
+      input:next=>{
+        if(this.mode==='hub'){
+          const command=next(),interact=Boolean(command.interact);
+          if(interact&&!this.interactHeld)this.tryInteract();
+          this.interactHeld=interact;
+          return this.engine.commandForMode(command,'exploration',{allowJump:true,allowDash:true,allowInteract:true});
         }
-        return command;
-      }
-      if(this.mode==='spectator')return baseCpu(battle.fighters[0],battle.fighters[1],1/60);
-      return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false};
-    };
-
-    battle.cpu=(fighter,foe,dt)=>{
-      if(this.mode!=='fight'&&this.mode!=='spectator')return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false};
-      // Chapter 2 now uses the same state-based AI as the rest of the arena.
-      // Character identity (Wade speed pressure, Bark defense, Pouki rushdown,
-      // Plouke/Sage timing) lives in ArenaBattle instead of random story overrides.
-      return baseCpu(fighter,foe,dt);
-    };
-
-    battle.castAbility=slot=>{
-      if(this.mode==='hub'){
-        battle.notice('SAVE IT FOR THE RING',1.1);
-        return false;
-      }
-      if(this.mode!=='fight')return false;
-      if(this.currentFight?.final&&slot===5){
-        if(this.finalPhase==='awakening-ready'){
-          this.triggerAwakeningAttempt();
-          return true;
+        if(this.mode==='fight'){
+          const command=this.engine.commandForMode(next(),'combat');
+          if(this.currentFight?.final&&this.finalPhase==='fatigue')return{...command,x:(command.x||0)*.82,z:(command.z||0)*.82,dash:false};
+          return command;
         }
-        battle.notice('FIRE AWAKENING WILL NOT ANSWER YET',1.2);
-        return false;
-      }
-      return baseCast(slot);
-    };
-
-    battle.applyDamage=(attacker,target,damage,meta={})=>{
-      let adjusted=damage;
-
-      if(this.mode==='fight'&&this.currentFight?.final){
-        if(attacker===battle.fighters[1])adjusted*=this.finalPhase==='fatigue'?1.34:1.12;
-        if(attacker===battle.fighters[0]&&this.finalPhase==='fatigue')adjusted*=.78;
-      }
-      if(this.mode==='spectator'){
-        if(attacker.id==='pouki')adjusted*=2.65;
-        if(attacker.id==='bark')adjusted*=.48;
-      }
-      const connected=baseApplyDamage(attacker,target,adjusted,meta);
-      if(!connected)return connected;
-
-      const player=battle.fighters[0];
-      const foe=battle.fighters[1];
-      if(this.mode==='fight'&&this.currentFight?.final){
-        if(target===foe&&foe.hp<=48){
-          foe.hp=48;
-          if(this.finalPhase==='opening')queueMicrotask(()=>this.beginFinalFatigue());
+        if(this.mode==='spectator')return this.engine.invokeRuntime('cpu',[battle.fighters[0],battle.fighters[1],1/60]);
+        return this.engine.commandForMode({},this.mode);
+      },
+      cpu:(next,fighter,foe,dt)=>{
+        if(this.mode!=='fight'&&this.mode!=='spectator')return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false};
+        return next(fighter,foe,dt);
+      },
+      castAbility:(next,slot)=>{
+        if(this.mode==='hub'){battle.notice('SAVE IT FOR THE RING',1.1);return false}
+        if(this.mode!=='fight')return false;
+        if(this.currentFight?.final&&slot===5){
+          if(this.finalPhase==='awakening-ready'){this.triggerAwakeningAttempt();return true}
+          battle.notice('FIRE AWAKENING WILL NOT ANSWER YET',1.2);return false;
         }
-        if(target===player&&player.hp<=27){
-          player.hp=27;
-          if(this.finalPhase==='opening'||this.finalPhase==='fatigue')queueMicrotask(()=>this.offerAwakening());
+        return next(slot);
+      },
+      applyDamage:(next,attacker,target,damage,meta={})=>{
+        let adjusted=damage;
+        if(this.mode==='fight'&&this.currentFight?.final){
+          if(attacker===battle.fighters[1])adjusted*=this.finalPhase==='fatigue'?1.34:1.12;
+          if(attacker===battle.fighters[0]&&this.finalPhase==='fatigue')adjusted*=.78;
         }
-      }else if(this.mode==='fight'){
-        if(target===foe&&foe.hp<=0){
-          foe.hp=1;
-          queueMicrotask(()=>this.handleFightKo(true));
-        }else if(target===player&&player.hp<=0){
-          player.hp=1;
-          queueMicrotask(()=>this.handleFightKo(false));
+        if(this.mode==='spectator'){
+          if(attacker.id==='pouki')adjusted*=2.65;
+          if(attacker.id==='bark')adjusted*=.48;
         }
-      }else if(this.mode==='spectator'){
-        if(target===player&&player.hp<=0){
-          player.hp=1;
-          queueMicrotask(()=>this.finishPoukiExhibition());
-        }else if(target===foe&&foe.hp<=58){
-          foe.hp=58;
+        const connected=next(attacker,target,adjusted,meta);
+        if(!connected)return connected;
+        const player=battle.fighters[0],foe=battle.fighters[1];
+        if(this.mode==='fight'&&this.currentFight?.final){
+          if(target===foe&&foe.hp<=48){foe.hp=48;if(this.finalPhase==='opening')queueMicrotask(()=>this.beginFinalFatigue())}
+          if(target===player&&player.hp<=27){player.hp=27;if(this.finalPhase==='opening'||this.finalPhase==='fatigue')queueMicrotask(()=>this.offerAwakening())}
+        }else if(this.mode==='fight'){
+          if(target===foe&&foe.hp<=0){foe.hp=1;queueMicrotask(()=>this.handleFightKo(true))}
+          else if(target===player&&player.hp<=0){player.hp=1;queueMicrotask(()=>this.handleFightKo(false))}
+        }else if(this.mode==='spectator'){
+          if(target===player&&player.hp<=0){player.hp=1;queueMicrotask(()=>this.finishPoukiExhibition())}
+          else if(target===foe&&foe.hp<=58)foe.hp=58;
         }
+        return connected;
+      },
+      update:(next,dt)=>{
+        next(dt);
+        if(!battle.active||this.aborted)return;
+        this.areaTimer=Math.max(0,this.areaTimer-dt);
+        if(!this.areaTimer)this.root.querySelector('[data-c2-area]').hidden=true;
+        if(this.mode==='hub'){
+          const player=battle.fighters[0];player.hp=100;player.en=100;player.guard=100;battle.time=9999;this.updateHub(dt);
+        }else if(this.mode==='fight'){battle.time=9999;this.updateFight(dt)}
+        else if(this.mode==='spectator'){battle.time=9999;this.updateSpectator(dt)}
+        else if(this.mode==='qte')this.updateQte();
+        else if(this.mode==='clash')this.updateBeamClash();
+      },
+      flipFor:(next,fighter)=>{
+        if(this.mode==='hub'&&fighter===battle.fighters[0]){
+          const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
+          if(speed>.05){
+            const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
+            const ahead=battle.renderer.project(fighter.x+(fighter.moveX||fighter.aimX||1)*120,80+fighter.y,fighter.z+(fighter.moveZ||fighter.aimZ||0)*120);
+            this.playerFlip=ahead.x<self.x;
+          }
+          return this.playerFlip;
+        }
+        return next(fighter);
+      },
+      drawFighterLayer:(next,fighters)=>next(this.mode==='hub'?fighters.filter(fighter=>fighter===battle.fighters[0]):fighters),
+      drawFallback2D:(next,context,fighter,rect)=>{
+        const palettes={
+          rrvvfo:{body:'#b82329',hair:'#754f35',skin:'#8f5539'},bark:{body:'#8a6036',hair:'#151515',skin:'#a96f4e'},
+          wade:{body:'#287cc8',hair:'#f0d12c',skin:'#9a6041'},pouki:{body:'#45666b',hair:'#d9d3c4',skin:'#86583f'},
+          plouke:{body:'#34343d',hair:'#ece6d5',skin:'#8c5b40'},sage:{body:'#d8e4ef',hair:'#f5f7fa',skin:'#8d5b40'},
+          'practice-fighter':{body:'#506f9e',hair:'#2d2636',skin:'#986044'},'qualifier-fighter':{body:'#a05d3b',hair:'#25221f',skin:'#8f5a3e'},
+          'bracket-fighter':{body:'#7855a5',hair:'#382746',skin:'#9b6245'},'grunt-a':{body:'#626a76',hair:'#292c33',skin:'#8b5b42'},
+          'grunt-b':{body:'#4f5662',hair:'#17191d',skin:'#8b5b42'}
+        };
+        const palette=palettes[fighter.id];
+        if(!palette)return next(context,fighter,rect);
+        const cx=rect.x+rect.width/2,scale=rect.height/190;
+        context.fillStyle='rgba(0,0,0,.34)';context.beginPath();context.ellipse(cx,rect.y+rect.height-3,35*scale,10*scale,0,0,Math.PI*2);context.fill();
+        context.fillStyle=palette.body;context.fillRect(cx-24*scale,rect.y+70*scale,48*scale,82*scale);
+        context.fillStyle=palette.skin;context.beginPath();context.arc(cx,rect.y+50*scale,20*scale,0,0,Math.PI*2);context.fill();
+        context.fillStyle=palette.hair;context.fillRect(cx-24*scale,rect.y+20*scale,48*scale,25*scale);
+        context.fillStyle='#fff';context.font=`900 ${Math.max(8,11*scale)}px Inter,Arial,sans-serif`;context.textAlign='center';context.fillText(fighter.name.toUpperCase(),cx,rect.y+8*scale);
+      },
+      draw:next=>{next();if(this.mode==='hub')this.drawHubExtras();if(this.currentFight?.final&&['fatigue','awakening-ready','awakening'].includes(this.finalPhase))this.drawFinalFatigue()},
+      exit:async next=>{
+        const leave=await storyConfirm({title:'EXIT CHAPTER 2?',message:'Leave the tournament? Official fights restart from 0–0, while completed story checkpoints remain saved.',confirmLabel:'EXIT CHAPTER'});
+        if(!leave)return;
+        next();this.exitToStory();
       }
-      return connected;
-    };
-
-    battle.update=dt=>{
-      baseUpdate(dt);
-      if(!battle.active||this.aborted)return;
-      this.areaTimer=Math.max(0,this.areaTimer-dt);
-      if(!this.areaTimer)this.root.querySelector('[data-c2-area]').hidden=true;
-      if(this.mode==='hub'){
-        const player=battle.fighters[0];
-        player.hp=100;player.en=100;player.guard=100;
-        battle.time=9999;
-        this.updateHub(dt);
-      }else if(this.mode==='fight'){
-        battle.time=9999;
-        this.updateFight(dt);
-      }else if(this.mode==='spectator'){
-        battle.time=9999;
-        this.updateSpectator(dt);
-      }else if(this.mode==='qte'){
-        this.updateQte();
-      }else if(this.mode==='clash'){
-        this.updateBeamClash();
-      }
-    };
-
-    battle.flipFor=fighter=>{
-      if(this.mode==='hub'&&fighter===battle.fighters[0]){
-        const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
-        if(speed>.05){
-          const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
-          const ahead=battle.renderer.project(fighter.x+(fighter.moveX||fighter.aimX||1)*120,80+fighter.y,fighter.z+(fighter.moveZ||fighter.aimZ||0)*120);
-          this.playerFlip=ahead.x<self.x;
-        }
-        return this.playerFlip;
-      }
-      return baseFlipFor(fighter);
-    };
-
-    battle.drawFighterLayer=fighters=>{
-      const visible=this.mode==='hub'?fighters.filter(fighter=>fighter===battle.fighters[0]):fighters;
-      baseDrawFighterLayer(visible);
-    };
-
-    battle.drawFallback2D=(context,fighter,rect)=>{
-      const palettes={
-        rrvvfo:{body:'#b82329',hair:'#754f35',skin:'#8f5539'},
-        bark:{body:'#8a6036',hair:'#151515',skin:'#a96f4e'},
-        wade:{body:'#287cc8',hair:'#f0d12c',skin:'#9a6041'},
-        pouki:{body:'#45666b',hair:'#d9d3c4',skin:'#86583f'},
-        plouke:{body:'#34343d',hair:'#ece6d5',skin:'#8c5b40'},
-        sage:{body:'#d8e4ef',hair:'#f5f7fa',skin:'#8d5b40'},
-        'practice-fighter':{body:'#506f9e',hair:'#2d2636',skin:'#986044'},
-        'qualifier-fighter':{body:'#a05d3b',hair:'#25221f',skin:'#8f5a3e'},
-        'bracket-fighter':{body:'#7855a5',hair:'#382746',skin:'#9b6245'},
-        'grunt-a':{body:'#626a76',hair:'#292c33',skin:'#8b5b42'},
-        'grunt-b':{body:'#4f5662',hair:'#17191d',skin:'#8b5b42'}
-      };
-      const palette=palettes[fighter.id];
-      if(!palette){baseDrawFallback2D(context,fighter,rect);return}
-      const cx=rect.x+rect.width/2,scale=rect.height/190;
-      context.fillStyle='rgba(0,0,0,.34)';context.beginPath();context.ellipse(cx,rect.y+rect.height-3,35*scale,10*scale,0,0,Math.PI*2);context.fill();
-      context.fillStyle=palette.body;context.fillRect(cx-24*scale,rect.y+70*scale,48*scale,82*scale);
-      context.fillStyle=palette.skin;context.beginPath();context.arc(cx,rect.y+50*scale,20*scale,0,Math.PI*2);context.fill();
-      context.fillStyle=palette.hair;context.fillRect(cx-24*scale,rect.y+20*scale,48*scale,25*scale);
-      context.fillStyle='#fff';context.font=`900 ${Math.max(8,11*scale)}px Inter,Arial,sans-serif`;context.textAlign='center';context.fillText(fighter.name.toUpperCase(),cx,rect.y+8*scale);
-    };
-
-    battle.draw=()=>{
-      baseDraw();
-      if(this.mode==='hub')this.drawHubExtras();
-      if(this.currentFight?.final&&['fatigue','awakening-ready','awakening'].includes(this.finalPhase))this.drawFinalFatigue();
-    };
-
-    battle.exit=async()=>{
-      const leave=await storyConfirm({title:'EXIT CHAPTER 2?',message:'Leave the tournament? Official fights restart from 0–0, while completed story checkpoints remain saved.',confirmLabel:'EXIT CHAPTER'});
-      if(!leave)return;
-      baseExit();
-      this.exitToStory();
-    };
+    });
   }
 
   enterHub({opening=false,spawn=null}={}){
@@ -427,10 +361,10 @@ class RrvvfoMission2{
     this.battle.root.classList.remove('chapter2FightMode');
     this.root.classList.remove('isFight');
     this.battle.root.querySelector('[data-stage-name]').textContent='LOCAL TOURNAMENT GROUNDS';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.2 • CHAPTER 2';
+    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.7 • RRVVFO CHAPTER 2';
     const player=this.battle.fighters[0];
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' LOCAL TOURNAMENT HUB • OFFICIAL RING-OUT RULES';
+    if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • OFFICIAL RING-OUT RULES';
     applyStoryProgressionToFighter(player,{...this.progress,storyLevel:this.level,storyXp:this.xp});
     const point=spawn||this.hubSpawn;
     player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.reset(point.x,point.z);
@@ -501,7 +435,7 @@ class RrvvfoMission2{
     this.nearby=candidates.sort((a,b)=>distance(player,a)-distance(player,b))[0]||null;
     const prompt=this.root.querySelector('[data-c2-prompt]');
     prompt.hidden=!this.nearby;
-    if(this.nearby)this.root.querySelector('[data-c2-prompt-title]').textContent=this.nearby.label;
+    if(this.nearby){this.root.querySelector('[data-c2-prompt-title]').textContent=this.nearby.label;const detail=this.root.querySelector('[data-c2-prompt-detail]');if(detail)detail.textContent=this.engine.prompt('interact','E').toUpperCase();}
   }
 
   tryInteract(){
@@ -634,12 +568,13 @@ class RrvvfoMission2{
     this.pendingGrunt=npc;
     this.mode='qte';this.battle.phase='story';
     this.root.querySelector('[data-c2-qte]').hidden=false;
-    this.qteSequence=['ArrowLeft','Space','ArrowRight'];this.qteIndex=0;this.qteDeadline=performance.now()+3600;
+    this.qteSequence=['KeyA','Space','KeyD'];this.qteIndex=0;this.qteDeadline=performance.now()+3600;
     this.renderQte();
   }
 
   renderQte(){
-    const labels={ArrowLeft:'←',ArrowRight:'→',Space:'JUMP'};
+    const device=this.engine?.activeInput?.()||'keyboard';
+    const labels={KeyA:device==='keyboard'?'A':'←',KeyD:device==='keyboard'?'D':'→',Space:this.engine?.prompt?.('jump','SPACE')||'SPACE'};
     this.root.querySelector('[data-c2-qte-sequence]').innerHTML=this.qteSequence.map((key,index)=>`<span class="${index<this.qteIndex?'done':index===this.qteIndex?'current':''}">${labels[key]}</span>`).join('');
   }
 
@@ -655,10 +590,10 @@ class RrvvfoMission2{
     const remaining=clamp((this.qteDeadline-performance.now())/3600,0,1);
     this.root.querySelector('[data-c2-qte-timer]').style.width=`${remaining*100}%`;
     if(remaining<=0){this.finishRunQte(false);return}
-    const pads=navigator.getGamepads?.()||[];
-    for(const pad of pads){
-      if(!pad)continue;
-      const values={ArrowLeft:pad.buttons[14]?.pressed||pad.axes[0]<-.55,ArrowRight:pad.buttons[15]?.pressed||pad.axes[0]>.55,Space:pad.buttons[0]?.pressed};
+    const pads=navigator.getGamepads?.()||[],assignment=sharedInput.getControllerAssignment(1);
+    const activePads=assignment===null?[...pads].filter(Boolean):[pads[assignment]].filter(Boolean);
+    for(const pad of activePads){
+      const values={KeyA:pad.buttons[14]?.pressed||pad.axes[0]<-.55,KeyD:pad.buttons[15]?.pressed||pad.axes[0]>.55,Space:pad.buttons[sharedInput.controllerMapping(1).buttons.j]?.pressed};
       for(const [key,pressed] of Object.entries(values)){
         const before=this.qteGamepadState[key];this.qteGamepadState[key]=pressed;
         if(pressed&&!before){this.acceptQteInput(key);return}
@@ -823,7 +758,7 @@ class RrvvfoMission2{
         if(seconds!==this.lastAwakeningSecond){
           this.lastAwakeningSecond=seconds;
           this.setObjective('TRY FIRE AWAKENING',seconds>0?`Press hotbar slot 5. Automatic fallback in ${seconds}...`:'Fire Awakening is triggering...');
-          this.battle.notice(seconds>0?`PRESS 5 • ${seconds}`:'AUTO ACTIVATING',.9);
+          this.battle.notice(seconds>0?`${this.engine.prompt('ability5','PRESS 5')} • ${seconds}`:'AUTO ACTIVATING',.9);
         }
         if(remaining<=0)this.triggerAwakeningAttempt();
       }
@@ -1010,7 +945,7 @@ class RrvvfoMission2{
       this.mode='fight';this.battle.phase='play';
       this.awakeningReadyAt=performance.now()+9000;this.lastAwakeningSecond=null;
       this.setObjective('TRY FIRE AWAKENING','Press hotbar slot 5 before Rrvvfo runs out of strength.');
-      this.battle.notice('FIRE AWAKENING READY • PRESS 5',2);
+      this.battle.notice(`FIRE AWAKENING READY • ${this.engine.prompt('ability5','PRESS 5')}`,2);
     });
   }
 
@@ -1220,12 +1155,9 @@ class RrvvfoMission2{
   showDialogue(lines,onComplete){
     const previousMode=this.mode;
     this.mode='dialogue';
-    if(this.battle)this.battle.phase='story';
-    if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
-    this.dialogue?.overlay?.remove();
-    const dialogue=new SonicBattleDialogue({typeSpeed:17,onComplete:()=>{
-      document.removeEventListener('keydown',dialogue._onKey);
-      dialogue.overlay?.remove();this.dialogue=null;
+    this.engine?.setGameplayState('dialogue',{phase:'story'});
+    const dialogue=this.engine.showDialogue(lines,{typeSpeed:17,onComplete:()=>{
+      this.dialogue=null;
       if(this.aborted)return;
       if(this.mode==='dialogue'){
         this.mode=previousMode==='dialogue'?'hub':previousMode;
@@ -1233,7 +1165,7 @@ class RrvvfoMission2{
       }
       onComplete?.();
     }});
-    this.dialogue=dialogue;dialogue.show(lines);
+    this.dialogue=dialogue;
   }
 
   onKey(event){
@@ -1249,11 +1181,11 @@ class RrvvfoMission2{
     if((event.key==='Escape'||event.key==='Tab')&&this.canOpenStoryMenu()){
       event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();return;
     }
-    if(this.mode==='hub'&&event.key==='Enter'){
+    if(this.mode==='hub'&&(event.key==='Enter'||event.code==='KeyE')){
       event.preventDefault();event.stopImmediatePropagation();this.tryInteract();return;
     }
-    if(this.mode==='qte'&&['ArrowLeft','ArrowRight','Space'].includes(event.code==='Space'?'Space':event.key)){
-      event.preventDefault();event.stopImmediatePropagation();this.acceptQteInput(event.code==='Space'?'Space':event.key);return;
+    if(this.mode==='qte'&&['KeyA','KeyD','Space'].includes(event.code)){
+      event.preventDefault();event.stopImmediatePropagation();this.acceptQteInput(event.code);return;
     }
     if(this.mode==='clash'&&(event.code==='Space'||event.key.toLowerCase()==='j'||event.key==='1')){
       event.preventDefault();event.stopImmediatePropagation();this.clashInput();return;
@@ -1351,6 +1283,7 @@ class RrvvfoMission2{
     if(this.battle?.active)this.battle.stopMatch();
     this.battle?.root?.classList.remove('chapter2HubMode','chapter2FightMode','chapter2StoryActive');
     this.battle?.root?.classList.add('hidden');
+    destroyStoryBattle(this.battle);
     this.root.remove();activeMission=null;this.onExit();
   }
 }

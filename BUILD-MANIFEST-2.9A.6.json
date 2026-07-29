@@ -1,0 +1,42 @@
+{
+  "name": "Parallels X Prototype 2.9A.6 Complete Cumulative Build",
+  "version": "2.9A.6",
+  "build_label": "Prototype 2.9A.6 \u2014 Engine, Controls & Reliability Polish",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cache_tag": "29a6-engine-consolidation-20260729",
+  "save_schema": 244,
+  "file_count": 170,
+  "uncompressed_bytes": 11173810,
+  "active_stylesheets": 8,
+  "javascript_files": 67,
+  "json_files": 6,
+  "showcase_sprite_fighters": [
+    "rrvvfo",
+    "revvfo",
+    "sage"
+  ],
+  "story_runtime": {
+    "engine": "StoryEngineSession 2.9A.6",
+    "foundation": "ArenaBattle",
+    "chapters": [
+      "Chapter 1",
+      "Tournament Road",
+      "Chapter 2",
+      "Chapter 3 preview"
+    ],
+    "direct_chapter_method_overrides": 0
+  },
+  "validation": [
+    "JavaScript syntax checks passed",
+    "JSON parsing passed",
+    "HTML local references passed",
+    "relative JavaScript imports passed",
+    "duplicate HTML ID check passed",
+    "single active cache identifier confirmed",
+    "legacy character-select Story option absent",
+    "development source artwork absent",
+    "unified keyboard/controller depth input unit check passed"
+  ],
+  "browser_validation_limit": "Headless Chromium did not complete local navigation in this environment; full WebGL playtest remains required."
+}

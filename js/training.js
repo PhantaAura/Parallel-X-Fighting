@@ -35,6 +35,6 @@ export function dummyCommand(fighter){
   const mode=trainingState.dummy,block=['always','perfect'].includes(mode)||(mode==='after'&&trainingState.afterFirstHit)||(mode==='stationary'&&trainingState.stationaryBlock)||(mode==='random'&&fighter?.tick%180<55);
   return{
     down:action=>action==='b'&&block||action==='l'&&mode==='walk'&&fighter?.tick%160<80||action==='r'&&mode==='walk'&&fighter?.tick%160>=80,
-    pressed:action=>{if(action==='k'&&(mode==='breaker'||mode==='random')&&fighter?.stun>0)return true;if(action==='h'&&trainingState.perfectBlockPractice&&fighter?.tick%120===0)return true;if(action==='j'&&mode==='jump'&&fighter?.grounded&&fighter?.tick%120===0)return true;if(action==='a'&&mode==='counterattack'&&trainingState.afterFirstHit){trainingState.afterFirstHit=false;return true}return action==='t'&&mode==='throw'&&fighter?.tick%90===0}
+    pressed:action=>{if(action==='q'&&(mode==='breaker'||mode==='random')&&fighter?.stun>0)return true;if(action==='h'&&trainingState.perfectBlockPractice&&fighter?.tick%120===0)return true;if(action==='j'&&mode==='jump'&&fighter?.grounded&&fighter?.tick%120===0)return true;if(action==='a'&&mode==='counterattack'&&trainingState.afterFirstHit){trainingState.afterFirstHit=false;return true}return action==='t'&&mode==='throw'&&fighter?.tick%90===0}
   };
 }

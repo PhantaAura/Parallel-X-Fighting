@@ -1,8 +1,7 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
-import {clampToStage} from '../arena/arena-stages.js?v=29a2-story-hud-20260728';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a2-story-hud-20260728';
-import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
+import {clampToStage} from '../arena/arena-stages.js?v=29a7-casual-retention-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
+import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -104,23 +103,17 @@ class RrvvfoMission0{
   }
 
   start(){
-    resetArenaBattleInstance();
-    this.battle=new ArenaBattle('training-field');
-    const sage=this.battle.fighters[1];
-    sage.id='sage';
-    sage.name='The Sage';
-    sage.accent='#d9e7f3';
-    sage.cpu=true;
-    sage.appearance='down';
+    this.battle=createStoryBattle({stageId:'training-field',opponent:{id:'sage',name:'The Sage',accent:'#d9e7f3',cpu:true,appearance:'down'}});
+    this.engine=attachStoryEngine(this.battle,{
+      chapterLabel:'RRVVFO CHAPTER 1',
+      stageName:'SAGE TRAINING FIELD',
+      rootClasses:['storyMission0'],
+      getMode:()=>this.engine?.dialogue?'dialogue':this.completed?'complete':this.battle?.phase==='play'?'tutorial':'story'
+    });
     this.patchBattle();
-    this.battle.start();
-    this.battle.root.classList.add('storyMission0');
-    this.battle.root.querySelector('[data-stage-name]').textContent='SAGE TRAINING FIELD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.2 • RRVVFO CHAPTER 1';
+    this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','THE SAGE']});
     const badge=this.battle.root.querySelector('.badge');
-    if(badge?.lastChild)badge.lastChild.textContent=' CONTINUOUS ROUTE • SHOTS OF AGONY ORIGIN';
-    this.setArenaNames('RRVVFO','THE SAGE');
-    applyStoryProgressionToFighter(this.battle.fighters[0]);
+    if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • SHOTS OF AGONY ORIGIN';
     this.baseRestart=this.battle.restart.bind(this.battle);
     this.battle.restart=async()=>{
       const restart=await storyConfirm({title:'RESTART TRAINING?',message:'Restart Chapter 1 Part 1 from the opening dialogue?',confirmLabel:'RESTART'});
@@ -133,6 +126,8 @@ class RrvvfoMission0{
 
 
   resetMissionFlow(){
+    this.engine?.closeDialogue();
+    this.hideDialogueLayer();
     this.normalDodges=0;
     this.mastery=1;
     this.castSerial=0;
@@ -164,68 +159,64 @@ class RrvvfoMission0{
 
   patchBattle(){
     const battle=this.battle;
-    const baseApplyDamage=battle.applyDamage.bind(battle);
-    const baseUpdateSpecials=battle.updateSpecials.bind(battle);
-    const defaultExit=battle.exit.bind(battle);
-
     battle.castRevvfoBlast=()=>false;
-    battle.cpu=(fighter,foe,dt)=>{
-      this.sageAttackTimer-=dt;
-      const dx=foe.x-fighter.x,dz=foe.z-fighter.z,distance=Math.max(1,Math.hypot(dx,dz));
-      const waitingOnVolley=battle.volleyActive(foe);
-      let x=0,z=0,light=false;
-      if(!waitingOnVolley&&distance>150){x=dx/distance*.42;z=dz/distance*.42}
-      else if(!waitingOnVolley&&this.sageAttackTimer<=0&&distance<165){light=true;this.sageAttackTimer=1.1+Math.random()*.5}
-      return{x,z,jump:false,light,heavy:false,launcher:false,dash:false,block:false,special:false};
-    };
-    battle.castAbility=slot=>this.castTrainingAbility(slot);
-    battle.updateSpecials=dt=>{
-      baseUpdateSpecials(dt);
-      if(!this.completed){
-        const player=battle.fighters[0];
-        player.en=100;
-        if(player.cooldowns.shotsOfAgony>0)player.cooldowns.shotsOfAgony=Math.min(player.cooldowns.shotsOfAgony,.55);
-      }
-    };
-    battle.applyDamage=(attacker,target,damage,meta={})=>{
-      if(this.completed)return false;
-      if(target.id==='sage'){
-        const isPlayerShot=attacker.id==='rrvvfo'&&meta.kind==='projectile';
-        if(isPlayerShot&&this.activeVolleyCount>=4){
-          const connected=baseApplyDamage(attacker,target,Math.min(8,damage),meta);
-          if(connected&&!this.completed){
-            this.completed=true;
-            setTimeout(()=>{if(!this.aborted)this.finishMission()},260);
-          }
-          return connected;
+    this.engine.useChapterProfile({
+      cpu:(_next,fighter,foe,dt)=>{
+        this.sageAttackTimer-=dt;
+        const dx=foe.x-fighter.x,dz=foe.z-fighter.z,distance=Math.max(1,Math.hypot(dx,dz));
+        const waitingOnVolley=battle.volleyActive(foe);
+        let x=0,z=0,light=false;
+        if(!waitingOnVolley&&distance>150){x=dx/distance*.42;z=dz/distance*.42}
+        else if(!waitingOnVolley&&this.sageAttackTimer<=0&&distance<165){light=true;this.sageAttackTimer=1.1+Math.random()*.5}
+        return{x,z,jump:false,light,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false};
+      },
+      castAbility:(_next,slot)=>this.castTrainingAbility(slot),
+      updateSpecials:(next,dt)=>{
+        next(dt);
+        if(!this.completed){
+          const player=battle.fighters[0];
+          player.en=100;
+          if(player.cooldowns.shotsOfAgony>0)player.cooldowns.shotsOfAgony=Math.min(player.cooldowns.shotsOfAgony,.55);
         }
-        if(isPlayerShot){
-          if(this.handledCast!==this.castSerial){
-            this.handledCast=this.castSerial;
-            this.sageDodge(attacker,target,true);
-            setTimeout(()=>{if(!this.aborted)this.advanceMastery()},260);
+      },
+      applyDamage:(next,attacker,target,damage,meta={})=>{
+        if(this.completed)return false;
+        if(target.id==='sage'){
+          const isPlayerShot=attacker.id==='rrvvfo'&&meta.kind==='projectile';
+          if(isPlayerShot&&this.activeVolleyCount>=4){
+            const connected=next(attacker,target,Math.min(8,damage),meta);
+            if(connected&&!this.completed){
+              this.completed=true;
+              setTimeout(()=>{if(!this.aborted)this.finishMission()},260);
+            }
+            return connected;
           }
+          if(isPlayerShot){
+            if(this.handledCast!==this.castSerial){
+              this.handledCast=this.castSerial;
+              this.sageDodge(attacker,target,true);
+              setTimeout(()=>{if(!this.aborted)this.advanceMastery()},260);
+            }
+            return false;
+          }
+          this.sageDodge(attacker,target,false);
+          this.normalDodges++;
+          if(this.normalDodges>=3&&this.mastery===1)this.unlockShotsTraining();
           return false;
         }
-        this.sageDodge(attacker,target,false);
-        this.normalDodges++;
-        if(this.normalDodges>=3&&this.mastery===1)this.unlockShotsTraining();
-        return false;
+        if(attacker.id==='sage'&&target.id==='rrvvfo'){
+          const connected=next(attacker,target,Math.max(1,damage*.28),{...meta,knockback:Math.min(meta.knockback||28,38),stun:Math.min(meta.stun||.24,.18)});
+          target.hp=Math.max(1,target.hp);
+          return connected;
+        }
+        return next(attacker,target,damage,meta);
+      },
+      exit:async next=>{
+        const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave Chapter 1 training? Current mission progress will restart.',confirmLabel:'LEAVE TRAINING'});
+        if(!leave)return;
+        next();this.cleanup();this.onExit();
       }
-      if(attacker.id==='sage'&&target.id==='rrvvfo'){
-        const connected=baseApplyDamage(attacker,target,Math.max(1,damage*.28),{...meta,knockback:Math.min(meta.knockback||28,38),stun:Math.min(meta.stun||.24,.18)});
-        target.hp=Math.max(1,target.hp);
-        return connected;
-      }
-      return baseApplyDamage(attacker,target,damage,meta);
-    };
-    battle.exit=async()=>{
-      const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave Chapter 1 training? Current mission progress will restart.',confirmLabel:'LEAVE TRAINING'});
-      if(!leave)return;
-      defaultExit();
-      this.cleanup();
-      this.onExit();
-    };
+    });
   }
 
   configureHotbar(){
@@ -299,19 +290,17 @@ class RrvvfoMission0{
   }
 
   showOpeningDialogue(){
-    this.lines=[
-      {speaker:'THE SAGE',text:'Try concentrating your energy into your hand. Like Alt did when he fought you on the space base.',clones:0},
-      {speaker:'RRVVFO',text:"Unlike Alt, my arms aren't that big. I'm not as buff as him.",clones:0},
-      {speaker:'RRVVFO',text:'...Nothing. This is not working.',clones:0},
-      {speaker:'THE SAGE',text:'Concentrate. Stop trying to copy his muscles and copy what the energy did.',clones:1},
-      {speaker:'THE SAGE',text:'Ha! You found that out by yourself. Impressive.',clones:1},
-      {speaker:'RRVVFO',text:'Four. This is my maximum.',clones:4},
-      {speaker:'THE SAGE',text:'There are no maximums.',clones:4},
-      {speaker:'THE SAGE',text:'You made the copies. Now make all four attack together—and try to hit me.',clones:0,startFight:true}
-    ];
-    this.lineIndex=0;
-    this.showDialogueLayer();
-    this.renderDialogueLine();
+    this.previewClones(0);
+    this.engine.showDialogue([
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Try concentrating your energy into your hand. Like Alt did when he fought you on the space base.',tail:'down',onShow:()=>this.previewClones(0)},
+      {speaker:'RRVVFO',speakerClass:'p1',text:"Unlike Alt, my arms aren't that big. I'm not as buff as him.",tail:'down',onShow:()=>this.previewClones(0)},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'...Nothing. This is not working.',tail:'down',onShow:()=>this.previewClones(0)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Concentrate. Stop trying to copy his muscles and copy what the energy did.',tail:'down',onShow:()=>this.previewClones(1)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Ha! You found that out by yourself. Impressive.',tail:'down',onShow:()=>this.previewClones(1)},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Four. This is my maximum.',tail:'down',onShow:()=>this.previewClones(4)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'There are no maximums.',tail:'down',onShow:()=>this.previewClones(4)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'You made the copies. Now make all four attack together—and try to hit me.',tail:'down',onShow:()=>this.previewClones(0)}
+    ],{onComplete:()=>{this.previewClones(0);this.beginFight()}});
   }
 
   renderDialogueLine(){
@@ -365,8 +354,8 @@ class RrvvfoMission0{
   }
 
   unlockShotsTraining(){
-    this.setObjective('USE SHOTS TRAINING ×1','Press 2 or select the second hotbar slot. Build the technique from one coordinated clone to four.');
-    this.battle.notice('NORMAL ATTACKS ARE TOO OBVIOUS • USE SLOT 2',2);
+    this.setObjective('USE SHOTS TRAINING ×1',`${this.engine.prompt('ability2','PRESS 2')} or select the second hotbar slot. Build the technique from one coordinated clone to four.`);
+    this.battle.notice(`NORMAL ATTACKS ARE TOO OBVIOUS • ${this.engine.prompt('ability2','PRESS 2')}`,2);
   }
 
   castTrainingAbility(slot){
@@ -423,16 +412,16 @@ class RrvvfoMission0{
     battle.fighters[1].visualAction='hurtLight';
     battle.fighters[1].visualActionTime=.5;
     this.setObjective('TECHNIQUE COMPLETE','The four-clone volley caught the Sage off guard.');
-    this.lines=[
-      {speaker:'RRVVFO',text:'Got you.'},
-      {speaker:'THE SAGE',text:'Ha. You stopped trying to hit where I was going.'},
-      {speaker:'RRVVFO',text:'Shots of Agony.'},
-      {speaker:'THE SAGE',text:'Not bad. And stop calling four your maximum.',finish:true}
-    ];
-    this.lineIndex=0;
-    this.finishDialogueMode=true;
-    this.showDialogueLayer();
-    this.renderFinishLine();
+    this.engine.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Got you.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Ha. You stopped trying to hit where I was going.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Shots of Agony.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Not bad. And stop calling four your maximum.',tail:'down'}
+    ],{onComplete:()=>{
+      this.commitCompletion();
+      this.completePanel.classList.remove('hidden');
+      this.root.querySelector('[data-m0-return]').focus();
+    }});
   }
 
   renderFinishLine(){
@@ -476,13 +465,12 @@ class RrvvfoMission0{
 
   cleanup(){
     this.aborted=true;
-    resetArenaBattleInstance();
+    destroyStoryBattle(this.battle);
     this.clearTypewriter();
     document.removeEventListener('keydown',this.keyHandler);
     this.root.classList.add('hidden');
     this.dialogue.classList.add('hidden');
     this.completePanel.classList.add('hidden');
-    this.battle?.root.classList.remove('storyMission0','storyDialogueOpen');
     this.battle?.root.querySelectorAll('[data-arena-slot]').forEach(button=>{button.tabIndex=0;button.removeAttribute('aria-disabled')});
     activeMission=null;
   }

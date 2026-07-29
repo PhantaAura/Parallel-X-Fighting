@@ -1,9 +1,7 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a2-story-hud-20260728';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
-import {StoryMap} from './story-map.js?v=29a2-story-hud-20260728';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a2-story-hud-20260728';
-import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
+import {StoryMap} from './story-map.js?v=29a7-casual-retention-20260729';
+import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
 
 const MISSION_ID='rrvvfo-03-preview';
 const UI_ID='rrvvfoChapter3PreviewUI';
@@ -36,7 +34,7 @@ function buildUI(){
     </div>
     <div class="c3Prompt" data-c3-prompt hidden>
       <strong data-c3-prompt-title>INTERACT</strong>
-      <span data-c3-prompt-detail>PRESS LIGHT / ENTER</span>
+      <span data-c3-prompt-detail>PRESS INTERACT</span>
     </div>
     <aside class="c3Tracker" data-c3-tracker hidden>
       <header><small>CHAPTER 3 • INVESTIGATION</small><h2>CLOSED OFF</h2></header>
@@ -131,26 +129,18 @@ class RrvvfoChapter3Preview{
   }
 
   start(){
-    resetArenaBattleInstance();
-    this.battle=new ArenaBattle('expanded-training-region');
-    const hidden=this.battle.fighters[1];
-    hidden.id='sage';
-    hidden.name='The Sage';
-    hidden.cpu=true;
+    this.battle=createStoryBattle({stageId:'expanded-training-region',opponent:{id:'sage',name:'The Sage',cpu:true}});
+    this.engine=attachStoryEngine(this.battle,{
+      chapterLabel:'RRVVFO CHAPTER 3 PREVIEW',
+      stageName:'EXPANDED TRAINING REGION',
+      rootClasses:['storyChapter3Hub','storyChapter3Preview'],
+      getMode:()=>this.engine?.dialogue?'dialogue':this.mode==='hub'?'exploration':this.mode
+    });
     this.patchBattle();
-    this.battle.start();
+    this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','THE SAGE']});
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART PREVIEW?',message:'Return Rrvvfo to the Chapter 3 starting point? Investigation discoveries remain saved.',confirmLabel:'RESTART'});
-    this.battle.root.classList.add('storyChapter3Hub','storyChapter3Preview');
-    this.battle.root.querySelector('[data-stage-name]').textContent='EXPANDED TRAINING REGION';
     const badge=this.battle.root.querySelector('.badge');
-    if(badge){
-      badge.querySelector('strong').textContent='PROTOTYPE 2.9A.2 • CHAPTER 3 PREVIEW';
-      if(badge.lastChild)badge.lastChild.textContent=' NON-LINEAR INVESTIGATION PREVIEW';
-    }
-    this.battle.phase='story';
-    this.battle.time=9999;
-    this.battle.hideBanner();
-    applyStoryProgressionToFighter(this.battle.fighters[0]);
+    if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • NON-LINEAR INVESTIGATION';
     this.root.hidden=false;
     this.map=new StoryMap({
       title:'EXPANDED TRAINING REGION MAP',
@@ -170,78 +160,49 @@ class RrvvfoChapter3Preview{
 
   patchBattle(){
     const battle=this.battle;
-    const baseInput=battle.input.bind(battle);
-    const baseCpu=battle.cpu.bind(battle);
-    const baseUpdate=battle.update.bind(battle);
-    const baseDraw=battle.draw.bind(battle);
-    const baseDrawFighterLayer=battle.drawFighterLayer.bind(battle);
-    const baseFlipFor=battle.flipFor.bind(battle);
-    const defaultExit=battle.exit.bind(battle);
-
-    battle.input=()=>{
-      const command=baseInput();
-      const interact=Boolean(command.light);
-      if(this.mode==='hub'){
-        if(interact&&!this.interactHeld)this.tryInteract();
-        this.interactHeld=interact;
-        return{...command,light:false,heavy:false,launcher:false,block:false,special:false};
-      }
-      this.interactHeld=interact;
-      return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,special:false};
-    };
-
-    battle.cpu=()=>({x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,special:false});
-    battle.castAbility=()=>false;
-    battle.updateCamera=()=>this.updateCamera();
-    battle.flipFor=fighter=>{
-      if(fighter===battle.fighters[0]){
-        const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
-        if(speed>.05){
-          const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
-          const ahead=battle.renderer.project(
-            fighter.x+(fighter.moveX||fighter.aimX||1)*120,
-            80+fighter.y,
-            fighter.z+(fighter.moveZ||fighter.aimZ||0)*120
-          );
-          this.playerFlip=ahead.x<self.x;
+    this.engine.useChapterProfile({
+      input:next=>{
+        const command=next(),interact=Boolean(command.interact);
+        if(this.mode==='hub'){
+          if(interact&&!this.interactHeld)this.tryInteract();
+          this.interactHeld=interact;
+          return this.engine.commandForMode(command,'exploration',{allowJump:true,allowDash:true,allowInteract:true});
         }
-        return this.playerFlip;
+        this.interactHeld=interact;
+        return this.engine.commandForMode(command,this.mode);
+      },
+      cpu:()=>({x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,special:false}),
+      castAbility:()=>false,
+      updateCamera:()=>this.updateCamera(),
+      flipFor:(next,fighter)=>{
+        if(fighter===battle.fighters[0]){
+          const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
+          if(speed>.05){
+            const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
+            const ahead=battle.renderer.project(fighter.x+(fighter.moveX||fighter.aimX||1)*120,80+fighter.y,fighter.z+(fighter.moveZ||fighter.aimZ||0)*120);
+            this.playerFlip=ahead.x<self.x;
+          }
+          return this.playerFlip;
+        }
+        return next(fighter);
+      },
+      drawFighterLayer:(next,fighters)=>next(fighters.filter(fighter=>fighter===battle.fighters[0]||this.fighterVisible)),
+      draw:next=>{next();this.drawHubExtras()},
+      update:(next,dt)=>{
+        const player=battle.fighters[0],previous={x:player.x,z:player.z};
+        next(dt);
+        if(!battle.active||this.aborted)return;
+        this.areaTimer=Math.max(0,this.areaTimer-dt);this.noticeCooldown=Math.max(0,this.noticeCooldown-dt);
+        if(!this.areaTimer)this.area.hidden=true;
+        if(this.mode==='hub'){player.hp=100;player.en=100;battle.time=9999;this.updateHub(previous)}
+        this.updateNpcMotion();this.map?.draw();
+      },
+      exit:async next=>{
+        const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Chapter 3 preview? Investigation progress has been saved.',confirmLabel:'RETURN TO ROUTE'});
+        if(!leave)return;
+        this.persistPreview();next();this.cleanup();this.onExit();
       }
-      return baseFlipFor(fighter);
-    };
-    battle.drawFighterLayer=fighters=>{
-      const visible=fighters.filter(fighter=>fighter===battle.fighters[0]||this.fighterVisible);
-      baseDrawFighterLayer(visible);
-    };
-    battle.draw=()=>{
-      baseDraw();
-      this.drawHubExtras();
-    };
-    battle.update=dt=>{
-      const player=battle.fighters[0];
-      const previous={x:player.x,z:player.z};
-      baseUpdate(dt);
-      if(!battle.active||this.aborted)return;
-      this.areaTimer=Math.max(0,this.areaTimer-dt);
-      this.noticeCooldown=Math.max(0,this.noticeCooldown-dt);
-      if(!this.areaTimer)this.area.hidden=true;
-      if(this.mode==='hub'){
-        player.hp=100;
-        player.en=100;
-        battle.time=9999;
-        this.updateHub(previous);
-      }
-      this.updateNpcMotion();
-      this.map?.draw();
-    };
-    battle.exit=async()=>{
-      const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the Chapter 3 preview? Investigation progress has been saved.',confirmLabel:'RETURN TO ROUTE'});
-      if(!leave)return;
-      this.persistPreview();
-      defaultExit();
-      this.cleanup();
-      this.onExit();
-    };
+    });
   }
 
   showOpeningDialogue(){
@@ -273,18 +234,12 @@ class RrvvfoChapter3Preview{
 
   showDialogue(lines,onComplete){
     this.mode='dialogue';
-    this.battle.phase='story';
-    if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
-    this.dialogue?.overlay?.remove();
-    const dialogue=new SonicBattleDialogue({typeSpeed:18,onComplete:()=>{
-      document.removeEventListener('keydown',dialogue._onKey);
-      dialogue.overlay?.remove();
+    this.engine?.setGameplayState('dialogue',{phase:'story'});
+    const dialogue=this.engine.showDialogue(lines,{typeSpeed:18,onComplete:()=>{
       this.dialogue=null;
       onComplete?.();
     }});
     this.dialogue=dialogue;
-    dialogue.show(lines);
-    if(dialogue.overlay)dialogue.overlay.style.zIndex='2300';
   }
 
   updateCamera(){
@@ -357,7 +312,7 @@ class RrvvfoChapter3Preview{
       return;
     }
     this.promptTitle.textContent=this.nearbyInteraction.title;
-    this.promptDetail.textContent='PRESS LIGHT / ENTER';
+    this.promptDetail.textContent=this.engine.prompt('interact','E').toUpperCase();
     this.prompt.hidden=false;
   }
 
@@ -632,7 +587,7 @@ class RrvvfoChapter3Preview{
 
   onKey(event){
     if(this.root.hidden)return;
-    if(this.mode==='hub'&&(event.key==='Enter'||event.key.toLowerCase()==='e')){
+    if(this.mode==='hub'&&((event.key==='Enter'||event.code==='KeyE')||event.key.toLowerCase()==='e')){
       event.preventDefault();
       event.stopImmediatePropagation();
       this.tryInteract();
@@ -679,9 +634,8 @@ class RrvvfoChapter3Preview{
     document.removeEventListener('keydown',this.keyHandler,true);
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
     this.dialogue?.overlay?.remove();
-    resetArenaBattleInstance();
+    destroyStoryBattle(this.battle);
     this.root.remove();
-    this.battle?.root.classList.remove('storyChapter3Hub','storyChapter3Preview');
     activeMission=null;
   }
 }

@@ -36,7 +36,7 @@ export function availableAIActions(fighter,foe){
   if(fighter.id==='bark'&&fighter.en>=20&&!fighter.counterCd)actions.push('c');
   if(fighter.id==='rrvvfo'&&fighter.en>=90&&fighter.hp>55&&!fighter.lensCooldown&&!fighter.lens)actions.push('n');
   if(distance<62&&foe.block&&!fighter.throwRecovery&&!foe.throwProtection)actions.push('t');
-  if(fighter.stun>0&&fighter.en>=85&&!fighter.breakerUsed&&!fighter.breakerCooldown)actions.push('k');
+  if(fighter.stun>0&&fighter.en>=35&&!fighter.breakerUsed&&!fighter.breakerCooldown)actions.push('q');
   return{actions:[...new Set(actions)],movements:[toward,away],canBlock:distance<130,distance,toward,away};
 }
 
@@ -49,7 +49,7 @@ export function selectAIAction(candidates,weights,roll=Math.random()){
 export function decideCPU(fighter,foe,difficulty,rng=Math.random){
   const settings=difficultyProfile(difficulty),profile=aiProfile(fighter.id),available=availableAIActions(fighter,foe),decision={move:null,block:false,actions:[]};
   if(fighter.knockdown||fighter.getup)return decision;
-  if(fighter.stun){if(available.actions.includes('k')&&rng()<settings.quality*(fighter.id==='bark'||fighter.id==='creed'?1:.72))decision.actions.push('k');return decision}
+  if(fighter.stun){if(available.actions.includes('q')&&rng()<settings.quality*(fighter.id==='bark'||fighter.id==='creed'?1:.72))decision.actions.push('q');return decision}
   const shouldRetreat=fighter.guard<28||fighter.id==='wade'&&fighter.combo.hits>=3||fighter.id==='shadow'&&fighter.hp<45||fighter.id==='robert'&&available.distance<110;
   if(shouldRetreat)decision.move=available.away;
   else if(fighter.id==='phanta')decision.move=rng()<.5?available.toward:available.away;

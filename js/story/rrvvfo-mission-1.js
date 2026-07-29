@@ -1,17 +1,16 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a2-story-hud-20260728';
-import {loadArenaControlSettings,PC_LAYOUTS} from '../arena/arena-controls.js?v=29a2-story-hud-20260728';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a2-story-hud-20260728';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a2-story-hud-20260728';
-import {grantCombatManual} from './combat-manual.js?v=29a2-story-hud-20260728';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a2-story-hud-20260728';
-import {storyConfirm} from './story-ux.js?v=29a2-story-hud-20260728';
+import {CONTROL_MAPS} from '../input.js?v=29a7-casual-retention-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a7-casual-retention-20260729';
+import {grantCombatManual} from './combat-manual.js?v=29a7-casual-retention-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a7-casual-retention-20260729';
+import {storyConfirm} from './story-ux.js?v=29a7-casual-retention-20260729';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
+const TOTAL_STEPS=8;
 let activeMission=null;
 
 function controlLabel(code){
-  const labels={Space:'SPACE',ShiftLeft:'SHIFT',ShiftRight:'SHIFT',KeyA:'A',KeyD:'D',KeyW:'W',KeyS:'S',KeyF:'F',KeyR:'R',KeyT:'T',KeyQ:'Q',KeyJ:'J',KeyK:'K',KeyI:'I',KeyL:'L',KeyC:'C',KeyU:'U',KeyG:'G'};
+  const labels={Space:'SPACE',ShiftLeft:'SHIFT',ShiftRight:'SHIFT',KeyA:'A',KeyD:'D',KeyW:'W',KeyS:'S',KeyJ:'J',KeyK:'K',KeyI:'I',KeyL:'L',KeyC:'C',KeyU:'U'};
   return labels[code]||String(code||'').replace(/^Key/,'').replace(/^Digit/,'');
 }
 
@@ -21,15 +20,24 @@ function buildUI(){
   root.id=UI_ID;
   root.innerHTML=`
     <div class="storyTutorialTag" data-tutorial-tag>
-      <small>RRVVFO ROUTE • CHAPTER 1 • PART 2</small>
+      <small>RRVVFO ROUTE • CHAPTER 1 • COMBAT MANUAL</small>
       <strong data-tutorial-objective>WAIT FOR THE SAGE</strong>
       <span data-tutorial-detail>The refresher begins after the briefing.</span>
     </div>
+    <aside class="storyTutorialCoach" data-tutorial-coach hidden aria-live="polite">
+      <header><small>STEP <b data-tutorial-step>1</b> OF ${TOTAL_STEPS}</small><span data-tutorial-state>DO THIS NOW</span></header>
+      <h2 data-tutorial-action>MOVE AROUND</h2>
+      <div class="storyTutorialKeys" data-tutorial-keys></div>
+      <p data-tutorial-instruction></p>
+      <div class="storyTutorialChecklist" data-tutorial-checklist></div>
+      <div class="storyTutorialProgress"><i data-tutorial-progress></i></div>
+      <small class="storyTutorialHint" data-tutorial-hint>Complete every item to continue automatically.</small>
+    </aside>
     <div class="storyManualOverlay" data-combat-manual hidden>
       <article class="storyManualCard">
         <header><div><small>THE SAGE'S COMBAT MANUAL</small><h2>BACK IN FIGHTING SHAPE</h2></div><strong>TOURNAMENT PREP</strong></header>
         <div class="manualGrid" data-manual-grid></div>
-        <div class="storyManualActions"><button type="button" class="primary" data-begin-tutorial>BEGIN REFRESHER</button><button type="button" data-exit-manual>RETURN TO RRVVFO ROUTE</button></div>
+        <div class="storyManualActions"><button type="button" class="primary" data-begin-tutorial>BEGIN GUIDED REFRESHER</button><button type="button" data-exit-manual>RETURN TO RRVVFO ROUTE</button></div>
       </article>
     </div>
     <div class="storyCompleteOverlay" data-mission-complete hidden>
@@ -48,142 +56,210 @@ class RrvvfoMission1{
     this.detail=this.root.querySelector('[data-tutorial-detail]');
     this.manual=this.root.querySelector('[data-combat-manual]');
     this.completePanel=this.root.querySelector('[data-mission-complete]');
+    this.coach=this.root.querySelector('[data-tutorial-coach]');
+    this.coachStep=this.root.querySelector('[data-tutorial-step]');
+    this.coachState=this.root.querySelector('[data-tutorial-state]');
+    this.coachAction=this.root.querySelector('[data-tutorial-action]');
+    this.coachKeys=this.root.querySelector('[data-tutorial-keys]');
+    this.coachInstruction=this.root.querySelector('[data-tutorial-instruction]');
+    this.coachChecklist=this.root.querySelector('[data-tutorial-checklist]');
+    this.coachProgress=this.root.querySelector('[data-tutorial-progress]');
+    this.coachHint=this.root.querySelector('[data-tutorial-hint]');
     this.root.querySelector('[data-begin-tutorial]').addEventListener('click',()=>this.beginTutorial());
     this.root.querySelector('[data-exit-manual]').addEventListener('click',()=>this.requestExit());
     this.root.querySelector('[data-return-story]').addEventListener('click',()=>this.exitToStory());
     this.phase='opening';
-    this.flags={move:false,jump:false,dash:false,light:false,heavy:false,launcher:false,block:false,parry:false,grab:false,charge:false,fire:false,shots:false,swap:false,lens:false};
+    this.flags={move:false,jump:false,dash:false,light:false,heavy:false,launcher:false,parry:false,grab:false,charge:false,fire:false,shots:false,swap:false,lens:false,lensRead:false};
     this.finalHits=0;
     this.sageAttackTimer=.8;
+    this.parryAttempts=0;
+    this.lensTrialActive=false;
+    this.lensTrialTimer=0;
+    this.lensTrialHp=100;
+    this.lastProgressAt=performance.now();
+    this.lastHintAt=0;
+    this.movementDistance=0;
+    this.previousPlayerPos=null;
+    this.lastObservedAttack='';
+    this.lastInputDevice='';
     this.aborted=false;
-    this.dialogue=null;
   }
 
   start(){
-    resetArenaBattleInstance();
-    this.battle=new ArenaBattle('training-field');
-    const sage=this.battle.fighters[1];
-    sage.id='sage';sage.name='The Sage';sage.accent='#d9e7f3';sage.cpu=true;sage.appearance='down';
+    this.battle=createStoryBattle({stageId:'training-field',opponent:{id:'sage',name:'The Sage',accent:'#d9e7f3',cpu:true,appearance:'down'}});
+    this.engine=attachStoryEngine(this.battle,{
+      chapterLabel:'RRVVFO CHAPTER 1',
+      stageName:'SAGE TRAINING FIELD',
+      rootClasses:['storyMission1'],
+      getMode:()=>this.engine?.dialogue?'dialogue':this.phase==='complete'?'complete':'tutorial'
+    });
     this.patchBattle();
-    this.battle.start();
+    this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','THE SAGE']});
+    this.baseRestart=this.battle.restart.bind(this.battle);
+    this.battle.restart=()=>{this.baseRestart();this.resetTutorialFlow()};
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART REFRESHER?',message:'Restart the Combat Manual tutorial from the beginning?',confirmLabel:'RESTART'});
-    this.battle.root.classList.add('storyMission1','storyMissionDialogueOpen');
-    this.battle.root.querySelector('[data-stage-name]').textContent='SAGE TRAINING FIELD';
-    this.battle.root.querySelector('.badge strong').textContent='PROTOTYPE 2.9A.2 • RRVVFO CHAPTER 1';
-    this.battle.fighters[0].maxHp=100;this.battle.fighters[0].hp=100;this.battle.fighters[1].maxHp=100;this.battle.fighters[1].hp=100;
-    applyStoryProgressionToFighter(this.battle.fighters[0]);
-    this.setArenaNames('RRVVFO','THE SAGE');
-    this.battle.phase='story';
-    this.battle.time=9999;
-    this.battle.hideBanner();
+    const badge=this.battle.root.querySelector('.badge');
+    if(badge?.lastChild)badge.lastChild.textContent=' SHARED STORY ENGINE • GUIDED COMBAT REFRESHER';
+    this.battle.fighters[0].maxHp=100;this.battle.fighters[0].hp=100;
+    this.battle.fighters[1].maxHp=100;this.battle.fighters[1].hp=100;
     this.renderManual();
     this.showOpeningDialogue();
     return this;
   }
 
-  patchBattle(){
-    const battle=this.battle;
-    const baseInput=battle.input.bind(battle);
-    const baseCast=battle.castAbility.bind(battle);
-    const baseApplyDamage=battle.applyDamage.bind(battle);
-    const baseUpdate=battle.update.bind(battle);
-    const defaultExit=battle.exit.bind(battle);
-
-    battle.input=()=>{
-      const command=baseInput();
-      this.observeCommand(command);
-      return command;
-    };
-
-    battle.cpu=(fighter,foe,dt)=>{
-      this.sageAttackTimer-=dt;
-      const dx=foe.x-fighter.x,dz=foe.z-fighter.z,distance=Math.max(1,Math.hypot(dx,dz));
-      let x=0,z=0,light=false,block=false;
-      if(this.phase==='movement'||this.phase==='abilities'){x=0;z=0}
-      else if(distance>145){x=dx/distance*.35;z=dz/distance*.35}
-      else if(this.sageAttackTimer<=0){light=true;this.sageAttackTimer=this.phase==='basics'?.9:1.15}
-      if(this.phase==='final'&&foe.attackState&&distance<150)block=Math.random()<.35;
-      return{x,z,jump:false,light,heavy:false,launcher:false,dash:false,block,special:false};
-    };
-
-    battle.castAbility=slot=>{
-      if(slot===5){battle.notice('THE ULTIMATE IS NOT PART OF THIS REFRESHER');return false}
-      const worked=baseCast(slot);
-      if(worked)this.markAbility(slot);
-      return worked;
-    };
-
-    battle.applyDamage=(attacker,target,damage,meta={})=>{
-      const wasBlocking=target.block;
-      const wasPerfect=wasBlocking&&target.blockAge<=.12;
-      const connected=baseApplyDamage(attacker,target,damage,meta);
-      if(attacker.id==='sage'&&target.id==='rrvvfo'&&wasBlocking&&connected){
-        this.flags.block=true;
-        if(wasPerfect)this.flags.parry=true;
-        this.checkBasics();
-      }
-      if(attacker.id==='rrvvfo'&&target.id==='sage'&&connected&&this.phase==='final'){
-        this.finalHits++;
-        if(this.finalHits>=3)this.finishTutorial();
-      }
-      target.hp=Math.max(1,target.hp);
-      return connected;
-    };
-
-    battle.update=dt=>{
-      baseUpdate(dt);
-      if(!battle.active||this.aborted)return;
-      const player=battle.fighters[0];
-      if(player.hp<1)player.hp=1;
-      battle.fighters[1].hp=Math.max(1,battle.fighters[1].hp);
-      if(this.phase==='movement'&&this.flags.move&&this.flags.jump&&this.flags.dash)this.startBasics();
-      if(this.phase==='resource'&&this.flags.charge&&player.en>=75)this.startAbilities();
-      if(this.phase==='shotsCharge'&&player.en>=100){
-        this.phase='shotsReady';
-        this.setObjective('FULL-ENERGY TECHNIQUE','Energy is full. Use slot 2: Shots of Agony. It will consume the entire meter.');
-        battle.notice('USE SLOT 2 • ALL ENERGY',1.8);
-      }
-      if(this.phase==='lensCharge'&&player.en>=90){
-        this.phase='lensReady';
-        this.setObjective('RISKY PREDICTION','Energy is at 90. Use slot 4: Lens of Truth. It costs 70 HP and still requires you to react.');
-        battle.notice('USE SLOT 4 • 90 ENERGY • 70 HP',2);
-      }
-      if(['abilities','shotsReady','lensReady'].includes(this.phase)){
-        for(const key of ['fireBlast','shotsOfAgony','objectSwap','lensOfTruth'])player.cooldowns[key]=Math.min(player.cooldowns[key],.2);
-      }
-    };
-
-    battle.exit=async()=>{
-      const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the training refresher? Current tutorial progress will restart.',confirmLabel:'LEAVE TRAINING'});
-      if(!leave)return;
-      defaultExit();
-      this.cleanup();
-      this.onExit();
-    };
+  resetTutorialFlow(){
+    this.engine?.closeDialogue();
+    this.phase='opening';
+    for(const key of Object.keys(this.flags))this.flags[key]=false;
+    this.finalHits=0;
+    this.sageAttackTimer=.8;
+    this.parryAttempts=0;
+    this.lensTrialActive=false;
+    this.lensTrialTimer=0;
+    this.lastProgressAt=performance.now();
+    this.lastHintAt=0;
+    this.movementDistance=0;
+    this.previousPlayerPos=null;
+    this.lastObservedAttack='';
+    this.lastInputDevice='';
+    this.root.classList.remove('tutorialActive');
+    this.battle?.root?.classList.remove('tutorialHudActive','tutorialShowEnergy','tutorialShowGuard','tutorialShowHotbar','tutorialShowOpponent');
+    this.engine?.clearHotbarAvailability();
+    this.manual.hidden=true;
+    this.completePanel.hidden=true;
+    this.coach.hidden=true;
+    this.coach.classList.remove('urgent','needsAttention','isComplete');
+    const player=this.battle.fighters[0],sage=this.battle.fighters[1];
+    player.maxHp=100;player.hp=100;player.en=100;player.guard=100;
+    sage.maxHp=100;sage.hp=100;sage.en=100;sage.guard=100;
+    this.battle.phase='story';this.battle.time=9999;this.battle.hideBanner();
+    this.setObjective('WAIT FOR THE SAGE','The refresher begins after the briefing.');
+    this.showOpeningDialogue();
   }
 
-  showDialogue(lines,onComplete){
-    this.battle.root.classList.add('storyMissionDialogueOpen');
-    this.battle.phase='story';
-    this.dialogue?.overlay?.remove();
-    if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
-    const dialogue=new SonicBattleDialogue({
-      typeSpeed:18,
-      onComplete:()=>{
-        document.removeEventListener('keydown',dialogue._onKey);
-        dialogue.overlay?.remove();
-        this.dialogue=null;
-        this.battle.root.classList.remove('storyMissionDialogueOpen');
-        onComplete?.();
+  controls(){
+    const map=CONTROL_MAPS[0];
+    return{jump:map.j,light:map.a,heavy:map.h,launcher:map.x,dash:map.d,block:map.b,charge:map.k,grab:map.s};
+  }
+
+  patchBattle(){
+    const battle=this.battle;
+    this.engine.useChapterProfile({
+      hud:next=>{
+        next();
+        const show=['abilities','shotsCharge','shotsReady','lensCharge','lensReady','lensPractice','final'].includes(this.phase);
+        this.engine.setHotbarAvailability(this.allowedAbilitySlots(),{show});
+      },
+      input:next=>{
+        const command=next();
+        this.observeInputDevice();
+        return command;
+      },
+      cpu:(_next,fighter,foe,dt)=>{
+        this.sageAttackTimer-=dt;
+        const dx=foe.x-fighter.x,dz=foe.z-fighter.z,distance=Math.max(1,Math.hypot(dx,dz));
+        let x=0,z=0,light=false,block=false;
+        const attackLesson=this.phase==='parry'||this.phase==='lensPractice';
+        if(attackLesson){
+          if(distance>118){x=dx/distance*.55;z=dz/distance*.55}
+          else if(this.sageAttackTimer<=0){
+            light=true;
+            this.sageAttackTimer=this.phase==='parry'?1.45:1.1;
+            if(this.phase==='parry')this.parryAttempts++;
+            if(this.phase==='lensPractice'){
+              this.lensTrialActive=true;
+              this.lensTrialTimer=1.05;
+              this.lensTrialHp=foe.hp;
+            }
+          }
+        }else if(this.phase==='final'){
+          if(distance>145){x=dx/distance*.42;z=dz/distance*.42}
+          else if(this.sageAttackTimer<=0){light=true;this.sageAttackTimer=1.05}
+          if(foe.attackState&&distance<150)block=Math.random()<.35;
+        }else if(this.phase==='basics'&&distance>100){x=dx/distance*.2;z=dz/distance*.2}
+        return{x,z,jump:false,light,heavy:false,launcher:false,dash:false,block,charge:false,grab:false,special:false};
+      },
+      castAbility:(next,slot)=>{
+        const allowed=this.allowedAbilitySlots();
+        if(!allowed.includes(Number(slot))){
+          battle.notice(slot===5?'SOLAR WEAVE IS NOT PART OF THIS REFRESHER':'LEARN THIS TECHNIQUE IN A LATER STEP',1.5);
+          return false;
+        }
+        const worked=next(slot);
+        if(worked)this.markAbility(slot);
+        return worked;
+      },
+      applyDamage:(next,attacker,target,damage,meta={})=>{
+        const wasBlocking=target.block;
+        const wasPerfect=wasBlocking&&target.blockAge<=.12;
+        const connected=next(attacker,target,damage,meta);
+        if(attacker.id==='sage'&&target.id==='rrvvfo'&&wasPerfect&&connected){
+          if(this.phase==='parry'){
+            this.flags.parry=true;this.markProgress();this.updateCoach();
+            setTimeout(()=>{if(!this.aborted&&this.phase==='parry')this.startResourceLesson()},420);
+          }else if(this.phase==='lensPractice'){
+            this.flags.lensRead=true;this.markProgress();this.updateCoach();
+            setTimeout(()=>{if(!this.aborted&&this.phase==='lensPractice')this.startFinalSpar()},420);
+          }
+        }
+        if(attacker.id==='rrvvfo'&&target.id==='sage'&&connected&&!wasBlocking&&this.phase==='final'){
+          this.finalHits++;this.markProgress();this.updateCoach();
+          if(this.finalHits>=3)this.finishTutorial();
+        }
+        target.hp=Math.max(1,target.hp);
+        return connected;
+      },
+      update:(next,dt)=>{
+        const playerBefore=battle.fighters[0];
+        const before={x:playerBefore.x,z:playerBefore.z,en:playerBefore.en};
+        next(dt);
+        if(!battle.active||this.aborted)return;
+        const player=battle.fighters[0],sage=battle.fighters[1];
+        player.hp=Math.max(1,player.hp);sage.hp=Math.max(1,sage.hp);
+        this.observeGameplayState(player,before);
+        if(this.phase==='movement'&&this.flags.move&&this.flags.jump&&this.flags.dash)this.startBasics();
+        if(this.phase==='basics'&&this.flags.light&&this.flags.heavy&&this.flags.launcher&&this.flags.grab)this.startParryLesson();
+        if(this.phase==='resource'&&this.flags.charge&&player.en>=75)this.startAbilities();
+        if(this.phase==='shotsCharge'&&player.en>=100){
+          this.phase='shotsReady';
+          this.setObjective('FULL-ENERGY TECHNIQUE','Energy is full. Use slot 2: Shots of Agony. It consumes the entire meter.');
+          this.updateCoach();this.syncTutorialHud();
+          battle.notice(`${this.engine.prompt('ability2','PRESS 2')} • SHOTS OF AGONY • ALL ENERGY`,2);
+        }
+        if(this.phase==='lensCharge'&&player.en>=60){
+          this.phase='lensReady';
+          this.setObjective('RISKY PREDICTION','Energy is at 60. Use slot 4: Lens of Truth. It costs 25 HP.');
+          this.updateCoach();this.syncTutorialHud();
+          battle.notice(`${this.engine.prompt('ability4','PRESS 4')} • LENS OF TRUTH • 60 ENERGY / 25 HP`,2.2);
+        }
+        if(this.phase==='lensPractice'&&this.lensTrialActive){
+          this.lensTrialTimer-=dt;
+          if(this.lensTrialTimer<=0){
+            this.lensTrialActive=false;
+            if(player.hp>=this.lensTrialHp&&!player.lensWasHit){
+              this.flags.lensRead=true;this.markProgress();this.updateCoach();
+              setTimeout(()=>{if(!this.aborted&&this.phase==='lensPractice')this.startFinalSpar()},350);
+            }else{
+              battle.notice('THE READ FAILED • FOLLOW THE PREDICTION AND DODGE OR PARRY',1.8);
+              this.coachState.textContent='TRY AGAIN';
+            }
+          }
+        }
+        if(['abilities','shotsReady','lensReady'].includes(this.phase)){
+          for(const key of ['fireBlast','shotsOfAgony','objectSwap','lensOfTruth'])player.cooldowns[key]=Math.min(player.cooldowns[key],.2);
+        }
+        this.updateLiveCoach();this.showInactivityHint();
+      },
+      exit:async next=>{
+        const leave=await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the training refresher? Current tutorial progress will restart.',confirmLabel:'LEAVE TRAINING'});
+        if(!leave)return;
+        next();this.cleanup();this.onExit();
       }
     });
-    this.dialogue=dialogue;
-    dialogue.show(lines);
-    if(dialogue.overlay)dialogue.overlay.style.zIndex='2200';
   }
 
   showOpeningDialogue(){
-    this.showDialogue([
+    this.engine.showDialogue([
       {speaker:'THE SAGE',speakerClass:'neutral',text:'I signed you up for a tournament.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'You did what?',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'You need real opponents. You might meet some old faces there.',tail:'down'},
@@ -191,67 +267,121 @@ class RrvvfoMission1{
       {speaker:'THE SAGE',speakerClass:'neutral',text:'I just did. But first, you have gotten rusty.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'I beat Revvfo.',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'And apparently forgot how to block afterward. Here. Take the manual.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'It updates itself whenever you find a mechanic I knew you would ignore. I taught you Shots of Agony myself; the manual handles the field uses after I leave.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'That sentence somehow made it less trustworthy.',tail:'down'}
-    ],()=>this.showManual());
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'The field will now tell you exactly what to press. Even you should understand it.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'That sounded more insulting than helpful.',tail:'down'}
+    ],{onComplete:()=>this.showManual()});
   }
 
   renderManual(){
-    const settings=loadArenaControlSettings();
-    const layout=PC_LAYOUTS[settings.pcLayout]||PC_LAYOUTS.ergonomic;
-    const a=layout.actions;
+    const a=this.controls();
+    const prompt=(action,keyboard)=>this.engine?.prompt(action,keyboard)||keyboard;
+    const ability=slot=>prompt(`ability${slot}`,`SLOT ${slot}`);
     this.root.querySelector('[data-manual-grid]').innerHTML=`
-      <section><h3>MOVEMENT</h3><dl><div><dt>Move</dt><dd>W A S D</dd></div><div><dt>Jump</dt><dd>${controlLabel(a.jump)}</dd></div><div><dt>Dash</dt><dd>${controlLabel(a.dash)} / DOUBLE-TAP</dd></div></dl></section>
-      <section><h3>BASIC COMBAT</h3><dl><div><dt>Light</dt><dd>${controlLabel(a.light)} / MOUSE 1</dd></div><div><dt>Heavy</dt><dd>${controlLabel(a.heavy)}</dd></div><div><dt>Launcher</dt><dd>${controlLabel(a.launcher)}</dd></div><div><dt>Timed Guard</dt><dd>${controlLabel(a.block)} / MOUSE 2</dd></div><div><dt>Grab</dt><dd>U / G</dd></div></dl></section>
-      <section><h3>RESOURCE CONTROL</h3><dl><div><dt>Charge</dt><dd>C • STAND STILL</dd></div><div><dt>Attack gain</dt><dd>CLEAN HITS RESTORE ENERGY</dd></div><div><dt>Guard recovery</dt><dd>FASTER WHILE STANDING STILL</dd></div></dl></section>
-      <section><h3>HOTBAR</h3><dl><div><dt>1</dt><dd>FIRE BLAST</dd></div><div><dt>2</dt><dd>SHOTS OF AGONY • ALL ENERGY</dd></div><div><dt>3</dt><dd>OBJECT SWAP</dd></div><div><dt>4</dt><dd>LENS • 90 ENERGY / 70 HP EARLY</dd></div><div><dt>5</dt><dd>ULTIMATE</dd></div></dl></section>
+      <section><h3>MOVEMENT</h3><dl><div><dt>Move</dt><dd>${prompt('move','W A S D')}</dd></div><div><dt>Jump</dt><dd>${prompt('jump',controlLabel(a.jump))}</dd></div><div><dt>Dash</dt><dd>${prompt('dash',`${controlLabel(a.dash)} / DOUBLE-TAP`)}</dd></div></dl></section>
+      <section><h3>BASIC COMBAT</h3><dl><div><dt>Light</dt><dd>${prompt('light',`${controlLabel(a.light)} / MOUSE 1`)}</dd></div><div><dt>Heavy</dt><dd>${prompt('heavy',controlLabel(a.heavy))}</dd></div><div><dt>Launcher</dt><dd>${prompt('launcher',controlLabel(a.launcher))}</dd></div><div><dt>Timed Guard</dt><dd>${prompt('block',`${controlLabel(a.block)} / MOUSE 2`)}</dd></div><div><dt>Grab</dt><dd>${prompt('grab',controlLabel(a.grab))}</dd></div></dl></section>
+      <section><h3>RESOURCE CONTROL</h3><dl><div><dt>Charge</dt><dd>${prompt('charge',controlLabel(a.charge))} • STAND STILL</dd></div><div><dt>Attack gain</dt><dd>CLEAN HITS RESTORE ENERGY</dd></div><div><dt>Guard recovery</dt><dd>FASTER WHILE STANDING STILL</dd></div></dl></section>
+      <section><h3>HOTBAR</h3><dl><div><dt>${ability(1)}</dt><dd>FIRE BLAST</dd></div><div><dt>${ability(2)}</dt><dd>SHOTS OF AGONY • ALL ENERGY</dd></div><div><dt>${ability(3)}</dt><dd>OBJECT SWAP</dd></div><div><dt>${ability(4)}</dt><dd>LENS • 60 ENERGY / 25 HP EARLY</dd></div><div><dt>${ability(5)}</dt><dd>SOLAR WEAVE • NOT USED HERE</dd></div></dl></section>
+      <section><h3>HOW THE REFRESHER WORKS</h3><p>The large instruction card shows one task at a time. An action checks off only after the game confirms that it actually happened—not merely when a button is pressed.</p></section>
       <section><h3>SAGE'S NOTE</h3><p>Lens predicts the most probable attack. Successful reads build mastery. At full mastery it can auto-dodge only a few times—not forever.</p></section>`;
   }
 
   showManual(){
     grantCombatManual({pages:['movement','basic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
     this.manual.hidden=false;
-    this.setObjective('READ THE COMBAT MANUAL','Review movement, attacks, blocking, and hotbar slots 1–5.');
+    this.setObjective('READ THE COMBAT MANUAL','Review the controls, then select BEGIN GUIDED REFRESHER.');
     this.root.querySelector('[data-begin-tutorial]').focus();
   }
 
   beginTutorial(){
     this.manual.hidden=true;
+    this.coach.hidden=false;
+    this.root.classList.add('tutorialActive');
     this.phase='movement';
+    this.movementDistance=0;
+    this.previousPlayerPos={x:this.battle.fighters[0].x,z:this.battle.fighters[0].z};
     this.battle.phase='play';
     this.battle.time=9999;
     this.battle.hideBanner();
-    this.setObjective('MOVEMENT REFRESHER','Move with WASD, jump once, and dash once.');
-    this.battle.notice('MOVE • JUMP • DASH',1.8);
+    this.setObjective('STEP 1 • MOVEMENT','Move, jump, and dash. The checklist updates instantly.');
+    this.markProgress();
+    this.updateCoach();
+    this.syncTutorialHud();
+    this.battle.notice('FOLLOW THE LARGE STEP CARD AT THE TOP',2.2);
   }
 
-  observeCommand(command){
+  observeInputDevice(){
+    const input=this.engine?.activeInput()||'keyboard';
+    if(input===this.lastInputDevice)return;
+    this.lastInputDevice=input;
+    if(!this.manual.hidden)this.renderManual();
+    if(!this.coach.hidden)this.updateCoach();
+  }
+
+  observeGameplayState(player,before){
+    let changed=false;
+    this.observeInputDevice();
     if(this.phase==='movement'){
-      if(Math.hypot(command.x||0,command.z||0)>.35)this.flags.move=true;
-      if(command.jump)this.flags.jump=true;
-      if(command.dash)this.flags.dash=true;
+      this.movementDistance+=Math.hypot(player.x-before.x,player.z-before.z);
+      if(this.movementDistance>=72&&!this.flags.move){this.flags.move=true;changed=true}
+      if((player.y>5||Math.abs(player.vy||0)>80)&&!this.flags.jump){this.flags.jump=true;changed=true}
+      if((player.dashTime>0||player.visualAction==='dash')&&!this.flags.dash){this.flags.dash=true;changed=true}
     }else if(this.phase==='basics'){
-      if(command.light)this.flags.light=true;
-      if(command.heavy)this.flags.heavy=true;
-      if(command.launcher)this.flags.launcher=true;
-      if(command.grab)this.flags.grab=true;
-      if(command.block)this.battle.notice('TIME BLOCK WITH THE SAGE ATTACK • PERFECT PARRY',.8);
-      this.checkBasics();
+      const kind=player.attackState?.def?.kind||'';
+      const signature=kind?`${kind}:${player.attackState?.elapsed?.toFixed?.(2)||''}`:'';
+      if(kind&&signature!==this.lastObservedAttack){
+        this.lastObservedAttack=signature;
+        const key=kind.startsWith('light')||kind==='airLight'?'light':kind==='heavy'||kind==='airHeavy'?'heavy':kind==='launcher'?'launcher':'';
+        if(key&&!this.flags[key]){this.flags[key]=true;changed=true}
+      }
+      if(player.visualAction==='grab'&&player.visualActionTime>0&&!this.flags.grab){this.flags.grab=true;changed=true}
     }else if(['resource','shotsCharge','lensCharge'].includes(this.phase)){
-      if(command.charge)this.flags.charge=true;
+      const stationary=Math.hypot(player.moveVX||0,player.moveVZ||0)<20;
+      if(player.charging&&stationary&&player.en>before.en+.01&&!this.flags.charge){this.flags.charge=true;changed=true}
     }
+    if(changed){this.markProgress();this.updateCoach()}
+  }
+
+  allowedAbilitySlots(){
+    if(this.phase==='abilities')return[1,3];
+    if(this.phase==='shotsReady')return[2];
+    if(this.phase==='lensReady')return[4];
+    if(this.phase==='final')return[1,2,3,4];
+    return[];
+  }
+
+  syncTutorialHud(){
+    const root=this.battle?.root;
+    if(!root)return;
+    const energyPhases=['resource','abilities','shotsCharge','shotsReady','lensCharge','lensReady','lensPractice','final'];
+    const guardPhases=['parry','lensPractice','final'];
+    const hotbarPhases=['abilities','shotsCharge','shotsReady','lensCharge','lensReady','lensPractice','final'];
+    root.classList.add('tutorialHudActive');
+    root.classList.toggle('tutorialShowEnergy',energyPhases.includes(this.phase));
+    root.classList.toggle('tutorialShowGuard',guardPhases.includes(this.phase));
+    root.classList.toggle('tutorialShowHotbar',hotbarPhases.includes(this.phase));
+    root.classList.toggle('tutorialShowOpponent',['basics','parry','lensPractice','final'].includes(this.phase));
+    this.engine?.setHotbarAvailability(this.allowedAbilitySlots(),{show:hotbarPhases.includes(this.phase)});
   }
 
   startBasics(){
     if(this.phase!=='movement')return;
     this.phase='basics';
-    this.setObjective('BASIC COMBAT','Use light, heavy, launcher, and grab. Then time a perfect parry against one Sage attack.');
-    this.battle.notice('ATTACKS • GRAB • PERFECT PARRY',1.8);
+    this.setObjective('STEP 2 • BASIC ATTACKS','Use one light, heavy, launcher, and grab. Any order works.');
+    this.markProgress();
+    this.updateCoach();
+    this.syncTutorialHud();
+    this.battle.notice('PERFORM EACH ATTACK • THE ANIMATION MUST START',2);
   }
 
-  checkBasics(){
+  startParryLesson(){
     if(this.phase!=='basics')return;
-    if(this.flags.light&&this.flags.heavy&&this.flags.launcher&&this.flags.grab&&this.flags.parry)this.startResourceLesson();
+    this.phase='parry';
+    this.sageAttackTimer=1.35;
+    this.setObjective('STEP 3 • PERFECT PARRY','Wait for the red BLOCK NOW prompt, then tap guard as the Sage strikes.');
+    this.markProgress();
+    this.updateCoach();
+    this.syncTutorialHud();
+    this.battle.notice('DO NOT HOLD BLOCK • TAP IT AS THE HIT ARRIVES',2.3);
   }
 
   startResourceLesson(){
@@ -259,27 +389,38 @@ class RrvvfoMission1{
     const player=this.battle.fighters[0];
     player.en=20;
     this.flags.charge=false;
-    this.setObjective('ENERGY CONTROL','Stand still and hold C / CHARGE until your energy reaches 75. Moving or blocking stops the charge.');
-    this.battle.notice('STAND STILL • HOLD CHARGE',1.8);
+    this.setObjective('STEP 4 • ENERGY CONTROL','Stand still and hold CHARGE until the energy meter reaches 75.');
+    this.markProgress();
+    this.updateCoach();
+    this.syncTutorialHud();
+    this.battle.notice(`${this.engine.prompt('charge','HOLD CHARGE')} • STAND STILL`,2);
   }
 
   startAbilities(){
+    if(this.phase!=='resource')return;
     this.phase='abilities';
-    this.setObjective('TECHNIQUE REFRESHER','Use Fire Blast (1) and Object Swap (3). Clean attacks and charging restore energy.');
-    this.battle.notice('USE SLOT 1 AND SLOT 3',2);
+    this.setObjective('STEP 5 • CORE TECHNIQUES','Use Fire Blast in slot 1 and Object Swap in slot 3.');
+    this.markProgress();
+    this.updateCoach();
+    this.syncTutorialHud();
+    this.battle.notice(`${this.engine.prompt('ability1','SLOT 1')} • THEN ${this.engine.prompt('ability3','SLOT 3')}`,2);
   }
 
   markAbility(slot){
     if(slot===1&&this.phase==='abilities')this.flags.fire=true;
     if(slot===3&&this.phase==='abilities')this.flags.swap=true;
     if(this.phase==='abilities'){
-      const done=[this.flags.fire,this.flags.swap].filter(Boolean).length;
-      this.setObjective('TECHNIQUE REFRESHER',`Basic techniques completed: ${done}/2 — use slots 1 and 3.`);
-      if(done===2){
+      this.markProgress();
+      this.updateCoach();
+      if(this.flags.fire&&this.flags.swap){
         this.phase='shotsCharge';
+        this.flags.charge=false;
         this.battle.fighters[0].en=Math.min(this.battle.fighters[0].en,35);
-        this.setObjective('CHARGE FOR SHOTS OF AGONY','Stand still and charge to a completely full energy meter.');
-        this.battle.notice('CHARGE TO 100',1.5);
+        this.setObjective('STEP 6 • SHOTS OF AGONY','Charge to 100 energy, then use slot 2. It consumes everything.');
+        this.markProgress();
+        this.updateCoach();
+        this.syncTutorialHud();
+        this.battle.notice(`CHARGE TO 100 • THEN ${this.engine.prompt('ability2','USE SLOT 2')}`,2);
       }
       return;
     }
@@ -288,38 +429,128 @@ class RrvvfoMission1{
       this.phase='lensCharge';
       const player=this.battle.fighters[0];
       player.en=35;player.hp=100;
-      this.setObjective('CHARGE FOR LENS OF TRUTH','Shots consumed everything. Charge back to 90 energy for Lens of Truth.');
-      this.battle.notice('SHOTS USED ALL ENERGY • CHARGE TO 90',2);
+      this.flags.charge=false;
+      this.setObjective('STEP 7 • LENS OF TRUTH','Charge to 60 energy, press slot 4, then follow its prediction.');
+      this.markProgress();
+      this.updateCoach();
+      this.syncTutorialHud();
+      this.battle.notice('SHOTS USED ALL ENERGY • CHARGE TO 90',2.2);
       return;
     }
     if(slot===4&&this.phase==='lensReady'){
       this.flags.lens=true;
-      this.setObjective('READ THE SAGE','Lens shows the Sage’s probable attack. Dodge or parry it yourself; mastery grows from successful reads.');
-      setTimeout(()=>this.startFinalSpar(),1300);
+      this.phase='lensPractice';
+      this.sageAttackTimer=.9;
+      this.lensTrialActive=false;
+      this.setObjective('STEP 7 • READ THE SAGE','Watch the Lens prediction. Dodge or perfect-parry the next strike.');
+      this.markProgress();
+      this.updateCoach();
+      this.syncTutorialHud();
+      this.battle.notice('READ THE PREDICTION • MOVE OR PARRY',2.2);
     }
   }
 
   startFinalSpar(){
-    if(this.phase!=='abilities')return;
+    if(this.phase!=='lensPractice')return;
     this.phase='final';
     this.finalHits=0;
-    this.setObjective('FINAL SPAR','Land three clean hits on the Sage using anything you relearned.');
-    this.battle.notice('SHOW THE SAGE YOU ARE READY',1.8);
+    const player=this.battle.fighters[0];
+    player.hp=100;player.en=Math.max(player.en,50);
+    this.setObjective('STEP 8 • FINAL SPAR','Land three clean hits on the Sage using anything you relearned.');
+    this.markProgress();
+    this.updateCoach();
+    this.syncTutorialHud();
+    this.battle.notice('LAND 3 CLEAN HITS',2);
+  }
+
+  tutorialModel(){
+    const a=this.controls(),player=this.battle?.fighters?.[0];
+    const prompt=(action,keyboard)=>this.engine?.prompt(action,keyboard)||keyboard;
+    const ability=slot=>prompt(`ability${slot}`,`SLOT ${slot}`);
+    switch(this.phase){
+      case'movement':return{step:1,title:'MOVE, JUMP, AND DASH',keys:[prompt('move','WASD'),prompt('jump',controlLabel(a.jump)),prompt('dash',controlLabel(a.dash))],instruction:`Travel around the field, leave the ground, and complete a real dash. Distance: ${Math.min(72,Math.round(this.movementDistance))} / 72.`,items:[['MOVE 72 UNITS',this.flags.move],['LEAVE THE GROUND',this.flags.jump],['COMPLETE A DASH',this.flags.dash]]};
+      case'basics':return{step:2,title:'PERFORM EVERY BASIC ATTACK',keys:[prompt('light',controlLabel(a.light)),prompt('heavy',controlLabel(a.heavy)),prompt('launcher',controlLabel(a.launcher)),prompt('grab',controlLabel(a.grab))],instruction:'Each item checks off only after its attack animation actually begins.',items:[['LIGHT ATTACK',this.flags.light],['HEAVY ATTACK',this.flags.heavy],['LAUNCHER',this.flags.launcher],['GRAB',this.flags.grab]]};
+      case'parry':return{step:3,title:'PERFECT-PARRY THE SAGE',keys:[prompt('block',`${controlLabel(a.block)} / MOUSE 2`)],instruction:'Tap block only when BLOCK NOW appears. Holding too early will not count.',items:[['PERFECT PARRY',this.flags.parry]]};
+      case'resource':return{step:4,title:'CHARGE ENERGY TO 75',keys:[prompt('charge',controlLabel(a.charge)),'STAND STILL'],instruction:`Hold charge without moving. Current energy: ${Math.round(player?.en||0)} / 75.`,items:[['ENERGY IS RISING',this.flags.charge],['75 ENERGY',(player?.en||0)>=75]]};
+      case'abilities':return{step:5,title:'USE YOUR CORE TECHNIQUES',keys:[`${ability(1)} • FIRE BLAST`,`${ability(3)} • OBJECT SWAP`],instruction:'Only slots 1 and 3 are unlocked for this lesson.',items:[['FIRE BLAST',this.flags.fire],['OBJECT SWAP',this.flags.swap]]};
+      case'shotsCharge':return{step:6,title:'CHARGE TO FULL ENERGY',keys:[prompt('charge',controlLabel(a.charge)),'100 ENERGY'],instruction:`Shots of Agony needs the full meter. Current energy: ${Math.round(player?.en||0)} / 100.`,items:[['100 ENERGY',(player?.en||0)>=100],['USE SHOTS',false]]};
+      case'shotsReady':return{step:6,title:'USE SHOTS OF AGONY',keys:[`${ability(2)} • SHOTS OF AGONY`,'ALL ENERGY'],instruction:'Use the highlighted slot. The move consumes the full energy meter.',items:[['100 ENERGY',true],['SHOTS ACTIVATED',this.flags.shots]]};
+      case'lensCharge':return{step:7,title:'PREPARE LENS OF TRUTH',keys:[prompt('charge',controlLabel(a.charge)),'60 ENERGY'],instruction:`Charge back to 60. Current energy: ${Math.round(player?.en||0)} / 60.`,items:[['60 ENERGY',(player?.en||0)>=60],['ACTIVATE LENS',false],['FOLLOW PREDICTION',false]]};
+      case'lensReady':return{step:7,title:'ACTIVATE LENS OF TRUTH',keys:[`${ability(4)} • LENS`,'60 ENERGY','25 HP'],instruction:'Use the highlighted slot, then react to the predicted Sage attack.',items:[['60 ENERGY',true],['LENS ACTIVATED',this.flags.lens],['FOLLOW PREDICTION',this.flags.lensRead]]};
+      case'lensPractice':return{step:7,title:'FOLLOW THE PREDICTION',keys:[prompt('block',controlLabel(a.block)),'DODGE'],instruction:'The Lens names the probable attack. Avoid or perfect-parry the next strike.',items:[['LENS ACTIVE',this.flags.lens],['SUCCESSFUL READ',this.flags.lensRead]]};
+      case'final':return{step:8,title:'LAND THREE CLEAN HITS',keys:['ANY UNLOCKED ATTACK'],instruction:`Blocked attacks do not count. Clean hits: ${this.finalHits} / 3.`,items:[['HIT 1',this.finalHits>=1],['HIT 2',this.finalHits>=2],['HIT 3',this.finalHits>=3]]};
+      default:return{step:1,title:'WAIT FOR THE REFRESHER',keys:[],instruction:'The Sage is still explaining the lesson.',items:[]};
+    }
+  }
+
+  updateCoach(){
+    if(this.coach.hidden||this.phase==='complete')return;
+    const model=this.tutorialModel();
+    this.coachStep.textContent=String(model.step);
+    this.coachAction.textContent=model.title;
+    this.coachInstruction.textContent=model.instruction;
+    this.coachKeys.innerHTML=model.keys.map(key=>`<kbd>${key}</kbd>`).join('');
+    this.coachChecklist.innerHTML=model.items.map(([label,done])=>`<span class="${done?'done':''}"><b>${done?'✓':'○'}</b>${label}</span>`).join('');
+    const complete=model.items.filter(([,done])=>done).length,total=Math.max(1,model.items.length);
+    this.coachProgress.style.width=`${Math.round(complete/total*100)}%`;
+    this.coachState.textContent=complete===total&&model.items.length?'COMPLETE':'DO THIS NOW';
+    this.coach.classList.toggle('isComplete',complete===total&&model.items.length>0);
+    this.syncTutorialHud();
+    this.highlightTargets();
+  }
+
+  updateLiveCoach(){
+    if(['resource','shotsCharge','lensCharge','final','parry','lensPractice'].includes(this.phase))this.updateCoach();
+    if(this.phase==='parry'){
+      const ready=this.sageAttackTimer<=.32;
+      this.coachState.textContent=ready?'BLOCK NOW':'WAIT FOR ATTACK';
+      this.coach.classList.toggle('urgent',ready);
+    }else if(this.phase==='lensPractice'){
+      const ready=this.sageAttackTimer<=.32;
+      this.coachState.textContent=ready?'REACT NOW':'READ PREDICTION';
+      this.coach.classList.toggle('urgent',ready);
+    }else this.coach.classList.remove('urgent');
+  }
+
+  highlightTargets(){
+    this.battle.root.querySelectorAll('[data-arena-slot]').forEach(button=>button.classList.remove('tutorialTarget'));
+    let slot=0;
+    if(this.phase==='abilities')slot=this.flags.fire?3:1;
+    else if(this.phase==='shotsReady')slot=2;
+    else if(this.phase==='lensReady')slot=4;
+    if(slot)this.battle.root.querySelector(`[data-arena-slot="${slot}"]`)?.classList.add('tutorialTarget');
+  }
+
+  markProgress(){this.lastProgressAt=performance.now();this.coach.classList.remove('needsAttention')}
+
+  showInactivityHint(){
+    if(this.coach.hidden||this.phase==='complete'||this.engine?.dialogue)return;
+    const now=performance.now();
+    if(now-this.lastProgressAt<4500||now-this.lastHintAt<4300)return;
+    this.lastHintAt=now;
+    this.coach.classList.add('needsAttention');
+    const model=this.tutorialModel();
+    this.battle.notice(`DO THIS NOW: ${model.title}`,2.2);
+    this.coachHint.textContent='Still stuck? Follow the large control labels above. The step advances automatically.';
   }
 
   finishTutorial(){
     if(this.phase==='complete')return;
     this.phase='complete';
+    this.coach.hidden=true;
+    this.root.classList.remove('tutorialActive');
+    this.battle.root.classList.remove('tutorialHudActive','tutorialShowEnergy','tutorialShowGuard','tutorialShowHotbar','tutorialShowOpponent');
+    this.engine?.clearHotbarAvailability();
     this.battle.phase='story';
     this.setObjective('TRAINING COMPLETE','The tournament entry is ready.');
-    this.showDialogue([
+    this.engine.showDialogue([
       {speaker:'THE SAGE',speakerClass:'neutral',text:'You are still reckless, impatient, and far too proud.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'So I am ready?',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'Unfortunately, yes.',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'Do not underestimate anyone there. Especially the familiar ones.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'You keep saying that like I am supposed to be worried.',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'You should be.',tail:'down'}
-    ],()=>this.commitCompletion());
+    ],{onComplete:()=>this.commitCompletion()});
   }
 
   commitCompletion(){
@@ -334,12 +565,6 @@ class RrvvfoMission1{
 
   setObjective(title,detail){this.objective.textContent=title;this.detail.textContent=detail}
 
-  setArenaNames(left,right){
-    const names=this.battle?.root?.querySelectorAll('.top .side .name span:first-child');
-    if(names?.[0])names[0].textContent=left;
-    if(names?.[1])names[1].textContent=right;
-  }
-
   async requestExit(){
     if(await storyConfirm({title:'RETURN TO ROUTE?',message:'Leave the training refresher? Current tutorial progress will restart.',confirmLabel:'LEAVE TRAINING'}))this.exitToStory();
   }
@@ -353,11 +578,11 @@ class RrvvfoMission1{
 
   cleanup(){
     this.aborted=true;
-    if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
-    this.dialogue?.overlay?.remove();
-    resetArenaBattleInstance();
+    this.root.classList.remove('tutorialActive');
+    this.battle?.root?.classList.remove('tutorialHudActive','tutorialShowEnergy','tutorialShowGuard','tutorialShowHotbar','tutorialShowOpponent');
+    this.engine?.clearHotbarAvailability();
+    destroyStoryBattle(this.battle);
     this.root.remove();
-    this.battle?.root.classList.remove('storyMission1','storyMissionDialogueOpen');
     activeMission=null;
   }
 }

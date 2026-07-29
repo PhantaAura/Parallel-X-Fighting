@@ -3,7 +3,7 @@ import {ROSTER,ROSTER_IDS} from './roster.js';
 export const ABILITY_HOTBAR_KEY='pxAbilityHotbarV1';
 export const ABILITY_HOTBAR_ACTIONS=Object.freeze({
   fireBlast:'fireBlast',shotsOfAgony:'shotsOfAgony',objectSwap:'objectSwap',lensOfTruth:'lensOfTruth',ultimate:'ultimate',
-  special:'s',dash:'d',counter:'c'
+  special:'characterSpecial',dash:'d',counter:'c'
 });
 
 const ability=(id,label,action,icon,energy,description,extra={})=>Object.freeze({id,label,short:label.split(' ').map(word=>word[0]).join('').slice(0,4).toUpperCase(),action,icon,energy,description,...extra});
@@ -12,7 +12,7 @@ const RRVVFO_ABILITIES=Object.freeze([
   ability('fireBlast','Fire Blast','fireBlast','🔥',28,'Launches Rrvvfo’s fire projectile from range.',{cooldown:55}),
   ability('shotsOfAgony','Shots of Agony','shotsOfAgony','◉',100,'Consumes the full Energy meter to summon exactly four blue copies that fire together.',{cooldown:300,restriction:'All Energy • exactly four clones • one active volley'}),
   ability('objectSwap','Object Swap','objectSwap','↯',12,'Repositions using a valid nearby object or marker.',{cooldown:42,restriction:'Requires a legal destination'}),
-  ability('lensOfTruth','Lens of Truth','lensOfTruth','◈',90,'Starts at 90 Energy and 70 HP. Successful use improves predictions and eventually unlocks two automatic dodges.',{hp:70,cooldown:300,restriction:'Mastery improves cost, duration, accuracy, and auto-dodges'}),
+  ability('lensOfTruth','Lens of Truth','lensOfTruth','◈',60,'Starts at 60 Energy and 25 HP. Successful use improves predictions and eventually unlocks two automatic dodges.',{hp:25,cooldown:300,restriction:'Mastery improves cost, duration, accuracy, and auto-dodges'}),
   ability('ultimate','Solar Weave','ultimate','◆',90,'Activates Rrvvfo’s cinematic Fire Awakening ultimate.',{cooldown:300,ultimate:true,restriction:'Subject to cinematic and clash rules'})
 ]);
 
@@ -23,7 +23,7 @@ const SPECIAL_NAMES=Object.freeze({
 function genericAbilities(id){
   const fighter=ROSTER[id],special=SPECIAL_NAMES[id]||fighter?.s||'Special';
   const slots=[
-    ability(`${id}Special`,special,'s','✦',28,`${fighter?.n||id}’s character-specific special attack.`,{cooldown:55}),
+    ability(`${id}Special`,special,'characterSpecial','✦',28,`${fighter?.n||id}’s character-specific special attack.`,{cooldown:55}),
     ability(`${id}Movement`,'Movement Ability','d','➤',12,`${fighter?.n||id}’s dash or character movement ability.`,{cooldown:42}),
   ];
   if(id==='bark')slots.push(ability('barkCounter','Seismic Counter','c','⬡',20,'A deliberate close-range counter stance that only punishes melee attacks.',{cooldown:90,restriction:'Close melee only • punishable on miss'}));
@@ -68,11 +68,11 @@ export function moveAbilitySlot(settings,fighterId,abilityId,targetIndex){
 export function restoreAbilityOrder(settings,fighterId){settings.orders={...settings.orders,[fighterId]:defaultAbilityOrder(fighterId)};return settings.orders[fighterId]}
 
 const seconds=frames=>Math.max(0,Math.ceil(Number(frames||0)/60));
-function currentLensCosts(storage=globalThis.localStorage){let mastery=0;try{mastery=Math.max(0,Math.min(100,Number(storage?.getItem?.('pxLensMasteryV1'))||0))}catch{}const ratio=mastery/100;return{mastery,energy:Math.round(90-25*ratio),hp:Math.round(70-25*ratio)}}
+function currentLensCosts(storage=globalThis.localStorage){let mastery=0;try{mastery=Math.max(0,Math.min(100,Number(storage?.getItem?.('pxLensMasteryV1'))||0))}catch{}const ratio=mastery/100;return{mastery,energy:Math.round(60-15*ratio),hp:Math.round(25-15*ratio)}}
 export function abilityStatus(fighter,entry,world=fighter?.world){
   if(!fighter||!entry)return{available:false,reason:'Fighter unavailable',cooldown:0,fill:0,active:false};
   let cooldown=0,active=false,activeText='',reason='';const lens=currentLensCosts();const requiredEnergy=entry.action==='lensOfTruth'?lens.energy:entry.energy;
-  if(entry.action==='fireBlast'||entry.action==='s')cooldown=fighter.specialCd||0;
+  if(entry.action==='fireBlast'||entry.action==='characterSpecial')cooldown=fighter.specialCd||0;
   if(entry.action==='shotsOfAgony'){cooldown=fighter.agonyCooldown||0;active=!!fighter.agonyActiveVolley;activeText=active?'ACTIVE':''}
   if(entry.action==='objectSwap'||entry.action==='d')cooldown=fighter.dashCd||0;
   if(entry.action==='lensOfTruth'){cooldown=fighter.lensCooldown||0;active=!!fighter.lens;activeText=active?`${seconds(fighter.lens)}s`:''}

@@ -1,57 +1,69 @@
-# Parallels X: Clash of Souls — Prototype 2.9A.2
+# Parallels X: Clash of Souls
 
-This is the complete cumulative repository. It includes the full Prototype 2.9A combat overhaul, all Story Mode repairs from 2.9A.1, and the Chapter 2 HUD/Story Menu hotfix in 2.9A.2. No previous patch is required.
+**A Sonic Battle-inspired browser fighter with real parries, grabs, energy management, continuous first-to-three-KO battles, and playable story chapters.**
 
-See `PATCH-NOTES-2.9A.2.md` for the newest update, `PATCH-NOTES-2.9A.1.md` for the Story repair, and `PATCH-NOTES-2.9A.md` for the combat overhaul. Older notes below are retained as development history.
+Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
----
+## Current build
 
-# Parallels X Prototype 2.6.2 — Parallels Battle Menu Flow
+**Prototype 2.9A.7 — Casual Player Retention Pass**
 
-This patch replaces the broad V2 theme with a scoped, consistent menu flow built for Parallels X.
+This ZIP is a complete cumulative build. No older package or patch is required.
 
-## New flow
+### Playable now
 
-1. Start screen
-2. Horizontal **Choose Your Mode** bar
-3. Story opens **Character / Episode Select**
-4. A chosen episode opens **Mission Select**
-5. A selected mission opens its briefing and start button
+- Rrvvfo Story Route: Chapters 1–2 plus the Chapter 3 development preview
+- VS CPU
+- Local two-player
+- Training Mode with suggested drills
+- Tangai Dojo and Global Tournament Arena battles
+- Keyboard, Nintendo, Xbox, PlayStation, custom-controller, and touch input
+- The Sage’s Manual with beginner lessons, fighter guides, drills, and spoiler-safe unlocks
 
-VS CPU, Local 2 Player, and Training still open the fighter-select screen, now restyled to match the same interface family.
+Story Mode is entered only through **STORY** on the main menu. The old duplicate Story entry has been removed from character select.
 
-## Included fixes
+### Showcase focus
 
-- Main mode menu is horizontal and works with Left/Right or Up/Down.
-- Story character/episode cards are horizontal and controller-friendly.
-- Mission cards use the same visual language.
-- Character select, stage select, settings, and extras are restyled so transitions are less jarring.
-- The mode information panel stays visible on mobile instead of disappearing.
-- Quick Continue is part of the layout and no longer floats over menu choices.
-- Paragraphs, manuals, and descriptions use a readable system font.
-- Strong keyboard focus styling is included.
-- The broad V2 stylesheet is disconnected so it no longer unexpectedly changes the combat HUD.
-- No external font is required for the new menu.
+- **Showcase sprites:** Rrvvfo, Revvfo, The Sage
+- **Visual prototypes:** Wade, Bark
+- **In development:** remaining roster entries are clearly labeled in character select
 
-The animated intro is intentionally deferred to a later update.
+Arcade Mode is planned for **Prototype 3.x**.
 
+## Chapter 1–3 controls used everywhere
 
+The Chapter 1–3 control scheme is the source of truth for VS, Training, Arena, and Story:
 
-## Prototype 2.9A combat-depth update
+- Move / depth: **W / A / S / D**
+- Jump: **Space**
+- Primary attack: **Left Click** (Light by default)
+- Light: **J**
+- Heavy: **K**
+- Launcher: **I**
+- Grab: **U**
+- Dash: **Shift**
+- Block: **Right Click** or **L**
+- Charge: **C**
+- Combo Breaker: **R**
+- Counter: **Q**
+- Interact: **E**
+- Activate selected ability: **O**
+- Direct ability slots: **1–5**
+- Lens shortcut: **Z**
 
-- First-to-three KOs now continue without resetting the winner.
-- Chapter 2 tournament fights include ring-outs; the scripted Plouke final is protected.
-- Wade and Bark have complete arena kits and character-driven AI.
-- Arena AI uses reaction delays, spacing, resources, danger checks, and deliberate mistakes instead of instant input reading.
-- Timed guard, perfect parry, grabs, charge energy, projectile clashes, physical Earth Walls, and heavy clashes are active.
-- Lens of Truth predicts attacks and improves through mastery; full mastery grants two auto-dodges.
-- Shots of Agony consumes the full energy meter.
+On controllers, the left stick moves, D-pad Left/Right selects an ability, and ZR/RT/R2 activates it. Prompts change live for Nintendo, Xbox, PlayStation, custom mappings, mouse, keyboard, and touch.
 
-## Prototype 2.8B.3 replay fix
+## Friend-test priorities
 
-Completed chapters now show a separate **Replay** button. Chapter 2 replay starts from the beginning without replacing the saved completed checkpoint, and the tournament arena is no longer covered by an opaque blue UI layer.
+- Begin with Arena Training and verify the Chapter 1–3 controls feel understandable.
+- Play Quick Battle on Easy and confirm both fighters begin at 100 HP.
+- Check that Random never selects a Coming Soon fighter.
+- Use Lens at low mastery and verify every warning is broad but truthful.
+- Play the Chapter 1 road and check the movement, jump, dash, Interact, Manual unlock, and escape-retry flow.
+- Switch between keyboard/mouse, controller, and touch to verify prompts update.
+- Complete Chapters 1–3 without progression, cleanup, objective, or exit problems.
+- Check desktop 1440×900, laptop 1280×720, and landscape phone layouts.
 
+Arena Training matches Story’s 3D combat. **Classic 2D Training — Advanced Lab** remains available through character select for the legacy 2D battle system.
 
-## Prototype 2.8B.4 combat update
-
-Normal fights are now first to three knockouts with automatic respawns, stronger CPU health, no timeout victories, and health-bar scaling for values above 100. The scripted Plouke finale is intentionally exempt so Chapter 2's established ending still plays correctly.
+See [`PATCH-NOTES-2.9A.7.md`](PATCH-NOTES-2.9A.7.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.7.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.7.md). Older patch notes remain as development history.

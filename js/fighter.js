@@ -10,14 +10,14 @@ const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 const LENS_MASTERY_KEY='pxLensMasteryV1';
 function readLensMastery(){try{return clamp(Number(localStorage.getItem(LENS_MASTERY_KEY))||0,0,100)}catch{return 0}}
 function saveLensMastery(value){const next=clamp(Math.round(value),0,100);try{localStorage.setItem(LENS_MASTERY_KEY,String(next))}catch{}return next}
-function lensCosts(mastery=readLensMastery()){const ratio=clamp(mastery/100,0,1);return{energy:Math.round(90-25*ratio),hp:Math.round(70-25*ratio),duration:Math.round(240+90*ratio),autoDodges:mastery>=100?2:0}}
+function lensCosts(mastery=readLensMastery()){const ratio=clamp(mastery/100,0,1);return{energy:Math.round(60-15*ratio),hp:Math.round(25-15*ratio),duration:Math.round(240+90*ratio),autoDodges:mastery>=100?2:0}}
 
 
 export class Fighter{
   constructor(id,side,cpu,world,{appearance='down'}={}){this.id=id;this.c=ROSTER[id];this.side=side;this.cpu=cpu;this.world=world;this.appearance=appearance==='up'?'up':'down';this.w=48;this.h=86;this.combo=createComboState();this.resetRuntime()}
   resetRuntime(){
     const maxHp=Math.max(1,Number(this.maxHp)||100);
-    Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,maxHp,hp:maxHp,en:100,attackCd:0,specialCd:0,ultCd:0,ultimateRecovery:0,dashCd:0,clashCooldown:0,ultimateStartup:0,pendingUltimate:false,lensCooldown:0,agonyCooldown:0,agonyActiveVolley:false,agonyVolleyFired:false,agonyVolleyId:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,lensAutoDodges:0,lensWasHit:false,lensPrediction:'UNKNOWN',lensMastery:readLensMastery(),block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,tick:0,visualAction:null,visualActionTimer:0,visualHitKind:null,visualPerfectTimer:0,visualBlockTimer:0,visualDashTimer:0,hitFlash:0});
+    Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,maxHp,hp:maxHp,en:100,attackCd:0,specialCd:0,ultCd:0,ultimateRecovery:0,dashCd:0,clashCooldown:0,ultimateStartup:0,pendingUltimate:false,lensCooldown:0,agonyCooldown:0,agonyActiveVolley:false,agonyVolleyFired:false,agonyVolleyId:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,lensAutoDodges:0,lensWasHit:false,lensPrediction:'UNKNOWN',lensMastery:readLensMastery(),block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,counterKind:'',charging:false,tick:0,visualAction:null,visualActionTimer:0,visualHitKind:null,visualPerfectTimer:0,visualBlockTimer:0,visualDashTimer:0,hitFlash:0});
     resetDefenseState(this);
     resetCombo(this.combo);
     this.world.fighterVisuals?.resetFighter(this);
@@ -32,7 +32,7 @@ export class Fighter{
     if(this.freeze>0){this.freeze--;return}
     const foe=this.foe();if(!foe)return;this.tick++;this.face=foe.x>this.x?1:-1;
     updateDefenseState(this,command);
-    if(command.pressed('k'))this.comboBreaker();
+    if(command.pressed('q'))this.comboBreaker();
     if(this.combo.timer>0&&--this.combo.timer===0){resetCombo(this.combo);this.lightChain=0}
     if(this.lightChainTimer>0&&--this.lightChainTimer===0)this.lightChain=0;
     if(this.chainLockout>0)this.chainLockout--;if(this.counterCd>0)this.counterCd--;if(this.clashCooldown>0)this.clashCooldown--;if(this.lensCooldown>0)this.lensCooldown--;if(this.ultimateRecovery>0)this.ultimateRecovery--;
@@ -51,22 +51,25 @@ export class Fighter{
     else if(this.stun>0)this.stun--;
     else if(!this.knockdown&&!this.getup){
       const speed=this.c.sp*(this.aura?1.2:1)*(this.armor?.78:1);
-      if(command.down('l'))this.vx=-speed;else if(command.down('r'))this.vx=speed;else this.vx*=.65;
-      if(command.pressed('j')&&this.grounded){this.vy=-this.c.j;this.grounded=0;this.world.sound(180)}
+      this.charging=Boolean(command.down('k')&&this.grounded&&!this.attackCd&&!this.windup);
+      if(this.charging){this.vx*=.45;this.en=clamp(this.en+.42,0,100);this.guard=clamp(this.guard+.18,0,this.guardMax||100);this.visualAction='chargeEnergy';this.visualActionTimer=3}
+      else if(command.down('l'))this.vx=-speed;else if(command.down('r'))this.vx=speed;else this.vx*=.65;
+      if(!this.charging&&command.pressed('j')&&this.grounded){this.vy=-this.c.j;this.grounded=0;this.world.sound(180)}
       // Normal/throw buffers must survive hit-stop and the remaining recovery.
       // Only consume them once a normal could legally begin.
-      if(!this.attackCd){
+      if(!this.charging&&!this.attackCd){
         if(command.pressed('t'))this.throw();
         else if(command.pressed('x'))this.attack('launcher');
         else if(command.pressed('a'))this.attack(this.grounded?'light':'air');
         else if(command.pressed('h'))this.attack(this.grounded?'heavy':'airHeavy');
       }
+      if(command.pressed('characterSpecial'))this.special();
       if(command.pressed('fireBlast'))this.fireBlast();
       if(command.pressed('shotsOfAgony'))this.beginShotsOfAgony();
       if(command.pressed('objectSwap'))this.dash();
       if(command.pressed('lensOfTruth'))this.lensAbility();
       if(command.pressed('ultimate'))this.ultimate();
-      if(command.pressed('s'))this.special();
+      if(command.pressed('s'))this.throw();
       if(command.pressed('u'))this.ultimate();
       if(command.pressed('n'))this.lensAbility();
       if(command.pressed('d'))this.dash();
@@ -136,8 +139,9 @@ export class Fighter{
     this.world.effects.add({t:'breaker',x:this.x+24,y:this.y+40,c:'#ffffff',l:30});this.world.effects.burst(this.x+24,this.y+40,'#ffffff',38);this.world.shake=Math.max(this.world.shake,this.world.reducedShake?2.5:7);this.world.sound('breaker');this.world.statistics?.add(this.side,'breakers');this.world.notifications?.push('COMBO BREAKER',{important:true,key:`breaker-${this.side}`});return true;
   }
   counter(){
-    if(this.id!=='bark'||this.counterCd||this.counterStartup||this.counterActive||this.counterRecovery||this.attackCd||this.windup||this.en<20||this.stun||this.knockdown)return false;
-    this.en-=20;this.counterStartup=6;this.counterCd=90;this.attackCd=Math.max(this.attackCd,48);this.world.effects.add({t:'counter',x:this.x+24,y:this.y+42,c:'#d9bb78',l:18});return true;
+    const bark=this.id==='bark',cost=bark?20:15;
+    if(this.counterCd||this.counterStartup||this.counterActive||this.counterRecovery||this.attackCd||this.windup||this.en<cost||this.stun||this.knockdown)return false;
+    this.en-=cost;this.counterStartup=6;this.counterCd=bark?90:110;this.attackCd=Math.max(this.attackCd,bark?48:42);this.counterKind=bark?'seismic':'universal';this.world.effects.add({t:'counter',x:this.x+24,y:this.y+42,c:bark?'#d9bb78':'#9feaff',l:18});return true;
   }
   dash(){
     if(this.dashCd||this.dashRecovery||this.en<12||(!this.grounded&&this.id!=='wade')||(!this.grounded&&this.airDashes>=1))return;
@@ -216,7 +220,7 @@ export class Fighter{
     if(this.lens>0&&this.lensAutoDodges>0){const foe=this.foe(),oldX=this.x;this.x=clamp(foe.x-foe.face*72,15,this.world.width-this.w-15);if(Math.abs(this.x-foe.x)<45)this.x=clamp(oldX-this.face*105,15,this.world.width-this.w-15);this.visualAction=this.x<oldX?'lensDodgeLeft':'lensDodgeRight';this.visualActionTimer=18;this.inv=8;this.lensAutoDodges--;fx.burst(oldX+24,this.y+43,'#f7f7ff',18);fx.burst(this.x+24,this.y+43,'#f7f7ff',18);fx.add({t:'dodge',x:this.x+24,y:this.y+22,c:'#f7f7ff',l:20});this.world.sound(620,.06,'sine',.035);this.world.notifications?.push(`LENS AUTO-DODGE • ${this.lensAutoDodges} LEFT`,{key:`lens-dodge-${this.side}`});return 0}if(this.lens>0)this.lensWasHit=true;
     if(this.inv)return 0;
     const meleeCounterKinds=new Set(['light','heavy','launcher','air','airHeavy']);
-    if(this.id==='bark'&&this.counterActive>0&&attacker&&meleeCounterKinds.has(kind)&&Math.abs(attacker.x-this.x)<95){this.counterActive=0;this.counterRecovery=18;attacker.hit(13,-attacker.face*12,'counter',this,{hitstun:26});fx.burst(attacker.x+24,attacker.y+40,'#d9bb78',24);return 0}
+    if(this.counterActive>0&&attacker&&meleeCounterKinds.has(kind)&&Math.abs(attacker.x-this.x)<95){const bark=this.id==='bark',damage=bark?13:8;this.counterActive=0;this.counterRecovery=bark?18:24;attacker.hit(damage,-attacker.face*(bark?12:9),'counter',this,{hitstun:bark?26:18});fx.burst(attacker.x+24,attacker.y+40,bark?'#d9bb78':'#9feaff',bark?24:18);this.world.sound?.('counter');this.world.notifications?.push(bark?'SEISMIC COUNTER':'COUNTER',{important:true,key:`counter-${this.side}`});return 0}
     if(this.counterStartup||this.counterActive){this.counterStartup=this.counterActive=0;this.counterRecovery=Math.max(this.counterRecovery,30)}
     const intentionalStartupArmor=this.id==='bark'&&this.pending==='heavy'&&this.armor>0;
     if((this.windup>0||this.ultimateStartup>0||this.throwStartup>0)&&!intentionalStartupArmor)this.cancelStartup();
@@ -230,7 +234,7 @@ export class Fighter{
     if(actual>0&&this.world.training.enabled&&this.side===2&&['after','counterattack'].includes(this.world.training.dummy))this.world.training.afterFirstHit=true;
     if(attacker&&!this.block&&actual>0){attacker.combo.hits=nextHit;attacker.combo.damage+=actual;attacker.combo.scale=result.scale;attacker.combo.timer=COMBO_RESET_FRAMES;attacker.combo.attacker=attacker.side;if(!this.grounded&&++this.juggles>=JUGGLE_LIMIT){this.knockdown=42;this.vy=9;knockback*=.45}}
     if(attacker&&actual>0)this.world.statistics?.recordDamage(attacker.side,actual,attacker.combo.hits,attacker.combo.damage);
-    if(defense?.perfect){this.world.statistics?.add(this.side,'perfectBlocks');this.world.notifications?.push('PERFECT BLOCK',{important:true,key:`perfect-${this.side}`})}
+    if(defense?.perfect){this.world.statistics?.add(this.side,'perfectBlocks');this.world.notifications?.push('PERFECT PARRY',{important:true,key:`perfect-${this.side}`});globalThis.document?.dispatchEvent?.(new CustomEvent('pxperfectparry',{detail:{side:this.side,engine:'2d'}}))}
     if(defense?.broken){if(attacker)this.world.statistics?.add(attacker.side,'guardBreaks');this.world.notifications?.push('GUARD BREAK',{important:true,key:`guard-break-${this.side}`})}
     if(this.block&&kind!=='seal'){knockback*=defense?.perfect?.08:.25;if(!defense?.perfect)this.en=clamp(this.en+4,0,100)}
     this.vx=knockback;this.stun=defense?.broken?Math.max(this.stun,this.guardBreakStun):this.block?(defense?.perfect?1:5):(move.hitstun||12);this.visualHitKind=kind;this.hitFlash=4;

@@ -1,6 +1,19 @@
+// One physical control language is shared by standard battles, Training,
+// Arena, and every Story chapter.  The 3-D modes use up/down for depth while
+// the 2-D fighter simply ignores those two directions.
 export const CONTROL_MAPS = [
-  { l: 'KeyA', r: 'KeyD', j: 'KeyW', b: 'KeyS', a: 'KeyF', h: 'KeyR', x: 'KeyT', s: 'KeyG', u: 'KeyH', d: 'KeyQ', c: 'KeyE', n: 'KeyZ' },
-  { l: 'ArrowLeft', r: 'ArrowRight', j: 'ArrowUp', b: 'ArrowDown', a: 'KeyJ', h: 'KeyI', x: 'KeyU', s: 'KeyK', u: 'KeyL', d: 'KeyO', c: 'Semicolon', n: 'KeyN' }
+  {
+    l:'KeyA',r:'KeyD',up:'KeyW',down:'KeyS',
+    j:'Space',a:'KeyJ',h:'KeyK',x:'KeyI',
+    s:'KeyU',d:'ShiftLeft',b:'KeyL',u:'KeyO',
+    k:'KeyC',q:'KeyR',c:'KeyQ',i:'KeyE',n:'KeyZ'
+  },
+  {
+    l:'ArrowLeft',r:'ArrowRight',up:'ArrowUp',down:'ArrowDown',
+    j:'Numpad0',a:'Numpad1',h:'Numpad2',x:'Numpad5',
+    s:'Numpad3',d:'Numpad6',b:'Numpad4',u:'Numpad9',
+    k:'Numpad7',q:'Numpad8',c:'NumpadDecimal',i:'Enter',n:'NumpadAdd'
+  }
 ];
 
 export const INPUT_BUFFER_FRAMES = 12;
@@ -8,21 +21,23 @@ export const SIMULTANEOUS_WINDOW_FRAMES = 3;
 export const SIMPLIFIED_LIGHT_REPEAT_FRAMES = 18;
 export const SIMPLIFIED_TOUCH_ACTIONS = Object.freeze(['a']);
 
-const CONTROLLER_ACTIONS = ['j', 'a', 'h', 's', 'd', 'b', 'u', 'k', 'c', 'n'];
-const SOURCE_ACTIONS = ['l', 'r', 'up', 'down', 'j', 'b', 'a', 'h', 'x', 's', 'u', 'd', 'k', 't', 'c', 'n'];
-const CUSTOMIZABLE_ACTIONS = ['j', 'a', 'h', 's', 'd', 'b', 'u', 'k'];
+const CONTROLLER_ACTIONS = ['j', 'a', 'h', 's', 'd', 'b', 'u', 'k', 'q', 'c', 'i', 'n'];
+const SOURCE_ACTIONS = ['l', 'r', 'up', 'down', 'j', 'b', 'a', 'h', 'x', 's', 'u', 'd', 'k', 'q', 't', 'c', 'i', 'n'];
+const CUSTOMIZABLE_ACTIONS = ['j', 'a', 'h', 's', 'd', 'b', 'u', 'k', 'q', 'c', 'i'];
 const ACTION_NAMES = {
   j: 'Jump',
   a: 'Light',
   h: 'Heavy',
-  s: 'Special',
+  s: 'Grab',
   d: 'Dash',
   b: 'Block',
-  u: 'Ultimate',
-  k: 'Breaker',
+  u: 'Ultimate / Selected Ability',
+  k: 'Charge',
+  q: 'Combo Breaker',
   x: 'Launcher',
   t: 'Throw',
   c: 'Counter',
+  i: 'Interact',
   n: 'Lens',
   fireBlast:'Fire Blast',
   shotsOfAgony:'Shots of Agony',
@@ -34,18 +49,18 @@ const ACTION_NAMES = {
 export const CONTROLLER_STYLES = Object.freeze({
   nintendo: {
     name: 'Nintendo',
-    buttons: { j: 1, a: 0, h: 2, s: 3, d: 5, b: 4, u: 7, k: 6, c: 10, n: 11 },
-    labels: { j: 'A', a: 'B', h: 'Y', s: 'X', d: 'R', b: 'L', u: 'ZR', k: 'ZL', c: 'Left Stick', n: 'Right Stick' }
+    buttons: { j: 1, a: 0, h: 2, s: 3, d: 5, b: 4, u: 7, k: 6, q: 10, c: 11, i: 8, n: 9 },
+    labels: { j: 'A', a: 'B', h: 'Y', s: 'X', d: 'R', b: 'L', u: 'ZR', k: 'ZL', q: 'Left Stick', c: 'Right Stick', i: 'Minus', n: 'Plus' }
   },
   xbox: {
     name: 'Xbox',
-    buttons: { j: 0, a: 2, h: 3, s: 1, d: 5, b: 4, u: 7, k: 6, c: 10, n: 11 },
-    labels: { j: 'A', a: 'X', h: 'Y', s: 'B', d: 'RB', b: 'LB', u: 'RT', k: 'LT', c: 'LS', n: 'RS' }
+    buttons: { j: 0, a: 2, h: 3, s: 1, d: 5, b: 4, u: 7, k: 6, q: 10, c: 11, i: 8, n: 9 },
+    labels: { j: 'A', a: 'X', h: 'Y', s: 'B', d: 'RB', b: 'LB', u: 'RT', k: 'LT', q: 'LS', c: 'RS', i: 'View', n: 'Menu' }
   },
   playstation: {
     name: 'PlayStation',
-    buttons: { j: 0, a: 2, h: 3, s: 1, d: 5, b: 4, u: 7, k: 6, c: 10, n: 11 },
-    labels: { j: 'Cross', a: 'Square', h: 'Triangle', s: 'Circle', d: 'R1', b: 'L1', u: 'R2', k: 'L2', c: 'L3', n: 'R3' }
+    buttons: { j: 0, a: 2, h: 3, s: 1, d: 5, b: 4, u: 7, k: 6, q: 10, c: 11, i: 8, n: 9 },
+    labels: { j: 'Cross', a: 'Square', h: 'Triangle', s: 'Circle', d: 'R1', b: 'L1', u: 'R2', k: 'L2', q: 'L3', c: 'R3', i: 'Share', n: 'Options' }
   }
 });
 
@@ -62,12 +77,14 @@ const TOUCH_LABELS = {
   a: 'Light',
   h: 'Heavy',
   x: 'Launcher',
-  s: 'Special',
-  u: 'Ultimate',
+  s: 'Grab',
+  u: 'Ultimate / Selected Ability',
   d: 'Dash',
-  k: 'Breaker',
+  k: 'Charge',
+  q: 'Combo Breaker',
   t: 'Throw',
   c: 'Counter',
+  i: 'Interact',
   n: 'Lens'
 };
 
@@ -88,7 +105,7 @@ export function canSimplifyTouchAction(action) {
 
 export function formatComboPrompt(style = 'xbox', customMapping = null) {
   if (style === 'touch') return 'Light, Light, Launcher, Jump, Air Light, Air Heavy';
-  if (style === 'keyboard') return 'F, F, T, W, F, R';
+  if (style === 'keyboard') return 'J, J, I, Space, J, K';
   const mapping = style === 'custom' ? customMapping || createCustomControllerMapping() : CONTROLLER_STYLES[style] || CONTROLLER_STYLES.xbox;
   return `${mapping.labels.a}, ${mapping.labels.a}, Up + ${mapping.labels.h}, ${mapping.labels.j}, ${mapping.labels.a}, ${mapping.labels.h}`;
 }
@@ -109,7 +126,10 @@ function displayKey(code) {
     ArrowUp: 'Up',
     ArrowDown: 'Down',
     Semicolon: ';',
-    Space: 'Space'
+    Space: 'Space',
+    ShiftLeft: 'Shift',
+    ShiftRight: 'Shift',
+    Numpad0: 'Num 0',Numpad1:'Num 1',Numpad2:'Num 2',Numpad3:'Num 3',Numpad4:'Num 4',Numpad5:'Num 5',Numpad6:'Num 6',Numpad7:'Num 7',Numpad8:'Num 8',Numpad9:'Num 9',NumpadDecimal:'Num .',NumpadAdd:'Num +'
   }[code] || code;
 }
 
@@ -122,10 +142,13 @@ export class InputManager {
     this.customMappings = emptySides(() => createCustomControllerMapping());
     this.simplifiedTouch = [false, false];
     this.lastInputDevice = ['keyboard', 'keyboard'];
+    this.mousePrimaryAction = 'a';
     this.keyboard = {};
     this.touch = {};
     this.touchActions = emptySides();
     this.touchActionQueued = emptySides();
+    this.mouseActions = emptySides();
+    this.mouseActionQueued = emptySides();
     this.current = {};
     this.pressed = {};
     this.previous = {};
@@ -137,6 +160,7 @@ export class InputManager {
     this.attackCandidates = emptySides(() => ({ a: null, h: null }));
     this.sourcePrevious = {
       keyboard: emptySides(),
+      mouse: emptySides(),
       touch: emptySides(),
       controller: emptySides()
     };
@@ -166,6 +190,23 @@ export class InputManager {
     this.touchActions[index][action] = !!down;
   }
 
+  // Mouse input is a first-class semantic source, shared by standard battles,
+  // Training, Arena, and every Story chapter. M1 maps to the configured primary
+  // attack; M2 maps to held Block.
+  setMouseAction(side, action, down) {
+    const index = side - 1;
+    if (!Number.isInteger(side) || side < 1 || side > 2 || !action) return false;
+    if (down && !this.mouseActions[index][action]) this.mouseActionQueued[index][action] = true;
+    this.mouseActions[index][action] = !!down;
+    if (down) this.lastInputDevice[index] = 'mouse';
+    return true;
+  }
+
+  setMousePrimaryAction(action) {
+    this.mousePrimaryAction = action === 'h' ? 'h' : 'a';
+    return this.mousePrimaryAction;
+  }
+
   // UI surfaces such as the ability hotbar emit the same buffered semantic
   // actions consumed by Fighter. No damage, timing, or cooldown data lives here.
   queueGameplayAction(side,action,device='keyboard') {
@@ -177,7 +218,6 @@ export class InputManager {
   setControllerStyle(side, style) {
     if (!CONTROLLER_STYLE_IDS.includes(style)) return false;
     this.controllerStyles[side - 1] = style;
-    this.lastInputDevice[side - 1] = 'controller';
     this.clearBuffers();
     return true;
   }
@@ -243,11 +283,10 @@ export class InputManager {
     const vertical = Number(pad?.axes?.[1] || 0),deadZone=this.controllerDeadZones[side-1];
     state.l = horizontal < -deadZone || pressedButton(pad, 14);
     state.r = horizontal > deadZone || pressedButton(pad, 15);
+    state.up = vertical < -deadZone || pressedButton(pad, 12);
+    state.down = vertical > deadZone || pressedButton(pad, 13);
     for (const action of CONTROLLER_ACTIONS) state[action] = pressedButton(pad, mapping.buttons[action]);
-    return {
-      state,
-      up: vertical < -deadZone || pressedButton(pad, 12)
-    };
+    return { state, up: state.up };
   }
 
   _queueAction(side, action, device) {
@@ -285,10 +324,6 @@ export class InputManager {
       return;
     }
 
-    if (action === 's' && options.block && device === 'keyboard') {
-      this._queueAction(side, 'k', device);
-      return;
-    }
 
     if (action === 'a' || action === 'h') {
       if (!options.allowChord) {
@@ -371,6 +406,8 @@ export class InputManager {
       const index = side - 1;
       const keyboardState = this._keyboardState(side);
       const keyboardQueued = this._queuedKeyboardActions(side);
+      const mouseState = { ...this.mouseActions[index] };
+      const mouseQueued = { ...this.mouseActionQueued[index] };
       const touchState = { ...this.touchActions[index] };
       const touchQueued = { ...this.touchActionQueued[index] };
       const assigned=this.controllerAssignments[index];
@@ -378,27 +415,28 @@ export class InputManager {
 
       sourceData[index] = {
         keyboard: { state: keyboardState, queued: keyboardQueued, up: false },
+        mouse: { state: mouseState, queued: mouseQueued, up: false },
         touch: { state: touchState, queued: touchQueued, up: !!touchState.up },
         controller: { state: controller.state, queued: {}, up: controller.up }
       };
 
       const combined = {};
       for (const action of SOURCE_ACTIONS) {
-        combined[action] = !!(keyboardState[action] || touchState[action] || controller.state[action]);
+        combined[action] = !!(keyboardState[action] || mouseState[action] || touchState[action] || controller.state[action]);
       }
       this.actionDown[index] = combined;
     }
 
     for (let side = 1; side <= 2; side++) {
       const index = side - 1;
-      for (const device of ['keyboard', 'touch', 'controller']) {
+      for (const device of ['keyboard', 'mouse', 'touch', 'controller']) {
         const data = sourceData[index][device];
         const previous = this.sourcePrevious[device][index];
         for (const action of SOURCE_ACTIONS) {
           const edge = !!data.queued[action] || (!!data.state[action] && !previous[action]);
           if (edge) {
             this._processActionEdge(side, action, device, {
-              allowChord,
+              allowChord: device === 'mouse' ? false : allowChord,
               up: data.up,
               block: !!data.state.b
             });
@@ -413,6 +451,7 @@ export class InputManager {
     this.previous = { ...this.current };
     this.queued = {};
     this.touchActionQueued = emptySides();
+    this.mouseActionQueued = emptySides();
   }
 
   down(code) {
@@ -442,6 +481,14 @@ export class InputManager {
     const index = side - 1;
     const device = options.device || this.bufferDevices[index].get(action) || this.lastInputDevice[index];
     if (device === 'touch') return options.air && (action === 'a' || action === 'h') ? `Air ${TOUCH_LABELS[action]}` : TOUCH_LABELS[action] || ACTION_NAMES[action] || action;
+    if (device === 'mouse') {
+      if (action === 'b') return 'M2';
+      if (action === this.mousePrimaryAction) return options.air ? 'Air M1' : 'M1';
+      if (action === 't') return `${this.mousePrimaryAction==='a'?'M1':displayKey(CONTROL_MAPS[index].a)} + ${this.mousePrimaryAction==='h'?'M1':displayKey(CONTROL_MAPS[index].h)}`;
+      const map = CONTROL_MAPS[index];
+      const label = displayKey(map[action] || action);
+      return options.air && (action === 'a' || action === 'h') ? `Air ${label}` : label;
+    }
     if (device === 'controller') {
       const mapping = this.controllerMapping(side);
       if (action === 'x') return `Up + ${mapping.labels.h}`;
@@ -451,13 +498,13 @@ export class InputManager {
     }
     const map = CONTROL_MAPS[index];
     if (action === 't') return `${displayKey(map.a)} + ${displayKey(map.h)}`;
-    if (action === 'k') return `${displayKey(map.b)} + ${displayKey(map.s)}`;
     const label = displayKey(map[action] || action);
     return options.air && (action === 'a' || action === 'h') ? `Air ${label}` : label;
   }
 
   comboPrompt(side, device = this.lastInputDevice[side - 1]) {
     if (device === 'touch') return formatComboPrompt('touch');
+    if (device === 'mouse') return this.mousePrimaryAction==='a'?'M1, M1, I, Space, M1, K':'J, J, I, Space, J, M1';
     if (device === 'keyboard') return formatComboPrompt('keyboard');
     const style = this.controllerStyles[side - 1];
     return formatComboPrompt(style, this.customMappings[side - 1]);
@@ -465,6 +512,7 @@ export class InputManager {
 
   inputStyleName(side, device = this.lastInputDevice[side - 1]) {
     if (device === 'touch') return 'Touch';
+    if (device === 'mouse') return 'Mouse + Keyboard';
     if (device === 'keyboard') return 'Keyboard';
     return this.controllerMapping(side).name;
   }
@@ -485,12 +533,15 @@ export class InputManager {
     this.pressed = {};
     this.queued = {};
     this.touchActionQueued = emptySides();
+    this.mouseActionQueued = emptySides();
   }
 
   clear() {
     this.keyboard = {};
     this.touch = {};
     this.touchActions = emptySides();
+    this.mouseActions = emptySides();
+    this.mouseActionQueued = emptySides();
     this.current = {};
     this.pressed = {};
     this.previous = {};
@@ -498,6 +549,7 @@ export class InputManager {
     this.actionDown = emptySides();
     this.sourcePrevious = {
       keyboard: emptySides(),
+      mouse: emptySides(),
       touch: emptySides(),
       controller: emptySides()
     };

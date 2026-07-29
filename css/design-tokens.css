@@ -1,0 +1,30 @@
+:root{
+  --px-color-bg:#070914;
+  --px-color-panel:#101626;
+  --px-color-panel-strong:#171f33;
+  --px-color-text:#f7f9ff;
+  --px-color-muted:#aab6cf;
+  --px-color-line:#394764;
+  --px-color-fire:#ef3f2e;
+  --px-color-fire-hot:#ff8a32;
+  --px-color-energy:#55d9ff;
+  --px-color-gold:#ffd447;
+  --px-color-sage:#d8c7ff;
+  --px-radius-sm:7px;
+  --px-radius-md:12px;
+  --px-radius-lg:18px;
+  --px-space-1:4px;
+  --px-space-2:8px;
+  --px-space-3:12px;
+  --px-space-4:16px;
+  --px-space-5:24px;
+  --px-shadow-soft:0 12px 34px rgba(0,0,0,.38);
+  --px-shadow-strong:0 24px 80px rgba(0,0,0,.62);
+  --px-glow-fire:0 0 22px rgba(239,63,46,.48);
+  --px-glow-energy:0 0 22px rgba(85,217,255,.42);
+  --px-transition-fast:120ms ease;
+  --px-transition-ui:190ms cubic-bezier(.2,.8,.2,1);
+  --px-font-display:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;
+  --px-font-ui:Inter,'Segoe UI',Arial,sans-serif;
+  --px-font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}

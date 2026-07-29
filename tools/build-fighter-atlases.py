@@ -8,7 +8,7 @@ from build_fighter_atlases import build_fighter
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--fighter", choices=("rrvvfo", "revvfo"), required=True)
+    parser.add_argument("--fighter", choices=("rrvvfo", "revvfo", "wade", "bark"), required=True)
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--alternate", type=Path)
     parser.add_argument("--output", type=Path, required=True)

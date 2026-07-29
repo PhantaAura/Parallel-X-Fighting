@@ -1,4 +1,4 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a10-living-tournament-hub-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
 
 export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,240,420,650,930,1260,1640]);
 

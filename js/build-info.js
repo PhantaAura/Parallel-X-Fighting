@@ -1,5 +1,5 @@
-export const BUILD_VERSION='Prototype 2.9A.10 — Living Tournament Hub';
-export const SAVE_SCHEMA_VERSION=247;
+export const BUILD_VERSION='Prototype 2.9A.11 — Bark, Wade & Tournament Pacing';
+export const SAVE_SCHEMA_VERSION=248;
 export const BUILD_FEATURES=Object.freeze([
   'unified-chapter-controls','shared-chapter-1-2-3-story-engine','automatic-story-chaining','rrvvfo-story-only-release-ui',
   'main-menu-visible-groups','device-aware-menu-prompts','rrvvfo-route-portrait','story-rpg-menu','shot-power-trick-signs',
@@ -7,6 +7,9 @@ export const BUILD_FEATURES=Object.freeze([
   'living-tournament-road','optional-road-fight-exit','consistent-story-energy','device-aware-exploration-prompts',
   'chapter-2-rpg-levels','story-hp-power-defense-speed-focus','level-scaled-tournament-enemies','visible-boss-hp-bonus',
   'chapter-2-living-hub','mandatory-hub-quest-spine','optional-side-quests','tournament-intermissions','plouke-rumor-thread',
+  'bark-and-wade-sprite-atlases','story-and-arena-sprite-integration','tournament-opening-ceremony','hailey-plouke-preliminary',
+  'hamual-power-test','daniel-skill-test','phased-bark-pouki-set-piece','playable-plouke-studies','quiet-final-preparation',
+  'milestone-enemy-levels','mechanics-verified-dummy','wade-race-countdown-splits','nearby-npc-chatter','performance-based-plouke-rewards',
   'persistent-side-quest-stat-rewards','wade-route-race','bark-ring-repair','controlled-flame-minigame','district-navigation',
   'chapter-2-story-assist','persistent-tournament-run-refusal','try-to-beat-plouke-objective','unified-story-overlays',
   'chapter-3-investigation-demo','dynamic-objective-compass','required-and-optional-witnesses','investigation-ability-feedback',

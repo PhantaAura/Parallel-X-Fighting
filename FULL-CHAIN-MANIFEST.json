@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X Prototype 2.9A.10 Complete Cumulative Build",
-  "version": "2.9A.10",
+  "name": "Parallels X Prototype 2.9A.11 Complete Cumulative Build",
+  "version": "2.9A.11",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -13,8 +13,9 @@
     "2.9A.7-2.9A.7.1 casual retention pass and tutorial Grab repair",
     "2.9A.8 Kinetic Combat Pass",
     "2.9A.9 Story RPG & Menu Pass",
-    "2.9A.10 Living Tournament Hub: mandatory story quest spine, optional side quests, tournament intermissions, persistent quest rewards, and Plouke rumor progression"
+    "2.9A.10 Living Tournament Hub: mandatory story quest spine, optional side quests, tournament intermissions, persistent quest rewards, and Plouke rumor progression",
+    "2.9A.11 Bark, Wade & Tournament Pacing: new fighter atlases, named bracket fights, playable Plouke studies, and repaired hub activities"
   ],
-  "cache_tag": "29a10-living-tournament-hub-20260729",
-  "save_schema": 247
+  "cache_tag": "29a11-bark-wade-tournament-pacing-20260729",
+  "save_schema": 248
 }

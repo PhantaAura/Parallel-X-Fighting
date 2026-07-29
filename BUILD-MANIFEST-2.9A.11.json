@@ -1,0 +1,56 @@
+{
+  "name": "Parallels X Prototype 2.9A.11 Complete Cumulative Build",
+  "version": "2.9A.11",
+  "build_label": "Prototype 2.9A.11 — Bark, Wade & Tournament Pacing",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cache_id": "29a11-bark-wade-tournament-pacing-20260729",
+  "save_schema": 248,
+  "story_engine": "2.9A.11",
+  "new_fighter_atlases": {
+    "bark": {
+      "frames": 88,
+      "animations": 52
+    },
+    "wade": {
+      "frames": 88,
+      "animations": 53
+    }
+  },
+  "tournament_order": [
+    "Opening ceremony",
+    "Hailey versus Plouke preliminary",
+    "Rrvvfo versus Hamual",
+    "Rrvvfo versus Daniel",
+    "Bark versus Pouki",
+    "Rrvvfo versus Wade",
+    "Rrvvfo versus Plouke"
+  ],
+  "major_features": [
+    "Bark and Wade Story, hub, and Arena sprite integration",
+    "named Hamual and Daniel tournament fights",
+    "phased Bark versus Pouki spectator battle",
+    "playable Plouke clue studies",
+    "changing intermission descriptions",
+    "quiet final preparation bench",
+    "milestone enemy levels with limited soft scaling",
+    "mechanics-enforced dummy challenge",
+    "Wade race countdown, splits, lead, best time, and retry",
+    "varied Lost Bracket card recovery",
+    "distinct cracked-ring evidence",
+    "radius-aware districts",
+    "nearby NPC speech bubbles",
+    "performance-based Plouke feedback and rewards"
+  ],
+  "validation": {
+    "game_javascript_syntax_files": 71,
+    "javascript_syntax_failed": 0,
+    "json_files_parsed": 16,
+    "javascript_import_references": 175,
+    "wade_png_integrity": "passed",
+    "bark_png_integrity": "passed",
+    "wade_manifest_integrity": "passed",
+    "bark_manifest_integrity": "passed",
+    "browser_smoke": "blocked: Chromium binary unavailable and temporary browser download endpoint blocked"
+  }
+}

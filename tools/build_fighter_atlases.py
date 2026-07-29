@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build production-ready experimental atlases for Rrvvfo and Revvfo.
+"""Build production-ready experimental atlases for the core fighters.
 
 The supplied sheets are concept/reference sheets rather than true transparent
 sprite atlases. This tool performs the crop, edge-connected background removal,
@@ -124,10 +124,140 @@ EFFECT_CROPS = {
     "ultimate-aura.png": (1093, 862, 1268, 938),
 }
 
+def grid_crops(
+    names: list[str],
+    box: tuple[int, int, int, int],
+    *,
+    inset_x: int = 2,
+    inset_y: int = 2,
+) -> dict[str, tuple[int, int, int, int]]:
+    """Split one labelled concept-sheet strip into stable frame cells."""
+    left, top, right, bottom = box
+    step = (right - left) / len(names)
+    return {
+        name: (
+            round(left + index * step) + inset_x,
+            top + inset_y,
+            round(left + (index + 1) * step) - inset_x,
+            bottom - inset_y,
+        )
+        for index, name in enumerate(names)
+    }
 
-def scaled_crop(crop: tuple[int, int, int, int], size: tuple[int, int]) -> tuple[int, int, int, int]:
-    sx = size[0] / REFERENCE_SIZE[0]
-    sy = size[1] / REFERENCE_SIZE[1]
+
+def sheet_grid_crops(fighter: str) -> dict[str, tuple[int, int, int, int]]:
+    """Coordinates for the approved 2.9A.11 Wade and Bark combat sheets."""
+    idle = [f"idle_0{i}" for i in range(1, 7)]
+    run = [f"run_0{i}" for i in range(1, 5)]
+    stance = [f"stance_0{i}" for i in range(1, 5)]
+    jump = [f"jump_0{i}" for i in range(1, 6)]
+    dash = [f"dash_0{i}" for i in range(1, 5)]
+    light = [f"light_0{i}" for i in range(1, 7)]
+    heavy = [f"heavy_0{i}" for i in range(1, 5)]
+    launcher = [f"launcher_0{i}" for i in range(1, 5)]
+    air_light = [f"air_light_0{i}" for i in range(1, 4)]
+    air_heavy = [f"air_heavy_0{i}" for i in range(1, 4)]
+    block = ["block_01", "block_02"]
+    perfect = ["perfect_01", "perfect_02"]
+    hurt = [f"hurt_0{i}" for i in range(1, 6)]
+    special = [f"special_0{i}" for i in range(1, 5)]
+    rush = [f"rush_0{i}" for i in range(1, 7)]
+    power = [f"power_0{i}" for i in range(1, 6)]
+    beam = [f"beam_0{i}" for i in range(1, 5)]
+    ultimate = [f"ultimate_0{i}" for i in range(1, 6)]
+    victory = [f"victory_0{i}" for i in range(1, 5)]
+    turn = [f"turn_0{i}" for i in range(1, 6)]
+    look = [f"look_0{i}" for i in range(1, 4)]
+
+    if fighter == "wade":
+        sections = [
+            (idle, (12, 31, 451, 160)), (run, (454, 31, 798, 160)), (stance, (801, 31, 1138, 160)),
+            (jump, (12, 171, 512, 300)), (dash, (515, 171, 1092, 300)),
+            (light, (12, 310, 558, 427)), (heavy, (562, 310, 1214, 427)),
+            (launcher, (12, 436, 405, 581)), (air_light, (409, 436, 684, 581)),
+            (air_heavy, (688, 436, 977, 581)), (block, (981, 436, 1218, 581)),
+            (perfect, (1158, 436, 1368, 581)), (hurt, (12, 589, 386, 718)),
+            (special, (390, 589, 751, 718)), (rush, (755, 589, 1481, 718)),
+            (power, (12, 726, 502, 856)), (beam, (505, 726, 927, 856)),
+            (ultimate, (931, 726, 1278, 856)), (victory, (12, 865, 382, 1023)),
+            (turn, (389, 865, 850, 1023)), (look, (850, 865, 1215, 1023)),
+        ]
+    elif fighter == "bark":
+        sections = [
+            (idle, (12, 31, 430, 163)), (run, (432, 31, 814, 163)), (stance, (817, 31, 1138, 163)),
+            (jump, (12, 174, 503, 305)), (dash, (506, 174, 1138, 305)),
+            (light, (12, 315, 562, 440)), (heavy, (565, 315, 1138, 440)),
+            (launcher, (12, 449, 391, 587)), (air_light, (394, 449, 677, 587)),
+            (air_heavy, (680, 449, 955, 587)), (block, (958, 449, 1194, 587)),
+            (perfect, (1197, 449, 1445, 587)), (hurt, (12, 597, 394, 730)),
+            (special, (397, 597, 746, 730)), (rush, (749, 597, 1445, 730)),
+            (power, (12, 738, 467, 885)), (beam, (470, 738, 788, 885)),
+            (ultimate, (792, 738, 1190, 885)), (victory, (12, 894, 366, 1082)),
+            (turn, (370, 894, 810, 1082)), (look, (830, 894, 1203, 1082)),
+        ]
+    else:
+        return CROPS
+
+    result: dict[str, tuple[int, int, int, int]] = {}
+    for names, box in sections:
+        result.update(grid_crops(names, box))
+    if fighter == "wade":
+        # The reference sheet's lower-right strips are spaced irregularly.
+        # Explicit cells keep neighboring poses out of Wade's narrow stance
+        # silhouette while preserving the larger lightning effects.
+        result.update({
+            "stance_01": (802, 31, 882, 160),
+            "stance_02": (883, 31, 958, 160),
+            "stance_03": (959, 31, 1034, 160),
+            "stance_04": (1035, 31, 1122, 160),
+            "block_01": (981, 436, 1096, 581),
+            "block_02": (1097, 436, 1218, 581),
+            "perfect_01": (1158, 436, 1260, 581),
+            "perfect_02": (1242, 436, 1368, 581),
+            "turn_01": (389, 865, 474, 1023),
+            "turn_02": (475, 865, 558, 1023),
+            "turn_03": (559, 865, 646, 1023),
+            "turn_04": (647, 865, 739, 1023),
+            "turn_05": (740, 865, 850, 1023),
+            "look_01": (850, 865, 970, 1023),
+            "look_02": (970, 865, 1087, 1023),
+            "look_03": (1087, 865, 1215, 1023),
+        })
+    return result
+
+
+FIGHTER_REFERENCE_SIZES = {
+    "rrvvfo": REFERENCE_SIZE,
+    "revvfo": REFERENCE_SIZE,
+    "wade": (1484, 1060),
+    "bark": (1448, 1086),
+}
+
+FIGHTER_EFFECT_CROPS = {
+    "wade": {
+        "energy-projectile.png": (1282, 865, 1478, 931),
+        "energy-trails.png": (1282, 736, 1478, 786),
+        "impact-sparks.png": (1282, 789, 1478, 850),
+        "smoke-dust.png": (1282, 789, 1478, 850),
+        "ultimate-aura.png": (1282, 865, 1478, 931),
+    },
+    "bark": {
+        "energy-projectile.png": (1223, 745, 1444, 812),
+        "energy-trails.png": (1223, 925, 1444, 1068),
+        "impact-sparks.png": (1223, 858, 1444, 922),
+        "smoke-dust.png": (1223, 812, 1444, 857),
+        "ultimate-aura.png": (1223, 925, 1444, 1068),
+    },
+}
+
+
+def scaled_crop(
+    crop: tuple[int, int, int, int],
+    size: tuple[int, int],
+    reference_size: tuple[int, int] = REFERENCE_SIZE,
+) -> tuple[int, int, int, int]:
+    sx = size[0] / reference_size[0]
+    sy = size[1] / reference_size[1]
     left, top, right, bottom = crop
     return (round(left * sx), round(top * sy), round(right * sx), round(bottom * sy))
 
@@ -173,7 +303,7 @@ def remove_sheet_debris(image: Image.Image) -> Image.Image:
     pixels = alpha.load()
     width, height = rgba.size
     visited: set[tuple[int, int]] = set()
-    components: list[tuple[list[tuple[int, int]], int, int]] = []
+    components: list[tuple[list[tuple[int, int]], int, int, int]] = []
     for start_y in range(height):
         for start_x in range(width):
             if (start_x, start_y) in visited or pixels[start_x, start_y] < 18:
@@ -198,11 +328,27 @@ def remove_sheet_debris(image: Image.Image) -> Image.Image:
                     queue.append((x, y - 1))
                 if y + 1 < height:
                     queue.append((x, y + 1))
-            components.append((component, max_x - min_x + 1, max_y - min_y + 1))
-    largest = max((len(component) for component, _, _ in components), default=1)
-    minimum = max(110, round(largest * 0.075))
-    for component, box_w, box_h in components:
-        if len(component) < minimum or (box_h <= 9 and box_w >= 14) or (box_w <= 4 and box_h >= 25):
+            components.append((component, max_x - min_x + 1, max_y - min_y + 1, min_y))
+    largest = max((len(component) for component, _, _, _ in components), default=1)
+    minimum = max(150, round(largest * 0.26))
+    for component, box_w, box_h, min_y in components:
+        is_header_fragment = box_h <= 28 and box_w >= 25 and min_y < height * 0.38
+        colorful_pixels = sum(
+            1
+            for x, y in component
+            if max(rgba.getpixel((x, y))[:3]) - min(rgba.getpixel((x, y))[:3]) >= 45
+        )
+        is_printed_label = (
+            box_h <= 32
+            and box_w >= 48
+            and colorful_pixels / max(1, len(component)) < 0.16
+        )
+        if (
+            len(component) < minimum
+            or (box_w <= 10 and box_h >= 24)
+            or is_header_fragment
+            or is_printed_label
+        ):
             for x, y in component:
                 rgba.putpixel((x, y), (0, 0, 0, 0))
     return rgba
@@ -287,6 +433,12 @@ def common_animations() -> dict[str, dict[str, object]]:
         "blockHold": animation(["block_02"], 120, True),
         "blockHit": animation(["block_01", "block_02"], 65),
         "perfectBlock": animation(["perfect_01", "perfect_02"], 70),
+        "grab": animation(["light_01", "light_03", "heavy_02"], 68, events=[{"frame": 1, "type": "grabActive"}]),
+        "grabMiss": animation(["light_01", "light_02", "stance_01"], 76),
+        "counter": animation(["block_01", "perfect_01", "heavy_02"], 72),
+        "counterReady": animation(["block_01", "perfect_01"], 82, True),
+        "counterStance": animation(["block_01", "perfect_01"], 82, True),
+        "chargeEnergy": animation(["ultimate_01", "ultimate_02", "ultimate_03"], 92, True),
         "guardBreak": animation(["hurt_02", "hurt_03"], 105, True),
         "breaker": animation(["stance_01", "heavy_02"], 75),
         "hurtLight": animation(["hurt_01"], 90),
@@ -340,6 +492,32 @@ def revvfo_animations() -> dict[str, dict[str, object]]:
     return animations
 
 
+def wade_animations() -> dict[str, dict[str, object]]:
+    animations = common_animations()
+    animations.update({
+        "lightningBlast": animation(["special_01", "special_02", "special_03", "special_04"], 55, events=[{"frame": 2, "type": "projectileSpawn"}]),
+        "lightningDash": animation(["rush_01", "rush_02", "rush_03", "rush_04", "rush_05", "rush_06"], 46),
+        "teleportRush": animation(["rush_01", "rush_02", "rush_03", "rush_04", "rush_05", "rush_06"], 46),
+        "thunderstorm": animation(["power_01", "power_02", "power_03", "power_04", "power_05"], 76),
+        "lightningBeam": animation(["beam_01", "beam_02", "beam_03", "beam_04"], 64, events=[{"frame": 2, "type": "projectileSpawn"}]),
+        "beamAttack": animation(["beam_01", "beam_02", "beam_03", "beam_04"], 64, events=[{"frame": 2, "type": "projectileSpawn"}]),
+    })
+    return animations
+
+
+def bark_animations() -> dict[str, dict[str, object]]:
+    animations = common_animations()
+    animations.update({
+        "rockShot": animation(["special_01", "special_02", "special_03", "special_04"], 82, events=[{"frame": 2, "type": "projectileSpawn"}]),
+        "groundQuake": animation(["rush_01", "rush_02", "rush_03", "rush_04", "rush_05", "rush_06"], 96),
+        "rockArmor": animation(["power_01", "power_02", "power_03", "power_04", "power_05"], 112),
+        "earthWall": animation(["beam_01", "beam_02", "beam_03", "beam_04"], 98),
+        "seismicCounter": animation(["beam_01", "beam_02", "beam_03", "beam_04"], 88),
+        "counterStance": animation(["beam_01", "beam_02"], 96, True),
+    })
+    return animations
+
+
 def save_procedural_effects(effect_dir: Path, frame_images: dict[str, Image.Image], fighter: str) -> list[str]:
     generated: list[str] = []
     if fighter == "rrvvfo":
@@ -378,18 +556,20 @@ def save_procedural_effects(effect_dir: Path, frame_images: dict[str, Image.Imag
             draw.ellipse((80 - radius, 80 - radius, 80 + radius, 80 + radius), outline=(255, 117, 49, opacity), width=5)
         flash.filter(ImageFilter.GaussianBlur(4)).save(effect_dir / "object-swap-flash.png")
         generated.append("object-swap-flash.png")
-    else:
+    elif fighter == "revvfo":
         tinted(frame_images["dash_02"], (142, 64, 242), 150).save(effect_dir / "teleport-afterimage.png")
         generated.append("teleport-afterimage.png")
     return generated
 
 
-def crop_frames(source: Image.Image, prefix: str = "") -> tuple[dict[str, Image.Image], dict[str, dict[str, object]]]:
+def crop_frames(source: Image.Image, fighter: str, prefix: str = "") -> tuple[dict[str, Image.Image], dict[str, dict[str, object]]]:
     images: dict[str, Image.Image] = {}
     metadata: dict[str, dict[str, object]] = {}
-    for base_name, crop in CROPS.items():
+    crops = sheet_grid_crops(fighter)
+    reference_size = FIGHTER_REFERENCE_SIZES[fighter]
+    for base_name, crop in crops.items():
         name = f"{prefix}{base_name}"
-        frame, frame_meta = normalize_frame(source.crop(scaled_crop(crop, source.size)))
+        frame, frame_meta = normalize_frame(source.crop(scaled_crop(crop, source.size, reference_size)))
         images[name] = frame
         metadata[name] = frame_meta
     return images, metadata
@@ -412,9 +592,9 @@ def build_fighter(fighter: str, source_path: Path, output_root: Path, alternate_
     if alternate:
         alternate.save(output_root / f"{fighter}-hood-up-source-sheet.png", optimize=True)
 
-    frame_images, frame_meta = crop_frames(source)
+    frame_images, frame_meta = crop_frames(source, fighter)
     if alternate:
-        alt_images, alt_meta = crop_frames(alternate, "up_")
+        alt_images, alt_meta = crop_frames(alternate, fighter, "up_")
         frame_images.update(alt_images)
         frame_meta.update(alt_meta)
 
@@ -426,11 +606,16 @@ def build_fighter(fighter: str, source_path: Path, output_root: Path, alternate_
         atlas.alpha_composite(frame, (x, y))
         frame_meta[name]["source"] = [x, y, FRAME_SIZE[0], FRAME_SIZE[1]]
     atlas_path = output_root / f"{fighter}-atlas.png"
-    atlas.save(atlas_path, optimize=True)
+    # Pillow's optimized PNG pass can be interrupted on large, detailed concept
+    # extractions in constrained build environments. A normal compressed save is
+    # deterministic and always writes the closing PNG chunk.
+    atlas.save(atlas_path, compress_level=6)
 
     effect_names: list[str] = []
-    for filename, crop in EFFECT_CROPS.items():
-        effect = trim_alpha(remove_border_background(source.crop(scaled_crop(crop, source.size))), 3)
+    effect_crops = FIGHTER_EFFECT_CROPS.get(fighter, EFFECT_CROPS)
+    reference_size = FIGHTER_REFERENCE_SIZES[fighter]
+    for filename, crop in effect_crops.items():
+        effect = trim_alpha(remove_border_background(source.crop(scaled_crop(crop, source.size, reference_size))), 3)
         effect.save(effect_dir / filename, optimize=True)
         effect_names.append(filename)
     effect_names.extend(save_procedural_effects(effect_dir, frame_images, fighter))
@@ -444,8 +629,14 @@ def build_fighter(fighter: str, source_path: Path, output_root: Path, alternate_
         animations = rrvvfo_animations()
         if alternate:
             add_variants(animations, frame_images)
-    else:
+    elif fighter == "revvfo":
         animations = revvfo_animations()
+    elif fighter == "wade":
+        animations = wade_animations()
+    elif fighter == "bark":
+        animations = bark_animations()
+    else:
+        raise ValueError(f"Unsupported fighter: {fighter}")
 
     manifest = {
         "version": 2,
@@ -477,7 +668,7 @@ def build_fighter(fighter: str, source_path: Path, output_root: Path, alternate_
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--fighter", choices=("rrvvfo", "revvfo"), required=True)
+    parser.add_argument("--fighter", choices=("rrvvfo", "revvfo", "wade", "bark"), required=True)
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--alternate", type=Path)
     parser.add_argument("--output", type=Path, required=True)

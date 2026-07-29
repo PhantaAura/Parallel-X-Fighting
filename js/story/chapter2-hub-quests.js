@@ -1,4 +1,4 @@
-export const CHAPTER2_HUB_QUEST_VERSION='2.9A.10';
+export const CHAPTER2_HUB_QUEST_VERSION='2.9A.11';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([
   {id:'arrival',name:'WEST GATE',x:-1510,z:80,radius:300},
@@ -25,9 +25,9 @@ export const CHAPTER2_SHORTCUTS=Object.freeze([
 ]);
 
 export const CHAPTER2_RING_SUPPORTS=Object.freeze([
-  {id:'west',label:'WEST SUPPORT',x:-1370,z:760},
-  {id:'south',label:'SOUTH SUPPORT',x:-1120,z:825},
-  {id:'east',label:'EAST SUPPORT',x:-870,z:760}
+  {id:'west',label:'WEST SUPPORT',x:-1370,z:760,clue:'The impact direction points outward, so the damage came from inside the ring.'},
+  {id:'south',label:'SOUTH SUPPORT',x:-1120,z:825,clue:'Deep boot prints repeat beside the crack in the same three-step pattern.'},
+  {id:'east',label:'EAST SUPPORT',x:-870,z:760,clue:'A discarded contestant wristband is wedged behind the broken brace.'}
 ]);
 
 export const CHAPTER2_PLOUKE_CLUES=Object.freeze([
@@ -131,6 +131,11 @@ export function chapter2QuestSummary(state){
 }
 
 export function nearestDistrict(x,z){
+  const inside=CHAPTER2_DISTRICTS
+    .map(district=>({district,distance:Math.hypot(x-district.x,z-district.z)}))
+    .filter(entry=>entry.distance<=entry.district.radius)
+    .sort((a,b)=>(a.distance/a.district.radius)-(b.distance/b.district.radius));
+  if(inside.length)return inside[0].district;
   let best=CHAPTER2_DISTRICTS[0],bestDistance=Infinity;
   for(const district of CHAPTER2_DISTRICTS){
     const d=Math.hypot(x-district.x,z-district.z);

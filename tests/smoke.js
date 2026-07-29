@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a10-living-tournament-hub-20260729';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a10-living-tournament-hub-20260729';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a11-bark-wade-tournament-pacing-20260729';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a10-living-tournament-hub-20260729';
-import {Fighter} from '../js/fighter.js?v=29a10-living-tournament-hub-20260729';
+import {EffectSystem} from '../js/effects.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {Fighter} from '../js/fighter.js?v=29a11-bark-wade-tournament-pacing-20260729';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,12 +17,12 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a10-living-tournament-hub-20260729';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a10-living-tournament-hub-20260729';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a11-bark-wade-tournament-pacing-20260729';
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js';
-import {CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a10-living-tournament-hub-20260729';
-import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a10-living-tournament-hub-20260729';
-import {MAIN_MENU_MODES,MainMenu} from '../js/main-menu.js?v=29a10-living-tournament-hub-20260729';
+import {CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {MAIN_MENU_MODES,MainMenu} from '../js/main-menu.js?v=29a11-bark-wade-tournament-pacing-20260729';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -33,14 +33,14 @@ import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringif
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a10-living-tournament-hub-20260729';
+import {LoadingManager} from '../js/loading-manager.js?v=29a11-bark-wade-tournament-pacing-20260729';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a10-living-tournament-hub-20260729';
-import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a10-living-tournament-hub-20260729';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
 
 const results=[],assert=(condition,message)=>{if(!condition)throw new Error(message)};
 async function test(name,fn){try{await fn();results.push({name,pass:true})}catch(error){results.push({name,pass:false,error:error.message})}}
@@ -199,7 +199,14 @@ await test('controller detection and disconnection assignment stay deterministic
 await test('InputManager honors explicit player device assignment',()=>{const pads=[makePad(),null,makePad()],input=new InputManager(()=>pads);input.setControllerStyle(1,'xbox');input.setControllerAssignment(1,2);pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=true;input.poll();pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=false;settleChordWindow(input);assert(input.consumeAction(1,'a'),'assigned Player 1 controller input was ignored')});
 await test('round and Training cleanup clear visual-only state',()=>{const setup=pair();setup.world.fighterVisuals={resetFighter:fighter=>{fighter.__visualReset=true}};setup.one.visualAction='ultimateAttack';setup.one.visualActionTimer=99;setup.one.resetRuntime();assert(setup.one.__visualReset&&!setup.one.visualAction&&!setup.one.visualActionTimer,'fighter reset retained visual state');trainingState.enabled=true;resetTrainingWorld(setup.world);assert(setup.world.projectiles.length===0&&setup.world.effects.effects.length===0,'Training cleanup retained transient visuals')});
 
-await test('Prototype 2.9A.10 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.10 — Living Tournament Hub','build label is outdated');assert(SAVE_SCHEMA_VERSION===247,'save schema version is outdated')});
+await test('Prototype 2.9A.11 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.11 — Bark, Wade & Tournament Pacing','build label is outdated');assert(SAVE_SCHEMA_VERSION===248,'save schema version is outdated')});
+await test('Bark and Wade are first-class sprite fighters with complete manifests',async()=>{
+  assert(SPRITE_FIGHTER_IDS.includes('bark')&&SPRITE_FIGHTER_IDS.includes('wade'),'Bark or Wade is missing from the sprite fighter pipeline');
+  for(const [name,url,specials] of [['Bark',BARK_MANIFEST_URL,['rockShot','rockArmor','earthWall','groundQuake','seismicCounter']],['Wade',WADE_MANIFEST_URL,['lightningBlast','lightningDash','thunderstorm','lightningBeam']]]){
+    const response=await fetch(url);assert(response.ok,`${name} manifest did not load`);const manifest=await response.json();
+    for(const animation of ['idle','fightingStance','run','jumpRise','fall','dash','light1','light2','light3','heavyStartup','launcherStartup','blockHold','perfectBlock','grab','hurtLight','knockdown','getUp','defeated','victory',...specials])assert(manifest.animations?.[animation],`${name} omitted ${animation}`);
+  }
+});
 await test('main menu exposes every implemented mode and honest Coming Later state',()=>{const ids=MAIN_MENU_MODES.map(mode=>mode.id);for(const id of ['story','cpu','local','training','settings','extras','credits'])assert(ids.includes(id),`main menu omitted ${id}`);const arcade=MAIN_MENU_MODES.find(mode=>mode.id==='arcade');assert(arcade.disabled&&/Coming Later/i.test(arcade.availability),'Arcade was presented as functional')});
 await test('main menu mode descriptions include player and availability data',()=>{for(const mode of MAIN_MENU_MODES){assert(mode.label&&mode.description&&mode.players&&mode.availability,`${mode.id} preview is incomplete`)}});
 await test('post-match options include every requested destination',()=>{assert(RESULT_ACTIONS.map(action=>action.id).join(',')==='rematch,character,stage,mode,main','results actions are incomplete');const model=buildResultsModel({winner:'Rrvvfo',durationMs:61500,players:[{damage:25}]});assert(model.duration==='1:02'&&model.actions.length===5,'result summary did not retain actions or duration')});
@@ -362,6 +369,7 @@ await test('Chapter 2 living hub keeps only the four story-fit questlines mandat
   state.mandatory.bracket.complete=true;state.mandatory.wadeRace.complete=true;state.mandatory.barkRing.complete=true;
   assert(chapter2MandatoryReadyForTournament(state),'the three pre-tournament story quests did not unlock registration');
   assert(CHAPTER2_RACE_CHECKPOINTS.length===5&&CHAPTER2_RING_SUPPORTS.length===3&&CHAPTER2_SHORTCUTS.length===3&&CHAPTER2_PLOUKE_CLUES.length===4,'hub quest content counts drifted');
+  assert(new Set(CHAPTER2_RING_SUPPORTS.map(support=>support.clue)).size===3,'ring supports do not provide distinct evidence');
 });
 await test('Chapter 2 quest saves migrate safely and rumor gates advance between rounds',()=>{
   const state=normalizeChapter2QuestState({mandatory:{bracket:{cards:['fan-card','fan-card']},ploukeRumors:{clues:['stillness','stillness']}}});
@@ -375,7 +383,8 @@ await test('permanent Chapter 2 side-quest stats affect Story calculations',()=>
 });
 await test('Chapter 2 tournament returns to the hub and exposes mandatory and optional activities',async()=>{
   const source=await(await fetch('../js/story/rrvvfo-mission-2.js')).text();
-  for(const token of ['startWadeRace','useWadeShortcut','inspectRingSupport','returnToHubIntermission','beginFoodQuest','beginFakeChampionQuest','beginLostFanQuest','beginDummyQuest','beginPrizeCartQuest','beginRejectedChallengerQuest'])assert(source.includes(token),`Chapter 2 hub omitted ${token}`);
+  for(const token of ['startWadeRace','useWadeShortcut','inspectRingSupport','returnToHubIntermission','startHaileyPrelim','startFinalPreparation','playPloukeClueActivity','recordDummyParry','beginFoodQuest','beginFakeChampionQuest','beginLostFanQuest','beginDummyQuest','beginPrizeCartQuest','beginRejectedChallengerQuest'])assert(source.includes(token),`Chapter 2 hub omitted ${token}`);
+  for(const fighter of ["id:'hamual'","id:'daniel'","id='hailey'"])assert(source.includes(fighter),`Chapter 2 tournament omitted ${fighter}`);
   assert(source.includes("returnToHubIntermission('quarterfinal'")&&source.includes("returnToHubIntermission('bark-pouki'")&&source.includes("returnToHubIntermission('wade'")&&source.includes("returnToHubIntermission('final'"),'tournament rounds do not reopen the hub');
   assert(source.includes('three hub shortcuts unlocked')||source.includes('Three hub shortcuts unlocked'),'Wade route does not unlock hub shortcuts');
 });
@@ -383,7 +392,7 @@ await test('Chapter 2 tournament returns to the hub and exposes mandatory and op
 await test('Story chapters use one shared runtime controller without method monkey-patching',async()=>{
   const source=await(await fetch('../js/story/story-engine.js')).text();
   for(const token of ['useChapterProfile','installUnifiedRuntime','storyUnifiedRuntime','storyCommandForMode','invokeRuntime'])assert(source.includes(token),`Story Engine omitted ${token}`);
-  assert(source.includes("STORY_ENGINE_VERSION='2.9A.10'"),'Story Engine version is stale');
+  assert(source.includes("STORY_ENGINE_VERSION='2.9A.11'"),'Story Engine version is stale');
   const chapters=['rrvvfo-mission-0.js','rrvvfo-mission-1.js','rrvvfo-road-hub.js','rrvvfo-mission-2.js','rrvvfo-chapter-3-preview.js'];
   for(const file of chapters){const chapter=await(await fetch(`../js/story/${file}`)).text();assert(chapter.includes('useChapterProfile'),`${file} did not register a Story profile`);assert(!/battle\.(?:input|cpu|update|hud|draw|drawFighterLayer|drawFallback2D|flipFor|updateCamera|castAbility|applyDamage|updateSpecials|exit)\s*=/.test(chapter),`${file} still replaces an engine method`) }
 });

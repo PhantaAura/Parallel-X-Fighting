@@ -6,7 +6,7 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.10 — Living Tournament Hub**
+**Prototype 2.9A.11 — Bark, Wade & Tournament Pacing**
 
 This ZIP is a complete cumulative build. No older package or patch is required.
 
@@ -81,4 +81,4 @@ Prompts change for keyboard and mouse, Nintendo, Xbox, PlayStation, custom mappi
 - Catch the prize cart and purchase a discounted meal after the current meal is gone.
 - Report empty districts, unclear routes, repetitive dialogue, quest-marker confusion, frame drops, or mobile HUD overlap.
 
-See [`PATCH-NOTES-2.9A.10.md`](PATCH-NOTES-2.9A.10.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.10.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.10.md). Older patch notes remain as development history.
+See [`PATCH-NOTES-2.9A.11.md`](PATCH-NOTES-2.9A.11.md) and [`FRIEND-PLAYTEST-CHECKLIST-2.9A.11.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.11.md). Older patch notes remain as development history.

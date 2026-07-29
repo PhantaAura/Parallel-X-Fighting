@@ -2841,6 +2841,13 @@
 #rrvvfoMission2UI .chapter2RaceHud small{font-size:9px;font-weight:1000;letter-spacing:.12em;color:#176aaa}
 #rrvvfoMission2UI .chapter2RaceHud strong{font-size:17px}
 #rrvvfoMission2UI .chapter2RaceHud span{margin-top:2px;font-size:12px;font-weight:1000}
+#rrvvfoMission2UI .chapter2RaceHud [data-c2-race-countdown]{color:#c81724;font-size:25px}
+#rrvvfoMission2UI .chapter2RaceHud [data-c2-race-lead]{color:#176aaa}
+#rrvvfoMission2UI .chapter2AmbientBubble{position:absolute;z-index:2180;transform:translate(-50%,-100%);width:min(245px,48vw);padding:8px 10px;border:3px solid #080808;border-radius:12px;background:#fff;color:#080808;box-shadow:4px 4px 0 #080808;pointer-events:none}
+#rrvvfoMission2UI .chapter2AmbientBubble:after{content:"";position:absolute;left:50%;bottom:-12px;width:18px;height:18px;border-right:3px solid #080808;border-bottom:3px solid #080808;background:#fff;transform:translateX(-50%) rotate(45deg)}
+#rrvvfoMission2UI .chapter2AmbientBubble strong,#rrvvfoMission2UI .chapter2AmbientBubble span{display:block}
+#rrvvfoMission2UI .chapter2AmbientBubble strong{color:#c81724;font-size:9px;letter-spacing:.08em}
+#rrvvfoMission2UI .chapter2AmbientBubble span{margin-top:2px;font-size:11px;font-weight:850;line-height:1.25}
 
 #rrvvfoMission2UI .chapter2FlameGame{position:absolute;z-index:2600;inset:0;display:grid;place-items:center;padding:16px;background:rgba(8,8,8,.72);pointer-events:auto}
 #rrvvfoMission2UI .chapter2FlameGame[hidden]{display:none!important}

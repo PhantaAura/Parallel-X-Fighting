@@ -1,8 +1,8 @@
-import {CONTROL_MAPS} from '../input.js?v=29a10-living-tournament-hub-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a10-living-tournament-hub-20260729';
-import {grantCombatManual} from './combat-manual.js?v=29a10-living-tournament-hub-20260729';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a10-living-tournament-hub-20260729';
-import {storyConfirm} from './story-ux.js?v=29a10-living-tournament-hub-20260729';
+import {CONTROL_MAPS} from '../input.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {grantCombatManual} from './combat-manual.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {storyConfirm} from './story-ux.js?v=29a11-bark-wade-tournament-pacing-20260729';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';

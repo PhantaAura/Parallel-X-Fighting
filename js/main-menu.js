@@ -1,7 +1,7 @@
-import {BUILD_VERSION} from './build-info.js?v=29a10-living-tournament-hub-20260729';
-import {sharedInput} from './input-runtime.js?v=29a10-living-tournament-hub-20260729';
+import {BUILD_VERSION} from './build-info.js?v=29a11-bark-wade-tournament-pacing-20260729';
+import {sharedInput} from './input-runtime.js?v=29a11-bark-wade-tournament-pacing-20260729';
 
-const MENU_MODULE_CACHE='29a10-living-tournament-hub-20260729';
+const MENU_MODULE_CACHE='29a11-bark-wade-tournament-pacing-20260729';
 
 export const MAIN_MENU_MODES=Object.freeze([
   {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Follow Rrvvfo through training, the Tournament Road, RPG growth, a living tournament hub, and the full local bracket. Chapters 1 and 2 are complete; Chapter 3 currently includes a playable investigation demo.',players:'1',availability:'Rrvvfo • Chapters 1–3'},

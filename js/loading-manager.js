@@ -40,7 +40,7 @@ export class LoadingManager{
 
   identity({fighterId='rrvvfo',fighterName='RRVVFO',opponentName='RIVAL',stageName='PREPARING ARENA',accent='#55d9ff'}={}){
     if(this.root)this.root.style.setProperty('--loading-accent',accent);
-    if(this.fighterArt)this.fighterArt.dataset.fighter=['rrvvfo','revvfo','sage'].includes(fighterId)?fighterId:'rrvvfo';
+    if(this.fighterArt)this.fighterArt.dataset.fighter=['rrvvfo','revvfo','wade','bark','sage'].includes(fighterId)?fighterId:'rrvvfo';
     if(this.fighterName)this.fighterName.textContent=String(fighterName).toUpperCase();
     if(this.stageName)this.stageName.textContent=String(stageName).toUpperCase();
     if(this.versus)this.versus.textContent=opponentName?`VS ${String(opponentName).toUpperCase()}`:'READY';

@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a10-living-tournament-hub-20260729';
+import {InputManager} from './input.js?v=29a11-bark-wade-tournament-pacing-20260729';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

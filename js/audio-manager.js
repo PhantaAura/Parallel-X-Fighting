@@ -31,6 +31,10 @@ const MUSIC_THEMES=Object.freeze({
   tournament:{tempo:126,wave:'square',bass:'triangle',notes:[196,246.94,293.66,392,293.66,246.94,220,329.63],bassNotes:[98,110,123.47,110],chords:[[196,246.94,293.66],[220,261.63,329.63]],drums:'festival',accent:'#ef3f2e'},
   mystery:{tempo:82,wave:'sine',bass:'triangle',notes:[174.61,207.65,233.08,207.65,164.81,196,220,196],bassNotes:[82.41,77.78,73.42,77.78],chords:[[174.61,207.65,261.63],[164.81,196,246.94]],drums:'pulse',accent:'#8bd5ff'},
   facility:{tempo:108,wave:'sawtooth',bass:'sine',notes:[146.83,174.61,220,233.08,174.61,146.83,138.59,207.65],bassNotes:[73.42,69.3,65.41,69.3],chords:[[146.83,174.61,220],[138.59,164.81,207.65]],drums:'industrial',accent:'#a46cff'},
+  echoVillage:{tempo:78,wave:'sine',bass:'triangle',notes:[196,246.94,293.66,329.63,293.66,246.94,220,261.63],bassNotes:[98,110,92.5,98],chords:[[196,246.94,293.66],[174.61,220,261.63]],drums:'wood',accent:'#e2ba70'},
+  echoCavern:{tempo:70,wave:'sine',bass:'sine',notes:[146.83,174.61,220,174.61,138.59,164.81,207.65,164.81],bassNotes:[73.42,69.3,65.41,69.3],chords:[[146.83,174.61,220],[138.59,164.81,207.65]],drums:'pulse',accent:'#87e7ee'},
+  echoMountain:{tempo:88,wave:'triangle',bass:'sine',notes:[174.61,220,261.63,293.66,261.63,220,196,246.94],bassNotes:[87.31,98,82.41,92.5],chords:[[174.61,220,261.63],[196,246.94,293.66]],drums:'light',accent:'#dcecff'},
+  hollow:{tempo:112,wave:'sawtooth',bass:'triangle',notes:[146.83,184.99,220,277.18,233.08,174.61,207.65,261.63],bassNotes:[73.42,69.3,77.78,65.41],chords:[[146.83,184.99,220],[138.59,174.61,207.65]],drums:'industrial',accent:'#63dce3'},
   battle:{tempo:116,wave:'sawtooth',bass:'triangle',notes:[174.61,220,261.63,349.23,261.63,220,196,293.66],bassNotes:[87.31,98,110,98],chords:[[174.61,220,261.63],[196,246.94,293.66]],drums:'battle',accent:'#ff8a32'}
 });
 
@@ -73,7 +77,7 @@ export class AudioManager{
     const bus=this.context.createGain();
     const now=this.context.currentTime;
     bus.gain.setValueAtTime(.0001,now);
-    bus.gain.exponentialRampToValueAtTime(1,now+.16);
+    bus.gain.exponentialRampToValueAtTime(1,now+.28);
     bus.connect(this.context.destination);
     return bus;
   }
@@ -150,11 +154,24 @@ export class AudioManager{
     if(cue)this.tone(cue.frequency,cue.duration,cue.type,cue.volume,channel);
   }
 
+  scheduleThemeAccent(theme,start,beat,variation=0){
+    if(theme==='dojo'){this.tone(880,beat*.18,'sine',.0048,'music',start+beat*1.35);this.tone(1046.5,beat*.12,'sine',.0038,'music',start+beat*1.62)}
+    else if(theme==='road'){this.noise(beat*.55,.0032,950,start+beat*.25);this.tone(1174.66,beat*.12,'sine',.0038,'music',start+beat*2.7)}
+    else if(theme==='tournament'){this.noise(beat*.32,.0065,720,start+beat*1.8);this.noise(beat*.25,.0055,980,start+beat*3.7)}
+    else if(theme==='mystery'){this.tone(87.31,beat*3.5,'sine',.0048,'music',start);this.tone(523.25,beat*.18,'sine',.0035,'music',start+beat*3.45)}
+    else if(theme==='facility'){this.tone(58.27,beat*3.7,'sawtooth',.0044,'music',start);this.noise(beat*.14,.005,2200,start+beat*(variation%2?2.5:3.5))}
+    else if(theme==='echoVillage'){this.tone(783.99,beat*.7,'sine',.0065,'music',start+beat*.35);this.tone(1174.66,beat*.95,'sine',.0045,'music',start+beat*.46)}
+    else if(theme==='echoCavern'){this.tone(293.66,beat*.38,'sine',.005,'music',start+beat*.5);this.tone(293.66,beat*.65,'sine',.0028,'music',start+beat*1.1)}
+    else if(theme==='echoMountain'){this.noise(beat*2.8,.0038,1250,start+beat*.15);this.tone(659.25,beat*.14,'sine',.0032,'music',start+beat*3.2)}
+    else if(theme==='hollow'){this.tone(73.42,beat*3.7,'square',.0045,'music',start);this.noise(beat*.08,.006,3100,start+beat*1.25)}
+  }
+
   scheduleMusicPhrase(theme,generation){
     if(!this.context||generation!==this.musicGeneration||this.musicTheme!==theme)return;
     const data=MUSIC_THEMES[theme]||MUSIC_THEMES.menu,beat=60/data.tempo,start=this.context.currentTime+.08,phrase=8;
     const variation=this.musicVariation++%4;
     this.scheduleDrums(data.drums,beat,start);
+    this.scheduleThemeAccent(theme,start,beat,variation);
     for(let i=0;i<phrase;i++){
       const index=(this.musicStep+i)%data.notes.length,when=start+i*beat*.5;
       const octave=variation===3&&i>=6?2:1;
@@ -176,7 +193,7 @@ export class AudioManager{
     if(this.musicTimer){clearInterval(this.musicTimer);this.musicTimer=null}
     this.musicTheme='';
     this.musicGeneration++;
-    this.fadeMusicBus(oldBus,.18);
+    this.fadeMusicBus(oldBus,.34);
 
     this.musicBus=this.createMusicBus();
     this.musicTheme=resolved;
@@ -189,7 +206,7 @@ export class AudioManager{
     return true;
   }
 
-  stopMusic({fade=.18}={}){
+  stopMusic({fade=.34}={}){
     if(this.musicTimer){clearInterval(this.musicTimer);this.musicTimer=null}
     const oldBus=this.musicBus;
     this.musicBus=null;

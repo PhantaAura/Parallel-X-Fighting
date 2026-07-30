@@ -21,7 +21,7 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     summary:'Move through battles and field spaces without fighting the camera.',
     entries:[
       ['Move','W A S D / LEFT STICK / TOUCH MOVEMENT'],
-      ['Hub camera','RIGHT STICK / MOVE MOUSE OR TRACKPAD'],
+      ['Hub camera','RIGHT STICK / CLICK + DRAG MOUSE OR TRACKPAD'],
       ['Jump','SPACE / SOUTH BUTTON / JUMP'],
       ['Dash','SHIFT / SHOULDER / DASH'],
       ['Depth movement','Use forward and backward depth movement to dodge lines of fire'],

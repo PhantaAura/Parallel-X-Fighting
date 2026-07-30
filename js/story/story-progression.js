@@ -1,7 +1,7 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24-all-story-polish-20260730';
 
-export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,250,450,700,1000,1360,1780]);
-export const STORY_RECOMMENDED_LEVELS=Object.freeze({1:1,2:2,3:4,4:5,5:6,6:7});
+export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,250,450,700,1000,1360,1780,2260,2810]);
+export const STORY_RECOMMENDED_LEVELS=Object.freeze({1:1,2:2,3:4,4:5,5:6,6:7,7:8,8:9});
 
 export function storyLevelFromProgress(progress=loadLostYearProgress()){
   return Math.max(1,Number(progress?.storyLevel)||1);
@@ -58,7 +58,7 @@ export function storyEnergyControlMultiplier(level=1,bonusStats={}){
 }
 
 export function recommendedStoryLevel(chapter=1){
-  return STORY_RECOMMENDED_LEVELS[Math.max(1,Math.min(6,Number(chapter)||1))]||1;
+  return STORY_RECOMMENDED_LEVELS[Math.max(1,Math.min(8,Number(chapter)||1))]||1;
 }
 
 export function catchUpXpForChapter(chapter=1,progress=loadLostYearProgress()){

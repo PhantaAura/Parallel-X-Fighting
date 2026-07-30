@@ -3505,3 +3505,84 @@
 .c4Complete [data-c4-complete-secret]{margin:15px 0;padding:12px;border:1px solid #ffffff33;background:#ffffff0c}.c4Complete [data-c4-complete-secret] strong,.c4Complete [data-c4-complete-secret] span{display:block}.c4Complete [data-c4-complete-secret] span{font-size:12px;color:#d5e9ec;margin-top:4px}
 #arenaModeScreen.storyChapter4 .arenaStageLabel{color:#9debf2}#arenaModeScreen.storyChapter4Hub .arenaHud .top .side:nth-child(2){opacity:.18}#arenaModeScreen.storyChapter4Combat .arenaHud .top .side:nth-child(2){opacity:1}
 @media(max-width:760px){.c4Hud{grid-template-columns:1fr auto}.c4Hud .storyAttackStrip{display:none}.c4HudActions{flex-direction:column}.c4HudActions button{font-size:9px;padding:7px}.c4Objective strong{font-size:16px}.c4Objective span{font-size:11px}.c4Tracker{inset:4%;padding:14px}.c4TrackerRows{grid-template-columns:1fr 1fr}.c4Transition h1{font-size:42px}.c4Transition article{padding:18px 28px}}
+
+
+/* Prototype 2.9A.23 — Echo Region polish */
+.c4WatcherScan{position:absolute;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));width:min(390px,44vw);padding:11px 14px;background:linear-gradient(135deg,#0a2028ef,#101721ef);border:2px solid #63dce3;border-left:8px solid #63dce3;box-shadow:0 9px 28px #000b;pointer-events:none}.c4WatcherScan small,.c4WatcherScan strong,.c4WatcherScan span{display:block}.c4WatcherScan small{font-size:9px;letter-spacing:.14em;color:#8ef4fa}.c4WatcherScan strong{margin:3px 0;font-size:15px}.c4WatcherScan span{font-size:10px;color:#d5edf0}.c4WatcherScan>div{height:8px;margin-top:8px;border:1px solid #8ff5fa88;background:#03080c;overflow:hidden}.c4WatcherScan i{display:block;width:0;height:100%;background:linear-gradient(90deg,#4dba9f,#e1c95e,#ef6654);transition:width .15s linear}
+.chapterRow.chapterFuture{filter:saturate(.25);opacity:.72}.chapterRow.chapterFuture .chapterCard{border-style:dashed}.chapterRow.chapterFuture .chapterNumber{background:#262b35;color:#b9c0ce}
+#arenaModeScreen.storyChapter4Hub .arenaStageLabel:after{content:' • ANCIENT RESONANCE SETTLEMENT';color:#e7c77f;font-size:.72em}
+@media(max-width:760px){.c4WatcherScan{width:min(92vw,390px);bottom:88px}.c4WatcherScan strong{font-size:12px}}
+
+
+/* Prototype 2.9A.23.2 — story combat UI safety.
+   Hub objectives, navigation buttons, journals, and maps must never cover the fighter HUD. */
+body.storyFightUiSafe #rrvvfoMission2UI .chapter2Hud,
+body.storyFightUiSafe #rrvvfoMission2UI .chapter2Tracker,
+body.storyFightUiSafe #rrvvfoMission2UI .chapter2StoryMenu,
+body.storyFightUiSafe #rrvvfoMission2UI .chapter2Prompt,
+body.storyFightUiSafe #rrvvfoMission2UI .chapter2QuestToast,
+body.storyFightUiSafe #rrvvfoChapter3PreviewUI .c3Hud,
+body.storyFightUiSafe #rrvvfoChapter3PreviewUI .c3Tracker,
+body.storyFightUiSafe #rrvvfoChapter3PreviewUI .c3StoryMenu,
+body.storyFightUiSafe #rrvvfoChapter3PreviewUI .c3Prompt,
+body.storyFightUiSafe #rrvvfoChapter3PreviewUI .c3QuestToast,
+body.storyFightUiSafe #rrvvfoChapter4UI .c4Hud,
+body.storyFightUiSafe #rrvvfoChapter4UI .c4Tracker,
+body.storyFightUiSafe #rrvvfoChapter4UI .c4StoryMenu,
+body.storyFightUiSafe #rrvvfoChapter4UI .c4Prompt,
+body.storyFightUiSafe #rrvvfoChapter4UI .c4Toast,
+body.storyFightUiSafe .storyExplorationMapButton,
+body.storyFightUiSafe .storyMiniMap,
+body.storyFightUiSafe .storyMapOverlay,
+body.storyFightUiSafe .storyObjectiveCompass{
+  display:none!important;
+}
+
+/* Prototype 2.9A.24 — shared all-chapter story polish */
+#storyPolishLayer{position:fixed;inset:0;z-index:5000;pointer-events:none;font-family:Inter,Segoe UI,Arial,sans-serif;color:#fff}
+.storySceneTransition{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(90deg,rgba(4,7,13,.94),rgba(9,13,22,.72),rgba(4,7,13,.94));opacity:0;transform:scale(1.025);transition:opacity .18s ease,transform .28s ease;pointer-events:none}
+.storySceneTransition[hidden]{display:none}.storySceneTransition.show{opacity:1;transform:none}
+.storySceneTransition>div{min-width:min(78vw,680px);padding:20px 30px;border-block:3px solid #fff;background:linear-gradient(90deg,transparent,rgba(13,18,31,.96) 14%,rgba(13,18,31,.96) 86%,transparent);text-align:center;text-shadow:0 3px 0 #000}
+.storySceneTransition small{font-weight:1000;letter-spacing:.19em;color:#7cecff}.storySceneTransition h2{margin:5px 0;font-size:clamp(34px,6vw,72px);font-style:italic;letter-spacing:.03em}.storySceneTransition p{margin:0;color:#dfe8f8;font-weight:800}
+.storyObjectiveToast{position:absolute;left:50%;top:5.5%;width:min(620px,82vw);padding:14px 18px 18px;translate:-50% -18px;background:linear-gradient(125deg,rgba(15,22,36,.98),rgba(23,33,52,.94));border:2px solid #fff;border-left:8px solid #ffd85d;box-shadow:8px 9px 0 #05070c,0 18px 42px #000a;opacity:0;transition:opacity .18s ease,translate .2s ease;overflow:hidden}
+.storyObjectiveToast[hidden]{display:none}.storyObjectiveToast.show{opacity:1;translate:-50% 0}.storyObjectiveToast small{display:block;color:#ffd85d;font-weight:1000;letter-spacing:.15em}.storyObjectiveToast strong{display:block;margin-top:3px;font-size:clamp(16px,2.2vw,25px);font-style:italic}.storyObjectiveToast span{display:block;margin-top:3px;color:#d7e1ed;font-weight:650}.storyObjectiveToast i{position:absolute;left:0;bottom:0;width:100%;height:4px;background:linear-gradient(90deg,#ffd85d,#7cecff);transform-origin:left;animation:storyObjectiveTimer 3.2s linear both}@keyframes storyObjectiveTimer{to{transform:scaleX(0)}}
+body.storyFightUiSafe .storyObjectiveToast{display:none!important}
+.storyChapterResults,.storyPlaytestPanel{position:absolute;inset:0;display:grid;place-items:center;background:rgba(3,5,10,.83);backdrop-filter:blur(10px);pointer-events:auto;opacity:0;transition:opacity .2s ease}
+.storyChapterResults[hidden],.storyPlaytestPanel[hidden]{display:none}.storyChapterResults.show,.storyPlaytestPanel.show{opacity:1}
+.storyChapterResults article{width:min(760px,92vw);max-height:90vh;overflow:auto;padding:26px;background:linear-gradient(145deg,#171c2b,#080b13);border:3px solid #fff;box-shadow:13px 14px 0 #000,0 28px 90px #000c;position:relative}
+.storyChapterResults header small,.storyPlaytestPanel header small{color:#7cecff;font-weight:1000;letter-spacing:.16em}.storyChapterResults h2,.storyPlaytestPanel h2{margin:4px 0 16px;font-size:clamp(24px,4vw,42px);font-style:italic}
+.storyResultRank{position:absolute;right:24px;top:20px;width:86px;height:86px;display:grid;place-items:center;border-radius:50%;border:6px solid #fff;background:#1a2233;font-size:52px;font-weight:1000;box-shadow:0 0 0 8px #0006}.storyResultRank[data-rank="S"]{background:#775700;color:#fff3a6}.storyResultRank[data-rank="A"]{background:#174b58;color:#bdf7ff}
+.storyChapterResults dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:20px 110px 18px 0}.storyChapterResults dl div{padding:12px;background:#ffffff0d;border:1px solid #ffffff24}.storyChapterResults dt{font-size:11px;color:#9fb2c8;font-weight:900;text-transform:uppercase}.storyChapterResults dd{margin:3px 0 0;font-size:19px;font-weight:1000}.storyResultRewards{padding:14px;background:#0c1422;border-left:5px solid #ffd85d}.storyResultRewards small{color:#ffd85d;font-weight:1000;letter-spacing:.1em}.storyResultRewards p{margin:5px 0 0;font-weight:750}.storyResultActions,.playtestButtons{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}.storyResultActions button,.storyPlaytestPanel button{border:2px solid #fff;background:#1a2233;color:#fff;padding:11px 14px;font-weight:1000;cursor:pointer;box-shadow:4px 4px 0 #000}.storyResultActions button.primary,.storyPlaytestPanel button.primary{background:#d9362c}.storyResultActions button:hover,.storyPlaytestPanel button:hover{filter:brightness(1.18);translate:0 -1px}
+.storyPlaytestPanel article{width:min(980px,94vw);max-height:92vh;overflow:auto;padding:24px;background:linear-gradient(145deg,#12192a,#080b13);border:3px solid #8cecff;box-shadow:14px 15px 0 #000,0 30px 100px #000d}.storyPlaytestPanel header{display:flex;justify-content:space-between;gap:20px}.storyPlaytestPanel header button{font-size:24px;padding:4px 11px}.playtestCode{margin:-8px 0 16px;color:#ffd85d;font-weight:1000;letter-spacing:.08em}.playtestSnapshot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:14px;background:#07121b;border:1px solid #7cecff55}.playtestSnapshot strong{grid-column:1/-1;color:#7cecff}.storyPlaytestPanel section{margin-top:18px;padding-top:13px;border-top:1px solid #ffffff25}.storyPlaytestPanel h3{margin:0;font-size:13px;letter-spacing:.12em;color:#a9bad0}.storyPlaytestPanel pre{max-height:250px;overflow:auto;padding:12px;background:#03070d;color:#9fffd7;border:1px solid #ffffff1f;font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap}
+.storyDialogueOpen .top,.storyDialogueOpen .badge,.storyDialogueOpen [data-c2-tracker],.storyDialogueOpen [data-c3-tracker],.storyDialogueOpen [data-c4-tracker]{opacity:.12;transition:opacity .18s ease}.px-dialogue-overlay:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 55%,rgba(90,146,255,.12),transparent 32%),linear-gradient(90deg,rgba(0,0,0,.18),transparent 35%,rgba(0,0,0,.24));pointer-events:none}.sbDialoguePortrait.atlas-portrait canvas{image-rendering:auto;filter:drop-shadow(0 12px 12px #0009)}.sbDialoguePortrait.emotion-angry{transform:translateY(-2px) rotate(-1deg)}.sbDialoguePortrait.emotion-shocked{transform:translateY(-5px) scale(1.035)}.sbDialoguePortrait.emotion-thinking{filter:saturate(.82)}.sbDialogueChoice:before{content:"CHOICE";font-size:9px;letter-spacing:.13em;color:#ffd85d;margin-right:8px}
+.storyCombatFeedback #arenaModeScreen{animation:storyCombatEngage .7s ease both}@keyframes storyCombatEngage{0%{filter:brightness(.55) saturate(.5)}35%{filter:brightness(1.32) saturate(1.35)}100%{filter:none}}
+.storyUnifiedRuntime.storyHudCombat .top{filter:drop-shadow(0 3px 8px #000)}.storyUnifiedRuntime.storyHudCombat .track{box-shadow:0 0 0 1px #000,0 0 16px #0008}.storyUnifiedRuntime.storyHudCombat .banner{animation:storyFightBanner .28s cubic-bezier(.2,.8,.2,1)}@keyframes storyFightBanner{from{transform:translate(-50%,-50%) scale(1.22);opacity:0}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.chapter2Prompt,.roadPrompt,.c3Prompt,.c4Prompt{border-left-width:7px!important;box-shadow:7px 7px 0 #000!important}.chapter2QuestToast,.c3QuestToast{animation:storyQuestToastIn .25s ease both}@keyframes storyQuestToastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@media(max-width:700px){.storyChapterResults dl,.playtestSnapshot{grid-template-columns:1fr}.storyChapterResults dl{margin-right:0}.storyResultRank{position:static;margin:0 0 10px}.storySceneTransition>div{min-width:88vw;padding:16px}.storyObjectiveToast{top:3%}}
+
+.storyCombatCallout{position:absolute;left:50%;top:30%;translate:-50% 0;padding:8px 18px;background:#080b13e8;border:2px solid #fff;box-shadow:6px 6px 0 #000;font-size:clamp(20px,3.5vw,38px);font-style:italic;font-weight:1000;letter-spacing:.05em;opacity:0;scale:.86;transition:opacity .12s ease,scale .15s ease;pointer-events:none}.storyCombatCallout[hidden]{display:none}.storyCombatCallout.show{opacity:1;scale:1}.storyCombatCallout.perfectParry{color:#fff6a3;border-color:#fff6a3;text-shadow:0 0 16px #ffe26b}.storyCombatCallout.guardBreak{color:#ffda73;border-color:#ff9d47}.storyCombatCallout.heavyImpact{color:#fff;border-color:#ff7558}
+body.storyFeedback-perfectParry #arenaModeScreen{filter:brightness(1.22) contrast(1.06)}body.storyFeedback-guardBreak #arenaModeScreen{animation:storyGuardBreakPulse .4s ease}body.storyFeedback-heavyImpact #arenaModeScreen{animation:storyHeavyPulse .28s ease}@keyframes storyGuardBreakPulse{0%,100%{filter:none}45%{filter:sepia(.45) brightness(1.24)}}@keyframes storyHeavyPulse{0%,100%{filter:none}40%{filter:contrast(1.22) brightness(1.16)}}
+#arenaModeScreen.arenaLowHealth:before{content:"LOW HEALTH";position:absolute;z-index:19;left:18px;top:102px;color:#ff7a70;font-size:11px;font-weight:1000;letter-spacing:.12em;text-shadow:0 2px #000;animation:arenaLowHealthPulse .75s ease-in-out infinite alternate;pointer-events:none}@keyframes arenaLowHealthPulse{to{opacity:.35}}
+.storyDialogueOpen [data-world-layer],.storyDialogueOpen [data-fighter-layer]{transition:transform .28s ease,filter .28s ease;transform:scale(1.022);filter:saturate(.86) brightness(.76)}body[data-dialogue-speaker="rrvvfo"] .storyDialogueOpen canvas{transform-origin:34% 52%}body[data-dialogue-speaker="sage"] .storyDialogueOpen canvas,body[data-dialogue-speaker="bark"] .storyDialogueOpen canvas,body[data-dialogue-speaker="wade"] .storyDialogueOpen canvas,body[data-dialogue-speaker="revvfo"] .storyDialogueOpen canvas{transform-origin:66% 52%}
+.storyRecoveryCard{margin:12px 0;padding:12px 14px;background:linear-gradient(90deg,#0d1825,#111c2b);border-left:5px solid #7cecff;box-shadow:4px 5px 0 #0005}.storyRecoveryCard small{display:block;color:#7cecff;font-size:10px;font-weight:1000;letter-spacing:.13em}.storyRecoveryCard strong{display:block;margin-top:3px;font-size:18px}.storyRecoveryCard span{display:block;margin-top:3px;color:#b9c8d9;font-size:12px;line-height:1.4}
+
+
+/* Prototype 2.9A.24.1 — Strange Man contradictory Lens sequence */
+#rrvvfoChapter3PreviewUI .c3LensContradiction{position:absolute;inset:0;z-index:2360;display:grid;place-items:center;padding:20px;background:radial-gradient(circle,#b9f7ff28,#050815e8 58%,#000);pointer-events:none;overflow:hidden}
+#rrvvfoChapter3PreviewUI .c3LensContradiction[hidden]{display:none!important}
+#rrvvfoChapter3PreviewUI .c3LensContradiction:before,#rrvvfoChapter3PreviewUI .c3LensContradiction:after{content:'';position:absolute;inset:-15%;background:repeating-linear-gradient(0deg,transparent 0 8px,#d4fbff20 9px 10px);mix-blend-mode:screen;animation:c3LensScan .16s steps(2,end) infinite}
+#rrvvfoChapter3PreviewUI .c3LensContradiction:after{background:linear-gradient(90deg,#ff345b22,#62efff22,#8c65ff24);transform:translateX(-3%);animation:c3LensSplit .2s steps(2,end) infinite}
+#rrvvfoChapter3PreviewUI .c3LensContradiction article{position:relative;width:min(860px,92vw);padding:30px;border:4px solid #d8fbff;background:#07111ce8;box-shadow:0 0 50px #78edff88;text-align:center;text-shadow:-3px 0 #ff355f,3px 0 #4be9ff}
+#rrvvfoChapter3PreviewUI .c3LensContradiction small,#rrvvfoChapter3PreviewUI .c3LensContradiction strong,#rrvvfoChapter3PreviewUI .c3LensContradiction span{display:block}
+#rrvvfoChapter3PreviewUI .c3LensContradiction small{color:#9bf5ff;font-weight:1000;letter-spacing:.16em}
+#rrvvfoChapter3PreviewUI .c3LensContradiction strong{margin:14px 0;font-size:clamp(28px,6vw,66px);line-height:.92;font-style:italic}
+#rrvvfoChapter3PreviewUI .c3LensContradiction span{font-size:12px;font-weight:900;letter-spacing:.14em;color:#ccd8ff}
+#rrvvfoChapter3PreviewUI .c3LensContradiction[data-phase="1"] article{transform:skewX(-5deg) translateX(-2%)}
+#rrvvfoChapter3PreviewUI .c3LensContradiction[data-phase="2"] article{transform:skewX(4deg) translateX(2%)}
+#rrvvfoChapter3PreviewUI.c3LensDistorting{filter:saturate(1.3) contrast(1.08)}
+@keyframes c3LensScan{50%{transform:translateY(10px);opacity:.45}}
+@keyframes c3LensSplit{50%{transform:translateX(3%) scaleY(1.02);opacity:.55}}
+
+/* 2.9A.24.2 — hub camera comfort */
+.hubCameraLookEnabled canvas{cursor:grab}
+.hubCameraLookEnabled canvas.hubCameraDragging{cursor:grabbing}

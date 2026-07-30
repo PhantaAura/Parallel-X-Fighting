@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a22p1-floating-lookout-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a22p1-floating-lookout-20260730';
-import {StoryMap} from './story-map.js?v=29a22p1-floating-lookout-20260730';
-import {storyConfirm} from './story-ux.js?v=29a22p1-floating-lookout-20260730';
-import {openCombatManual} from './combat-manual.js?v=29a22p1-floating-lookout-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a22p1-floating-lookout-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a22p1-floating-lookout-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24-all-story-polish-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24-all-story-polish-20260730';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a24-all-story-polish-20260730';
+import {StoryMap} from './story-map.js?v=29a24-all-story-polish-20260730';
+import {storyConfirm} from './story-ux.js?v=29a24-all-story-polish-20260730';
+import {openCombatManual} from './combat-manual.js?v=29a24-all-story-polish-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a24-all-story-polish-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a24p2-camera-comfort-20260730';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,7 +22,7 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a22p1-floating-lookout-20260730';
+} from './chapter3-content.js?v=29a24p1-strange-man-20260730';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -30,6 +30,13 @@ const EMPTY_COMMAND=Object.freeze({x:0,z:0,jump:false,light:false,heavy:false,la
 const HUB_SPAWN=Object.freeze({x:1040,z:110});
 const FACILITY_SPAWN=Object.freeze({x:-900,z:0});
 const REMOTE_SPAWN=Object.freeze({x:-820,z:130});
+const STRANGE_MAN_POINT=Object.freeze({x:-1510,z:-760});
+const EAST_SUPPORT_CLUE=Object.freeze({x:1260,z:330});
+const STRANGE_MAN_HAT=Object.freeze({
+  id:'strange-mans-hat',
+  name:'Strange Man’s Hat',
+  description:'The only thing left behind after its owner disappeared. Nobody at the tournament remembers seeing him.'
+});
 let activeMission=null;
 
 const HUB_DISTRICTS=Object.freeze([
@@ -154,9 +161,9 @@ function buildUI(){
     <aside class="c3Tracker" data-c3-tracker hidden>
       <header><small>CHAPTER 3 • INVESTIGATION</small><h2>SOMETHING UNDER THE RING</h2></header>
       <div class="c3TrackerRows">
-        <div><span>REQUIRED STORY</span><strong data-c3-required-count>0 / 25</strong></div>
+        <div><span>REQUIRED STORY</span><strong data-c3-required-count>0 / 29</strong></div>
         <div><span>MANDATORY SIDE STORIES</span><strong data-c3-mandatory-count>0 / 3</strong></div>
-        <div><span>EVIDENCE</span><strong data-c3-evidence-count>0 / 5</strong></div>
+        <div><span>EVIDENCE</span><strong data-c3-evidence-count>0 / 6</strong></div>
         <div><span>OPTIONAL QUESTS</span><strong data-c3-optional-count>0 / 10</strong></div>
         <div><span>AREA</span><strong data-c3-area-status>TOURNAMENT</strong></div>
       </div>
@@ -182,6 +189,14 @@ function buildUI(){
         <div class="c3TaskButtons" data-c3-task-buttons></div>
       </article>
     </div>
+
+    <div class="c3LensContradiction" data-c3-lens-contradiction hidden aria-live="assertive">
+      <article>
+        <small>LENS OF TRUTH • CONTRADICTORY PREDICTION</small>
+        <strong data-c3-lens-possibility>THE STRANGE MAN WALKS TO THE LEFT.</strong>
+        <span>NO SINGLE FUTURE CAN BE CONFIRMED</span>
+      </article>
+    </div>
     <div class="c3DoorOverlay" data-c3-door hidden>
       <article>
         <small>FINAL FACILITY SEQUENCE</small>
@@ -203,7 +218,7 @@ function buildUI(){
           <span>ABANDONED RESONANCE FACILITY STAGE</span>
           <span>UNFINISHED ECHO PROFILE</span>
           <span>PROJECT HOLLOW LORE ENTRY</span>
-          <span>STORY PROGRESS • 3 / 6 CHAPTERS</span>
+          <span>STORY PROGRESS • 3 / 8 CHAPTERS</span>
         </div>
         <button type="button" data-c3-continue>SAVE AND RETURN TO STORY</button>
       </article>
@@ -246,6 +261,7 @@ class RrvvfoChapter3{
     this.fightElapsed=0;
     this.lastFightPattern='';
     this.door={active:false,stage:'idle',deadline:0,swapStarted:false,retryCount:0};
+    this.lensContradictionTimers=[];
     this.root.querySelector('[data-c3-status]').addEventListener('click',()=>this.openTracker());
     this.root.querySelector('[data-c3-map]').addEventListener('click',()=>this.map?.open());
     this.root.querySelector('[data-c3-menu-button]').addEventListener('click',()=>this.openStoryMenu());
@@ -336,6 +352,10 @@ class RrvvfoChapter3{
       },
       castAbility:(next,slot)=>{
         if(this.mode==='door-qte'&&slot===3)return next(slot);
+        if(this.mode==='hub'&&chapter3NextRequired(this.state)==='strangeManLead'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected){
+          if(slot===4){this.inspectStrangeManHatWithLens();return true}
+          battle.notice('USE THE LENS ON THE STRANGE MAN’S HAT',1.1);return false;
+        }
         if(this.mode==='hub'&&chapter3NextRequired(this.state)==='lensTrail'){
           if(slot===4){this.useInvestigationLens();return true}
           battle.notice('USE THE LENS TO FOLLOW THE DETECTOR',1.1);return false;
@@ -439,7 +459,7 @@ class RrvvfoChapter3{
 
   preparePlayer(point){
     const player=this.battle.fighters[0];
-    player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(point.x,point.z);player.asset=null;
+    player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(point.x,point.z);void this.battle.ensureFighterAsset(player,'rrvvfo');
     applyStoryProgressionToFighter(player,loadLostYearProgress());
     player.en=65;player.guard=100;
     snapHubCamera(this.battle,player,{distance:this.area==='facility'?960:this.area==='remote'?1080:1120});
@@ -459,7 +479,7 @@ class RrvvfoChapter3{
     this.battle.root.classList.add('storyChapter3Hub');this.battle.root.classList.remove('storyChapter3Combat');
     this.engine.setLabels({stageName:'AFTER-HOURS TOURNAMENT',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','THE SAGE']});
     this.preparePlayer(spawn);
-    this.engine.setHotbarAvailability(chapter3NextRequired(this.state)==='lensTrail'?[4]:[],{show:chapter3NextRequired(this.state)==='lensTrail'});
+    this.updateLensAvailability();
     this.showAreaTitle('AFTER-HOURS TOURNAMENT','THE LOST YEAR • SOMETHING UNDER THE RING');
     this.saveState();
     if(opening)this.showOpeningScene();
@@ -526,6 +546,10 @@ class RrvvfoChapter3{
     if(next==='ploukeBag'){
       for(const point of BAG_SEARCH)if(!this.state.bagLocations.includes(point.id))items.push({kind:'bag-search',label:`SEARCH ${point.label}`,x:point.x,z:point.z,point});
     }
+    if(next==='strangeManWarningSeen')items.push({kind:'strange-man',label:'QUESTION THE STRANGE MAN',x:STRANGE_MAN_POINT.x,z:STRANGE_MAN_POINT.z});
+    if(next==='medicalWorkerRevisited')items.push({kind:'medical-revisit',label:'SPEAK TO THE MEDICAL WORKER AGAIN',x:640,z:-520});
+    if(next==='strangeManHatCollected')items.push({kind:'strange-man-hat',label:'PICK UP THE STRANGE MAN’S HAT',x:STRANGE_MAN_POINT.x,z:STRANGE_MAN_POINT.z});
+    if(next==='strangeManLead')items.push({kind:'east-support-clue',label:'INVESTIGATE THE EAST SUPPORT',x:EAST_SUPPORT_CLUE.x,z:EAST_SUPPORT_CLUE.z});
     if(next==='lensTrail'){
       const point=LENS_TRAIL[this.state.lensTrailIndex]||LENS_TRAIL.at(-1);
       items.push({kind:'lens-point',label:'USE LENS OF TRUTH HERE',x:point.x,z:point.z,point});
@@ -535,7 +559,7 @@ class RrvvfoChapter3{
     for(const quest of CHAPTER3_OPTIONAL_QUESTS){
       const saved=this.state.optional[quest.id];
       if(saved.complete)continue;
-      if(quest.id==='medicalFollowup'&&!this.state.requiredCompleted.includes('medicalLead'))continue;
+      if(quest.id==='medicalFollowup'&&(!this.state.requiredCompleted.includes('medicalLead')||next==='medicalWorkerRevisited'))continue;
       if(['finalAnnouncement','cleanupEchoes','fakePloukes','lateFan'].includes(quest.id)&&saved.started){
         const source=OPTIONAL_MULTI_POINTS[quest.id]||[];
         const completed=quest.id==='finalAnnouncement'?this.state.optionalProgress.speakers:quest.id==='cleanupEchoes'?this.state.optionalProgress.cleanupFragments:quest.id==='fakePloukes'?this.state.optionalProgress.fakePloukes:this.state.optionalProgress.autographs;
@@ -569,6 +593,10 @@ class RrvvfoChapter3{
     const item=this.nearby;
     const handlers={
       medical:()=>this.beginMedicalLead(),
+      'strange-man':()=>this.beginStrangeManWarning(),
+      'medical-revisit':()=>this.revisitMedicalWorker(),
+      'strange-man-hat':()=>this.collectStrangeManHat(),
+      'east-support-clue':()=>this.investigateEastSupportClue(),
       'forgotten-fighter':()=>this.beginForgottenFighter(),
       'public-booth':()=>this.usePublicBooth(),
       'media-a':()=>this.restoreMediaTerminal('damaged-a'),
@@ -632,6 +660,133 @@ class RrvvfoChapter3{
         this.saveState();this.showMedicalSort();
       }
     });
+  }
+
+
+  beginStrangeManWarning(){
+    if(chapter3NextRequired(this.state)!=='strangeManWarningSeen')return;
+    this.showDialogue([
+      {speaker:'STRANGE MAN',speakerClass:'rival',text:'You’re wasting your time.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Who are you?',tail:'down'},
+      {speaker:'STRANGE MAN',speakerClass:'rival',text:'The people you’re talking to aren’t the real people.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'What’s that supposed to mean?',tail:'down'},
+      {speaker:'STRANGE MAN',speakerClass:'rival',text:'Speak to the medical worker again.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I already did.',tail:'down'},
+      {speaker:'STRANGE MAN',speakerClass:'rival',text:'Then you should notice.',tail:'down'}
+    ],()=>{
+      this.state.strangeManWarningSeen=true;
+      this.completeRequired('strangeManWarningSeen');
+      this.mode='hub';this.battle.phase='play';this.updateObjective();
+    });
+  }
+
+  revisitMedicalWorker(){
+    if(!this.state.strangeManWarningSeen||chapter3NextRequired(this.state)!=='medicalWorkerRevisited')return;
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Hey, I need to ask you about the ring again.',tail:'down'},
+      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'Again? I’ve never spoken to you.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You told me you treated someone near the east support.',tail:'down'},
+      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'I wasn’t assigned to the east support.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Your badge has a different name than it did earlier.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Okay... either I hit my head harder than I thought, or something’s seriously wrong here.',tail:'down'}
+    ],()=>{
+      this.state.medicalWorkerRevisited=true;
+      this.completeRequired('medicalWorkerRevisited');
+      this.mode='hub';this.battle.phase='play';this.updateObjective();
+    });
+  }
+
+  collectStrangeManHat(){
+    if(chapter3NextRequired(this.state)!=='strangeManHatCollected')return;
+    this.state.strangeManHatCollected=true;
+    this.state.keyItems=unique([...(this.state.keyItems||[]),STRANGE_MAN_HAT.id]);
+    this.completeRequired('strangeManHatCollected');
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You warn me about fake people, vanish, and leave your hat?',tail:'down'}
+    ],()=>this.showTask({
+      kicker:'KEY ITEM ACQUIRED',
+      title:STRANGE_MAN_HAT.name.toUpperCase(),
+      text:STRANGE_MAN_HAT.description,
+      buttons:[
+        {label:'USE LENS OF TRUTH',value:'lens',detail:'Scratch Rrvvfo’s eye and inspect the contradictory possibilities.'},
+        {label:'CONTINUE INVESTIGATION',value:'continue',detail:'Keep the hat and follow the changed medical-worker clue.'}
+      ],
+      onChoose:value=>{
+        this.mode='hub';this.battle.phase='play';
+        if(value==='lens')this.inspectStrangeManHatWithLens();
+        else this.updateObjective();
+      }
+    }));
+  }
+
+  inspectStrangeManHatWithLens(){
+    if(!this.state.strangeManHatCollected||this.state.strangeManHatLensInspected||this.area!=='hub')return;
+    const player=this.battle.fighters[0];
+    player.visualAction='lensActivate';player.visualActionTime=.6;
+    this.battle.burst(player.x,player.z,'#d4fbff',32,75);
+    this.showDialogue([
+      {speaker:'NARRATION',speakerClass:'neutral',text:'Rrvvfo scratches his eye and activates the Lens of Truth over the Strange Man’s hat.',tail:'down'}
+    ],()=>this.runHatLensContradictions());
+  }
+
+  runHatLensContradictions(){
+    this.clearLensContradictionTimers();
+    this.mode='lens-hat';this.battle.phase='story';
+    const panel=this.root.querySelector('[data-c3-lens-contradiction]');
+    const text=this.root.querySelector('[data-c3-lens-possibility]');
+    const possibilities=[
+      'THE STRANGE MAN WALKS TO THE LEFT.',
+      'THE STRANGE MAN WALKS TO THE RIGHT.',
+      'THE STRANGE MAN SUDDENLY DISAPPEARS.',
+      'THE HAT WAS ALREADY THERE BEFORE RRVVFO SPOKE TO HIM.',
+      'THE STRANGE MAN WAS NEVER STANDING THERE.'
+    ];
+    panel.hidden=false;this.root.classList.add('c3LensDistorting');
+    possibilities.forEach((possibility,index)=>{
+      const timer=setTimeout(()=>{
+        if(this.aborted)return;
+        text.textContent=possibility;
+        panel.dataset.phase=String(index%3);
+      },index*540);
+      this.lensContradictionTimers.push(timer);
+    });
+    this.lensContradictionTimers.push(setTimeout(()=>{
+      if(this.aborted)return;
+      panel.hidden=true;delete panel.dataset.phase;this.root.classList.remove('c3LensDistorting');
+      this.state.strangeManHatLensInspected=true;this.saveState();
+      this.mode='hub';this.battle.phase='play';this.updateLensAvailability();
+      this.showDialogue([
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Great. Even my eye doesn’t know what happened.',tail:'down'}
+      ],()=>{this.mode='hub';this.battle.phase='play';this.updateObjective()});
+    },possibilities.length*540+420));
+  }
+
+  clearLensContradictionTimers(){
+    for(const timer of this.lensContradictionTimers||[])clearTimeout(timer);
+    this.lensContradictionTimers=[];
+  }
+
+  investigateEastSupportClue(){
+    if(chapter3NextRequired(this.state)!=='strangeManLead')return;
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'A second medical-worker badge. Different name, same face.',tail:'down'},
+      {speaker:'SECURITY BADGE',speakerClass:'neutral',text:'RESTRICTED MAINTENANCE ACCESS • EAST SUPPORT.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'And the access strip points beneath the ring. Of course it does.',tail:'down'}
+    ],()=>{
+      this.state.strangeManLeadFound=true;
+      this.addEvidence('medicalBadgeMismatch');
+      this.completeRequired('strangeManLead');
+      this.mode='hub';this.battle.phase='play';this.updateObjective();
+      this.toast('INVESTIGATION CLUE','REPEATED MEDICAL BADGE','The east-support access strip connects the warning to the existing maintenance route.');
+    });
+  }
+
+  updateLensAvailability(){
+    const next=chapter3NextRequired(this.state);
+    const hatLens=next==='strangeManLead'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected;
+    const trail=next==='lensTrail';
+    const show=hatLens||trail;
+    this.engine?.setHotbarAvailability(show?[4]:[],{show});
   }
 
   beginForgottenFighter(){
@@ -790,9 +945,8 @@ class RrvvfoChapter3{
       this.state.detector=true;
       this.addEvidence('energyDetector');
       this.completeRequired('ploukeBag');
-      this.engine.setHotbarAvailability([4],{show:true});
       this.mode='hub';this.battle.phase='play';this.updateObjective();
-      this.toast('REQUIRED STORY COMPLETE','PLOUKE’S MISSING BAG','Energy detector acquired. Lens trail unlocked.');
+      this.toast('MAIN INVESTIGATION','A STRANGE WARNING','A lone man is waiting away from the remaining tournament workers.');
     });
   }
 
@@ -1054,7 +1208,7 @@ class RrvvfoChapter3{
     this.mode='fight';this.battle.phase='play';this.battle.hideBanner();this.battle.ringOutEnabled=false;this.battle.onRingOut=null;
     this.battle.root.classList.remove('storyChapter3Hub');this.battle.root.classList.add('storyChapter3Combat');
     const player=this.battle.fighters[0],foe=this.battle.fighters[1];
-    player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(-420,70);player.asset=null;
+    player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(-420,70);void this.battle.ensureFighterAsset(player,'rrvvfo');
     applyStoryProgressionToFighter(player,loadLostYearProgress());player.en=75;player.guard=100;
     foe.id=config.id;foe.name=config.name;foe.accent=config.kind==='echo'?'#72d9e7':'#a98c5e';foe.cpu=true;foe.visualScale=config.kind==='echo'?1.18:1;foe.reset(420,-70);foe.asset=null;
     applyStoryLevelToFighter(foe,playerLevel+(config.kind==='echo'?2:0));
@@ -1360,6 +1514,10 @@ class RrvvfoChapter3{
       lockedNightShift:['LOCKED ON THE NIGHT SHIFT',`Traverse the staff route and free the workers. ${this.state.nightRouteIndex} / ${NIGHT_ROUTE.length}`],
       crackedRing:['INSPECT THE DEVICES UNDER THE RING',`Identify the hidden collectors. ${this.state.ringCollectors.length} / 3`],
       ploukeBag:['FIND THE SAGE’S PLOUKE BAG',`Search the after-hours tournament grounds. ${this.state.bagLocations.length} / 5`],
+      strangeManWarningSeen:['QUESTION THE STRANGE MAN','He is waiting alone near the outer edge of the tournament grounds.'],
+      medicalWorkerRevisited:['Speak to the medical worker again.','The Strange Man said the second conversation would be different.'],
+      strangeManHatCollected:['Return to the Strange Man.','He was standing alone near the outer wall.'],
+      strangeManLead:['Investigate the Strange Man’s warning.','The changed medical badge points back toward the east support.'],
       lensTrail:['FOLLOW THE HIDDEN ENERGY TRAIL',`Stand at the detector marker and use Lens of Truth. ${this.state.lensTrailIndex} / ${LENS_TRAIL.length}`],
       sageExplanation:['GET THE FULL EXPLANATION','Confront the Sage at the maintenance elevator.'],
       facilityEntered:['ENTER THE UNDERGROUND FACILITY','The maintenance elevator leads beneath the arena.'],
@@ -1381,6 +1539,7 @@ class RrvvfoChapter3{
     };
     const [title,detail]=objectives[next]||['CHAPTER 3 COMPLETE','Reach Shadow’s Lookout in the next chapter.'];
     this.setObjective(title,detail);
+    this.updateLensAvailability();
     this.refreshTracker();
   }
 
@@ -1431,6 +1590,8 @@ class RrvvfoChapter3{
       ${evidence.map(entry=>`<p class="${entry.found?'done':''}"><b>${entry.found?'✓':'?'}</b>${entry.label}</p>`).join('')}
       <h3>OPTIONAL QUESTS</h3>
       ${optional.map(entry=>`<p class="${entry.complete?'done':''}"><b>${entry.complete?'✓':entry.started?'→':'○'}</b>${entry.title}</p>`).join('')}
+      <h3>KEY ITEMS</h3>
+      ${(this.state.keyItems||[]).includes(STRANGE_MAN_HAT.id)?`<p class="done"><b>◆</b><span><strong>${STRANGE_MAN_HAT.name}</strong><br>${STRANGE_MAN_HAT.description}</span></p>`:'<p><b>—</b>No key items collected.</p>'}
       <h3>CHAPTER COMPLETION</h3>
       <p><b>${chapter3CompletionPercent(this.state)}%</b>${this.state.requiredCompleted.length} of ${CHAPTER3_REQUIRED_STEPS.length} required checkpoints</p>`;
   }
@@ -1548,7 +1709,10 @@ class RrvvfoChapter3{
     if(event.key.toLowerCase()==='m'&&['hub','dungeon','remote','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openManual();return}
     if(event.key.toLowerCase()==='t'&&['hub','dungeon','remote'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openTracker();return}
     if(['hub','dungeon'].includes(this.mode)&&(event.key==='Enter'||event.code==='KeyE')){event.preventDefault();event.stopImmediatePropagation();this.tryInteract()}
-    if(this.mode==='hub'&&event.code==='Digit4'&&chapter3NextRequired(this.state)==='lensTrail'){event.preventDefault();this.useInvestigationLens()}
+    if(this.mode==='hub'&&event.code==='Digit4'){
+      if(chapter3NextRequired(this.state)==='strangeManLead'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected){event.preventDefault();this.inspectStrangeManHatWithLens()}
+      else if(chapter3NextRequired(this.state)==='lensTrail'){event.preventDefault();this.useInvestigationLens()}
+    }
   }
 
   drawChapterWorld(){
@@ -1581,6 +1745,22 @@ class RrvvfoChapter3{
     for(let index=0;index<5+this.state.hubState;index++){
       const point=RING_COLLECTORS[index%RING_COLLECTORS.length],pulse=1+Math.sin(time*5+index)*.12;
       r.billboard({x:point.x+(index-2)*35,y:45+index*8,z:point.z-30,size:20*pulse,color:'#79dfff',alpha:.16+night*.18});
+    }
+    const next=chapter3NextRequired(this.state);
+    if(next==='strangeManWarningSeen'){
+      const p=STRANGE_MAN_POINT;
+      r.box({x:p.x,y:70,z:p.z,sx:54,sy:118,sz:42,color:'#24222c'});
+      r.box({x:p.x,y:146,z:p.z,sx:38,sy:34,sz:34,color:'#8b654f'});
+      r.box({x:p.x,y:173,z:p.z,sx:92,sy:8,sz:66,color:'#15131a'});
+      r.box({x:p.x,y:188,z:p.z,sx:50,sy:28,sz:44,color:'#1e1b24'});
+    }else if(this.state.strangeManWarningSeen&&!this.state.strangeManHatCollected){
+      const p=STRANGE_MAN_POINT;
+      r.box({x:p.x,y:13,z:p.z,sx:100,sy:7,sz:72,color:'#15131a'});
+      r.box({x:p.x,y:29,z:p.z,sx:52,sy:30,sz:45,color:'#1e1b24'});
+    }
+    if(next==='strangeManLead'){
+      r.box({x:EAST_SUPPORT_CLUE.x,y:18,z:EAST_SUPPORT_CLUE.z,sx:42,sy:5,sz:30,color:'#d8edf4'});
+      r.billboard({x:EAST_SUPPORT_CLUE.x,y:42,z:EAST_SUPPORT_CLUE.z,size:18+Math.sin(time*5)*2,color:'#7eeaff',alpha:.68});
     }
   }
 
@@ -1616,11 +1796,12 @@ class RrvvfoChapter3{
 
   saveState(){
     const progress=loadLostYearProgress();
+    const keyItems=unique([...(progress.keyItems||[]),...(this.state.keyItems||[])]);
     if(this.replayMode){
-      saveLostYearProgress({...progress,chapter3State:this.savedState,lastCheckpoint:this.savedCheckpoint||'rrvvfo-03-complete'});
+      saveLostYearProgress({...progress,keyItems,chapter3State:this.savedState,lastCheckpoint:this.savedCheckpoint||'rrvvfo-03-complete'});
       return;
     }
-    saveLostYearProgress({...progress,chapter3State:this.state,lastCheckpoint:`rrvvfo-03-${chapter3NextRequired(this.state)||'complete'}`});
+    saveLostYearProgress({...progress,keyItems,chapter3State:this.state,lastCheckpoint:`rrvvfo-03-${chapter3NextRequired(this.state)||'complete'}`});
   }
 
   async requestExit(){
@@ -1637,6 +1818,7 @@ class RrvvfoChapter3{
     if(this.aborted)return;
     this.aborted=true;
     clearTimeout(this.openingTimer);
+    this.clearLensContradictionTimers();
     this.map?.destroy();this.map=null;
     document.removeEventListener('keydown',this.keyHandler,true);
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);

@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a22p1-floating-lookout-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a22p1-floating-lookout-20260730';
+import {CONTROL_MAPS} from '../input.js?v=29a24-all-story-polish-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a24-all-story-polish-20260730';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 
@@ -368,7 +368,7 @@ export class ArenaControlManager{
         this.help.innerHTML=`<b>${m.name.toUpperCase()} • SHARED CONTROLS</b><br><span>Left Stick</span> move • <span>${m.labels.j}</span> jump • <span>${m.labels.a}</span> light • <span>${m.labels.h}</span> heavy • <span>Up + ${m.labels.h}</span> launcher • <span>${m.labels.d}</span> dash • <span>${m.labels.b}</span> block • <span>${m.labels.k}</span> charge • <span>${m.labels.s}</span> grab • <span>${m.labels.q}</span> breaker • <span>${m.labels.c}</span> counter • <span>D-Pad L/R</span> select ability • <span>${m.labels.u}</span> activate • <span>Right Stick</span> hub camera`;
       }else{
         const mouseAttack=this.settings.mousePrimaryAttack==='heavy'?'heavy':'light';
-        this.help.innerHTML=`<b>${device==='mouse'?'MOUSE + KEYBOARD':'CHAPTER CONTROLS'}</b><br><span>WASD</span> move • <span>${labelForCode(a.jump)}</span> jump • <span>${labelForCode(a.dash)}</span> dash • <span>M1</span> ${mouseAttack} • <span>M2</span> block • <span>${labelForCode(a.light)}</span> light • <span>${labelForCode(a.heavy)}</span> heavy • <span>${labelForCode(a.launcher)}</span> launcher • <span>${labelForCode(a.charge)}</span> charge • <span>${labelForCode(a.grab)}</span> grab • <span>${labelForCode(a.breaker)}</span> breaker • <span>${labelForCode(a.counter)}</span> counter • <span>1–5</span> abilities • <span>Mouse / trackpad</span> hub camera`;
+        this.help.innerHTML=`<b>${device==='mouse'?'MOUSE + KEYBOARD':'CHAPTER CONTROLS'}</b><br><span>WASD</span> move • <span>${labelForCode(a.jump)}</span> jump • <span>${labelForCode(a.dash)}</span> dash • <span>M1</span> ${mouseAttack} • <span>M2</span> block • <span>${labelForCode(a.light)}</span> light • <span>${labelForCode(a.heavy)}</span> heavy • <span>${labelForCode(a.launcher)}</span> launcher • <span>${labelForCode(a.charge)}</span> charge • <span>${labelForCode(a.grab)}</span> grab • <span>${labelForCode(a.breaker)}</span> breaker • <span>${labelForCode(a.counter)}</span> counter • <span>1–5</span> abilities • <span>Click + drag mouse / trackpad</span> hub camera`;
       }
     }
     this.root.querySelectorAll('.arenaNumber').forEach((number,index)=>{number.textContent=touch?'TAP':String(index+1)});

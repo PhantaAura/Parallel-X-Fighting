@@ -1,12 +1,12 @@
-import {BUILD_VERSION} from './build-info.js?v=29a22p1-floating-lookout-20260730';
-import {sharedInput} from './input-runtime.js?v=29a22p1-floating-lookout-20260730';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a22p1-floating-lookout-20260730';
+import {BUILD_VERSION} from './build-info.js?v=29a24p2-camera-comfort-20260730';
+import {sharedInput} from './input-runtime.js?v=29a24-all-story-polish-20260730';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a24p1-strange-man-20260730';
 
-const MENU_MODULE_CACHE='29a22p1-floating-lookout-20260730';
+const MENU_MODULE_CACHE='29a24p1-strange-man-20260730';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([
-  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Follow Rrvvfo through training, the Tournament Road, RPG growth, a living tournament hub, and the full local bracket. New battle modes unlock naturally after Chapters 1, 2, 3, and 4.',players:'1',availability:'Rrvvfo • Chapters 1–4 of 6'},
+  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Follow Rrvvfo through training, the Tournament Road, RPG growth, a living tournament hub, and the full local bracket. New battle modes unlock naturally after Chapters 1, 2, 3, and 4.',players:'1',availability:'Rrvvfo • Chapters 1–4 of 8'},
   {id:'arena',label:'ARENA',kicker:'3D BATTLE',description:'Enter Tangai Dojo or the Global Tournament in continuous first-to-3-KO battles with adaptive AI, charging, parries, grabs, and projectile clashes.',players:'1',availability:'Tangai Dojo and Global Tournament'},
   {id:'cpu',label:'VS CPU',kicker:'SINGLE BATTLE',description:'Choose a fighter and choose Quick Battle or a full first-to-3 match against a fair 100-health rival.',players:'1',availability:'Available'},
   {id:'local',label:'2 PLAYER',kicker:'LOCAL VS',description:'Choose two finished fighters on the same device. Quick and full match formats use the same unified controls; separate assigned devices are recommended.',players:'2',availability:'Available'},

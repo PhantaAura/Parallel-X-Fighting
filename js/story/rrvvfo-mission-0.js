@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a22p1-floating-lookout-20260730';
-import {clampToStage} from '../arena/arena-stages.js?v=29a22p1-floating-lookout-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
-import {storyConfirm} from './story-ux.js?v=29a22p1-floating-lookout-20260730';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a22p1-floating-lookout-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24-all-story-polish-20260730';
+import {clampToStage} from '../arena/arena-stages.js?v=29a24-all-story-polish-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24-all-story-polish-20260730';
+import {storyConfirm} from './story-ux.js?v=29a24-all-story-polish-20260730';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a24-all-story-polish-20260730';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

@@ -1,5 +1,5 @@
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
-export const CHAPTER3_STATE_VERSION=1;
+export const CHAPTER3_STATE_VERSION=2;
 
 export const CHAPTER3_REQUIRED_STEPS=Object.freeze([
   'opening',
@@ -9,6 +9,10 @@ export const CHAPTER3_REQUIRED_STEPS=Object.freeze([
   'lockedNightShift',
   'crackedRing',
   'ploukeBag',
+  'strangeManWarningSeen',
+  'medicalWorkerRevisited',
+  'strangeManHatCollected',
+  'strangeManLead',
   'lensTrail',
   'sageExplanation',
   'facilityEntered',
@@ -40,7 +44,8 @@ export const CHAPTER3_EVIDENCE=Object.freeze([
   Object.freeze({id:'copiedRecords',label:'Copied Fighter Records'}),
   Object.freeze({id:'ringCollector',label:'Hidden Ring Collector'}),
   Object.freeze({id:'falseBadge',label:'False Maintenance Badge'}),
-  Object.freeze({id:'energyDetector',label:'Sage’s Energy Detector'})
+  Object.freeze({id:'energyDetector',label:'Sage’s Energy Detector'}),
+  Object.freeze({id:'medicalBadgeMismatch',label:'Repeated Medical Badge'})
 ]);
 
 export const CHAPTER3_BRACKET_ORDER=Object.freeze([
@@ -88,6 +93,12 @@ export function freshChapter3State(){
     bagLocations:[],
     lensTrailIndex:0,
     detector:false,
+    strangeManWarningSeen:false,
+    medicalWorkerRevisited:false,
+    strangeManHatCollected:false,
+    strangeManHatLensInspected:false,
+    strangeManLeadFound:false,
+    keyItems:[],
     optional:blankOptionalState(),
     optionalProgress:{
       speakers:[],
@@ -136,17 +147,55 @@ export function normalizeChapter3State(value={}){
       ...(value?.optional?.[quest.id]||{})
     };
   }
+  const requiredCompleted=uniqueKnown(value.requiredCompleted,CHAPTER3_REQUIRED_STEPS);
+  const afterStrangeManIndex=CHAPTER3_REQUIRED_STEPS.indexOf('lensTrail');
+  const passedInsertionPoint=requiredCompleted.some(id=>CHAPTER3_REQUIRED_STEPS.indexOf(id)>=afterStrangeManIndex);
+  let strangeManWarningSeen=Boolean(value.strangeManWarningSeen||requiredCompleted.includes('strangeManWarningSeen'));
+  let medicalWorkerRevisited=Boolean(value.medicalWorkerRevisited||requiredCompleted.includes('medicalWorkerRevisited'));
+  let strangeManHatCollected=Boolean(value.strangeManHatCollected||requiredCompleted.includes('strangeManHatCollected'));
+  let strangeManHatLensInspected=Boolean(value.strangeManHatLensInspected);
+  let strangeManLeadFound=Boolean(value.strangeManLeadFound||requiredCompleted.includes('strangeManLead'));
+  let keyItems=uniqueKnown(value.keyItems,['strange-mans-hat']);
+
+  // Migration safety: saves already beyond this insertion point cannot be sent
+  // backward into the tournament hub or they would lose their facility route.
+  if(passedInsertionPoint){
+    strangeManWarningSeen=true;
+    medicalWorkerRevisited=true;
+    strangeManHatCollected=true;
+    strangeManLeadFound=true;
+    keyItems=[...new Set([...keyItems,'strange-mans-hat'])];
+  }
+  if(strangeManHatLensInspected)strangeManHatCollected=true;
+  if(strangeManLeadFound)strangeManHatCollected=true;
+  if(strangeManHatCollected)medicalWorkerRevisited=true;
+  if(medicalWorkerRevisited)strangeManWarningSeen=true;
+  for(const [flag,step] of [
+    [strangeManWarningSeen,'strangeManWarningSeen'],
+    [medicalWorkerRevisited,'medicalWorkerRevisited'],
+    [strangeManHatCollected,'strangeManHatCollected'],
+    [strangeManLeadFound,'strangeManLead']
+  ])if(flag&&!requiredCompleted.includes(step))requiredCompleted.push(step);
+  requiredCompleted.sort((a,b)=>CHAPTER3_REQUIRED_STEPS.indexOf(a)-CHAPTER3_REQUIRED_STEPS.indexOf(b));
+  if(strangeManHatCollected&&!keyItems.includes('strange-mans-hat'))keyItems.push('strange-mans-hat');
+
   return{
     ...fallback,
     ...value,
     version:CHAPTER3_STATE_VERSION,
-    requiredCompleted:uniqueKnown(value.requiredCompleted,CHAPTER3_REQUIRED_STEPS),
+    requiredCompleted,
     evidence:uniqueKnown(value.evidence,CHAPTER3_EVIDENCE.map(entry=>entry.id)),
     medicalSort:uniqueKnown(value.medicalSort,['hamual-belt','daniel-wrap','glove']),
     mediaTerminals:uniqueKnown(value.mediaTerminals,['public','damaged-a','damaged-b','private','restored']),
     bracketSequence:Array.isArray(value.bracketSequence)?value.bracketSequence.filter(entry=>CHAPTER3_BRACKET_ORDER.includes(entry)):[],
     ringCollectors:uniqueKnown(value.ringCollectors,['north-support','west-support','clash-support']),
     bagLocations:uniqueKnown(value.bagLocations,['costume','lost-found','vendor','cart','impersonators']),
+    strangeManWarningSeen,
+    medicalWorkerRevisited,
+    strangeManHatCollected,
+    strangeManHatLensInspected,
+    strangeManLeadFound,
+    keyItems,
     optional,
     optionalProgress:{
       ...fallback.optionalProgress,

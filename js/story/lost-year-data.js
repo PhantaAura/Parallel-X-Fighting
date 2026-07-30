@@ -1,5 +1,6 @@
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
-export const STORY_CHAPTERS_PER_CHARACTER=6;
+export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
+export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;
 
 export const LOST_YEAR_ROUTES=Object.freeze([
   {
@@ -9,7 +10,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
     availability:'AVAILABLE',
     available:true,
     unlock:'Available from the start',
-    description:'Follow one continuous Rrvvfo chapter route through the Lost Year: Sage training, the Combat Manual, a playable living road, and the local tournament that follows.',
+    description:'Follow Rrvvfo through an eight-chapter Lost Year route. Four chapters are currently playable, with Chapters 5–8 reserved for the continuing story.',
     perspective:'Main combat route',
     color:'#e94b3c',
     missions:[
@@ -72,8 +73,8 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         playable:true,
         unlockAfter:'rrvvfo-02',
         status:'PLAYABLE FULL CHAPTER',
-        description:'After the Plouke reveal, Rrvvfo investigates the closing tournament, uncovers stolen fighter data, follows the Sage beneath the ring, and discovers Project Hollow.',
-        objectives:['Investigate the after-hours tournament','Complete three mandatory side stories','Follow the Lens trail beneath the arena','Defeat the Runaway Training Dummy and Unfinished Echo','Use Object Swap to reach the strange teleporter','Arrive near Shadow’s Lookout'],
+        description:'After the Plouke reveal, Rrvvfo investigates the closing tournament, follows the warning of a disappearing Strange Man, uncovers stolen fighter data, follows the Sage beneath the ring, and discovers Project Hollow.',
+        objectives:['Investigate the after-hours tournament','Complete three mandatory side stories','Investigate the Strange Man’s warning','Follow the Lens trail beneath the arena','Defeat the Runaway Training Dummy and Unfinished Echo','Use Object Swap to reach the strange teleporter','Arrive near Shadow’s Lookout'],
         stage:'After-Hours Tournament + Abandoned Resonance Facility + Remote Highlands',
         note:'The operator remains anonymous. Project Hollow is discovered but not explained.'
       },
@@ -85,7 +86,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         playable:true,
         unlockAfter:'rrvvfo-03',
         status:'PLAYABLE FULL CHAPTER + SECRET BOSS',
-        description:'Rrvvfo wakes in Echo Region, reunites with Bark and Wade, restores Echo Village, uncovers a wider Project Hollow network, and climbs toward Shadow’s Lookout.',
+        description:'Rrvvfo wakes in Echo Region, reunites with Bark and Wade, restores Echo Village, uncovers a wider Project Hollow network, and reaches Shadow’s floating lookout through Object Swap.',
         objectives:['Reach Echo Village','Restore the Echo Beacon','Recover the mountain-lift parts','Defend Echo Village','Optionally complete The Old Man’s Potions and seal Ryuzankaro','Defeat the Hollow Watcher','Enter Shadow’s Lookout'],
         stage:'Echo Region + Echo Village + Echo Caverns + Mountain Path + Shadow’s Lookout',
         note:'The Ryuzankaro quest unlocks only after the mandatory village defense. Vibration Sense is optional and never required for chapter completion.'
@@ -96,7 +97,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],keyItems:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},updatedAt:Date.now()};
 }
 
 export function loadLostYearProgress(storage=localStorage){
@@ -110,6 +111,7 @@ export function loadLostYearProgress(storage=localStorage){
       completedMissions:Array.isArray(parsed.completedMissions)?parsed.completedMissions:[],
       viewedBriefings:Array.isArray(parsed.viewedBriefings)?parsed.viewedBriefings:[],
       unlocks:Array.isArray(parsed.unlocks)?parsed.unlocks:[],
+      keyItems:Array.isArray(parsed.keyItems)?[...new Set(parsed.keyItems.filter(item=>typeof item==='string'))]:[],
       storyBonusStats:{...fallback.storyBonusStats,...(parsed.storyBonusStats||{})},
       routeStarted:Boolean(parsed.routeStarted||parsed.completedMissions?.length),
       lastCheckpoint:typeof parsed.lastCheckpoint==='string'?parsed.lastCheckpoint:'rrvvfo-00'
@@ -118,8 +120,14 @@ export function loadLostYearProgress(storage=localStorage){
 }
 
 export function saveLostYearProgress(progress,storage=localStorage){
+  const previous=loadLostYearProgress(storage);
   const next={...progress,version:1,updatedAt:Date.now()};
   try{storage.setItem(LOST_YEAR_SAVE_KEY,JSON.stringify(next))}catch{}
+  if(typeof document!=='undefined'){
+    const newlyCompleted=RRVVFO_CHAPTERS.find(chapter=>!rrvvfoChapterComplete(chapter,previous)&&rrvvfoChapterComplete(chapter,next));
+    if(newlyCompleted)queueMicrotask(()=>document.dispatchEvent(new CustomEvent('pxstorychaptercomplete',{detail:{chapter:newlyCompleted,progress:next}})));
+    if(previous.lastCheckpoint!==next.lastCheckpoint)queueMicrotask(()=>document.dispatchEvent(new CustomEvent('pxstorycheckpoint',{detail:{checkpoint:next.lastCheckpoint,progress:next}})));
+  }
   return next;
 }
 
@@ -130,14 +138,8 @@ export function missionUnlocked(mission,progress){
 
 export function routeProgress(route,progress){
   if(route?.id!=='rrvvfo')return 0;
-  const completed=new Set(progress?.completedMissions||[]);
-  const completedChapters=[
-    ['rrvvfo-00','rrvvfo-01','rrvvfo-road'],
-    ['rrvvfo-02'],
-    ['rrvvfo-03'],
-    ['rrvvfo-04']
-  ].filter(missions=>missions.every(id=>completed.has(id))).length;
-  return Math.round(completedChapters/STORY_CHAPTERS_PER_CHARACTER*100);
+  const completed=RRVVFO_CHAPTERS.reduce((count,chapter)=>count+(rrvvfoChapterComplete(chapter,progress)?1:0),0);
+  return Math.round(completed/RRVVFO_PLANNED_CHAPTER_COUNT*100);
 }
 
 export function routeVisible(route){

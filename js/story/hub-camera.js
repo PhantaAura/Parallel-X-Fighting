@@ -2,7 +2,6 @@ function lerp(a,b,t){return a+(b-a)*t}
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
 
 const HUB_CAMERA_LOOK=new WeakMap();
-const LOOK_RECENTER_DELAY=900;
 
 export function createHubCameraLookState(){
   return{
@@ -14,13 +13,55 @@ export function createHubCameraLookState(){
     lastPointerY:null,
     lastInputAt:0,
     enabled:false,
+    dragging:false,
+    pointerId:null,
     canvas:null,
-    pointerMove:null
+    pointerDown:null,
+    pointerMove:null,
+    pointerUp:null,
+    pointerCancel:null,
+    lostCapture:null
   };
 }
 
 function nowMs(){
   return typeof performance!=='undefined'&&typeof performance.now==='function'?performance.now():Date.now();
+}
+
+function cameraPreferences(){
+  const body=typeof document!=='undefined'?document.body:null;
+  const mode=body?.dataset?.hubCameraMode||'drag';
+  const sensitivity=clamp(Number(body?.dataset?.hubCameraSensitivity)||1,.4,1.6);
+  return{enabled:mode!=='off',sensitivity};
+}
+
+function pointerCanDrag(event){
+  const type=event?.pointerType;
+  return(!type||type==='mouse'||type==='pen')&&(event?.button===0||event?.button===undefined);
+}
+
+function stopPointerDrag(state){
+  if(!state)return;
+  const canvas=state.canvas,pointerId=state.pointerId;
+  if(canvas&&pointerId!==null){
+    try{if(canvas.hasPointerCapture?.(pointerId))canvas.releasePointerCapture(pointerId)}catch{}
+  }
+  state.dragging=false;
+  state.pointerId=null;
+  state.lastPointerX=null;
+  state.lastPointerY=null;
+  canvas?.classList?.remove('hubCameraDragging');
+}
+
+function detachPointerHandlers(state){
+  const canvas=state?.canvas;
+  if(!canvas)return;
+  if(state.pointerDown)canvas.removeEventListener('pointerdown',state.pointerDown);
+  if(state.pointerMove)canvas.removeEventListener('pointermove',state.pointerMove);
+  if(state.pointerUp)canvas.removeEventListener('pointerup',state.pointerUp);
+  if(state.pointerCancel)canvas.removeEventListener('pointercancel',state.pointerCancel);
+  if(state.lostCapture)canvas.removeEventListener('lostpointercapture',state.lostCapture);
+  stopPointerDrag(state);
 }
 
 function lookStateFor(battle){
@@ -32,10 +73,24 @@ function lookStateFor(battle){
   }
   const canvas=battle.root?.querySelector?.('canvas');
   if(canvas&&state.canvas!==canvas){
-    if(state.canvas&&state.pointerMove)state.canvas.removeEventListener('pointermove',state.pointerMove);
+    detachPointerHandlers(state);
     state.canvas=canvas;
+    state.pointerDown=event=>{
+      if(!state.enabled||!cameraPreferences().enabled||!pointerCanDrag(event))return;
+      // Camera drag can only begin on the game canvas. UI buttons, maps, dialogue,
+      // menus, and overlays receive the pointer first and therefore never rotate it.
+      if(event.target!==canvas||event.defaultPrevented)return;
+      state.dragging=true;
+      state.pointerId=event.pointerId;
+      state.lastPointerX=Number(event.clientX);
+      state.lastPointerY=Number(event.clientY);
+      state.lastInputAt=nowMs();
+      canvas.classList.add('hubCameraDragging');
+      try{canvas.setPointerCapture?.(event.pointerId)}catch{}
+      event.preventDefault();
+    };
     state.pointerMove=event=>{
-      if(!state.enabled||(event.pointerType&&event.pointerType!=='mouse'))return;
+      if(!state.enabled||!state.dragging||event.pointerId!==state.pointerId)return;
       let movementX=Number(event.movementX)||0,movementY=Number(event.movementY)||0;
       if(!movementX&&!movementY&&state.lastPointerX!==null){
         movementX=Number(event.clientX)-state.lastPointerX;
@@ -47,8 +102,16 @@ function lookStateFor(battle){
       state.pointerX+=clamp(movementX,-70,70);
       state.pointerY+=clamp(movementY,-70,70);
       if(Math.abs(movementX)>.01||Math.abs(movementY)>.01)state.lastInputAt=nowMs();
+      event.preventDefault();
     };
-    canvas.addEventListener('pointermove',state.pointerMove,{passive:true});
+    state.pointerUp=event=>{if(event.pointerId===state.pointerId)stopPointerDrag(state)};
+    state.pointerCancel=event=>{if(event.pointerId===state.pointerId)stopPointerDrag(state)};
+    state.lostCapture=()=>stopPointerDrag(state);
+    canvas.addEventListener('pointerdown',state.pointerDown,{passive:false});
+    canvas.addEventListener('pointermove',state.pointerMove,{passive:false});
+    canvas.addEventListener('pointerup',state.pointerUp,{passive:true});
+    canvas.addEventListener('pointercancel',state.pointerCancel,{passive:true});
+    canvas.addEventListener('lostpointercapture',state.lostCapture,{passive:true});
   }
   return state;
 }
@@ -72,18 +135,22 @@ export function applyHubCameraLook(state,{
   mouseX=0,
   mouseY=0,
   now=nowMs(),
-  frameFight=false
+  frameFight=false,
+  enabled=true,
+  sensitivity=1
 }={}){
   const controllerX=deadZoneAxis(rightX),controllerY=deadZoneAxis(rightY);
+  const safeSensitivity=clamp(Number(sensitivity)||1,.4,1.6);
   const moved=Math.abs(controllerX)>.001||Math.abs(controllerY)>.001||Math.abs(mouseX)>.001||Math.abs(mouseY)>.001;
-  if(!frameFight&&moved){
-    state.yawOffset=clamp(state.yawOffset+controllerX*2.05+mouseX*.18,-165,165);
-    state.pitchOffset=clamp(state.pitchOffset-controllerY*1.05-mouseY*.09,-18,24);
+  if(enabled&&!frameFight&&moved){
+    state.yawOffset=clamp(state.yawOffset+(controllerX*1.65+mouseX*.14)*safeSensitivity,-165,165);
+    state.pitchOffset=clamp(state.pitchOffset-(controllerY*.9+mouseY*.075)*safeSensitivity,-18,24);
     state.lastInputAt=now;
   }
-  const shouldRecenter=frameFight||now-state.lastInputAt>LOOK_RECENTER_DELAY;
-  if(shouldRecenter){
-    const amount=frameFight?.24:.045;
+  // Exploration look now stays where the player leaves it. It only recenters when
+  // free camera is disabled or combat takes control of the framing.
+  if(frameFight||!enabled){
+    const amount=frameFight?.24:.18;
     state.yawOffset=lerp(state.yawOffset,0,amount);
     state.pitchOffset=lerp(state.pitchOffset,0,amount);
     if(Math.abs(state.yawOffset)<.03)state.yawOffset=0;
@@ -93,22 +160,26 @@ export function applyHubCameraLook(state,{
 }
 
 function updateHubCameraLook(battle,frameFight){
-  const state=lookStateFor(battle);
-  state.enabled=!frameFight;
-  const pad=assignedGamepad(battle);
-  const mouseX=state.pointerX,mouseY=state.pointerY;
+  const state=lookStateFor(battle),preferences=cameraPreferences();
+  const enabled=!frameFight&&preferences.enabled;
+  state.enabled=enabled;
+  if(!enabled&&state.dragging)stopPointerDrag(state);
+  const pad=enabled?assignedGamepad(battle):null;
+  const mouseX=enabled?state.pointerX:0,mouseY=enabled?state.pointerY:0;
   state.pointerX=0;state.pointerY=0;
   applyHubCameraLook(state,{
     rightX:Number(pad?.axes?.[2])||0,
     rightY:Number(pad?.axes?.[3])||0,
-    mouseX,mouseY,frameFight
+    mouseX,mouseY,frameFight,enabled,sensitivity:preferences.sensitivity
   });
-  battle.root?.classList?.toggle('hubCameraLookEnabled',!frameFight);
+  battle.root?.classList?.toggle('hubCameraLookEnabled',enabled);
+  battle.root?.classList?.toggle('hubCameraLookDisabled',!enabled&&!frameFight);
   return state;
 }
 
 export function resetHubCameraLook(battle){
   const state=lookStateFor(battle);
+  stopPointerDrag(state);
   state.yawOffset=0;state.pitchOffset=0;state.pointerX=0;state.pointerY=0;state.lastInputAt=0;
 }
 

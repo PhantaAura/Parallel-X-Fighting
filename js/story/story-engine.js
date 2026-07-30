@@ -1,10 +1,10 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a22p1-floating-lookout-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a22p1-floating-lookout-20260730';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a22p1-floating-lookout-20260730';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a22p1-floating-lookout-20260730';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a24-all-story-polish-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a24-all-story-polish-20260730';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a24-all-story-polish-20260730';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a24-all-story-polish-20260730';
 
-export const STORY_ENGINE_VERSION='2.9A.22';
-export const STORY_ENGINE_CACHE='29a22p1-floating-lookout-20260730';
+export const STORY_ENGINE_VERSION='2.9A.24';
+export const STORY_ENGINE_CACHE='29a24-all-story-polish-20260730';
 
 const EMPTY_COMMAND=Object.freeze({x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,breaker:false,counter:false,interact:false,special:false});
 const STORY_MODES=Object.freeze(['dialogue','exploration','tutorial','combat','cinematic','complete','story']);
@@ -249,15 +249,24 @@ export class StoryEngineSession{
 
   setMode(mode){
     const normalized=normalizeMode(mode);
-    if(normalized===this.lastMode)return normalized;
     const root=this.battle.root;
+    const previous=this.lastMode;
+    const fightContext=normalized==='combat'||root.classList.contains('chapter2FightMode')||root.classList.contains('storyChapter3Combat')||root.classList.contains('storyChapter4Combat');
+    document.body.classList.toggle('storyFightUiSafe',fightContext);
+    if(fightContext){
+      document.querySelectorAll('.storyMapOverlay').forEach(overlay=>{overlay.hidden=true});
+      document.querySelectorAll('[data-c2-tracker],[data-c2-menu-panel],[data-c3-tracker],[data-c3-menu],[data-c4-tracker],[data-c4-menu]').forEach(panel=>{panel.hidden=true});
+    }
+    if(normalized===this.lastMode){this.applyUnifiedHud();return normalized}
     for(const entry of STORY_MODES)root.classList.remove(`storyEngineMode-${entry}`);
     root.classList.add(`storyEngineMode-${normalized}`);
     root.dataset.storyEngineMode=normalized;
     document.getElementById('touchInteract')?.classList.toggle('storyVisible',normalized==='exploration');
     this.lastMode=normalized;
     this.applyUnifiedHud();
-    root.dispatchEvent(new CustomEvent('storymodechange',{detail:{mode:normalized,chapter:this.chapterLabel}}));
+    const detail={from:previous,to:normalized,mode:normalized,chapter:this.chapterLabel,opponent:this.battle?.fighters?.[1]?.name||'OPPONENT'};
+    root.dispatchEvent(new CustomEvent('storymodechange',{detail,bubbles:true}));
+    document.dispatchEvent(new CustomEvent('pxstorymodechange',{detail}));
     return normalized;
   }
 
@@ -366,6 +375,7 @@ export class StoryEngineSession{
     if(root){
       root.classList.remove('storyEngineActive','storyUnifiedRuntime','storyHudExploration','storyHudCombat','storyHudCinematic','storyHideOpponentHud',...this.rootClasses);
       document.getElementById('touchInteract')?.classList.remove('storyVisible');
+      document.body.classList.remove('storyFightUiSafe');
       for(const mode of STORY_MODES)root.classList.remove(`storyEngineMode-${mode}`);
       for(const key of ['storyEngineMode','storyEngineVersion','storyInput','storyHudMode','storyRuntime','storyChapter','storyProfile'])delete root.dataset[key];
     }

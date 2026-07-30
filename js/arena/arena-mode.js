@@ -1,11 +1,11 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a22p1-floating-lookout-20260730';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a24-all-story-polish-20260730';
 import {drawArenaStage} from './arena-stage-renderer.js';
 import {WebGLArenaRenderer} from './webgl-renderer.js';
-import {ArenaControlManager} from './arena-controls.js?v=29a22p1-floating-lookout-20260730';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a22p1-floating-lookout-20260730';
-import {ROSTER} from '../roster.js?v=29a22p1-floating-lookout-20260730';
-import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a22p1-floating-lookout-20260730';
+import {ArenaControlManager} from './arena-controls.js?v=29a24-all-story-polish-20260730';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a24-all-story-polish-20260730';
+import {ROSTER} from '../roster.js?v=29a24-all-story-polish-20260730';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a24-all-story-polish-20260730';
 
 const ID='arenaModeScreen';
 const W=960;
@@ -328,6 +328,19 @@ class ArenaBattle{
   lensCosts(){const ratio=this.lensMastery/100;return{energy:Math.round(60-15*ratio),hp:Math.round(25-15*ratio),duration:4+ratio*1.5,autoDodges:this.lensMastery>=100?2:0}}
   predictedAction(foe){const exact=String(foe.attackState?.def?.kind||foe.aiQueuedAbility||foe.aiIntent||'approach').toLowerCase();if(this.lensMastery>=70)return exact.toUpperCase().replaceAll('_',' ');if(exact.includes('beam')||exact.includes('blast')||exact.includes('projectile'))return'RANGED PRESSURE';if(exact.includes('dash')||exact.includes('approach')||exact.includes('move'))return'MOVEMENT APPROACH';if(exact.includes('guard')||exact.includes('block'))return'DEFENSIVE ACTION';if(exact.includes('heavy')||exact.includes('launcher'))return'HEAVY PRESSURE';return'MELEE PRESSURE'}
   loadFighterAsset(id){return loadSprite(this.renderer,id)}
+  ensureFighterAsset(fighter,id=fighter?.id,{force=false}={}){
+    if(!fighter||!id)return Promise.resolve(null);
+    const expectedId=String(id);
+    if(!force&&fighter.asset&&fighter.assetId===expectedId)return Promise.resolve(fighter.asset);
+    const token=(Number(fighter.assetLoadToken)||0)+1;
+    fighter.assetLoadToken=token;
+    return this.loadFighterAsset(expectedId).then(asset=>{
+      if(!this.active||fighter.assetLoadToken!==token||fighter.id!==expectedId)return asset;
+      fighter.asset=asset;
+      fighter.assetId=asset?expectedId:null;
+      return asset;
+    });
+  }
   clearCombatObjects(){this.projectiles=[];this.agonyClones=[];this.thunderZones=[];this.quakes=[];this.earthWalls=[]}
   isNearRingEdge(fighter,margin=80){if(!this.ringOutEnabled||this.stage.id!=='tournament')return false;const b=this.stage.bounds;return fighter.x<b.minX+margin||fighter.x>b.maxX-margin||fighter.z<b.minZ+margin||fighter.z>b.maxZ-margin}
   isRingOut(fighter){return Boolean(this.ringOutEnabled&&this.stage.id==='tournament'&&fighter.ringOutComplete)}
@@ -364,7 +377,7 @@ class ArenaBattle{
 
   start(){
     if(this.active)return;this.root.querySelector('[data-arena-stage-select]').classList.add('hidden');this.active=true;this.root.querySelector('[data-stage-name]').textContent=this.stage.name.toUpperCase();this.canvas.setAttribute('aria-label',`${this.stage.name} WebGL perspective arena`);this.audio.enable();this.root.classList.remove('hidden','paused');['startScreen','mainMenuScreen','menuScreen','gameScreen'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));this.controls.start();this.root.classList.toggle('arenaTrainingMode',this.trainingMode);this.root.querySelector('[data-arena-training-panel]')?.classList.toggle('hidden',!this.trainingMode);this.restart();this.last=performance.now();this.raf=requestAnimationFrame(timestamp=>this.loop(timestamp));
-    Promise.all(this.fighters.map(fighter=>loadSprite(this.renderer,fighter.id))).then(assets=>{if(!this.active)return;this.fighters.forEach((fighter,index)=>{fighter.asset=assets[index]})});
+    this.fighters.forEach(fighter=>{void this.ensureFighterAsset(fighter,fighter.id)});
   }
 
   exit(){this.stopMatch();this.root.querySelector('[data-arena-stage-select]').classList.add('hidden');this.root.classList.add('hidden');document.getElementById('mainMenuScreen')?.classList.remove('hidden')}
@@ -733,9 +746,9 @@ class ArenaBattle{
     const guarded=target.block&&target.grounded&&blockFacesAttacker(target,attacker),perfect=guarded&&target.blockAge<=PERFECT_BLOCK_WINDOW,aim=aimVector(attacker,target);
     if(guarded){
       const category=abilityCategory(kind),categoryScale=category==='power'?1.18:category==='shot'?.9:1;
-      const spent=(perfect?guardDamage*.18:guardDamage)*categoryScale;target.guard=Math.max(0,target.guard-spent);target.guardDelay=1.25;target.stun=perfect?.04:.115;target.kvx=aim.x*knockback*(perfect?.08:.35);target.kvz=aim.z*knockback*(perfect?.08:.35);this.hitstop=Math.max(this.hitstop,(perfect?7:3)*STEP);this.cameraShake=Math.max(this.cameraShake,perfect?4:2);this.burst(target.x,target.z,perfect?'#fff4a3':'#9de7ff',perfect?18:9,58);this.audio.play(perfect?'perfect':'block');
+      const spent=(perfect?guardDamage*.18:guardDamage)*categoryScale;target.guard=Math.max(0,target.guard-spent);target.guardDelay=1.25;target.stun=perfect?.04:.115;target.kvx=aim.x*knockback*(perfect?.08:.35);target.kvz=aim.z*knockback*(perfect?.08:.35);this.hitstop=Math.max(this.hitstop,(perfect?7:3)*STEP);this.cameraShake=Math.max(this.cameraShake,perfect?4:2);this.burst(target.x,target.z,perfect?'#fff4a3':'#9de7ff',perfect?18:9,58);this.audio.play(perfect?'perfect':'block');if(perfect)document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'perfectParry',target:target.name,attacker:attacker.name}}));
       if(perfect){attacker.stun=Math.max(attacker.stun,.24);target.en=clamp(target.en+8,0,100);target.momentum=clamp(target.momentum+15,0,100);this.notice('PERFECT PARRY • MOMENTUM +15');this.root.classList.remove('perfectParryPulse');void this.root.offsetWidth;this.root.classList.add('perfectParryPulse');setTimeout(()=>this.root?.classList.remove('perfectParryPulse'),360);globalThis.document?.dispatchEvent?.(new CustomEvent('pxperfectparry',{detail:{side:target.side,fighterId:target.id,cpu:target.cpu,engine:'arena'}}))}
-      if(target.guard<=0){target.guard=28;target.guardBreak=.88;target.stun=.88;target.block=false;target.blockLockout=1;target.hp=Math.max(0,target.hp-2);this.hitstop=Math.max(this.hitstop,10*STEP);this.cameraShake=Math.max(this.cameraShake,10);this.burst(target.x,target.z,'#ffdc75',28,60);this.audio.play('guardBreak');this.notice('GUARD BREAK!')}
+      if(target.guard<=0){target.guard=28;target.guardBreak=.88;target.stun=.88;target.block=false;target.blockLockout=1;target.hp=Math.max(0,target.hp-2);this.hitstop=Math.max(this.hitstop,10*STEP);this.cameraShake=Math.max(this.cameraShake,10);this.burst(target.x,target.z,'#ffdc75',28,60);this.audio.play('guardBreak');document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'guardBreak',target:target.name,attacker:attacker.name}}));this.notice('GUARD BREAK!')}
       return true;
     }
 
@@ -772,7 +785,7 @@ class ArenaBattle{
     }
     target.en=clamp(target.en+2,0,100);target.momentum=clamp(target.momentum+Math.min(5,finalDamage*.22),0,100);
     if(target.lens>0)target.lensWasHit=true;
-    this.hitstop=Math.max(this.hitstop,hitstop*STEP);this.cameraShake=Math.max(this.cameraShake,kind==='heavy'||kind==='airHeavy'||kind==='pursuitHeavy'?9:kind==='launcher'?10:5);this.impactFlash(color,['heavy','launcher','pursuitHeavy'].includes(kind)?.18:.09);this.burst(target.x,target.z,color,['heavy','launcher','pursuitHeavy'].includes(kind)?24:17,58+target.y);this.audio.play(kind==='heavy'||kind==='airHeavy'||kind==='pursuitHeavy'?'heavy':kind==='launcher'?'launcher':'light');return true;
+    this.hitstop=Math.max(this.hitstop,hitstop*STEP);this.cameraShake=Math.max(this.cameraShake,kind==='heavy'||kind==='airHeavy'||kind==='pursuitHeavy'?9:kind==='launcher'?10:5);this.impactFlash(color,['heavy','launcher','pursuitHeavy'].includes(kind)?.18:.09);this.burst(target.x,target.z,color,['heavy','launcher','pursuitHeavy'].includes(kind)?24:17,58+target.y);this.audio.play(kind==='heavy'||kind==='airHeavy'||kind==='pursuitHeavy'?'heavy':kind==='launcher'?'launcher':'light');if(['heavy','airHeavy','pursuitHeavy','launcher'].includes(kind))document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'heavyImpact',target:target.name,attacker:attacker.name}}));return true;
   }
   impactFlash(color,opacity){const element=this.root.querySelector('[data-impact-flash]');element.style.background=color;element.style.opacity=String(opacity);this.flashTime=.07}
   notice(message,duration=1.15){const element=this.root.querySelector('[data-arena-notice]');element.textContent=message;element.classList.toggle('show',!!message);this.noticeTime=message?duration:0}
@@ -942,6 +955,7 @@ class ArenaBattle{
 
   hud(){
     const[player]=this.fighters;
+    this.root.classList.toggle('arenaLowHealth',this.phase==='play'&&player.hp/(player.maxHp||100)<=.25);
     for(const [index,fighter] of this.fighters.entries()){
       const healthPercent=clamp((fighter.hp/(fighter.maxHp||100))*100,0,100);
       this.root.querySelector(`[data-h${index+1}]`).style.width=`${healthPercent}%`;

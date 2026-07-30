@@ -1,0 +1,343 @@
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a24-all-story-polish-20260730';
+import {
+  LOST_YEAR_SAVE_KEY,
+  RRVVFO_CHAPTERS,
+  RRVVFO_PLANNED_CHAPTER_COUNT,
+  completedRrvvfoChapterCount,
+  loadLostYearProgress,
+  routeProgress,
+  LOST_YEAR_ROUTES,
+  saveLostYearProgress
+} from './lost-year-data.js?v=29a24-all-story-polish-20260730';
+
+const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
+const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
+const OBJECTIVE_PAIRS=Object.freeze([
+  ['[data-c4-objective]','[data-c4-detail]'],
+  ['[data-c3-objective]','[data-c3-detail]'],
+  ['[data-c2-objective]','[data-c2-detail]'],
+  ['[data-road-objective]','[data-road-detail]'],
+  ['[data-tutorial-objective]','[data-tutorial-detail]'],
+  ['[data-m0-objective]','[data-m0-detail]']
+]);
+const CHAPTER_START_STEP=Object.freeze({1:'rrvvfo-00',2:'rrvvfo-02',3:'rrvvfo-03',4:'rrvvfo-04'});
+const CHAPTER_MISSIONS=Object.freeze({
+  1:['rrvvfo-00','rrvvfo-01','rrvvfo-road'],
+  2:['rrvvfo-02'],
+  3:['rrvvfo-03'],
+  4:['rrvvfo-04']
+});
+
+let singleton=null;
+
+function visible(element){
+  if(!element||element.hidden)return false;
+  const style=getComputedStyle(element);
+  return style.display!=='none'&&style.visibility!=='hidden';
+}
+function safe(value){return value==null?'':String(value)}
+function unique(values){return[...new Set(values)]}
+function chapterNumberFromLabel(label=''){
+  const match=String(label).match(/CHAPTER\s*(\d+)/i);
+  return match?Number(match[1]):0;
+}
+function formatTime(ms=0){
+  const seconds=Math.max(0,Math.round(Number(ms)||0)/1000),minutes=Math.floor(seconds/60),remainder=Math.floor(seconds%60);
+  return`${String(minutes).padStart(2,'0')}:${String(remainder).padStart(2,'0')}`;
+}
+function countTruthy(value,depth=0){
+  if(depth>4||value==null)return 0;
+  if(typeof value==='boolean')return value?1:0;
+  if(Array.isArray(value))return value.length;
+  if(typeof value==='object')return Object.values(value).reduce((sum,item)=>sum+countTruthy(item,depth+1),0);
+  return 0;
+}
+function chapterOptionalScore(chapter,progress){
+  if(chapter===1)return Number(Boolean(progress.roadEncounterResult))+Number(Boolean(progress.unlocks?.includes('combatManual')));
+  if(chapter===2)return countTruthy(progress.chapter2State?.quests||progress.chapter2State?.optional||{});
+  if(chapter===3)return countTruthy(progress.chapter3State?.optionalCompleted||progress.chapter3State?.sideStories||{});
+  if(chapter===4)return Number(Boolean(progress.chapter4State?.ryuzankaro?.bossDefeated))*4+Number(Boolean(progress.unlocks?.includes('vibrationSense')));
+  return 0;
+}
+function chapterRank(chapter,progress){
+  const score=chapterOptionalScore(chapter,progress);
+  if(chapter===4&&progress.chapter4State?.ryuzankaro?.bossDefeated)return'S';
+  if(score>=4)return'S';
+  if(score>=2)return'A';
+  return'B';
+}
+function currentStoryRoot(){return document.querySelector('.storyEngineActive')}
+function currentChapterNumber(){
+  const root=currentStoryRoot();
+  return chapterNumberFromLabel(root?.dataset?.storyChapter||document.body.dataset.storyChapter||'');
+}
+function checkpointLabel(progress=loadLostYearProgress()){
+  return safe(progress.lastCheckpoint||'rrvvfo-00').replace(/^rrvvfo-\d+-?/,'').replace(/^rrvvfo-/,'').replaceAll('-',' ').trim().toUpperCase()||'CHAPTER START';
+}
+function setHidden(element,hidden){if(element)element.hidden=Boolean(hidden)}
+
+class StoryPolishController{
+  constructor(){
+    this.root=null;this.transition=null;this.objective=null;this.results=null;this.playtest=null;this.combatCallout=null;
+    this.objectiveTimer=0;this.transitionTimer=0;this.lastObjective='';this.codeBuffer=[];this.controllerFrame=0;this.controllerButtons=[];
+    this.observer=null;this.initialized=false;this.currentMode='';this.currentChapter=0;
+    this.onKey=this.onKey.bind(this);this.pollController=this.pollController.bind(this);this.scanObjectives=this.scanObjectives.bind(this);
+  }
+
+  build(){
+    if(this.root&&document.body.contains(this.root))return;
+    this.root=document.createElement('div');
+    this.root.id='storyPolishLayer';
+    this.root.innerHTML=`
+      <section class="storySceneTransition" data-story-transition hidden aria-live="polite">
+        <div><small data-story-transition-kicker>STORY BATTLE</small><h2 data-story-transition-title>FIGHT</h2><p data-story-transition-detail></p></div>
+      </section>
+      <div class="storyCombatCallout" data-story-combat-callout hidden aria-live="polite"></div>
+      <aside class="storyObjectiveToast" data-story-objective-toast hidden aria-live="polite">
+        <small data-story-objective-kicker>NEW OBJECTIVE</small><strong data-story-objective-title></strong><span data-story-objective-detail></span><i></i>
+      </aside>
+      <section class="storyChapterResults" data-story-results hidden role="dialog" aria-modal="true" aria-labelledby="storyResultsTitle">
+        <article><header><small>CHAPTER RESULTS</small><h2 id="storyResultsTitle" data-story-results-title></h2></header>
+          <div class="storyResultRank" data-story-result-rank>B</div>
+          <dl data-story-result-stats></dl>
+          <div class="storyResultRewards" data-story-result-rewards></div>
+          <div class="storyResultActions"><button type="button" class="primary" data-story-results-close>CONTINUE</button><button type="button" data-story-results-menu>CHAPTER SELECT</button></div>
+        </article>
+      </section>
+      <section class="storyPlaytestPanel" data-story-playtest hidden role="dialog" aria-modal="true" aria-labelledby="storyPlaytestTitle">
+        <article>
+          <header><div><small>SECRET PLAYTEST MENU</small><h2 id="storyPlaytestTitle">PARALLELS X DEBUG ROOM</h2></div><button type="button" data-playtest-close>×</button></header>
+          <p class="playtestCode">UNLOCKED WITH ↑ ↑ ↓ ↓ ← → ← → B A</p>
+          <div class="playtestSnapshot" data-playtest-snapshot></div>
+          <section><h3>RECOVERY</h3><div class="playtestButtons"><button type="button" data-playtest-action="checkpoint">RESTART FROM SAVED CHECKPOINT</button><button type="button" data-playtest-action="chapterSelect">OPEN CHAPTER SELECT</button><button type="button" data-playtest-action="resetChapter">RESET CURRENT CHAPTER</button></div></section>
+          <section><h3>JUMP TO RELEASED CHAPTER</h3><div class="playtestButtons">${[1,2,3,4].map(number=>`<button type="button" data-playtest-chapter="${number}">CHAPTER ${number}</button>`).join('')}</div></section>
+          <section><h3>QUICK COMBAT TEST</h3><div class="playtestButtons"><button type="button" data-playtest-fight="revvfo">RRVVFO VS REVVFO</button><button type="button" data-playtest-fight="wade">RRVVFO VS WADE</button><button type="button" data-playtest-fight="bark">RRVVFO VS BARK</button></div></section>
+          <section><h3>BUG REPORT</h3><div class="playtestButtons"><button type="button" class="primary" data-playtest-action="copyReport">COPY BUG REPORT</button><button type="button" data-playtest-action="downloadReport">DOWNLOAD REPORT</button><button type="button" data-playtest-action="refreshFlags">REFRESH FLAGS</button></div></section>
+          <pre data-playtest-flags></pre>
+        </article>
+      </section>`;
+    document.body.appendChild(this.root);
+    this.transition=this.root.querySelector('[data-story-transition]');
+    this.objective=this.root.querySelector('[data-story-objective-toast]');
+    this.combatCallout=this.root.querySelector('[data-story-combat-callout]');
+    this.results=this.root.querySelector('[data-story-results]');
+    this.playtest=this.root.querySelector('[data-story-playtest]');
+    this.root.querySelector('[data-story-results-close]').addEventListener('click',()=>this.closeResults());
+    this.root.querySelector('[data-story-results-menu]').addEventListener('click',()=>{this.closeResults();document.dispatchEvent(new CustomEvent('pxplaytestopenstory'))});
+    this.root.querySelector('[data-playtest-close]').addEventListener('click',()=>this.closePlaytest());
+    this.root.querySelectorAll('[data-playtest-action]').forEach(button=>button.addEventListener('click',()=>this.handlePlaytestAction(button.dataset.playtestAction)));
+    this.root.querySelectorAll('[data-playtest-chapter]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.playtestChapter))));
+    this.root.querySelectorAll('[data-playtest-fight]').forEach(button=>button.addEventListener('click',()=>this.startCombatTest(button.dataset.playtestFight)));
+  }
+
+  init(){
+    if(this.initialized)return this;this.initialized=true;this.build();
+    document.addEventListener('keydown',this.onKey,true);
+    document.addEventListener('pxstorymodechange',event=>this.onModeChange(event.detail||{}));
+    document.addEventListener('pxdialogueline',event=>this.onDialogueLine(event.detail||{}));
+    document.addEventListener('pxstorychaptercomplete',event=>this.onChapterComplete(event.detail||{}));
+    document.addEventListener('pxarenafeedback',event=>this.onCombatFeedback(event.detail||{}));
+    document.addEventListener('pxstorystepstart',event=>this.onStoryStepStart(event.detail||{}));
+    this.observer=new MutationObserver(()=>{clearTimeout(this.objectiveTimer);this.objectiveTimer=setTimeout(this.scanObjectives,80)});
+    this.observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['hidden','class']});
+    this.controllerFrame=requestAnimationFrame(this.pollController);
+    return this;
+  }
+
+  onStoryStepStart({chapter=0,stepId=''}){
+    this.currentChapter=Number(chapter)||chapterNumberFromLabel(stepId)||0;
+    const key=`pxStoryChapterStarted:${this.currentChapter||stepId}`;
+    try{if(!sessionStorage.getItem(key))sessionStorage.setItem(key,String(Date.now()))}catch{}
+    document.body.dataset.storyChapter=String(this.currentChapter||'');
+  }
+
+  onModeChange({from='',to='',chapter='',opponent=''}){
+    this.currentMode=to;this.currentChapter=chapterNumberFromLabel(chapter)||this.currentChapter;
+    document.body.dataset.storyMode=to||'';
+    if(this.currentChapter)document.body.dataset.storyChapter=String(this.currentChapter);
+    if(from===to)return;
+    if(to==='combat'||to==='tutorial'){
+      try{sessionStorage.setItem('pxStoryPreFightBackupV1',JSON.stringify(loadLostYearProgress()))}catch{}
+      this.showTransition({kicker:to==='tutorial'?'TRAINING ENGAGED':'STORY BATTLE',title:opponent?`VS ${safe(opponent).toUpperCase()}`:'FIGHT',detail:'Checkpoint secured • exploration UI hidden • combat controls active'});
+      document.body.classList.add('storyCombatFeedback');
+      setTimeout(()=>document.body.classList.remove('storyCombatFeedback'),720);
+    }else if(from==='combat'&&['exploration','story','cinematic','complete'].includes(to)){
+      this.showTransition({kicker:'BATTLE COMPLETE',title:'RETURNING TO STORY',detail:'Checkpoint secured • exploration controls restored'});
+    }
+  }
+
+  onDialogueLine({speaker='narrator',emotion='neutral'}={}){
+    document.body.dataset.dialogueSpeaker=safe(speaker);
+    document.body.dataset.dialogueEmotion=safe(emotion);
+    const root=currentStoryRoot();
+    if(root){root.dataset.dialogueSpeaker=safe(speaker);root.dataset.dialogueEmotion=safe(emotion)}
+  }
+
+  onCombatFeedback({type='hit'}={}){
+    if(!currentStoryRoot()||!this.combatCallout)return;
+    const labels={perfectParry:'PERFECT PARRY',guardBreak:'GUARD BREAK',heavyImpact:'HEAVY IMPACT',ringDanger:'RING-OUT DANGER'};
+    const label=labels[type];if(!label)return;
+    this.combatCallout.textContent=label;this.combatCallout.hidden=false;this.combatCallout.className=`storyCombatCallout show ${type}`;
+    clearTimeout(this.combatCalloutTimer);this.combatCalloutTimer=setTimeout(()=>{this.combatCallout.classList.remove('show');setTimeout(()=>setHidden(this.combatCallout,true),150)},560);
+    document.body.classList.remove(`storyFeedback-${type}`);void document.body.offsetWidth;document.body.classList.add(`storyFeedback-${type}`);
+    setTimeout(()=>document.body.classList.remove(`storyFeedback-${type}`),420);
+  }
+
+  showTransition({kicker='STORY',title='TRANSITION',detail=''}){
+    this.build();clearTimeout(this.transitionTimer);
+    this.transition.querySelector('[data-story-transition-kicker]').textContent=kicker;
+    this.transition.querySelector('[data-story-transition-title]').textContent=title;
+    this.transition.querySelector('[data-story-transition-detail]').textContent=detail;
+    this.transition.hidden=false;this.transition.classList.remove('show');void this.transition.offsetWidth;this.transition.classList.add('show');
+    this.transitionTimer=setTimeout(()=>{this.transition.classList.remove('show');setTimeout(()=>setHidden(this.transition,true),220)},760);
+  }
+
+  scanObjectives(){
+    if(document.body.classList.contains('storyFightUiSafe')||document.querySelector('.px-dialogue-overlay'))return;
+    let title='',detail='';
+    for(const [titleSelector,detailSelector] of OBJECTIVE_PAIRS){
+      const titleElement=[...document.querySelectorAll(titleSelector)].find(visible);
+      if(!titleElement)continue;
+      title=titleElement.textContent.trim();detail=document.querySelector(detailSelector)?.textContent?.trim()||'';break;
+    }
+    if(!title)return;
+    const key=`${title}|${detail}`;
+    if(key===this.lastObjective)return;
+    const previous=this.lastObjective;this.lastObjective=key;
+    this.showObjective(title,detail,previous?'OBJECTIVE UPDATED':'MAIN OBJECTIVE');
+  }
+
+  showObjective(title,detail,kicker='NEW OBJECTIVE'){
+    this.build();clearTimeout(this.objectiveTimer);
+    try{const progress=loadLostYearProgress();saveLostYearProgress({...progress,lastStoryObjective:{title,detail,kicker,updatedAt:Date.now()}})}catch{}
+    document.dispatchEvent(new CustomEvent('pxstoryuicue',{detail:{cue:'objective'}}));
+    this.objective.querySelector('[data-story-objective-kicker]').textContent=kicker;
+    this.objective.querySelector('[data-story-objective-title]').textContent=title;
+    this.objective.querySelector('[data-story-objective-detail]').textContent=detail;
+    this.objective.hidden=false;this.objective.classList.remove('show');void this.objective.offsetWidth;this.objective.classList.add('show');
+    this.objectiveTimer=setTimeout(()=>{this.objective.classList.remove('show');setTimeout(()=>setHidden(this.objective,true),220)},3200);
+  }
+
+  onChapterComplete({chapter,progress}={}){
+    const number=Number(chapter?.number)||0;if(!number)return;
+    setTimeout(()=>this.showResults(number,chapter,progress||loadLostYearProgress()),620);
+  }
+
+  showResults(number,chapter,progress){
+    this.build();
+    const key=`pxStoryChapterStarted:${number}`;let duration=0;
+    try{duration=Date.now()-Number(sessionStorage.getItem(key)||Date.now());sessionStorage.removeItem(key)}catch{}
+    const rank=chapterRank(number,progress),completed=completedRrvvfoChapterCount(progress),percent=routeProgress(LOST_YEAR_ROUTES[0],progress),optional=chapterOptionalScore(number,progress);
+    this.results.querySelector('[data-story-results-title]').textContent=`CHAPTER ${number} • ${safe(chapter?.title||'COMPLETE')}`;
+    this.results.querySelector('[data-story-result-rank]').textContent=rank;
+    this.results.querySelector('[data-story-result-rank]').dataset.rank=rank;
+    this.results.querySelector('[data-story-result-stats]').innerHTML=`
+      <div><dt>Completion time</dt><dd>${formatTime(duration)}</dd></div>
+      <div><dt>Story level</dt><dd>${Number(progress.storyLevel)||1}</dd></div>
+      <div><dt>Optional progress</dt><dd>${optional?`${optional} discoveries`:'Main route cleared'}</dd></div>
+      <div><dt>Total route</dt><dd>${completed}/${RRVVFO_PLANNED_CHAPTER_COUNT} • ${percent}%</dd></div>`;
+    const rewards=unique(progress.unlocks||[]).slice(-6);
+    this.results.querySelector('[data-story-result-rewards]').innerHTML=`<small>RECENT UNLOCKS</small><p>${rewards.length?rewards.map(value=>safe(value).replaceAll(/([A-Z])/g,' $1').toUpperCase()).join(' • '):'STORY CHECKPOINT SECURED'}</p>`;
+    this.results.hidden=false;this.results.classList.add('show');this.results.querySelector('[data-story-results-close]').focus();
+    document.dispatchEvent(new CustomEvent('pxstoryuicue',{detail:{cue:'chapterComplete'}}));
+  }
+  closeResults(){this.results?.classList.remove('show');setHidden(this.results,true)}
+
+  storyContextActive(){return Boolean((document.getElementById('lostYearStoryScreen')&&!document.getElementById('lostYearStoryScreen').hidden)||currentStoryRoot())}
+  onKey(event){
+    if(event.key==='Escape'&&!this.playtest?.hidden){event.preventDefault();this.closePlaytest();return}
+    const token=KEY_TO_CODE[event.code]||KEY_TO_CODE[event.key];if(!token||!this.storyContextActive())return;
+    this.acceptCodeToken(token);
+  }
+  acceptCodeToken(token){
+    const expected=CODE[this.codeBuffer.length];
+    if(token===expected)this.codeBuffer.push(token);else this.codeBuffer=token===CODE[0]?[token]:[];
+    if(this.codeBuffer.length===CODE.length){this.codeBuffer=[];this.openPlaytest()}
+  }
+  pollController(){
+    if(this.storyContextActive()){
+      const pad=navigator.getGamepads?.()?.find(Boolean);
+      if(pad){
+        const pressed=pad.buttons.map(button=>Boolean(button?.pressed));
+        const map=[[12,'up'],[13,'down'],[14,'left'],[15,'right'],[1,'b'],[0,'a']];
+        for(const [index,token] of map)if(pressed[index]&&!this.controllerButtons[index])this.acceptCodeToken(token);
+        this.controllerButtons=pressed;
+      }
+    }
+    this.controllerFrame=requestAnimationFrame(this.pollController);
+  }
+
+  snapshot(){
+    const progress=loadLostYearProgress(),root=currentStoryRoot(),chapter=currentChapterNumber()||this.currentChapter;
+    return{
+      build:BUILD_VERSION,saveSchema:SAVE_SCHEMA_VERSION,
+      chapter:chapter||'Story menu',mode:root?.dataset?.storyEngineMode||this.currentMode||'menu',checkpoint:progress.lastCheckpoint,
+      checkpointLabel:checkpointLabel(progress),storyLevel:progress.storyLevel,storyXp:progress.storyXp,
+      completedMissions:progress.completedMissions,unlocks:progress.unlocks,
+      chapter2State:progress.chapter2State,chapter3State:progress.chapter3State,chapter4State:progress.chapter4State,
+      url:location.href,userAgent:navigator.userAgent,viewport:`${innerWidth}×${innerHeight}`,time:new Date().toISOString()
+    };
+  }
+  refreshPlaytest(){
+    const data=this.snapshot();
+    this.playtest.querySelector('[data-playtest-snapshot]').innerHTML=`<strong>${safe(data.build)}</strong><span>Chapter: ${data.chapter} • Mode: ${safe(data.mode).toUpperCase()}</span><span>Checkpoint: ${safe(data.checkpointLabel)}</span><span>Level ${data.storyLevel} • ${data.storyXp} XP</span>`;
+    this.playtest.querySelector('[data-playtest-flags]').textContent=JSON.stringify(data,null,2);
+  }
+  openPlaytest(){this.build();this.refreshPlaytest();this.playtest.hidden=false;this.playtest.classList.add('show');this.playtest.querySelector('[data-playtest-close]').focus()}
+  closePlaytest(){this.playtest?.classList.remove('show');setHidden(this.playtest,true)}
+
+  async handlePlaytestAction(action){
+    if(action==='refreshFlags'){this.refreshPlaytest();return}
+    if(action==='chapterSelect'){
+      if(currentStoryRoot()){this.showObjective('EXIT THE ACTIVE CHAPTER FIRST','Use the chapter’s Story Menu exit before opening Chapter Select.','PLAYTEST TOOL');return}
+      this.closePlaytest();document.dispatchEvent(new CustomEvent('pxplaytestopenstory'));return
+    }
+    if(action==='checkpoint'){this.closePlaytest();location.reload();return}
+    if(action==='resetChapter'){
+      if(currentStoryRoot()){this.showObjective('EXIT THE ACTIVE CHAPTER FIRST','Reset is blocked during live gameplay so the current session cannot overwrite the reset save.','PLAYTEST TOOL');return}
+      this.resetCurrentChapter();return
+    }
+    if(action==='copyReport'){await this.copyReport();return}
+    if(action==='downloadReport'){this.downloadReport();return}
+  }
+  reportText(){return`PARALLELS X PLAYTEST REPORT\n${'='.repeat(34)}\n${JSON.stringify(this.snapshot(),null,2)}\n\nPLAYER NOTES:\n- What happened?\n- What did you expect?\n- Can you repeat it?\n`}
+  async copyReport(){
+    const text=this.reportText();
+    try{await navigator.clipboard.writeText(text);this.showObjective('BUG REPORT COPIED','Paste it into the chat with a screenshot or recording.','PLAYTEST TOOL')}catch{this.downloadReport()}
+  }
+  downloadReport(){
+    const blob=new Blob([this.reportText()],{type:'text/plain'}),url=URL.createObjectURL(blob),link=document.createElement('a');
+    link.href=url;link.download=`parallels-x-bug-report-${Date.now()}.txt`;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+
+  startChapter(number){
+    const stepId=CHAPTER_START_STEP[number];if(!stepId)return;
+    if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Use the chapter’s Story Menu exit, then enter the secret code again.','PLAYTEST TOOL');return}
+    this.closePlaytest();document.dispatchEvent(new CustomEvent('pxplayteststartchapter',{detail:{number,stepId}}));
+  }
+  async startCombatTest(opponent){
+    if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
+    this.closePlaytest();
+    try{
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a24-all-story-polish-20260730`);
+      startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'remote-highlands':'dojo',difficulty:'normal',koTarget:1});
+    }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
+  }
+  resetCurrentChapter(){
+    const number=currentChapterNumber()||this.currentChapter;
+    if(!number){this.showObjective('NO ACTIVE CHAPTER','Open a released chapter first.','PLAYTEST TOOL');return}
+    if(!confirm(`Reset Chapter ${number} and all later released chapters? This is a debug action.`))return;
+    const progress=loadLostYearProgress(),remove=new Set();
+    for(let chapter=number;chapter<=4;chapter++)for(const id of CHAPTER_MISSIONS[chapter]||[])remove.add(id);
+    const next={...progress,completedMissions:(progress.completedMissions||[]).filter(id=>!remove.has(id)),lastCheckpoint:CHAPTER_START_STEP[number]};
+    if(number<=2)next.chapter2State={};if(number<=3)next.chapter3State={};if(number<=4)next.chapter4State={};
+    saveLostYearProgress(next);this.refreshPlaytest();this.showObjective(`CHAPTER ${number} RESET`,'Use Jump to Chapter or return to Chapter Select.','PLAYTEST TOOL');
+  }
+}
+
+export function initializeStoryPolish(){
+  if(!singleton)singleton=new StoryPolishController();
+  return singleton.init();
+}
+
+export function storyPolishController(){return singleton||initializeStoryPolish()}

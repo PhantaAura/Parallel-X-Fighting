@@ -840,29 +840,28 @@ const REMOTE_HIGHLANDS={
 
 const ECHO_VILLAGE={
   schema:ARENA_STAGE_SCHEMA_VERSION,
-  id:'echo-village',name:'Echo Region',subtitle:'Ancient village beneath Shadow’s Lookout',available:true,
-  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.72},
+  id:'echo-village',name:'Echo Village',subtitle:'Ancient resonance settlement beneath Shadow’s Lookout',available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.68},
   bounds:{minX:-1600,maxX:1600,minZ:-920,maxZ:920},
   spawnPoints:[{x:-1320,z:80},{x:120,z:-40}],projectileLimits:{padding:240,minY:-70,maxY:980},ai:{wallMargin:140},
-  camera:{yawDeg:38,fov:44,clear:'#7897b1',fogColor:'#b7cad5',fogRange:[1100,3600],focusClampX:1500,focusClampZ:850,baseDistance:1120,separationScale:.17,minDistance:1030,maxDistance:1300,heightBase:490,heightDistanceScale:.16,horizontalDistanceScale:.82,targetHeight:48,jumpTargetScale:.17,focusSmoothing:.09,zoomSmoothing:.065},
+  camera:{yawDeg:38,fov:44,clear:'#b9aa8d',fogColor:'#d8ccb1',fogRange:[1050,3450],focusClampX:1500,focusClampZ:850,baseDistance:1120,separationScale:.17,minDistance:1030,maxDistance:1300,heightBase:490,heightDistanceScale:.16,horizontalDistanceScale:.82,targetHeight:48,jumpTargetScale:.17,focusSmoothing:.09,zoomSmoothing:.065},
   floor:{
-    base:{x:0,y:-42,z:0,sx:3440,sy:84,sz:2020,color:'#293c35'},
-    surface:{x:0,y:1,z:0,sx:3300,sy:5,sz:1880,color:'#607c63'},
-    grid:{stepX:330,stepZ:260,y:4,widthX:1,widthZ:1,height:.8,color:'#d9eadf',alphaX:.018,alphaZ:.015},
-    centerMark:{x:-1250,y:5,z:80,radius:120,segments:36,width:3,height:1.4,color:'#9dd7df',alpha:.26,crossRadius:145,crossWidth:2,crossAlpha:.12}
+    base:{x:0,y:-42,z:0,sx:3440,sy:84,sz:2020,color:'#433d31'},
+    surface:{x:0,y:1,z:0,sx:3300,sy:5,sz:1880,color:'#8a7c61'},
+    grid:{stepX:330,stepZ:260,y:4,widthX:1,widthZ:1,height:.8,color:'#f1ddae',alphaX:.012,alphaZ:.01},
+    centerMark:{x:-1250,y:5,z:80,radius:120,segments:36,width:3,height:1.4,color:'#d6b86c',alpha:.18,crossRadius:145,crossWidth:2,crossAlpha:.08}
   },
   scenery:{boxes:[
-    {x:0,y:-56,z:0,sx:3660,sy:36,sz:2240,color:'#203129'},
-    {x:-1260,y:22,z:80,sx:310,sy:34,sz:230,color:'#52645d'},
-    {x:-1260,y:78,z:80,sx:160,sy:110,sz:130,color:'#293c44',alpha:.86},
-    {x:-420,y:18,z:520,sx:500,sy:30,sz:340,color:'#7f806d'},
-    {x:220,y:14,z:120,sx:780,sy:22,sz:510,color:'#7f735f'},
-    {x:1010,y:34,z:460,sx:390,sy:68,sz:300,color:'#52645d'},
-    {x:1260,y:110,z:-440,sx:150,sy:220,sz:330,color:'#3f514a'},
-    {x:1320,y:260,z:-470,sx:90,sy:520,sz:90,color:'#2b3338'},
-    {x:1320,y:555,z:-470,sx:150,sy:70,sz:150,color:'#b5d8e9',alpha:.54},
-    ...Array.from({length:12},(_,i)=>({x:-760+i*130,y:44,z:720-(i%3)*45,sx:82,sy:88,sz:70,color:i%2?'#5b6760':'#6b6f63'})),
-    ...Array.from({length:10},(_,i)=>({x:-660+i*150,y:38,z:-690+(i%2)*80,sx:70,sy:76,sz:64,color:i%2?'#5b6760':'#6b6f63'}))
+    {x:0,y:-56,z:0,sx:3660,sy:36,sz:2240,color:'#342f27'},
+    {x:-1260,y:22,z:80,sx:310,sy:34,sz:230,color:'#746a55'},
+    {x:-1260,y:78,z:80,sx:160,sy:110,sz:130,color:'#5d5547',alpha:.9},
+    {x:-420,y:16,z:520,sx:540,sy:26,sz:360,color:'#9b8e70'},
+    {x:220,y:12,z:120,sx:840,sy:18,sz:540,color:'#8f8064'},
+    {x:1010,y:26,z:460,sx:420,sy:52,sz:330,color:'#746b5b'},
+    {x:1260,y:30,z:-430,sx:280,sy:60,sz:220,color:'#69513a'},
+    {x:1320,y:180,z:-520,sx:36,sy:360,sz:36,color:'#61472f'},
+    {x:1200,y:180,z:-520,sx:36,sy:360,sz:36,color:'#61472f'},
+    ...Array.from({length:16},(_,i)=>({x:-1200+i*160,y:52+(i%3)*10,z:i%2?760:-760,sx:84,sy:104,sz:72,color:i%2?'#66533d':'#78654a'}))
   ],lamps:[]}
 };
 

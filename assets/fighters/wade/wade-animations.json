@@ -1,7 +1,7 @@
 {
   "version": 2,
   "fighter": "wade",
-  "image": "./wade-atlas.png",
+  "image": "./wade-atlas.webp",
   "atlas": {
     "width": 1728,
     "height": 1920,

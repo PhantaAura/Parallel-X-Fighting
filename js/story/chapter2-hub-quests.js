@@ -1,4 +1,4 @@
-export const CHAPTER2_HUB_QUEST_VERSION='2.9A.17';
+export const CHAPTER2_HUB_QUEST_VERSION='2.9A.21';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([
   {id:'arrival',name:'WEST GATE',x:-1510,z:80,radius:300},
@@ -39,8 +39,8 @@ export const CHAPTER2_RING_SUPPORTS=Object.freeze([
 export const CHAPTER2_PLOUKE_CLUES=Object.freeze([
   {id:'stillness',requiredFor:'quarterfinal',source:'OLD COMPETITOR',text:'Plouke barely moves until the other fighter commits first.'},
   {id:'positioning',requiredFor:'bark-pouki',source:'TOURNAMENT WORKER',text:'Every fighter who faces Plouke ends up standing exactly where he wants.'},
-  {id:'timing',requiredFor:'wade',source:'BARK',text:'Plouke does not overpower people immediately. He waits until their strongest option becomes predictable.'},
-  {id:'edge',requiredFor:'final',source:'WADE',text:'Plouke watches the ring edge more than he watches the opponent. Do not chase him blindly.'}
+  {id:'timing',requiredFor:'wade',source:'BARK',text:'Plouke doesn’t overpower people immediately. He waits until their strongest option becomes predictable.'},
+  {id:'edge',requiredFor:'final',source:'WADE',text:'Plouke always looks at the edge. Maybe he’s in love with it.'}
 ]);
 
 export const CHAPTER2_OPTIONAL_QUESTS=Object.freeze({
@@ -55,7 +55,7 @@ export const CHAPTER2_OPTIONAL_QUESTS=Object.freeze({
 export function createChapter2QuestState(){
   return{
     mandatory:{
-      bracket:{started:false,cards:[],complete:false},
+      bracket:{started:false,cards:[],fanClue:false,complete:false},
       wadeRace:{started:false,complete:false,won:false,bestTime:null},
       barkRing:{started:false,supports:[],saboteurDefeated:false,complete:false},
       ploukeRumors:{clues:[],complete:false}
@@ -144,7 +144,7 @@ export function chapter2QuestSummary(state){
     mandatory:[
       {id:'bracket',title:'THE LOST BRACKET',done:Boolean(mandatory.bracket?.complete),detail:mandatory.bracket?.complete?'Bracket reconstructed':`${mandatory.bracket?.cards?.length||0} / 3 cards recovered`},
       {id:'wadeRace',title:'WADE\'S SHORTCUT',done:Boolean(mandatory.wadeRace?.complete),detail:mandatory.wadeRace?.complete?(mandatory.wadeRace.won?'Beat Wade\'s route':'Completed Wade\'s route'):'Tour the grounds with Wade'},
-      {id:'barkRing',title:'THE CRACKED RING',done:Boolean(mandatory.barkRing?.complete),detail:mandatory.barkRing?.complete?'Practice ring repaired':`${mandatory.barkRing?.supports?.length||0} / 3 supports inspected`},
+      {id:'barkRing',title:'THE CRACKED RING',done:Boolean(mandatory.barkRing?.complete),detail:mandatory.barkRing?.complete?'Practice ring stabilized; culprit unresolved':`${mandatory.barkRing?.supports?.length||0} / 3 supports inspected`},
       {id:'ploukeRumors',title:'RUMORS ABOUT PLOUKE',done:Boolean(mandatory.ploukeRumors?.complete),detail:`${mandatory.ploukeRumors?.clues?.length||0} / 4 reliable clues`}
     ],
     optional:Object.entries(CHAPTER2_OPTIONAL_QUESTS).map(([key,quest])=>({id:key,title:quest.title,started:Boolean(optional[key]?.started),done:Boolean(optional[key]?.complete),detail:quest.reward}))

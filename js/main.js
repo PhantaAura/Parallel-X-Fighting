@@ -1,12 +1,12 @@
 "use strict";
-import {FIGHTER_META,FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from './roster.js?v=29a17-chapter123-repair-icon-20260729';
+import {FIGHTER_META,FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from './roster.js?v=29a22p1-floating-lookout-20260730';
 import {STAGES,drawStage} from './stages.js';
-import {CUSTOM_CONTROLLER_ACTIONS} from './input.js?v=29a17-chapter123-repair-icon-20260729';
-import {sharedInput as input} from './input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
+import {CUSTOM_CONTROLLER_ACTIONS} from './input.js?v=29a22p1-floating-lookout-20260730';
+import {sharedInput as input} from './input-runtime.js?v=29a22p1-floating-lookout-20260730';
 import {decideCPU} from './ai.js';
 import {TimerRegistry,clamp,resetCombo} from './combat.js';
 import {EffectSystem} from './effects.js';
-import {Fighter} from './fighter.js?v=29a17-chapter123-repair-icon-20260729';
+import {Fighter} from './fighter.js?v=29a22p1-floating-lookout-20260730';
 import {moveList} from './movesets.js';
 import {trainingState,recordInput,clearTraining,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from './training.js';
 import {byId as $} from './ui.js';
@@ -15,32 +15,32 @@ import {applyCamera,createCameraState,updateCamera} from './camera-system.js';
 import {clearCinematic,createCinematicState,drawCinematicOverlay,updateCinematic} from './ultimate-system.js';
 import {AudioManager} from './audio-manager.js';
 import {HapticsManager,MobilePlatformController,loadTouchSettings,saveTouchSettings} from './mobile-platform.js';
-import {TouchControls} from './touch-controls.js?v=29a17-chapter123-repair-icon-20260729';
-import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js?v=29a17-chapter123-repair-icon-20260729';
-import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=29a17-chapter123-repair-icon-20260729';
+import {TouchControls} from './touch-controls.js?v=29a22p1-floating-lookout-20260730';
+import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js?v=29a22p1-floating-lookout-20260730';
+import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=29a22p1-floating-lookout-20260730';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
-import {ControllerManager} from './controller-manager.js?v=29a17-chapter123-repair-icon-20260729';
-import {BUILD_VERSION} from './build-info.js?v=29a17-chapter123-repair-icon-20260729';
+import {ControllerManager} from './controller-manager.js?v=29a22p1-floating-lookout-20260730';
+import {BUILD_VERSION} from './build-info.js?v=29a22p1-floating-lookout-20260730';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=29a17-chapter123-repair-icon-20260729';
+import {MainMenu} from './main-menu.js?v=29a22p1-floating-lookout-20260730';
 import {MatchStatistics} from './match-statistics.js';
-import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=29a17-chapter123-repair-icon-20260729';
+import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=29a22p1-floating-lookout-20260730';
 import {ResultsScreen} from './results-screen.js';
-import {loadQolSettings,saveQolSettings} from './qol-settings.js?v=29a17-chapter123-repair-icon-20260729';
+import {loadQolSettings,saveQolSettings} from './qol-settings.js?v=29a22p1-floating-lookout-20260730';
 import {NotificationSystem} from './notification-system.js';
 import {adaptiveMoveList,renderAdaptiveMoveList} from './move-list.js';
-import {SettingsPanel} from './settings-panel.js?v=29a17-chapter123-repair-icon-20260729';
-import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=29a17-chapter123-repair-icon-20260729';
+import {SettingsPanel} from './settings-panel.js?v=29a22p1-floating-lookout-20260730';
+import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=29a22p1-floating-lookout-20260730';
 import {LoadingManager} from './loading-manager.js';
 import {applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from './training-presets.js';
 import {FirstTimeHints} from './first-time-hints.js';
-import {cooldownText,fighterHudModel} from './hud-model.js?v=29a17-chapter123-repair-icon-20260729';
-import {AbilityHotbar} from './ability-hotbar.js?v=29a17-chapter123-repair-icon-20260729';
-import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a17-chapter123-repair-icon-20260729';
-import {ResponsiveGameLayout} from './responsive-game-layout.js?v=29a17-chapter123-repair-icon-20260729';
-import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=29a17-chapter123-repair-icon-20260729';
-import {FullscreenManager} from './fullscreen-manager.js?v=29a17-chapter123-repair-icon-20260729';
-import {loadLostYearProgress,storyModeComplete} from './story/lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
+import {cooldownText,fighterHudModel} from './hud-model.js?v=29a22p1-floating-lookout-20260730';
+import {AbilityHotbar} from './ability-hotbar.js?v=29a22p1-floating-lookout-20260730';
+import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a22p1-floating-lookout-20260730';
+import {ResponsiveGameLayout} from './responsive-game-layout.js?v=29a22p1-floating-lookout-20260730';
+import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=29a22p1-floating-lookout-20260730';
+import {FullscreenManager} from './fullscreen-manager.js?v=29a22p1-floating-lookout-20260730';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a22p1-floating-lookout-20260730';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;
 const U={start:$('startScreen'),main:$('mainMenuScreen'),menu:$('menuScreen'),game:$('gameScreen'),mode:$('mode'),diff:$('difficulty'),stage:$('stage'),rt:$('roundTime'),rounds:$('rounds'),cine:$('cinematics'),reduced:$('reducedShake'),spriteToggle:$('rrvvfoSprites'),spriteQuality:$('rrvvfoQuality'),spriteDebug:$('rrvvfoSpriteDebug'),prototypeExpose:$('showPrototypeAppearances'),prototypeBuildNote:$('prototypeAppearanceBuildNote'),spriteLoading:$('spriteLoading'),appearancePanels:[$('rrvvfoAppearancePanel1'),$('rrvvfoAppearancePanel2')],appearanceSelects:[$('rrvvfoAppearance1'),$('rrvvfoAppearance2')],appearancePreviews:[$('rrvvfoPreview1'),$('rrvvfoPreview2')],controller1:$('controllerStyle1'),controller2:$('controllerStyle2'),controllerCustom:$('customController'),customSide:$('customSide'),customBindings:$('customBindings'),controllerGuide:$('controllerGuide'),roster:$('roster'),slot1:$('slot1'),slot2:$('slot2'),n1:$('name1'),n2:$('name2'),m1:$('moves1'),m2:$('moves2'),s2l:$('slot2label'),notice:$('notice'),p1n:$('p1name'),p2n:$('p2name'),p1h:$('p1hp'),p2h:$('p2hp'),p1e:$('p1en'),p2e:$('p2en'),p1g:$('p1guard'),p2g:$('p2guard'),p1d:$('p1defense'),p2d:$('p2defense'),p1hpText:$('p1hpText'),p2hpText:$('p2hpText'),p1enText:$('p1enText'),p2enText:$('p2enText'),p1guardText:$('p1guardText'),p2guardText:$('p2guardText'),p1status:$('p1status'),p2status:$('p2status'),timer:$('timer'),rl:$('roundLabel'),msg:$('msg'),mt:$('msgTitle'),mx:$('msgText'),mb:$('msgButton'),pause:$('pause')};
@@ -88,8 +88,9 @@ const confirmation=new ConfirmationDialog($('confirmDialog'));
 const pauseMenu=new PauseMenu($('pauseMenu'),{onAction:handlePauseAction});
 const resultsScreen=new ResultsScreen($('resultsScreen'),{onAction:handleResultAction});
 const mainMenu=new MainMenu(U.main,{onSelect:handleMainMenuSelection});
-U.main.addEventListener('menumove',()=>sound('menuMove'));U.main.addEventListener('menuselect',event=>{sound('menuConfirm');if(event.detail?.id==='story')audio.startMusic('dojo');else if(event.detail?.id==='arena')audio.startMusic('tournament')});U.main.addEventListener('menuerror',event=>{sound('menuError');notifications?.push(event.detail?.id==='arcade'?'ARCADE MODE • COMING IN PROTOTYPE 3.x':'COMING LATER',{important:true,key:'coming-later'})});
+U.main.addEventListener('menumove',()=>sound('menuMove'));U.main.addEventListener('menuselect',event=>{sound('menuConfirm');if(event.detail?.id==='story')audio.startMusic('dojo');else if(event.detail?.id==='arena')audio.startMusic('tournament')});U.main.addEventListener('menuerror',event=>{sound('menuError');const detail=event.detail||{};const message=detail.id==='arcade'?'ARCADE MODE • COMING IN PROTOTYPE 3.x':(detail.availability||'COMPLETE MORE OF RRVVFO’S STORY TO UNLOCK');notifications?.push(message.toUpperCase(),{important:true,key:'coming-later'})});
 U.main.addEventListener('storyprogressrefresh',()=>{mainMenu.render();renderQuickContinue()});
+document.addEventListener('pxmusictheme',event=>{const theme=typeof event.detail==='string'?event.detail:event.detail?.theme;if(theme)audio.startMusic(theme)});
 const notifications=new NotificationSystem($('combatNotifications'),{mode:()=>qolSettings.gameplay.combatMessages});world.notifications=notifications;
 document.addEventListener('pxperfectparry',event=>{if(event.detail?.engine!=='2d')return;const wrap=$('gameWrap');wrap.classList.remove('perfectParryPulse');void wrap.offsetWidth;wrap.classList.add('perfectParryPulse');setTimeout(()=>wrap.classList.remove('perfectParryPulse'),360)});
 orientationManager=new OrientationManager({root:$('orientationPrompt'),settings:mobilePresentationSettings,onChange:saveMobilePresentationSettings,onLayout:metrics=>responsiveLayout.apply(metrics),onNotice:message=>notifications.push(message,{important:true,key:'orientation'}),onPrompt:()=>{if(state==='playing'){setPaused(true);pauseMenu.hide()}},onDismiss:()=>{if(state==='playing'&&wantsTouchControls()){fullscreenManager?.start({touch:true});if(!$('fullscreenPrompt').classList.contains('hidden')){setPaused(true);pauseMenu.hide()}else setPaused(false)}}});
@@ -152,7 +153,7 @@ function controlsModel(side){const device=input.lastInputDevice[side-1],style=in
 function openControlsPanel(){const sides=mode==='local'?[1,2]:[1],models=sides.map(controlsModel);$('controlsPanelBody').innerHTML=`<div class="controlsSummary">${models.map(model=>`<section><h3>PLAYER ${model.side} — ${model.style.toUpperCase()}</h3><dl>${model.rows.map(([name,value])=>`<div><dt>${name}</dt><dd>${value}</dd></div>`).join('')}</dl></section>`).join('')}</div><p class="moveListNote">Controller assignments: Player 1 — ${controllerManager.settings.assignments[0]===null?'Keyboard / Auto':`Controller ${controllerManager.settings.assignments[0]+1}`} • Player 2 — ${controllerManager.settings.assignments[1]===null?'Keyboard / Auto':`Controller ${controllerManager.settings.assignments[1]+1}`}</p>`;$('controlsPanel').classList.remove('hidden');$('closeControlsPanel').focus()}
 function closeControlsPanel(){$('controlsPanel').classList.add('hidden');if(paused)showPauseOverlay()}
 function openExtrasPanel(section='version'){$('extrasPanel').classList.remove('hidden');showExtra(section)}
-function showExtra(section){const content=$('extrasContent');if(section==='manual'){import('./story/combat-manual.js?v=29a17-chapter123-repair-icon-20260729').then(({openCombatManual})=>{openCombatManual({grantPublic:true,onClose:()=>{$('extrasPanel').classList.remove('hidden')}});$('extrasPanel').classList.add('hidden')});return}if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style} <small>• ${FIGHTER_STATUS[id]?.label||'PROTOTYPE'}</small></p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls'){openControlsPanel();return}else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Living Tournament Hub • Chapters 1–3 • Story RPG stats • Side quests • Tournament intermissions • Kinetic combat</p>`}
+function showExtra(section){const content=$('extrasContent');if(section==='manual'){import('./story/combat-manual.js?v=29a22p1-floating-lookout-20260730').then(({openCombatManual})=>{openCombatManual({grantPublic:true,onClose:()=>{$('extrasPanel').classList.remove('hidden')}});$('extrasPanel').classList.add('hidden')});return}if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style} <small>• ${FIGHTER_STATUS[id]?.label||'PROTOTYPE'}</small></p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls'){openControlsPanel();return}else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Living Tournament Hub • Chapters 1–4 • Story RPG stats • Side quests • Tournament intermissions • Kinetic combat</p>`}
 
 const STARTED_KEY='pxQolStartSeen';
 const LAST_ACTIVITY_KEY='pxQolLastActivity';
@@ -170,10 +171,10 @@ function showMainMenu(){
   if(state==='playing'||state==='over')cleanupMatchForNavigation();
   state='menu';paused=false;hideMenuLayers();U.main.classList.remove('hidden');resultsScreen.hide();pauseMenu.hide();confirmation.close();mainMenu.render();renderQuickContinue();audio.startMusic('menu');
 }
-function storyClearModesUnlocked(){return storyModeComplete(loadLostYearProgress())}
+function battleModeUnlocked(modeValue){return modeUnlockedForProgress(modeValue,loadLostYearProgress())}
 function openCharacterSelect(modeValue=U.mode.value){
-  if(['cpu','local'].includes(modeValue)&&!storyClearModesUnlocked()){
-    showMainMenu();mainMenu.select('story');notifications?.push('COMPLETE ALL 6 STORY CHAPTERS TO UNLOCK CLASSIC BATTLES',{important:true,key:'story-clear-lock'});return false;
+  if(['cpu','local'].includes(modeValue)&&!battleModeUnlocked(modeValue)){
+    showMainMenu();mainMenu.select(modeValue);notifications?.push(`${modeUnlockRequirement(modeValue)} TO UNLOCK ${modeValue==='cpu'?'VS CPU':'2 PLAYER'}`,{important:true,key:`story-lock-${modeValue}`});return false;
   }
   hideMenuLayers();U.menu.classList.remove('hidden');U.mode.value=modeValue;U.mode.dispatchEvent(new Event('change'));state='menu';refreshSelection();
   return true;
@@ -212,7 +213,7 @@ function saveLastActivity(){
 function renderQuickContinue(){
   let saved=null;try{saved=JSON.parse(localStorage.getItem(LAST_ACTIVITY_KEY)||'null')}catch{}
   const legacyStory=saved?.mode==='story';
-  const unlockedMode=legacyStory||saved?.mode==='training'||storyClearModesUnlocked();
+  const unlockedMode=legacyStory||saved?.mode==='training'||battleModeUnlocked(saved?.mode);
   const enabled=qolSettings.menu.showQuickContinue&&unlockedMode&&saved&&saved.mode&&(legacyStory||(saved.p1id&&saved.stage));$('quickContinue').classList.toggle('hidden',!enabled);if(!enabled)return;
   $('quickContinueTitle').textContent=legacyStory?'RETURN TO STORY':saved.mode==='training'?'RETURN TO TRAINING':`CONTINUE ${String(saved.mode).toUpperCase()}`;
   $('quickContinueDetails').textContent=legacyStory?'Open the current Rrvvfo chapter route.':`Last Fighter: ${ROSTER[saved.p1id]?.n||saved.p1id} • Last Stage: ${STAGES[saved.stage]?.n||saved.stage}`;
@@ -448,6 +449,25 @@ async function startGameInternal(){
     await audio.enable();
     loadingManager.task('audio','done');
     loadingManager.task('match','active',`Applying ${roundsToWin===1?'Quick Battle':'first-to-three'} rules, HUD state, and respawn settings…`);
+
+    if(['cpu','local'].includes(requestedMode)){
+      hideMenuLayers();
+      cleanupMatchForNavigation();
+      const {startConfiguredArenaBattle}=await import('./arena/arena-mode.js?v=29a22p1-floating-lookout-20260730');
+      saveLastActivity();
+      loadingManager.task('match','done');
+      loadingManager.finish('3D BATTLE READY');
+      const configured=startConfiguredArenaBattle({
+        mode:requestedMode,
+        fighters:[p1id,p2id],
+        appearances:[selectedAppearance(1),selectedAppearance(2)],
+        stageId:requestedStage,
+        difficulty:U.diff.value,
+        koTarget:requestedMode==='cpu'?Math.max(1,Number(U.rounds.value)||1):SONIC_KO_TARGET
+      });
+      if(!configured)throw new Error('The shared 3D battle engine could not start.');
+      return;
+    }
 
     hideMenuLayers();U.game.classList.remove('hidden');document.body.classList.add('gameplay-active');window.scrollTo(0,0);statistics.reset();saveLastActivity();
     const touchEnabled=wantsTouchControls();

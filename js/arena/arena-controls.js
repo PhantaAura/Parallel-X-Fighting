@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a17-chapter123-repair-icon-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
+import {CONTROL_MAPS} from '../input.js?v=29a22p1-floating-lookout-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a22p1-floating-lookout-20260730';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 
@@ -83,7 +83,7 @@ export class ArenaControlManager{
     this.input=sharedInput;
     this.settings=loadArenaControlSettings(storage);
     this.mouseBindings=new Map();
-    this.previousButtons=[];this.selectedAbility=0;this.active=false;
+    this.previousButtons=[[],[]];this.selectedAbility=[0,0];this.active=false;
     this.joystickPointer=null;this.joystickCenter={x:0,y:0};this.joystick={x:0,z:0};
     this.lastInput=this.input.lastInputDevice[0]||'keyboard';
 
@@ -102,7 +102,7 @@ export class ArenaControlManager{
     this.bindTouch();
     this.bindSettings();
     this.root.querySelectorAll('[data-arena-slot]').forEach((button,index)=>button.addEventListener('pointerdown',()=>{
-      this.selectedAbility=index;this.selectAbility(0);
+      this.selectedAbility[0]=index;this.selectAbility(0,1);
     }));
     this.applySettings();
     this.selectAbility(0);
@@ -139,14 +139,14 @@ export class ArenaControlManager{
     this.input.clear();
     for(const action of this.mouseBindings.values())this.input.setMouseAction(1,action,false);
     this.mouseBindings.clear();
-    this.previousButtons=[];
+    this.previousButtons=[[],[]];
     this.joystickPointer=null;this.joystick={x:0,z:0};
     this.setJoystickActions(0,0);
     this.moveKnob(0,0);
   }
 
   capturedCodes(){
-    return new Set([...Object.values(CONTROL_MAPS[0]),'Digit1','Digit2','Digit3','Digit4','Digit5','KeyP','Escape']);
+    return new Set([...Object.values(CONTROL_MAPS[0]),...Object.values(CONTROL_MAPS[1]),'Digit1','Digit2','Digit3','Digit4','Digit5','NumpadSubtract','NumpadMultiply','KeyP','Escape']);
   }
 
   keyDown(event){
@@ -162,7 +162,12 @@ export class ArenaControlManager{
     const slot=/^Digit([1-5])$/.exec(event.code);
     if(slot&&!event.repeat){
       event.preventDefault();event.stopImmediatePropagation();
-      this.selectedAbility=Number(slot[1])-1;this.selectAbility(0);this.onAbility(Number(slot[1]));
+      this.selectedAbility[0]=Number(slot[1])-1;this.selectAbility(0,1);this.onAbility(Number(slot[1]),1);
+      return;
+    }
+    if(!event.repeat&&(event.code==='NumpadSubtract'||event.code==='NumpadMultiply')){
+      event.preventDefault();event.stopImmediatePropagation();
+      this.selectAbility(event.code==='NumpadSubtract'?-1:1,2);
       return;
     }
     if(this.capturedCodes().has(event.code))event.preventDefault();
@@ -195,52 +200,55 @@ export class ArenaControlManager{
     this.mouseBindings.delete(event.button);
   }
 
-  read(){
-    this.input.poll();
-    let x=(this.input.actionIsDown(1,'r')?1:0)-(this.input.actionIsDown(1,'l')?1:0);
-    let z=(this.input.actionIsDown(1,'down')?1:0)-(this.input.actionIsDown(1,'up')?1:0);
+  poll(){this.input.poll()}
 
-    let jump=this.input.consumeAction(1,'j');
-    let light=this.input.consumeAction(1,'a');
-    let heavy=this.input.consumeAction(1,'h');
-    let launcher=this.input.consumeAction(1,'x');
-    let dash=this.input.consumeAction(1,'d');
-    let block=this.input.actionIsDown(1,'b');
-    let charge=this.input.actionIsDown(1,'k');
-    let grab=this.input.consumeAction(1,'s')||this.input.consumeAction(1,'t');
-    let breaker=this.input.consumeAction(1,'q');
-    let counter=this.input.consumeAction(1,'c');
-    let interact=this.input.consumeAction(1,'i');
+  read(side=1,{poll=true}={}){
+    if(poll)this.poll();
+    const index=side-1;
+    let x=(this.input.actionIsDown(side,'r')?1:0)-(this.input.actionIsDown(side,'l')?1:0);
+    let z=(this.input.actionIsDown(side,'down')?1:0)-(this.input.actionIsDown(side,'up')?1:0);
 
-    // Ability selection remains an Arena hotbar concern, while the activation
-    // button comes from the same controller profile used everywhere else.
-    const assignment=this.input.getControllerAssignment(1);
+    const jump=this.input.consumeAction(side,'j');
+    const light=this.input.consumeAction(side,'a');
+    const heavy=this.input.consumeAction(side,'h');
+    const launcher=this.input.consumeAction(side,'x');
+    const dash=this.input.consumeAction(side,'d');
+    const block=this.input.actionIsDown(side,'b');
+    const charge=this.input.actionIsDown(side,'k');
+    const grab=this.input.consumeAction(side,'s')||this.input.consumeAction(side,'t');
+    const breaker=this.input.consumeAction(side,'q');
+    const counter=this.input.consumeAction(side,'c');
+    const interact=this.input.consumeAction(side,'i');
+
+    const assignment=this.input.getControllerAssignment(side);
     const pads=navigator.getGamepads?.()||[];
-    const gamepad=pads[assignment===null?0:assignment];
-    const activateSelected=this.input.consumeAction(1,'u');
-    const directLens=this.input.consumeAction(1,'n');
+    const fallbackIndex=side===1?0:1;
+    const gamepad=pads[assignment===null?fallbackIndex:assignment];
+    const activateSelected=this.input.consumeAction(side,'u');
+    const directLens=this.input.consumeAction(side,'n');
     if(gamepad){
       const buttons=gamepad.buttons.map(value=>Boolean(value?.pressed));
-      if(buttons[14]&&!this.previousButtons[14])this.selectAbility(-1);
-      if(buttons[15]&&!this.previousButtons[15])this.selectAbility(1);
-      // D-pad left/right belongs to the ability selector. The left stick remains
-      // movement so choosing an ability never walks the fighter by accident.
+      const previous=this.previousButtons[index]||[];
+      if(buttons[14]&&!previous[14])this.selectAbility(-1,side);
+      if(buttons[15]&&!previous[15])this.selectAbility(1,side);
       if(buttons[14]||buttons[15])x=0;
-      this.previousButtons=buttons;
+      this.previousButtons[index]=buttons;
     }
-    if(activateSelected)this.onAbility(this.selectedAbility+1);
-    if(directLens)this.onAbility(4);
+    if(activateSelected)this.onAbility(this.selectedAbility[index]+1,side);
+    if(directLens)this.onAbility(4,side);
 
     this.lastInput=this.input.lastInputDevice[0]||this.lastInput;
     this.applyInputPresentation();
     return{x,z,jump,light,heavy,launcher,dash,block,charge,grab,breaker,counter,interact};
   }
 
-  selectAbility(direction){
-    this.selectedAbility=(this.selectedAbility+direction+5)%5;
-    this.root.querySelectorAll('[data-arena-slot]').forEach((button,index)=>{
-      button.classList.toggle('selected',index===this.selectedAbility);
-      button.setAttribute('aria-current',index===this.selectedAbility?'true':'false');
+  selectAbility(direction,side=1){
+    const index=side-1;
+    this.selectedAbility[index]=(this.selectedAbility[index]+direction+5)%5;
+    if(side!==1)return;
+    this.root.querySelectorAll('[data-arena-slot]').forEach((button,slotIndex)=>{
+      button.classList.toggle('selected',slotIndex===this.selectedAbility[0]);
+      button.setAttribute('aria-current',slotIndex===this.selectedAbility[0]?'true':'false');
     });
   }
 
@@ -357,10 +365,10 @@ export class ArenaControlManager{
     if(this.help){
       if(device==='controller'){
         const m=this.input.controllerMapping(1);
-        this.help.innerHTML=`<b>${m.name.toUpperCase()} • SHARED CONTROLS</b><br><span>Left Stick</span> move • <span>${m.labels.j}</span> jump • <span>${m.labels.a}</span> light • <span>${m.labels.h}</span> heavy • <span>Up + ${m.labels.h}</span> launcher • <span>${m.labels.d}</span> dash • <span>${m.labels.b}</span> block • <span>${m.labels.k}</span> charge • <span>${m.labels.s}</span> grab • <span>${m.labels.q}</span> breaker • <span>${m.labels.c}</span> counter • <span>D-Pad L/R</span> select ability • <span>${m.labels.u}</span> activate`;
+        this.help.innerHTML=`<b>${m.name.toUpperCase()} • SHARED CONTROLS</b><br><span>Left Stick</span> move • <span>${m.labels.j}</span> jump • <span>${m.labels.a}</span> light • <span>${m.labels.h}</span> heavy • <span>Up + ${m.labels.h}</span> launcher • <span>${m.labels.d}</span> dash • <span>${m.labels.b}</span> block • <span>${m.labels.k}</span> charge • <span>${m.labels.s}</span> grab • <span>${m.labels.q}</span> breaker • <span>${m.labels.c}</span> counter • <span>D-Pad L/R</span> select ability • <span>${m.labels.u}</span> activate • <span>Right Stick</span> hub camera`;
       }else{
         const mouseAttack=this.settings.mousePrimaryAttack==='heavy'?'heavy':'light';
-        this.help.innerHTML=`<b>${device==='mouse'?'MOUSE + KEYBOARD':'CHAPTER CONTROLS'}</b><br><span>WASD</span> move • <span>${labelForCode(a.jump)}</span> jump • <span>${labelForCode(a.dash)}</span> dash • <span>M1</span> ${mouseAttack} • <span>M2</span> block • <span>${labelForCode(a.light)}</span> light • <span>${labelForCode(a.heavy)}</span> heavy • <span>${labelForCode(a.launcher)}</span> launcher • <span>${labelForCode(a.charge)}</span> charge • <span>${labelForCode(a.grab)}</span> grab • <span>${labelForCode(a.breaker)}</span> breaker • <span>${labelForCode(a.counter)}</span> counter • <span>1–5</span> abilities`;
+        this.help.innerHTML=`<b>${device==='mouse'?'MOUSE + KEYBOARD':'CHAPTER CONTROLS'}</b><br><span>WASD</span> move • <span>${labelForCode(a.jump)}</span> jump • <span>${labelForCode(a.dash)}</span> dash • <span>M1</span> ${mouseAttack} • <span>M2</span> block • <span>${labelForCode(a.light)}</span> light • <span>${labelForCode(a.heavy)}</span> heavy • <span>${labelForCode(a.launcher)}</span> launcher • <span>${labelForCode(a.charge)}</span> charge • <span>${labelForCode(a.grab)}</span> grab • <span>${labelForCode(a.breaker)}</span> breaker • <span>${labelForCode(a.counter)}</span> counter • <span>1–5</span> abilities • <span>Mouse / trackpad</span> hub camera`;
       }
     }
     this.root.querySelectorAll('.arenaNumber').forEach((number,index)=>{number.textContent=touch?'TAP':String(index+1)});

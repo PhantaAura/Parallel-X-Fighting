@@ -1,12 +1,12 @@
-import {BUILD_VERSION} from './build-info.js?v=29a17-chapter123-repair-icon-20260729';
-import {sharedInput} from './input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
-import {loadLostYearProgress,storyModeComplete} from './story/lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
+import {BUILD_VERSION} from './build-info.js?v=29a22p1-floating-lookout-20260730';
+import {sharedInput} from './input-runtime.js?v=29a22p1-floating-lookout-20260730';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a22p1-floating-lookout-20260730';
 
-const MENU_MODULE_CACHE='29a17-chapter123-repair-icon-20260729';
-export const STORY_CLEAR_MODE_IDS=Object.freeze(['arena','cpu','local']);
+const MENU_MODULE_CACHE='29a22p1-floating-lookout-20260730';
+export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([
-  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Follow Rrvvfo through training, the Tournament Road, RPG growth, a living tournament hub, and the full local bracket. Complete all six Rrvvfo chapters to reveal Classic battles and Arena Mode.',players:'1',availability:'Rrvvfo • Chapters 1–3 of 6'},
+  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Follow Rrvvfo through training, the Tournament Road, RPG growth, a living tournament hub, and the full local bracket. New battle modes unlock naturally after Chapters 1, 2, 3, and 4.',players:'1',availability:'Rrvvfo • Chapters 1–4 of 6'},
   {id:'arena',label:'ARENA',kicker:'3D BATTLE',description:'Enter Tangai Dojo or the Global Tournament in continuous first-to-3-KO battles with adaptive AI, charging, parries, grabs, and projectile clashes.',players:'1',availability:'Tangai Dojo and Global Tournament'},
   {id:'cpu',label:'VS CPU',kicker:'SINGLE BATTLE',description:'Choose a fighter and choose Quick Battle or a full first-to-3 match against a fair 100-health rival.',players:'1',availability:'Available'},
   {id:'local',label:'2 PLAYER',kicker:'LOCAL VS',description:'Choose two finished fighters on the same device. Quick and full match formats use the same unified controls; separate assigned devices are recommended.',players:'2',availability:'Available'},
@@ -18,8 +18,11 @@ export const MAIN_MENU_MODES=Object.freeze([
 ]);
 
 export function mainMenuModesForProgress(storage=globalThis.localStorage){
-  const storyCleared=storyModeComplete(loadLostYearProgress(storage));
-  return MAIN_MENU_MODES.filter(mode=>storyCleared||!STORY_CLEAR_MODE_IDS.includes(mode.id));
+  const progress=loadLostYearProgress(storage);
+  return MAIN_MENU_MODES.map(mode=>{
+    const locked=PROGRESS_LOCKED_MODE_IDS.includes(mode.id)&&!modeUnlockedForProgress(mode.id,progress);
+    return locked?{...mode,locked:true,availability:`LOCKED • ${modeUnlockRequirement(mode.id)}`}:{...mode,locked:false};
+  });
 }
 
 function fighterSprite(id,extra=''){
@@ -62,8 +65,8 @@ function renderModeButtons(){
     if(!groupModes.length)return'';
     return`<div class="mainMenuGroupLabel" role="presentation"><span>${group.label}</span></div>${groupModes.map(mode=>{
     const index=modes.findIndex(candidate=>candidate.id===mode.id);
-    return `<button type="button" class="mainMode ${index===this.index?'selected':''}" data-main-menu-id="${mode.id}" aria-current="${index===this.index?'true':'false'}" ${mode.disabled?'aria-disabled="true" aria-describedby="arcade-coming-tooltip"':''}>
-      <span class="modeIndex">${index+1}</span><span class="modeWords"><span>${mode.label}</span>${mode.disabled?'<small>COMING LATER</small>':`<small>${mode.kicker}</small>`}</span>
+    return `<button type="button" class="mainMode ${index===this.index?'selected':''}" data-main-menu-id="${mode.id}" aria-current="${index===this.index?'true':'false'}" ${mode.disabled||mode.locked?'aria-disabled="true"':''}>
+      <span class="modeIndex">${index+1}</span><span class="modeWords"><span>${mode.label}</span>${mode.disabled?'<small>COMING LATER</small>':mode.locked?'<small>STORY LOCKED</small>':`<small>${mode.kicker}</small>`}</span>
     </button>`;
   }).join('')}`;
   }).join('');
@@ -137,8 +140,8 @@ export class MainMenu{
           <div><dt>Players</dt><dd>${mode.players}</dd></div>
           <div><dt>Status</dt><dd>${mode.availability}</dd></div>
         </dl>
-        ${mode.disabled?'<span id="arcade-coming-tooltip" class="comingTooltip" role="tooltip">ARCADE MODE IS COMING LATER</span>':''}
-        <span class="modeConfirm">${mode.disabled?'LOCKED — SELECT FOR DETAILS':mainMenuConfirmLabel()}</span>
+        ${mode.disabled?'<span id="arcade-coming-tooltip" class="comingTooltip" role="tooltip">ARCADE MODE IS COMING LATER</span>':mode.locked?`<span class="comingTooltip" role="status">${mode.availability}</span>`:''}
+        <span class="modeConfirm">${mode.disabled||mode.locked?'LOCKED — SELECT FOR DETAILS':mainMenuConfirmLabel()}</span>
       </div>`;
 
     const selected=this.list.querySelector(`[data-main-menu-id="${mode.id}"]`);
@@ -157,7 +160,7 @@ export class MainMenu{
     if(this.now()<this.lockedUntil)return false;
     this.lockedUntil=this.now()+220;
     const mode=this.modes[this.index];
-    if(mode.disabled){
+    if(mode.disabled||mode.locked){
       this.root.dispatchEvent(new CustomEvent('menuerror',{detail:mode}));
       return false;
     }

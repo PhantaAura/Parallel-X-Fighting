@@ -1,0 +1,624 @@
+# Chapter 4 Report — **Echo Region**
+
+## Chapter role
+
+Chapter 4 directly continues Chapter 3’s teleporter cliffhanger. Rrvvfo wakes up in the distant Echo Region after being unconscious for several days. He believes the Sage may still be trapped inside the underground facility, but the inactive teleporter prevents him from returning.
+
+The chapter introduces Echo Village, brings Bark and Wade back into the story, expands the Project Hollow mystery, and begins Rrvvfo’s journey toward Shadow’s Lookout.
+
+Its largest optional activity is the Ryuzankaro secret-boss quest. Regardless of whether the player completes that quest, Bark and Wade remain behind in Echo Village while Rrvvfo continues alone.
+
+---
+
+# Opening — Rrvvfo wakes in Echo Region
+
+Rrvvfo wakes near the damaged teleporter. He is disoriented and doesn’t yet know how much time has passed.
+
+**RRVVFO:**
+“Argh, damn it. I escaped, but what about that damn Sage? If he’d filled me in, he wouldn’t be trapped in there.”
+
+[Rrvvfo looks back at the inactive teleporter.]
+
+**RRVVFO:**
+“He’s probably handling himself.”
+
+The teleporter no longer responds. Rrvvfo can’t return to the underground facility or contact the Sage.
+
+From the surrounding cliffs, he sees a distant settlement and the structure belonging to the strange shadowy figure he previously heard about.
+
+## Opening gameplay
+
+Rrvvfo travels through the lower Echo Region alone.
+
+This section introduces the region’s environmental mechanics:
+
+* Powerful winds that affect movement.
+* Echoes that reveal hidden routes.
+* Vibration-sensitive mechanisms.
+* Damaged teleportation machinery.
+* Project Hollow grunts searching the region.
+
+Rrvvfo eventually reaches **Echo Village**.
+
+---
+
+# Echo Village
+
+Echo Village is built around ancient stone structures that react to sound, energy, and movement. The village sits beneath the mountain path leading toward Shadow’s Lookout.
+
+The villagers have recently noticed:
+
+* Armed grunts entering the region.
+* Strange machines being installed near old ruins.
+* Teleporter activity.
+* Missing supplies.
+* Damage to the mountain lift.
+* Unknown signals near Shadow’s Lookout.
+
+Important locations include the village square, potion building, teleporter ruins, market, recovery area, Echo Caverns, lift station, and mountain gate.
+
+Rrvvfo learns that the mountain route is currently closed. Before he can reach the lookout, the village’s damaged systems need to be restored.
+
+---
+
+# Bark and Wade arrive
+
+A second teleporter activates near the village. Bark and Wade emerge from it exhausted after fighting their way through enemies beneath the tournament grounds.
+
+**RRVVFO:**
+“Wade? Bark? You came to the village?”
+
+**WADE:**
+“We found a thingy that took us here.”
+
+**BARK:**
+“You and the Sage have been gone for days, so we went to check on you. The cameras showed you getting teleported somewhere.”
+
+[Rrvvfo’s eyes widen.]
+
+**RRVVFO:**
+“I’VE BEEN OUT FOR DAYS?!”
+
+**BARK:**
+“Yes. We’ve been fighting a lot of things trying to reach you, so we’re drained.”
+
+**BARK:**
+“We’ll probably stay at the village for now. You should rest here for a day too, then head toward that weird shadowy guy’s place. It’s nearby. Maybe he knows something.”
+
+Bark and Wade explain that the tournament cameras recorded Rrvvfo and the Sage disappearing. They searched beneath the arena, found another teleporter, and fought through multiple grunts to reach it.
+
+They don’t know exactly how the teleporter worked. Wade powered part of it with lightning, and Bark kept its damaged structure from collapsing.
+
+They temporarily join Rrvvfo in Echo Village.
+
+---
+
+# Main village storyline
+
+The village portion gives the three ninjas time together before Rrvvfo’s solo journey. The objectives should feel connected rather than like unrelated errands.
+
+## Restore the Echo Beacon
+
+The Echo Beacon normally detects unfamiliar movement throughout the region, but Project Hollow equipment is interfering with it.
+
+The team climbs the beacon structure.
+
+Rrvvfo destroys the devices blocking its signal. Bark repairs the weakened stone supports. Wade reconnects its energy supply.
+
+When the beacon activates, it detects several unknown signals:
+
+* One beneath Echo Village.
+* Several throughout the mountain.
+* One near Shadow’s Lookout.
+
+This confirms that the underground tournament facility was part of a larger network.
+
+## Recover the mountain-lift parts
+
+Project Hollow grunts stole several parts from the lift leading toward the mountain path.
+
+The ninjas follow them into Echo Caverns.
+
+The caverns contain:
+
+* Echo-based navigation puzzles.
+* Hidden grunt camps.
+* Damaged teleporter equipment.
+* Maps connecting Echo Region to the tournament facility.
+* Doors that require fire, earth, and lightning.
+
+The final group of grunts escapes before the ninjas can question them, but the stolen lift parts are recovered.
+
+## Defend Echo Village
+
+While the lift is being repaired, the grunts attack the village.
+
+This becomes the chapter’s mandatory team-combat sequence.
+
+Rrvvfo fights the strongest attackers. Bark protects the villagers and prevents buildings from collapsing. Wade disables enemy machinery and intercepts faster enemies.
+
+The grunt commander escapes toward the mountains and leaves behind another Project Hollow device.
+
+After the attack, Bark concludes that Echo Village may be an intended target rather than an accidental location.
+
+---
+
+# Optional secret quest — **The Old Man’s Potions**
+
+This quest becomes available after Bark and Wade arrive. It must be completed before Rrvvfo leaves Echo Village.
+
+An old man notices how exhausted the ninjas are and claims he can create recovery potions for them.
+
+**OLD MAN:**
+“You three look like you’ve fought your way across half the world.”
+
+**RRVVFO:**
+“They have. I’m fine.”
+
+**BARK:**
+“You were launched through a teleporter.”
+
+**RRVVFO:**
+“I landed.”
+
+The old man says the potion requires ingredients that can only be collected through the combined abilities of fire, earth, and lightning.
+
+## Ember Bloom
+
+Rrvvfo must use controlled heat to open a frozen flower without burning it.
+
+This tests precise fire control rather than raw damage.
+
+## Rootstone
+
+Bark must support an unstable cavern while the others retrieve a mineral buried beneath it.
+
+He creates platforms, holds falling structures in place, and blocks attacks.
+
+## Thunder Dew
+
+Wade must redirect lightning through several metal plants during a storm.
+
+The energy must reach the plants without striking Rrvvfo, Bark, or the surrounding ingredients.
+
+## Triad Seed
+
+The final ingredient is sealed inside an ancient three-element mechanism.
+
+Bark stabilizes the structure. Wade powers it. Rrvvfo ignites its center.
+
+This introduces the team combination that later becomes important during the boss fight.
+
+---
+
+# Ryuzankaro’s emergence
+
+The old man takes the ingredients to an abandoned potion building.
+
+He positions the ninjas around the mixture:
+
+* Bark creates a grounding circle.
+* Wade charges it with lightning.
+* Rrvvfo heats it with fire.
+
+**OLD MAN:**
+“Earth to hold it. Fire to wake it. Lightning to connect it.”
+
+**RRVVFO:**
+“Connect what?”
+
+The lightning creates a connection between the old man and Rrvvfo. Something separates from the old man’s body, revealing **Ryuzankaro** in a bodiless form.
+
+The old man’s potion was never intended to restore the ninjas. It was meant to strengthen Ryuzankaro’s connection to Rrvvfo.
+
+Ryuzankaro immediately attempts to claim Rrvvfo’s body.
+
+---
+
+# Secret boss — Ryuzankaro
+
+## Opening confrontation
+
+Ryuzankaro continuously tries to absorb himself into Rrvvfo.
+
+Bark blocks several attacks with weakened stone barriers, but Ryuzankaro pushes through them and knocks Bark away.
+
+Wade attacks with lightning but is intercepted and knocked aside.
+
+**RYUZANKARO:**
+“Training makes me stronger in this bodiless form, but I prefer actually having a body.”
+
+Ryuzankaro forces Rrvvfo out of the potion building and launches him toward space.
+
+---
+
+# Planet-impact QTE
+
+Ryuzankaro sends Rrvvfo falling back toward Earth at extreme speed.
+
+Rrvvfo realizes that a direct impact could devastate the area beneath him.
+
+The player must charge energy into Rrvvfo’s feet, forming small energy orbs that absorb and redirect the impact.
+
+The QTE involves:
+
+* Alternating between both feet.
+* Charging each orb.
+* Releasing the charge at the correct moment.
+* Maintaining balance while Ryuzankaro attacks.
+* Reducing the force before reaching the planet.
+
+Successful inputs prevent a catastrophic landing and let Rrvvfo redirect himself into another aerial clash.
+
+---
+
+# Aerial battle
+
+Rrvvfo fights Ryuzankaro above the planet.
+
+He uses:
+
+* Object Swap.
+* Lens predictions.
+* Midair movement.
+* Energy barriers.
+* The charged foot orbs.
+* Unpredictable attack patterns.
+
+Ryuzankaro attacks relentlessly, but Rrvvfo begins avoiding more attacks than expected.
+
+Ryuzankaro smirks.
+
+**RYUZANKARO:**
+“I know why you’re winning. You have my eye.”
+
+**RRVVFO:**
+“The Lens of Truth is your thing? No wonder I feel like I’m gonna vomit every time I use it.”
+
+Ryuzankaro reveals that the Lens of Truth originally came from him. Rrvvfo and Ryuzankaro have carried each other’s eyes since Rrvvfo’s early years.
+
+Ryuzankaro uses their connection to reverse the swap temporarily.
+
+Because Rrvvfo’s body adapted to Ryuzankaro’s eye, his original eye produces severely blurred vision. Ryuzankaro then disrupts Rrvvfo’s sight completely.
+
+The scene should be shown through flashes, distortion, darkness, and sound rather than a detailed close-up.
+
+---
+
+# New mechanic — Vibration Sense
+
+Rrvvfo can no longer rely on normal vision.
+
+The screen darkens, and attacks are shown through vibration points.
+
+The new mechanic communicates direction through different signals:
+
+* Ground-level pulses show direct attacks.
+* Markers above Rrvvfo indicate aerial attacks.
+* Wide rings warn about area attacks.
+* Rapid vibration clusters signal a barrage.
+* Delayed pulses warn about a possession attempt.
+* Directional audio helps identify left, right, above, and below.
+
+Rrvvfo begins adapting to the mechanic and dodges Ryuzankaro’s attacks through sensing alone.
+
+---
+
+# Rrvvfo is pushed toward Earth again
+
+Ryuzankaro realizes that Rrvvfo is learning how to fight without sight.
+
+He attacks Rrvvfo and sends him falling toward Earth again.
+
+Because Rrvvfo is no longer standing on solid ground, the vibrations become harder to read. He must use weaker pressure changes and brief energy signals to predict Ryuzankaro’s attacks.
+
+During the fall, Rrvvfo senses an Object Swap mark near Bark and Wade.
+
+## Object Swap return sequence
+
+The player must:
+
+1. Avoid Ryuzankaro’s aerial barrage.
+2. Search for the distant Object Swap signal.
+3. Lock onto the marked object without normal sight.
+4. Activate Object Swap before reaching the lower atmosphere.
+
+Rrvvfo swaps with the marked object and instantly returns to the potion building near Bark and Wade.
+
+The object appears in the sky in his place and is destroyed by Ryuzankaro’s next attack.
+
+Ryuzankaro follows Rrvvfo back to Echo Village.
+
+---
+
+# Fighting through Vibration Sense
+
+Back on solid ground, Rrvvfo can read vibrations more clearly.
+
+Ryuzankaro’s movements now create visible pulses across the floor and surrounding walls.
+
+Bark attacks Ryuzankaro but can’t overpower him.
+
+Wade approaches Ryuzankaro and laughs.
+
+**WADE:**
+“Hahaha. Scary man.”
+
+Ryuzankaro becomes irritated and turns his attention toward Wade.
+
+Bark cuts a piece of rock from the ground and throws it directly in front of Wade.
+
+**BARK:**
+“RRVVFO! OBJECT SWAP, NOW! I HAVE A PLAN!”
+
+Rrvvfo senses the stone landing and swaps places with it.
+
+---
+
+# Bark’s sealing plan
+
+Bark creates a rock barrier containing Rrvvfo and Ryuzankaro.
+
+He tells Wade to electrify the stone. Wade sends lightning through the barrier while Bark throws the remaining potions inside.
+
+The stone, lightning, and potion recreate the connection Ryuzankaro used earlier.
+
+**BARK:**
+“That link Ryuzankaro put on you was supposed to keep you still and stunned.”
+
+Bark reverses the connection.
+
+**BARK:**
+“You noticed it at the last second. Now I’m using it to put your eyes back the way they were before this fight.”
+
+The Lens returns to Rrvvfo. His sight begins recovering, although it remains blurry.
+
+Rrvvfo is exhausted, so Wade transfers some of his remaining energy to him.
+
+**BARK:**
+“Rrvvfo, use the sealing technique now!”
+
+Rrvvfo combines:
+
+* Lens of Truth.
+* Vibration Sense.
+* Object Swap.
+* The sealing technique.
+
+Bark compresses the stone barrier while Wade maintains the electrical connection. Rrvvfo locates Ryuzankaro, forces him into the center of the formation, and seals him inside the rock.
+
+The ninjas win because of teamwork, the reversed potion connection, and Ryuzankaro’s weakened bodiless state—not because they overpower him normally.
+
+---
+
+# Secret-quest rewards
+
+Completing the Ryuzankaro fight grants:
+
+* Several character levels.
+* Lens of Truth Mastery Level 1.
+* Permanent Vibration Sense.
+* Improved Object Swap range or targeting.
+* A team-based reward or badge.
+* Ryuzankaro’s codex entry.
+* A secret-boss completion record.
+
+## Lens mastery improvement
+
+The fight gives Rrvvfo more understanding of:
+
+* Where the Lens came from.
+* How to activate it more deliberately.
+* How prediction feels before it begins.
+* How to reduce some of its energy strain.
+* How to use it together with Object Swap.
+
+The Lens still causes strain and nausea. The fight doesn’t remove all of its disadvantages.
+
+## Vibration Sense after the quest
+
+Outside the boss fight, Vibration Sense can briefly reveal:
+
+* Enemies in smoke or darkness.
+* Attacks coming from outside the camera.
+* Invisible or hidden movement.
+* Environmental vibrations.
+* Secret paths in Echo Region.
+
+It remains useful but doesn’t replace the Lens.
+
+---
+
+# Bark and Wade after the optional quest
+
+If the player completes the Ryuzankaro quest, Bark and Wade are completely exhausted.
+
+They remain seated in the village recovery area for the rest of the chapter. They can still be spoken to, but they no longer participate in combat.
+
+When Rrvvfo prepares to leave:
+
+**BARK:**
+“We can’t climb that mountain right now.”
+
+**WADE:**
+“I could.”
+
+[Wade attempts to stand and immediately sits back down.]
+
+**BARK:**
+“This place might still be a target. We should stay and protect it.”
+
+Rrvvfo continues alone.
+
+---
+
+# Bark and Wade if the quest is skipped
+
+If the player ignores the old man’s quest, Bark and Wade remain with Rrvvfo throughout the main Echo Village missions.
+
+They participate in:
+
+* The beacon mission.
+* The Echo Caverns.
+* The lift recovery.
+* The defense of the village.
+
+However, they still remain behind when Rrvvfo reaches the mountain gate.
+
+**BARK:**
+“The grunts were searching this village for a reason.”
+
+**WADE:**
+“They might come back.”
+
+**BARK:**
+“This place might be a target. We should stay here.”
+
+They return to the village and protect it while Rrvvfo travels toward Shadow’s Lookout.
+
+This keeps the main story consistent in both versions:
+
+* Completing the quest leaves them too exhausted to continue.
+* Skipping the quest leaves them capable of fighting, but they choose to defend the village.
+* Either way, Rrvvfo enters the mountain section alone.
+
+---
+
+# The mountain journey
+
+The final section of Chapter 4 becomes quieter and more isolated.
+
+Rrvvfo leaves Echo Village and enters the path toward Shadow’s Lookout.
+
+The environment includes:
+
+* Stronger wind currents.
+* Ancient stone bridges.
+* Old training structures.
+* Echo-based puzzles.
+* Project Hollow machines.
+* Hidden paths.
+* Increasingly dangerous enemies.
+* Strange signals coming from the lookout.
+
+If Vibration Sense was unlocked, some hidden areas can be detected more easily.
+
+Players without Vibration Sense use ordinary visual and audio clues instead, so the optional quest is never required to finish the chapter.
+
+---
+
+# Proposed main boss — Hollow Watcher
+
+Near the top of the mountain, Rrvvfo encounters a machine that has been following and recording him.
+
+The Hollow Watcher has collected information about:
+
+* His fire techniques.
+* His movement.
+* Object Swap.
+* His repeated attack patterns.
+* His energy habits.
+* The Lens, if the Ryuzankaro quest was completed.
+
+The machine uses incomplete mechanical imitations of Rrvvfo’s abilities.
+
+Rrvvfo defeats it by changing his patterns and combining his powers in ways the machine hasn’t recorded.
+
+After the fight, its screen displays:
+
+> **PROJECT HOLLOW — COMBAT DATA TRANSMITTED**
+
+The machine shuts down before Rrvvfo can learn who received the information.
+
+---
+
+# Chapter ending — Shadow’s Lookout
+
+Rrvvfo reaches Shadow’s Lookout.
+
+The doors are already open.
+
+Shadow is waiting inside.
+
+**RRVVFO:**
+“You knew I was coming?”
+
+**SHADOW:**
+“Yes.”
+
+**RRVVFO:**
+“And you didn’t help?”
+
+**SHADOW:**
+“You reached the door.”
+
+Rrvvfo shows him the Project Hollow symbol.
+
+Shadow’s attitude changes immediately.
+
+## If the Ryuzankaro quest was completed
+
+Shadow notices the change in Rrvvfo’s eye and energy.
+
+**SHADOW:**
+“What happened to you?”
+
+**RRVVFO:**
+“An old man turned into a monster, took my sight, kicked me toward the planet, and tried taking my body.”
+
+**SHADOW:**
+“Ryuzankaro.”
+
+**RRVVFO:**
+“You know him?”
+
+Shadow looks between Rrvvfo and the Project Hollow symbol.
+
+**SHADOW:**
+“Come inside. There’s more happening than you realize.”
+
+## If the quest was skipped
+
+Shadow only reacts to the Project Hollow symbol.
+
+**SHADOW:**
+“Where did you find that?”
+
+**RRVVFO:**
+“Under a tournament ring, inside a teleporter facility, and all over this mountain.”
+
+**SHADOW:**
+“Come inside. You shouldn’t have found any of it.”
+
+The doors close behind Rrvvfo.
+
+> **CHAPTER 4 COMPLETE**
+
+---
+
+# Chapter progression summary
+
+1. Rrvvfo wakes in Echo Region after being unconscious for days.
+2. He worries about the Sage but assumes he can handle himself.
+3. Rrvvfo reaches Echo Village.
+4. Bark and Wade arrive through another teleporter.
+5. They explain how long Rrvvfo has been missing.
+6. The ninjas investigate Project Hollow activity around the village.
+7. They repair the beacon and retrieve lift parts.
+8. They defend Echo Village from grunts.
+9. The optional old-man potion quest becomes available.
+10. Completing it unlocks the Ryuzankaro secret boss.
+11. Rrvvfo gains Vibration Sense and greater Lens mastery.
+12. Bark and Wade remain in Echo Village.
+13. Rrvvfo travels alone through the mountain.
+14. He defeats the Hollow Watcher.
+15. Project Hollow receives his combat data.
+16. Rrvvfo reaches Shadow’s Lookout.
+17. Shadow recognizes the mystery.
+18. Chapter 4 ends with Rrvvfo entering the lookout.
+
+## Chapter purpose
+
+Chapter 4 expands the story without resolving the main mystery too early. It provides a full hub, team gameplay, an optional major boss, permanent character growth, and a natural transition into Shadow’s storyline.
+
+It also moves Rrvvfo from being someone following the Sage’s instructions into someone actively investigating a threat on his own.

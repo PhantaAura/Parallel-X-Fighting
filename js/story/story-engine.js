@@ -1,10 +1,10 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a17-chapter123-repair-icon-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a17-chapter123-repair-icon-20260729';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a17-chapter123-repair-icon-20260729';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a22p1-floating-lookout-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a22p1-floating-lookout-20260730';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a22p1-floating-lookout-20260730';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a22p1-floating-lookout-20260730';
 
-export const STORY_ENGINE_VERSION='2.9A.17';
-export const STORY_ENGINE_CACHE='29a17-chapter123-repair-icon-20260729';
+export const STORY_ENGINE_VERSION='2.9A.22';
+export const STORY_ENGINE_CACHE='29a22p1-floating-lookout-20260730';
 
 const EMPTY_COMMAND=Object.freeze({x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,breaker:false,counter:false,interact:false,special:false});
 const STORY_MODES=Object.freeze(['dialogue','exploration','tutorial','combat','cinematic','complete','story']);

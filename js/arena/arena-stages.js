@@ -74,6 +74,56 @@ function tournamentCrowd(){
   return boxes;
 }
 
+function tournamentPlazaDecor(){
+  const boxes=[];
+  const bannerColors=['#c63832','#287a87','#e0a52f','#643f88'];
+  const addBanner=(x,z,index=0)=>{
+    const color=bannerColors[index%bannerColors.length];
+    boxes.push({x,y:74,z,sx:12,sy:148,sz:12,color:'#523a28'});
+    boxes.push({x,y:128,z,sx:14,sy:62,sz:82,color,alpha:.95,lit:false});
+    boxes.push({x,y:160,z,sx:20,sy:10,sz:96,color:'#e7c25a',lit:false});
+  };
+  [
+    [-1320,-185,0],[-1320,330,1],[-900,-185,2],[-900,330,3],
+    [-470,-185,1],[-470,330,0],[-40,-185,3],[-40,330,2],
+    [390,-185,0],[390,330,1],[820,-185,2],[820,330,3]
+  ].forEach(args=>addBanner(...args));
+
+  const addFestivalPalm=(x,z,scale=1,index=0)=>{
+    boxes.push({x,y:64*scale,z,sx:24*scale,sy:128*scale,sz:24*scale,color:'#7a5434'});
+    boxes.push({x,y:150*scale,z,sx:122*scale,sy:54*scale,sz:80*scale,color:index%2?'#37845b':'#2f7651'});
+    boxes.push({x,y:173*scale,z,sx:74*scale,sy:44*scale,sz:130*scale,color:index%2?'#2f7651':'#3b8e60'});
+  };
+  [
+    [-1630,-700,.88,0],[-1620,800,.92,1],[-1040,-840,.82,1],
+    [-610,890,.8,0],[40,900,.86,1],[760,850,.82,0],[1030,-820,.86,1]
+  ].forEach(args=>addFestivalPalm(...args));
+  return boxes;
+}
+
+function nightTournamentBoxes(source=[]){
+  const colors={
+    '#4a5f54':'#182d2b','#d6c59d':'#4b584f','#e6d6ae':'#536158',
+    '#d9c79e':'#48564e','#eadbb5':'#5a675f','#f3e5c0':'#657169',
+    '#f0dfb8':'#5b675f','#f5e6c1':'#68736b','#efe0bb':'#616d65',
+    '#f4e5c0':'#65716a','#f7e9c7':'#6a756d','#efe1bd':'#606d65',
+    '#f1e4c4':'#66726b','#f7ebcf':'#6d7771','#f3e7ca':'#66716b',
+    '#f5e8ca':'#68736c','#efe3c4':'#616d67','#efe4bd':'#5f6b64',
+    '#d9c8a2':'#4b5851','#d8ca9e':'#48564f','#c63832':'#6d3231',
+    '#287a87':'#28545c','#e0a52f':'#7d6533','#643f88':'#433553',
+    '#a54432':'#5b322e','#7e2f27':'#4a2827','#2b6f78':'#294b51',
+    '#e7c25a':'#8a7845','#37845b':'#315b48','#2f7651':'#2c5142',
+    '#3b8e60':'#335f4a','#7a5434':'#493b2d','#fff3c2':'#9ba9a0'
+  };
+  return source
+    .filter(box=>!(box.sx===14&&box.sy===62&&box.sz===82)&&!(box.sx===20&&box.sy===10&&box.sz===96))
+    .map(box=>({
+      ...box,
+      color:colors[box.color]||box.color,
+      alpha:box.alpha===undefined?1:Math.min(box.alpha,.84)
+    }));
+}
+
 const TANGAI_DOJO={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'dojo',
@@ -323,8 +373,8 @@ const TRAINING_ROAD={
   camera:{
     yawDeg:38,
     fov:45,
-    clear:'#82c8ef',
-    fogColor:'#b9dceb',
+    clear:'#70add1',
+    fogColor:'#b9d6cd',
     fogRange:[1000,2900],
     focusClampX:1380,
     focusClampZ:820,
@@ -341,8 +391,8 @@ const TRAINING_ROAD={
     zoomSmoothing:.06
   },
   floor:{
-    base:{x:0,y:-28,z:0,sx:3100,sy:56,sz:1980,color:'#3f6338'},
-    surface:{x:0,y:1,z:0,sx:2980,sy:5,sz:1860,color:'#6fa455'},
+    base:{x:0,y:-28,z:0,sx:3100,sy:56,sz:1980,color:'#355a35'},
+    surface:{x:0,y:1,z:0,sx:2980,sy:5,sz:1860,color:'#57834a'},
     grid:{stepX:240,stepZ:210,y:4,widthX:1.1,widthZ:1.1,height:.8,color:'#d5edba',alphaX:.045,alphaZ:.04},
     centerMark:{x:-1050,y:5,z:70,radius:150,segments:42,width:3,height:1.4,color:'#e9f3bc',alpha:.36,crossRadius:178,crossWidth:2,crossAlpha:.18}
   },
@@ -350,6 +400,37 @@ const TRAINING_ROAD={
     boxes:[
       {x:0,y:-41,z:0,sx:3280,sy:28,sz:2140,color:'#345630'},
       ...trainingRoadScenery(),
+      // Sage's sanctuary makes Chapter 1 read as a training region instead of a town.
+      {x:-1160,y:10,z:70,sx:610,sy:15,sz:410,color:'#b89b6c'},
+      {x:-1160,y:17,z:70,sx:430,sy:8,sz:265,color:'#d8c28d'},
+      {x:-1160,y:25,z:70,sx:315,sy:5,sz:190,color:'#efe0a8'},
+      {x:-1380,y:72,z:70,sx:24,sy:144,sz:24,color:'#5e4430'},
+      {x:-940,y:72,z:70,sx:24,sy:144,sz:24,color:'#5e4430'},
+      {x:-1160,y:142,z:-110,sx:530,sy:18,sz:30,color:'#d8ae4d'},
+      {x:-1160,y:168,z:-110,sx:440,sy:22,sz:44,color:'#b53d38'},
+      {x:-1160,y:194,z:-110,sx:330,sy:18,sz:62,color:'#334c63'},
+      // Three stone focus pillars and the hanging Sage bell.
+      {x:-1320,y:66,z:230,sx:46,sy:132,sz:46,color:'#75766f'},
+      {x:-1160,y:86,z:260,sx:52,sy:172,sz:52,color:'#85857b'},
+      {x:-1000,y:66,z:230,sx:46,sy:132,sz:46,color:'#75766f'},
+      {x:-1290,y:95,z:-62,sx:18,sy:190,sz:18,color:'#513726'},
+      {x:-1030,y:95,z:-62,sx:18,sy:190,sz:18,color:'#513726'},
+      {x:-1160,y:181,z:-62,sx:278,sy:18,sz:20,color:'#68472d'},
+      {x:-1160,y:138,z:-62,sx:68,sy:72,sz:28,color:'#d4a94b',lit:false},
+      // A broad timber bridge separates the sanctuary from the tournament road.
+      {x:75,y:17,z:0,sx:270,sy:25,sz:245,color:'#765137'},
+      {x:75,y:33,z:-102,sx:290,sy:10,sz:14,color:'#d5aa55'},
+      {x:75,y:33,z:102,sx:290,sy:10,sz:14,color:'#d5aa55'},
+      {x:-30,y:49,z:-102,sx:12,sy:44,sz:12,color:'#60432f'},
+      {x:180,y:49,z:-102,sx:12,sy:44,sz:12,color:'#60432f'},
+      {x:-30,y:49,z:102,sx:12,sy:44,sz:12,color:'#60432f'},
+      {x:180,y:49,z:102,sx:12,sy:44,sz:12,color:'#60432f'},
+      // Blue wind-ribbon markers identify training routes and ability stations.
+      ...[-820,-560,-300,310,850].flatMap((x,index)=>[
+        {x,y:76,z:-245,sx:11,sy:152,sz:11,color:'#4c392c'},
+        {x,y:124,z:-245,sx:12,sy:64,sz:86,color:index%2?'#b43e3b':'#327ba0',alpha:.88,lit:false},
+        {x,y:158,z:-245,sx:18,sy:9,sz:100,color:'#d8b858',lit:false}
+      ]),
       {x:-1160,y:92,z:-265,sx:410,sy:180,sz:250,color:'#3a2637'},
       {x:-1160,y:192,z:-265,sx:475,sy:28,sz:300,color:'#a32938'},
       {x:-1160,y:226,z:-265,sx:540,sy:20,sz:345,color:'#2a1b2a'},
@@ -489,55 +570,74 @@ const LOCAL_TOURNAMENT_HUB={
   projectileLimits:{padding:280,minY:-40,maxY:760},
   ai:{wallMargin:135},
   camera:{
-    yawDeg:37,fov:45,clear:'#8cccf1',fogColor:'#c5dfec',fogRange:[1100,3400],
+    yawDeg:34,fov:45,clear:'#79c3ec',fogColor:'#dcecf0',fogRange:[1100,3400],
     focusClampX:1710,focusClampZ:1030,baseDistance:1040,separationScale:.15,
     minDistance:1000,maxDistance:1240,heightBase:455,heightDistanceScale:.15,
     horizontalDistanceScale:.8,targetHeight:44,jumpTargetScale:.16,
     focusSmoothing:.08,zoomSmoothing:.06
   },
   floor:{
-    base:{x:0,y:-30,z:0,sx:3820,sy:60,sz:2440,color:'#415f39'},
-    surface:{x:0,y:1,z:0,sx:3700,sy:5,sz:2320,color:'#75a95b'},
-    grid:{stepX:280,stepZ:240,y:4,widthX:1,widthZ:1,height:.8,color:'#e2f1c9',alphaX:.035,alphaZ:.03},
-    centerMark:{x:-310,y:5,z:40,radius:180,segments:44,width:4,height:1.5,color:'#f4d25b',alpha:.48,crossRadius:215,crossWidth:2,crossAlpha:.22}
+    base:{x:0,y:-30,z:0,sx:3820,sy:60,sz:2440,color:'#756248'},
+    surface:{x:0,y:1,z:0,sx:3700,sy:5,sz:2320,color:'#cbb98f'},
+    grid:{stepX:120,stepZ:120,y:4,widthX:1.4,widthZ:1.4,height:.8,color:'#8c7156',alphaX:.08,alphaZ:.07},
+    centerMark:{x:-310,y:5,z:40,radius:180,segments:44,width:5,height:1.5,color:'#c63832',alpha:.68,crossRadius:215,crossWidth:4,crossAlpha:.38}
   },
   scenery:{
     boxes:[
-      {x:0,y:-43,z:0,sx:4050,sy:30,sz:2700,color:'#34522f'},
-      // Main road and plaza.
-      {x:-640,y:6,z:40,sx:2200,sy:8,sz:210,color:'#c8aa76'},
-      {x:-310,y:6,z:40,sx:980,sy:9,sz:760,color:'#d7bb85'},
-      {x:520,y:6,z:40,sx:800,sy:8,sz:230,color:'#c8aa76'},
-      {x:1060,y:6,z:40,sx:460,sy:8,sz:260,color:'#c8aa76'},
-      // North and south loops keep the hub from becoming one straight road.
-      {x:-850,y:6,z:-430,sx:1180,sy:8,sz:150,color:'#bfa271'},
-      {x:250,y:6,z:-430,sx:1020,sy:8,sz:150,color:'#bfa271'},
-      {x:900,y:6,z:-260,sx:160,sy:8,sz:500,color:'#bfa271'},
-      {x:-1030,y:6,z:570,sx:920,sy:8,sz:170,color:'#cbb17c'},
-      {x:-150,y:6,z:570,sx:900,sy:8,sz:170,color:'#cbb17c'},
-      {x:700,y:6,z:570,sx:820,sy:8,sz:170,color:'#cbb17c'},
-      {x:1010,y:6,z:350,sx:160,sy:8,sz:560,color:'#cbb17c'},
-      // Cross paths and unlocked shortcut lanes.
-      {x:-860,y:7,z:120,sx:150,sy:9,sz:940,color:'#d5b983'},
-      {x:240,y:7,z:230,sx:150,sy:9,sz:760,color:'#d5b983'},
-      {x:650,y:7,z:40,sx:150,sy:9,sz:980,color:'#d5b983'},
-      // Stadium and fighter gate at the east landmark.
-      {x:1490,y:205,z:40,sx:470,sy:410,sz:1420,color:'#2c1c38'},
-      {x:1410,y:430,z:40,sx:520,sy:42,sz:1530,color:'#d54682'},
-      {x:1350,y:490,z:40,sx:575,sy:32,sz:1640,color:'#f1c85a'},
-      {x:1250,y:104,z:40,sx:90,sy:208,sz:480,color:'#1a1023'},
-      {x:1200,y:235,z:-300,sx:38,sy:450,sz:38,color:'#5c3267'},
-      {x:1200,y:235,z:380,sx:38,sy:450,sz:38,color:'#5c3267'},
-      // Registration district north of plaza.
-      {x:-120,y:58,z:-560,sx:430,sy:116,sz:250,color:'#3f78b2'},
-      {x:-120,y:130,z:-560,sx:490,sy:28,sz:310,color:'#263e5a'},
-      {x:-520,y:48,z:-610,sx:260,sy:96,sz:210,color:'#b45c42'},
-      {x:-520,y:108,z:-610,sx:300,sy:24,sz:250,color:'#5a2d2b'},
-      // Food street and rest area south of plaza.
-      {x:-680,y:52,z:620,sx:330,sy:104,sz:230,color:'#c45e3f'},
-      {x:-680,y:116,z:620,sx:380,sy:24,sz:275,color:'#602e29'},
-      {x:-300,y:48,z:650,sx:280,sy:96,sz:210,color:'#5d4aa8'},
-      {x:-300,y:108,z:650,sx:330,sy:24,sz:250,color:'#30264e'},
+      {x:0,y:-43,z:0,sx:4050,sy:30,sz:2700,color:'#4a5f54'},
+      // Pale tournament avenues and tiled courtyards.
+      {x:-640,y:6,z:40,sx:2200,sy:8,sz:230,color:'#e6d6ae'},
+      {x:-310,y:6,z:40,sx:1000,sy:9,sz:780,color:'#f3e5c0'},
+      {x:520,y:6,z:40,sx:800,sy:8,sz:250,color:'#eadbb5'},
+      {x:1060,y:6,z:40,sx:460,sy:8,sz:280,color:'#f0dfb8'},
+      {x:-850,y:6,z:-430,sx:1180,sy:8,sz:165,color:'#d9c79e'},
+      {x:250,y:6,z:-430,sx:1020,sy:8,sz:165,color:'#d9c79e'},
+      {x:900,y:6,z:-260,sx:170,sy:8,sz:500,color:'#d9c79e'},
+      {x:-1030,y:6,z:570,sx:920,sy:8,sz:185,color:'#efe0bb'},
+      {x:-150,y:6,z:570,sx:900,sy:8,sz:185,color:'#efe0bb'},
+      {x:700,y:6,z:570,sx:820,sy:8,sz:185,color:'#efe0bb'},
+      {x:1010,y:6,z:350,sx:170,sy:8,sz:560,color:'#efe0bb'},
+      {x:-860,y:7,z:120,sx:165,sy:9,sz:940,color:'#f5e6c1'},
+      {x:240,y:7,z:230,sx:165,sy:9,sz:760,color:'#f5e6c1'},
+      {x:650,y:7,z:40,sx:165,sy:9,sz:980,color:'#f5e6c1'},
+      // West ceremonial gate: a martial-arts homage with original colors and crest.
+      {x:-1650,y:112,z:-210,sx:86,sy:224,sz:86,color:'#f1e4c4'},
+      {x:-1650,y:112,z:350,sx:86,sy:224,sz:86,color:'#f1e4c4'},
+      {x:-1650,y:218,z:70,sx:92,sy:34,sz:650,color:'#2b6f78'},
+      {x:-1650,y:248,z:70,sx:125,sy:26,sz:720,color:'#a54432'},
+      {x:-1650,y:282,z:70,sx:160,sy:18,sz:610,color:'#7e2f27'},
+      {x:-1638,y:190,z:70,sx:28,sy:84,sz:280,color:'#fff3c2',lit:false},
+      {x:-1620,y:190,z:70,sx:12,sy:48,sz:190,color:'#c63832',lit:false},
+      // Arena hall exterior. The actual combat arena remains a separate untouched map.
+      {x:1530,y:210,z:40,sx:420,sy:420,sz:1480,color:'#f0dfb8'},
+      {x:1450,y:430,z:40,sx:520,sy:42,sz:1570,color:'#a54432'},
+      {x:1390,y:475,z:40,sx:600,sy:30,sz:1660,color:'#7e2f27'},
+      {x:1290,y:118,z:-245,sx:105,sy:236,sz:250,color:'#f7ebcf'},
+      {x:1290,y:118,z:325,sx:105,sy:236,sz:250,color:'#f7ebcf'},
+      {x:1288,y:236,z:40,sx:108,sy:34,sz:820,color:'#2b6f78'},
+      {x:1280,y:275,z:40,sx:120,sy:54,sz:390,color:'#f5e8ca'},
+      {x:1270,y:275,z:40,sx:18,sy:20,sz:250,color:'#c63832',lit:false},
+      {x:1260,y:98,z:40,sx:85,sy:196,sz:260,color:'#241d1a'},
+      // Registration pavilions and bracket tower.
+      {x:-120,y:62,z:-560,sx:450,sy:124,sz:270,color:'#f1e4c4'},
+      {x:-120,y:138,z:-560,sx:520,sy:30,sz:330,color:'#2b6f78'},
+      {x:-120,y:174,z:-560,sx:590,sy:22,sz:380,color:'#a54432'},
+      {x:-520,y:52,z:-610,sx:270,sy:104,sz:220,color:'#efe3c4'},
+      {x:-520,y:116,z:-610,sx:320,sy:26,sz:265,color:'#c63832'},
+      {x:905,y:100,z:-500,sx:70,sy:200,sz:300,color:'#3f332b'},
+      {x:892,y:105,z:-500,sx:18,sy:160,sz:245,color:'#f7e9c7'},
+      {x:880,y:168,z:-500,sx:20,sy:20,sz:205,color:'#c63832',lit:false},
+      // Food street: small open festival stalls, not village houses.
+      {x:-680,y:54,z:620,sx:340,sy:108,sz:235,color:'#f7e9c7'},
+      {x:-680,y:120,z:620,sx:390,sy:26,sz:285,color:'#c63832'},
+      {x:-300,y:50,z:650,sx:290,sy:100,sz:215,color:'#f3e7ca'},
+      {x:-300,y:112,z:650,sx:340,sy:26,sz:260,color:'#287a87'},
+      {x:130,y:46,z:610,sx:250,sy:92,sz:195,color:'#f5e8ca'},
+      {x:130,y:104,z:610,sx:300,sy:24,sz:240,color:'#e0a52f'},
+      // Cloth counters and hanging lantern rails.
+      {x:-680,y:25,z:492,sx:280,sy:44,sz:36,color:'#7b4b2f'},
+      {x:-300,y:25,z:532,sx:230,sy:44,sz:36,color:'#6d4f32'},
+      {x:130,y:25,z:495,sx:200,sy:44,sz:36,color:'#755037'},
       // Practice ring west/south-west.
       {x:-1120,y:7,z:560,sx:540,sy:12,sz:430,color:'#d8ca9e'},
       {x:-1120,y:10,z:560,sx:440,sy:8,sz:330,color:'#efe4bd'},
@@ -545,17 +645,13 @@ const LOCAL_TOURNAMENT_HUB={
       {x:-855,y:42,z:560,sx:18,sy:84,sz:460,color:'#5e3b2f'},
       {x:-1120,y:42,z:330,sx:540,sy:84,sz:18,color:'#5e3b2f'},
       {x:-1120,y:42,z:790,sx:540,sy:84,sz:18,color:'#5e3b2f'},
-      // Waiting tent and bracket board.
-      {x:640,y:66,z:-520,sx:420,sy:132,sz:300,color:'#9e3457'},
-      {x:640,y:146,z:-520,sx:490,sy:28,sz:360,color:'#f0c85d'},
-      {x:930,y:94,z:-540,sx:38,sy:188,sz:260,color:'#2e2338'},
-      // Small shops, notice boards, and seating make each district readable.
-      {x:-900,y:34,z:-420,sx:150,sy:68,sz:80,color:'#4e75a4'},
-      {x:-900,y:80,z:-420,sx:178,sy:22,sz:110,color:'#f0c85d'},
-      {x:130,y:30,z:610,sx:140,sy:60,sz:78,color:'#4f9369'},
-      {x:130,y:72,z:610,sx:168,sy:20,sz:104,color:'#f0c85d'},
-      {x:760,y:28,z:420,sx:120,sy:56,sz:72,color:'#b05461'},
-      {x:760,y:68,z:420,sx:148,sy:18,sz:96,color:'#f2d36e'},
+      // Fighter waiting pavilion and spectator rest court.
+      {x:640,y:68,z:-520,sx:430,sy:136,sz:310,color:'#f1e4c4'},
+      {x:640,y:150,z:-520,sx:500,sy:30,sz:370,color:'#a54432'},
+      {x:-900,y:36,z:-420,sx:160,sy:72,sz:90,color:'#287a87'},
+      {x:-900,y:84,z:-420,sx:188,sy:22,sz:120,color:'#e7c25a'},
+      {x:760,y:30,z:420,sx:130,sy:60,sz:82,color:'#c63832'},
+      {x:760,y:72,z:420,sx:158,sy:20,sz:106,color:'#e7c25a'},
       {x:-1450,y:22,z:300,sx:160,sy:44,sz:48,color:'#72563f'},
       {x:-1340,y:22,z:300,sx:52,sy:44,sz:48,color:'#72563f'},
       {x:420,y:22,z:-720,sx:180,sy:44,sz:52,color:'#72563f'},
@@ -571,7 +667,8 @@ const LOCAL_TOURNAMENT_HUB={
       {x:-1540,y:145,z:820,sx:130,sy:120,sz:130,color:'#397442'},
       {x:-980,y:26,z:-650,sx:110,sy:52,sz:78,color:'#887258'},
       {x:260,y:24,z:670,sx:96,sy:48,sz:72,color:'#806c54'},
-      {x:830,y:28,z:670,sx:118,sy:56,sz:82,color:'#90795a'}
+      {x:830,y:28,z:670,sx:118,sy:56,sz:82,color:'#90795a'},
+      ...tournamentPlazaDecor()
     ],
     lamps:[
       {x:-900,z:-120},{x:-420,z:-120},{x:80,z:-120},{x:560,z:-120},
@@ -595,10 +692,42 @@ const AFTER_HOURS_TOURNAMENT={
   },
   floor:{
     ...LOCAL_TOURNAMENT_HUB.floor,
-    base:{...LOCAL_TOURNAMENT_HUB.floor.base,color:'#182920'},
-    surface:{...LOCAL_TOURNAMENT_HUB.floor.surface,color:'#314b3a'},
-    grid:{...LOCAL_TOURNAMENT_HUB.floor.grid,color:'#9ab29a',alphaX:.025,alphaZ:.02},
-    centerMark:{...LOCAL_TOURNAMENT_HUB.floor.centerMark,color:'#b49e5a',alpha:.3,crossAlpha:.12}
+    base:{...LOCAL_TOURNAMENT_HUB.floor.base,color:'#172622'},
+    surface:{...LOCAL_TOURNAMENT_HUB.floor.surface,color:'#48564f'},
+    grid:{...LOCAL_TOURNAMENT_HUB.floor.grid,color:'#99aaa1',alphaX:.07,alphaZ:.055},
+    centerMark:{...LOCAL_TOURNAMENT_HUB.floor.centerMark,color:'#7b8d85',alpha:.28,crossAlpha:.14}
+  },
+  scenery:{
+    boxes:[
+      ...nightTournamentBoxes(LOCAL_TOURNAMENT_HUB.scenery.boxes),
+      // Closed shutters and stripped counters show that the festival has ended.
+      {x:-680,y:65,z:486,sx:290,sy:104,sz:18,color:'#273632'},
+      {x:-300,y:63,z:526,sx:240,sy:100,sz:18,color:'#283833'},
+      {x:130,y:61,z:489,sx:210,sy:96,sz:18,color:'#293a35'},
+      {x:-520,y:60,z:-495,sx:230,sy:92,sz:18,color:'#2a3938'},
+      // Cleanup carts, folded banners, medical tents, and security barriers.
+      {x:-1120,y:30,z:900,sx:180,sy:58,sz:92,color:'#596466'},
+      {x:-1010,y:18,z:900,sx:62,sy:36,sz:62,color:'#252a2d'},
+      {x:-1230,y:18,z:900,sx:62,sy:36,sz:62,color:'#252a2d'},
+      {x:-260,y:28,z:520,sx:150,sy:56,sz:78,color:'#5d665f'},
+      {x:420,y:24,z:-690,sx:180,sy:48,sz:58,color:'#4d5552'},
+      {x:580,y:24,z:-690,sx:70,sy:48,sz:58,color:'#4d5552'},
+      {x:650,y:74,z:-520,sx:460,sy:14,sz:340,color:'#d7ddd6',alpha:.72},
+      {x:650,y:117,z:-520,sx:400,sy:72,sz:290,color:'#38565b',alpha:.78},
+      {x:1010,y:46,z:350,sx:18,sy:92,sz:350,color:'#9aa59d'},
+      {x:1010,y:96,z:180,sx:40,sy:20,sz:28,color:'#d8b858',lit:false},
+      {x:1010,y:96,z:350,sx:40,sy:20,sz:28,color:'#d8b858',lit:false},
+      {x:1010,y:96,z:520,sx:40,sy:20,sz:28,color:'#d8b858',lit:false},
+      // Faint energy seams lead the eye toward the underground investigation.
+      {x:1080,y:9,z:40,sx:470,sy:4,sz:12,color:'#74d7e4',alpha:.52,lit:false},
+      {x:890,y:9,z:-120,sx:12,sy:4,sz:330,color:'#74d7e4',alpha:.38,lit:false}
+    ],
+    lamps:[
+      {x:-1450,z:80},{x:-900,z:-120},{x:-420,z:-120},{x:80,z:-120},
+      {x:560,z:-120},{x:-900,z:220},{x:-420,z:220},{x:80,z:220},
+      {x:560,z:220},{x:1030,z:-250},{x:1030,z:350}
+    ],
+    lamp:{post:{y:72,sx:12,sy:144,sz:12,color:'#253332'},light:{y:154,sx:38,sy:38,sz:38,color:'#a9efff',alpha:.92,lit:false}}
   }
 };
 
@@ -707,6 +836,83 @@ const REMOTE_HIGHLANDS={
   }
 };
 
+
+
+const ECHO_VILLAGE={
+  schema:ARENA_STAGE_SCHEMA_VERSION,
+  id:'echo-village',name:'Echo Region',subtitle:'Ancient village beneath Shadow’s Lookout',available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.72},
+  bounds:{minX:-1600,maxX:1600,minZ:-920,maxZ:920},
+  spawnPoints:[{x:-1320,z:80},{x:120,z:-40}],projectileLimits:{padding:240,minY:-70,maxY:980},ai:{wallMargin:140},
+  camera:{yawDeg:38,fov:44,clear:'#7897b1',fogColor:'#b7cad5',fogRange:[1100,3600],focusClampX:1500,focusClampZ:850,baseDistance:1120,separationScale:.17,minDistance:1030,maxDistance:1300,heightBase:490,heightDistanceScale:.16,horizontalDistanceScale:.82,targetHeight:48,jumpTargetScale:.17,focusSmoothing:.09,zoomSmoothing:.065},
+  floor:{
+    base:{x:0,y:-42,z:0,sx:3440,sy:84,sz:2020,color:'#293c35'},
+    surface:{x:0,y:1,z:0,sx:3300,sy:5,sz:1880,color:'#607c63'},
+    grid:{stepX:330,stepZ:260,y:4,widthX:1,widthZ:1,height:.8,color:'#d9eadf',alphaX:.018,alphaZ:.015},
+    centerMark:{x:-1250,y:5,z:80,radius:120,segments:36,width:3,height:1.4,color:'#9dd7df',alpha:.26,crossRadius:145,crossWidth:2,crossAlpha:.12}
+  },
+  scenery:{boxes:[
+    {x:0,y:-56,z:0,sx:3660,sy:36,sz:2240,color:'#203129'},
+    {x:-1260,y:22,z:80,sx:310,sy:34,sz:230,color:'#52645d'},
+    {x:-1260,y:78,z:80,sx:160,sy:110,sz:130,color:'#293c44',alpha:.86},
+    {x:-420,y:18,z:520,sx:500,sy:30,sz:340,color:'#7f806d'},
+    {x:220,y:14,z:120,sx:780,sy:22,sz:510,color:'#7f735f'},
+    {x:1010,y:34,z:460,sx:390,sy:68,sz:300,color:'#52645d'},
+    {x:1260,y:110,z:-440,sx:150,sy:220,sz:330,color:'#3f514a'},
+    {x:1320,y:260,z:-470,sx:90,sy:520,sz:90,color:'#2b3338'},
+    {x:1320,y:555,z:-470,sx:150,sy:70,sz:150,color:'#b5d8e9',alpha:.54},
+    ...Array.from({length:12},(_,i)=>({x:-760+i*130,y:44,z:720-(i%3)*45,sx:82,sy:88,sz:70,color:i%2?'#5b6760':'#6b6f63'})),
+    ...Array.from({length:10},(_,i)=>({x:-660+i*150,y:38,z:-690+(i%2)*80,sx:70,sy:76,sz:64,color:i%2?'#5b6760':'#6b6f63'}))
+  ],lamps:[]}
+};
+
+const ECHO_CAVERNS={
+  schema:ARENA_STAGE_SCHEMA_VERSION,
+  id:'echo-caverns',name:'Echo Caverns',subtitle:'Resonant ruins beneath Echo Village',available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.68},
+  bounds:{minX:-1200,maxX:1200,minZ:-700,maxZ:700},
+  spawnPoints:[{x:-980,z:0},{x:860,z:0}],projectileLimits:{padding:180,minY:-90,maxY:760},ai:{wallMargin:120},
+  camera:{yawDeg:42,fov:43,clear:'#121b24',fogColor:'#263947',fogRange:[700,2300],focusClampX:1120,focusClampZ:640,baseDistance:980,separationScale:.2,minDistance:900,maxDistance:1160,heightBase:430,heightDistanceScale:.17,horizontalDistanceScale:.8,targetHeight:48,jumpTargetScale:.17,focusSmoothing:.08,zoomSmoothing:.06},
+  floor:{base:{x:0,y:-46,z:0,sx:2620,sy:92,sz:1580,color:'#171f24'},surface:{x:0,y:1,z:0,sx:2480,sy:5,sz:1440,color:'#36454a'},grid:{stepX:240,stepZ:200,y:4,widthX:1,widthZ:1,height:.8,color:'#8fd7dc',alphaX:.025,alphaZ:.02},centerMark:{x:-980,y:5,z:0,radius:95,segments:32,width:3,height:1.3,color:'#71d1dd',alpha:.2,crossRadius:118,crossWidth:2,crossAlpha:.1}},
+  scenery:{boxes:[
+    {x:0,y:-60,z:0,sx:2820,sy:40,sz:1780,color:'#10171c'},
+    {x:-1180,y:180,z:0,sx:100,sy:360,sz:1500,color:'#202b31'},{x:1180,y:180,z:0,sx:100,sy:360,sz:1500,color:'#202b31'},
+    {x:0,y:180,z:-680,sx:2500,sy:360,sz:90,color:'#202b31'},{x:0,y:180,z:680,sx:2500,sy:360,sz:90,color:'#202b31'},
+    ...Array.from({length:11},(_,i)=>({x:-980+i*196,y:80+(i%3)*22,z:i%2?-520:520,sx:80+(i%2)*22,sy:160+(i%3)*44,sz:92,color:i%2?'#2c3a40':'#33464a'})),
+    {x:-720,y:100,z:-260,sx:70,sy:200,sz:260,color:'#54302e',alpha:.88},{x:-120,y:100,z:280,sx:70,sy:200,sz:260,color:'#4f5247',alpha:.88},{x:470,y:100,z:-250,sx:70,sy:200,sz:260,color:'#2c4f69',alpha:.88},
+    {x:830,y:90,z:0,sx:330,sy:180,sz:520,color:'#263238',alpha:.92}
+  ],lamps:[]}
+};
+
+const ECHO_SKY={
+  schema:ARENA_STAGE_SCHEMA_VERSION,
+  id:'echo-sky',name:'Upper Atmosphere',subtitle:'Ryuzankaro secret encounter',available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.82},
+  bounds:{minX:-720,maxX:720,minZ:-480,maxZ:480},spawnPoints:[{x:-260,z:0},{x:260,z:0}],projectileLimits:{padding:180,minY:-80,maxY:980},ai:{wallMargin:90},
+  camera:{yawDeg:35,fov:45,clear:'#223b69',fogColor:'#8fb8e7',fogRange:[850,2600],focusClampX:650,focusClampZ:430,baseDistance:890,separationScale:.42,minDistance:860,maxDistance:1100,heightBase:420,heightDistanceScale:.18,horizontalDistanceScale:.8,targetHeight:55,jumpTargetScale:.18,focusSmoothing:.07,zoomSmoothing:.05},
+  floor:{base:{x:0,y:-44,z:0,sx:1600,sy:80,sz:1100,color:'#476f93',alpha:.2},surface:{x:0,y:1,z:0,sx:1480,sy:4,sz:980,color:'#a8d6f2',alpha:.14},grid:{stepX:190,stepZ:170,y:4,widthX:1,widthZ:1,height:.7,color:'#e9f7ff',alphaX:.035,alphaZ:.03},centerMark:{x:0,y:5,z:0,radius:110,segments:36,width:3,height:1.3,color:'#d8f6ff',alpha:.22,crossRadius:135,crossWidth:2,crossAlpha:.1}},
+  scenery:{boxes:[
+    {x:0,y:-70,z:0,sx:1800,sy:30,sz:1300,color:'#6ea0c2',alpha:.12},
+    ...Array.from({length:10},(_,i)=>({x:-800+i*175,y:80+(i%3)*70,z:i%2?-600:600,sx:260,sy:45,sz:130,color:'#eaf8ff',alpha:.15,lit:false}))
+  ],lamps:[]}
+};
+
+const ECHO_MOUNTAIN={
+  schema:ARENA_STAGE_SCHEMA_VERSION,
+  id:'echo-mountain',name:'Mountain Path',subtitle:'The ascent to Shadow’s Lookout',available:true,
+  performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.72},
+  bounds:{minX:-1450,maxX:1450,minZ:-760,maxZ:760},spawnPoints:[{x:-1240,z:0},{x:760,z:0}],projectileLimits:{padding:220,minY:-120,maxY:980},ai:{wallMargin:120},
+  camera:{yawDeg:40,fov:44,clear:'#6b8298',fogColor:'#c1ced8',fogRange:[1000,3400],focusClampX:1360,focusClampZ:700,baseDistance:1060,separationScale:.2,minDistance:980,maxDistance:1250,heightBase:500,heightDistanceScale:.17,horizontalDistanceScale:.82,targetHeight:52,jumpTargetScale:.18,focusSmoothing:.085,zoomSmoothing:.06},
+  floor:{base:{x:0,y:-58,z:0,sx:3140,sy:116,sz:1720,color:'#2c3939'},surface:{x:0,y:1,z:0,sx:3000,sy:5,sz:1580,color:'#69756c'},grid:{stepX:290,stepZ:230,y:4,widthX:1,widthZ:1,height:.8,color:'#dce5e1',alphaX:.018,alphaZ:.015},centerMark:{x:-1240,y:5,z:0,radius:110,segments:36,width:3,height:1.3,color:'#b4dce1',alpha:.22,crossRadius:135,crossWidth:2,crossAlpha:.1}},
+  scenery:{boxes:[
+    {x:0,y:-76,z:0,sx:3360,sy:40,sz:1940,color:'#222d2e'},
+    {x:-300,y:28,z:0,sx:2100,sy:38,sz:280,color:'#887e69'},
+    {x:-720,y:95,z:240,sx:300,sy:190,sz:170,color:'#4e5755'},{x:-180,y:110,z:-280,sx:260,sy:220,sz:190,color:'#454e4e'},{x:430,y:135,z:250,sx:300,sy:270,sz:220,color:'#41494b'},
+    {x:1120,y:445,z:-330,sx:420,sy:42,sz:340,color:'#2b3138',alpha:.94},{x:1120,y:525,z:-330,sx:240,sy:120,sz:220,color:'#566979',alpha:.92},{x:1120,y:610,z:-330,sx:300,sy:52,sz:280,color:'#b8dff0',alpha:.55},
+    ...Array.from({length:15},(_,i)=>({x:-1320+i*185,y:85+(i%4)*26,z:i%2?-650:650,sx:150+(i%3)*35,sy:170+(i%4)*52,sz:170,color:i%2?'#3f4a48':'#48524f'}))
+  ],lamps:[]}
+};
+
 export const ARENA_STAGE_CATALOG=deepFreeze([
   {id:'dojo',name:'Tangai Dojo',status:'Playable',available:true,role:'Medium closed arena'},
   {id:'tournament',name:'Global Tournament',status:'Playable',available:true,role:'Large long-range arena • 1500 × 900'},
@@ -722,7 +928,11 @@ export const ARENA_STAGES=deepFreeze({
   'tournament-hub':LOCAL_TOURNAMENT_HUB,
   'after-hours-tournament':AFTER_HOURS_TOURNAMENT,
   'resonance-facility':RESONANCE_FACILITY,
-  'remote-highlands':REMOTE_HIGHLANDS
+  'remote-highlands':REMOTE_HIGHLANDS,
+  'echo-village':ECHO_VILLAGE,
+  'echo-caverns':ECHO_CAVERNS,
+  'echo-sky':ECHO_SKY,
+  'echo-mountain':ECHO_MOUNTAIN
 });
 
 export function validateArenaStage(stage){

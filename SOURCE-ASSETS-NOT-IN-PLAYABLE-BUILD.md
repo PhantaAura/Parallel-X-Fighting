@@ -1,5 +1,13 @@
-# Source artwork is intentionally excluded
+# Source Assets Not Included in the Playable Build
 
-Prototype 2.9A.6 keeps only runtime fighter atlases, animation manifests, and effects inside the playable package.
+Prototype 2.9A.22 uses compressed WebP fighter atlases at runtime.
 
-Large drawing boards, source sheets, and visual reference images belong in the private development/source-art archive rather than the downloadable game. This keeps friend-test downloads smaller without changing any visuals that the game actually loads.
+The public release intentionally omits:
+
+- duplicate PNG versions of runtime atlases
+- Bark and Wade source sprite sheets
+- the Sage reference sheet
+- atlas-generation Python tools
+- obsolete patch-history packages and old build manifests
+
+Keep original source sheets separately before making future atlas edits. They are development inputs, not browser runtime files.

@@ -1,7 +1,7 @@
 {
   "version": 2,
   "fighter": "rrvvfo",
-  "image": "./rrvvfo-atlas.png",
+  "image": "./rrvvfo-atlas.webp",
   "atlas": {
     "width": 1728,
     "height": 3840,

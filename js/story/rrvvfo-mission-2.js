@@ -1,12 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a17-chapter123-repair-icon-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a17-chapter123-repair-icon-20260729';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyConfirm} from './story-ux.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a17-chapter123-repair-icon-20260729';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a17-chapter123-repair-icon-20260729';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a17-chapter123-repair-icon-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a22p1-floating-lookout-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a22p1-floating-lookout-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a22p1-floating-lookout-20260730';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a22p1-floating-lookout-20260730';
+import {storyConfirm} from './story-ux.js?v=29a22p1-floating-lookout-20260730';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a22p1-floating-lookout-20260730';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a22p1-floating-lookout-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a22p1-floating-lookout-20260730';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a22p1-floating-lookout-20260730';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -38,7 +39,7 @@ function normalizeChapter2State(saved={}){
   if(saved.tournamentStarted){
     state.hubQuests.mandatory.bracket={...state.hubQuests.mandatory.bracket,started:true,cards:['fan-card','vendor-card','veteran-card'],complete:true};
     state.hubQuests.mandatory.wadeRace={...state.hubQuests.mandatory.wadeRace,started:true,complete:true};
-    state.hubQuests.mandatory.barkRing={...state.hubQuests.mandatory.barkRing,started:true,supports:['west','south','east'],saboteurDefeated:true,complete:true};
+    state.hubQuests.mandatory.barkRing={...state.hubQuests.mandatory.barkRing,started:true,supports:['west','south','east'],saboteurDefeated:false,complete:true};
   }
   return state;
 }
@@ -235,6 +236,8 @@ class RrvvfoMission2{
     this.qteIndex=0;
     this.qteDeadline=0;
     this.qteGamepadState={};
+    this.qtePurpose='run';
+    this.pendingSupport=null;
     this.gruntCooldown={};
     this.fightLosses={};
     this.storyAssistFights=new Set();
@@ -298,7 +301,6 @@ class RrvvfoMission2{
       {id:'mechanic',label:'ARENA MECHANIC',x:-980,z:760,color:'#3f7f73',hair:'#253a37',kind:'mechanic'},
       {id:'cashier',label:'TOURNAMENT CASHIER',x:600,z:-380,color:'#8b62b2',hair:'#2b2432',kind:'cashier'},
       {id:'challenger',label:'REJECTED CHALLENGER',x:-1450,z:520,color:'#5f73a5',hair:'#242b3b',kind:'challenger'},
-      {id:'ring-saboteur',label:'RING SABOTEUR',x:-1120,z:850,color:'#5d4b51',hair:'#17191d',kind:'ringSaboteur'},
       {id:'grunt-a',label:'LOUD GRUNT',x:520,z:610,color:'#646a76',hair:'#292c33',kind:'grunt'},
       {id:'grunt-b',label:'MASKED GRUNT',x:820,z:-660,color:'#4f5561',hair:'#17191d',kind:'grunt'},
       {id:'bracket',label:'BRACKET BOARD',x:910,z:-430,color:'#2f2238',hair:'#f0c85d',kind:'bracket'}
@@ -306,6 +308,7 @@ class RrvvfoMission2{
   }
 
   start(){
+    document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'tournament'}));
     this.battle=createStoryBattle({stageId:'tournament-hub'});
     this.engine=attachStoryEngine(this.battle,{
       chapterLabel:'RRVVFO CHAPTER 2',
@@ -455,7 +458,7 @@ class RrvvfoMission2{
           hailey:{body:'#d95789',hair:'#372742',skin:'#9b6448'},hamual:{body:'#8e3f2d',hair:'#241b18',skin:'#985f42'},daniel:{body:'#405f91',hair:'#2c2725',skin:'#936047'},
           'practice-fighter':{body:'#506f9e',hair:'#2d2636',skin:'#986044'},'qualifier-fighter':{body:'#a05d3b',hair:'#25221f',skin:'#8f5a3e'},
           'bracket-fighter':{body:'#7855a5',hair:'#382746',skin:'#9b6245'},'grunt-a':{body:'#626a76',hair:'#292c33',skin:'#8b5b42'},
-          'grunt-b':{body:'#4f5662',hair:'#17191d',skin:'#8b5b42'},'ring-saboteur':{body:'#5d4b51',hair:'#17191d',skin:'#8b5b42'},
+          'grunt-b':{body:'#4f5662',hair:'#17191d',skin:'#8b5b42'},
           'fake-champion':{body:'#b74d45',hair:'#f2c84f',skin:'#956044'},'practice-dummy':{body:'#7c6a51',hair:'#d8b56a',skin:'#9a7b55'},
           'rejected-challenger':{body:'#5f73a5',hair:'#242b3b',skin:'#906047'}
         };
@@ -506,10 +509,10 @@ class RrvvfoMission2{
     this.showAreaTitle('LOCAL TOURNAMENT GROUNDS');
     if(opening&&!this.state.tournamentStarted){
       this.showDialogue([
-        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Registration delay! Nobody panic unless you are holding part of the bracket!',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'You brought me to a tournament held together by banners and missing paper.',tail:'down'},
-        {speaker:'SAGE',speakerClass:'neutral',text:'Find the announcer. Learning the grounds before the fights begin will help more than standing in line.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I am going to regret helping them.',tail:'down'}
+        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Registration delay! Nobody panic unless you’re holding part of the bracket!',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Not my problem.',tail:'down'},
+        {speaker:'SAGE',speakerClass:'neutral',text:'You’re bored, right? Go do that.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Whatever. I’ve got nothing better to be doing.',tail:'down'}
       ]);
     }
   }
@@ -530,6 +533,7 @@ class RrvvfoMission2{
     const foe=this.battle.fighters[1];
     updateHubCamera(this.battle,{
       frameFight:this.mode!=='hub'&&foe.y>-500,
+      allowLook:this.mode==='hub',
       hubDistance:1120,
       fightBaseDistance:930,
       fightMaxDistance:1180
@@ -617,7 +621,7 @@ class RrvvfoMission2{
       this.setObjective('TALK TO BARK','Bark noticed something wrong with the practice ring.');
     }else if(!q.barkRing.complete){
       if(q.barkRing.supports.length<CHAPTER2_RING_SUPPORTS.length)this.setObjective('INSPECT THE CRACKED RING',`Check the glowing supports around the practice ring. ${q.barkRing.supports.length} / 3`);
-      else this.setObjective('CONFRONT THE RING SABOTEUR','Someone damaged the supports. They are waiting behind the practice ring.');
+      else this.setObjective('REPORT THE CRACKED RING','The evidence is incomplete. Return to Bark without alarming the guests.');
     }else{
       this.setObjective('REGISTER FOR THE TOURNAMENT','Main preparations are complete. Explore side quests or register when ready.');
     }
@@ -631,7 +635,6 @@ class RrvvfoMission2{
       if(npc.id==='announcer')return true;
       if(npc.id==='practice')return this.state.sageVanished&&!this.state.firstBrawlComplete;
       if(npc.id==='bark'||npc.id==='wade')return this.state.firstBrawlComplete;
-      if(npc.id==='ring-saboteur')return q.mandatory.barkRing.supports.length>=3&&!q.mandatory.barkRing.saboteurDefeated;
       if(npc.id==='fake-champion')return this.state.tournamentStarted&&!q.optional.fakeChampion.complete;
       if(npc.id==='lost-fan')return this.state.metBarkWade&&!q.optional.lostFan.complete;
       if(npc.id==='mechanic')return q.mandatory.barkRing.complete&&!q.optional.dummy.complete;
@@ -647,6 +650,8 @@ class RrvvfoMission2{
     const player=this.battle.fighters[0],quests=this.state.hubQuests;
     this.hubAnimationClock+=Math.max(0,dt)*1000;
     this.bracketCartX=-1080+Math.sin(performance.now()/1300)*430;
+    this.fanCardX=-760+Math.sin(performance.now()/430)*185;
+    this.fanCardZ=150+Math.cos(performance.now()/520)*115;
     this.questToastTimer=Math.max(0,this.questToastTimer-dt);
     if(!this.questToastTimer)this.root.querySelector('[data-c2-quest-toast]').hidden=true;
     const district=nearestDistrict(player.x,player.z);
@@ -672,6 +677,10 @@ class RrvvfoMission2{
     }
     const bracket=quests.mandatory.bracket;
     if(bracket.started&&!bracket.complete){
+      if(bracket.fanClue&&!bracket.cards.includes('fan-card')){
+        const fanCard={id:'bracket-fan-card',label:'FAST-MOVING WADE CARD',x:this.fanCardX,z:this.fanCardZ,kind:'bracketFanCard'};
+        if(distance(player,fanCard)<145)candidates.push(fanCard);
+      }
       const roofCard={id:'bracket-roof-card',label:'BLOWN CONTESTANT CARD',x:-430,z:760,kind:'bracketRoof'};
       if(!bracket.cards.includes('vendor-card')&&distance(player,roofCard)<125)candidates.push(roofCard);
       const cartCard={id:'bracket-cart-card',label:'MAINTENANCE CART CARD',x:this.bracketCartX,z:-300,kind:'bracketCart'};
@@ -738,7 +747,6 @@ class RrvvfoMission2{
     else if(npc.kind==='bark')this.talkToBark();
     else if(npc.kind==='wade')this.talkToWade();
     else if(npc.kind==='ringSupport')this.inspectRingSupport(npc);
-    else if(npc.kind==='ringSaboteur')this.confrontRingSaboteur();
     else if(npc.kind==='fakeChampion')this.beginFakeChampionQuest();
     else if(npc.kind==='lostFan')this.beginLostFanQuest();
     else if(npc.kind==='mechanic')this.beginDummyQuest();
@@ -748,6 +756,7 @@ class RrvvfoMission2{
     else if(npc.kind==='shortcut')this.useWadeShortcut(npc);
     else if(npc.kind==='grunt')this.beginGruntEncounter(npc);
     else if(npc.kind==='bracket')this.inspectBracket();
+    else if(npc.kind==='bracketFanCard')this.catchWadeCard();
     else if(npc.kind==='bracketRoof')this.collectBracketCard('vendor-card',[
       {speaker:'RRVVFO',speakerClass:'p1',text:'Bark’s card landed on the upper market walkway.',tail:'down'},
       {speaker:'FOOD VENDOR',speakerClass:'neutral',text:'I said it went up. I did not say the wind respected stairs.',tail:'down'}
@@ -761,16 +770,21 @@ class RrvvfoMission2{
 
   talkToLocal(npc){
     const bracket=this.state.hubQuests.mandatory.bracket;
-    if(bracket.started&&!bracket.complete&&['fan'].includes(npc.id)){
-      this.collectBracketCard('fan-card',[
-        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'A contestant card blew into my souvenir bag. It says Wade.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Of course his card traveled faster than everybody else’s.',tail:'down'}
-      ]);return;
+    if(bracket.started&&!bracket.complete&&['fan'].includes(npc.id)&&!bracket.cards.includes('fan-card')){
+      if(!bracket.fanClue){
+        this.showDialogue([
+          {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'A contestant card blew into my souvenir bag. It says Wade—wait, it just flew back out!',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'Of course his card is faster than everybody else’s.',tail:'down'}
+        ],()=>{bracket.fanClue=true;this.saveChapterState();this.questToast('QUEST UPDATED','THE LOST BRACKET','Dash into Wade’s moving card, then interact to catch it.');this.updateHubObjective();this.resumeHub()});
+      }else this.showDialogue([{speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'It keeps circling the plaza. You may have to dash into it before it escapes again.',tail:'down'}]);
+      return;
     }
     const lines={
-      fan:[
-        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:this.state.tournamentStarted?'The crowd changes its favorite after every match. Right now it might be you.':'People say the winner gets a trophy, prize money, and free food.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'The free food sounds more believable than the prize money.',tail:'down'}
+      fan:this.state.tournamentStarted?[
+        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'Everyone’s favorite fighter is Plouke, but mine is Bark. You had a good match, though.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Really? Bark over me?',tail:'down'}
+      ]:[
+        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'People say the winner gets great rewards.',tail:'down'}
       ]
     }[npc.id]||[{speaker:npc.label,speakerClass:'neutral',text:'The tournament starts soon.',tail:'down'}];
     this.showDialogue(lines);
@@ -781,10 +795,9 @@ class RrvvfoMission2{
     if(!bracket.started){
       this.showDialogue([
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'Disaster! Three contestant cards escaped the bracket board!',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Cards do not escape.',tail:'down'},
-        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Then somebody lost them dramatically. Check Market Street, the west path, and the old competitors’ area!',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I came here to fight, not rebuild your paperwork.',tail:'down'},
-        {speaker:'SAGE',speakerClass:'neutral',text:'Knowing the grounds before the bracket begins may keep you alive longer.',tail:'down'}
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Aren’t you the announcer I used to watch in those World Tournaments on TV when I was younger? So I guess your clumsiness wasn’t a character.',tail:'down'},
+        {speaker:'ANNOUNCER',speakerClass:'rival',text:'HEY! HURTFUL!',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'I’m helping you. I can be as rude as I want.',tail:'down'}
       ],()=>{bracket.started=true;this.state.hubQuests.activeQuest='bracket';this.saveChapterState();this.questToast('MAIN QUEST STARTED','THE LOST BRACKET','Recover 3 contestant cards.');this.updateHubObjective()});
       return;
     }
@@ -792,12 +805,22 @@ class RrvvfoMission2{
     if(!bracket.complete&&bracket.cards.length>=3){
       this.showDialogue([
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'Wade, Bark, and the unreadable qualifier! The bracket lives!',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'You nearly lost a tournament to paper.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'I’m about to win.',tail:'down'},
         {speaker:'SAGE',speakerClass:'neutral',text:'Stay near the practice ring. I need to check something before your first brawl.',tail:'down'}
       ],()=>{bracket.complete=true;markQuestComplete(this.state.hubQuests,'bracket');this.questToast('MAIN QUEST COMPLETE','THE LOST BRACKET','Bracket page added to the Story menu.');this.saveChapterState();this.triggerSageDisappearance()});
       return;
     }
     this.showDialogue([{speaker:'ANNOUNCER',speakerClass:'rival',text:this.state.tournamentStarted?'The bracket is holding together! Mostly!':'Registration can continue now. Try not to lose your own name.',tail:'down'}]);
+  }
+
+  catchWadeCard(){
+    const player=this.battle.fighters[0];
+    if(!(player.dashTime>0||player.visualAction==='dash'||Math.hypot(player.moveVX||0,player.moveVZ||0)>250)){
+      this.battle.notice('TOO FAST TO GRAB • DASH INTO THE CARD',1.2);return;
+    }
+    this.collectBracketCard('fan-card',[
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Got it. Even Wade’s paperwork needs to be chased down.',tail:'down'}
+    ]);
   }
 
   collectBracketCard(cardId,lines){
@@ -814,8 +837,8 @@ class RrvvfoMission2{
     }
     if(!bracket.complete&&!bracket.cards.includes('vendor-card')){
       this.showDialogue([
-        {speaker:'FOOD VENDOR',speakerClass:'neutral',text:'Bark’s contestant card blew onto the upper market walkway. Follow the blue marker above the stalls.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'At least this card made the fetch part vertical.',tail:'down'}
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Bark’s card landed on the upper market walkway.',tail:'down'},
+        {speaker:'FOOD VENDOR',speakerClass:'neutral',text:'I said it went up. I did not say the wind respected stairs.',tail:'down'}
       ]);return;
     }
     const food=this.state.hubQuests.optional.food;
@@ -855,7 +878,7 @@ class RrvvfoMission2{
     if(this.offerCurrentPloukeClue('veteran'))return;
     this.showDialogue([
       {speaker:'OLD COMPETITOR',speakerClass:'neutral',text:'Never spend all your energy early. The final round punishes people who think exhaustion is optional.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Good advice for somebody else.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Hey, thanks for the tip. See ya around.',tail:'down'}
     ]);
   }
 
@@ -863,8 +886,7 @@ class RrvvfoMission2{
     this.showDialogue([
       {speaker:'RRVVFO',speakerClass:'p1',text:'Sage?',tail:'down'},
       {speaker:'ANNOUNCER',speakerClass:'rival',text:'Was that pale man with you? He walked behind the waiting tent.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'There is nowhere behind that tent to go.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Odd. Even for him.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'He probably disappeared again. Typical.',tail:'down'}
     ],()=>{
       this.state.sageVanished=true;
       this.saveChapterState();
@@ -874,11 +896,11 @@ class RrvvfoMission2{
 
   beginPracticeBrawl(){
     this.showDialogue([
-      {speaker:'PRACTICE RING FIGHTER',speakerClass:'rival',text:'Your old man vanished right before he told me to test you.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'He is not my old man. Also, you are doing a terrible job making this less suspicious.',tail:'down'}
+      {speaker:'PRACTICE RING FIGHTER',speakerClass:'rival',text:'Alright, let’s fight. A little training’s good for ya, boy.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Alright. Let’s do it.',tail:'down'}
     ],()=>{
       discoverCombatManualPage('training-levels',{
-        reactionLines:['He wrote a level system into the manual?',"I cannot tell whether that's useful or insulting."],
+        reactionLines:['He really wrote a level system?','It seems like I can choose what stuff I power up when I level up. It gets harder the more I level up, though. Whatever.'],
         onClose:()=>this.startFight({
           id:'practice-fighter',name:'Practice Fighter',hp:52,xp:120,kind:'practice',story:false,
           intro:'FIRST BRAWL • TRAINING LEVELS ACTIVE'
@@ -889,10 +911,14 @@ class RrvvfoMission2{
 
   meetBarkAndWade(){
     this.showDialogue([
-      {speaker:'WADE',speakerClass:'neutral',text:'There you are. We passed you twice looking for registration.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'I was fixing the registration you passed.',tail:'down'},
-      {speaker:'BARK',speakerClass:'neutral',text:'Sage is gone?',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'He disappeared before my first brawl. Literally.',tail:'down'},
+      {speaker:'WADE',speakerClass:'neutral',text:'There you are! We’ve been looking all over—',tail:'down'},
+      {speaker:'BARK',speakerClass:'neutral',text:'We just got here, Wade. We didn’t even start looking yet.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Wade, you really are dense, huh?',tail:'down'},
+      {speaker:'WADE',speakerClass:'neutral',text:'Looks like a big ninja reunion. The three of us.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'But only one of us can win.',tail:'down'},
+      {speaker:'BARK',speakerClass:'neutral',text:'It’s me.',tail:'down'},
+      {speaker:'WADE',speakerClass:'neutral',text:'It’s me. I’m the most tactical.',tail:'down'},
+      {speaker:'BARK AND RRVVFO',speakerClass:'neutral',text:'In what world?',tail:'down'},
       {speaker:'WADE',speakerClass:'neutral',text:'Then follow me. I found the fastest route through this whole place.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'You found a route and turned it into a competition. Of course.',tail:'down'}
     ],()=>{
@@ -908,10 +934,11 @@ class RrvvfoMission2{
     const lostFan=this.state.hubQuests.optional.lostFan;
     if(lostFan.started&&!lostFan.complete){
       this.showDialogue([
-        {speaker:'RRVVFO',speakerClass:'p1',text:'A kid wearing your face on a shirt got lost looking for you.',tail:'down'},
-        {speaker:'WADE',speakerClass:'neutral',text:'My face is on a shirt?',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'That is the part you heard?',tail:'down'},
-        {speaker:'WADE',speakerClass:'neutral',text:'Take me there. I can get us back before the next announcement.',tail:'down'}
+        {speaker:'RRVVFO',speakerClass:'p1',text:'When did the ninjas get merch?',tail:'down'},
+        {speaker:'WADE',speakerClass:'neutral',text:'Uh, I think Tangai started it after you beat Revvfo. He needed more funding since someone keeps spending money on his card.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'A fan’s looking for you.',tail:'down'},
+        {speaker:'WADE',speakerClass:'neutral',text:'Like the blowing ones?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Just follow me.',tail:'down'}
       ],()=>this.completeLostFanQuest());return;
     }
     const race=this.state.hubQuests.mandatory.wadeRace;
@@ -995,7 +1022,7 @@ class RrvvfoMission2{
     markQuestComplete(this.state.hubQuests,'wadeRace');this.saveChapterState();
     this.showDialogue([
       {speaker:'WADE',speakerClass:'neutral',text:won?'You beat that time? I was showing you the route, not racing at full speed.':'You made it. The route is faster when you stop arguing with every corner.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:won?'A shortcut only matters if I reach the end first.':'I learned the route. That was the point. Probably.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:won?'A shortcut only matters if I reach the end first.':'Uh, well—I WAS HOLDING BACK! YOU’LL SEE IN THE TOURNAMENT!',tail:'down'},
       {speaker:'BARK',speakerClass:'neutral',text:'When you two are done, the practice ring is cracking underneath the east support.',tail:'down'}
     ],()=>{this.questToast('MAIN QUEST COMPLETE','WADE’S SHORTCUT','Three hub shortcuts unlocked. Talk to Bark about the cracked practice ring.');this.updateHubObjective()});
   }
@@ -1008,14 +1035,13 @@ class RrvvfoMission2{
     }
     if(!ring.started){
       this.showDialogue([
-        {speaker:'BARK',speakerClass:'neutral',text:'The practice ring looks stable from above. It is not.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Finally. Something here is actually trying to fall apart.',tail:'down'},
-        {speaker:'BARK',speakerClass:'neutral',text:'Inspect the three supports. Do not hit them.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'That instruction was aimed directly at me.',tail:'down'}
+        {speaker:'BARK',speakerClass:'neutral',text:'Look. You see those cracks on the ring? It’s like someone’s trying to damage it. You’re the sneakiest, Rrvvfo. Could you go in and try to fix them?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Sure. You and Wade guard me, though. I don’t wanna get banned.',tail:'down'},
+        {speaker:'BARK',speakerClass:'neutral',text:'There are three damaged spots. I put markers on your map.',tail:'down'}
       ],()=>{ring.started=true;this.state.hubQuests.activeQuest='barkRing';this.saveChapterState();this.questToast('MAIN QUEST STARTED','THE CRACKED RING','Inspect 3 supports around the practice ring.');this.updateHubObjective()});return;
     }
     if(!ring.complete){
-      this.showDialogue([{speaker:'BARK',speakerClass:'neutral',text:ring.supports.length<3?`Inspect the supports around the ring. ${ring.supports.length} of 3 checked.`:'The damage was deliberate. Find whoever is hiding behind the practice ring.',tail:'down'}]);return;
+      this.showDialogue([{speaker:'BARK',speakerClass:'neutral',text:ring.supports.length<3?`Inspect the supports around the ring. ${ring.supports.length} of 3 checked.`:'After the tournament, you can keep investigating. For now, the ring is stable.',tail:'down'}]);return;
     }
     if(this.offerCurrentPloukeClue('bark'))return;
     if(this.state.barkSparResult==='won'){
@@ -1030,27 +1056,47 @@ class RrvvfoMission2{
   }
 
   inspectRingSupport(support){
-    const ring=this.state.hubQuests.mandatory.barkRing;
-    if(ring.supports.includes(support.id))return;
-    this.showDialogue([
-      {speaker:'BARK',speakerClass:'neutral',text:`${support.label}: ${support.clue}`,tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:support.id==='west'?'So the hit came from somebody already inside.':support.id==='south'?'Same footwork every time. That is a signature.':'A wristband gives us the contestant. The other clues prove how it happened.',tail:'down'}
-    ],()=>{
-      ring.supports.push(support.id);this.saveChapterState();
-      this.questToast('QUEST UPDATED','THE CRACKED RING',`${ring.supports.length} / 3 supports inspected.`);
-      if(ring.supports.length>=3)this.showDialogue([
-        {speaker:'BARK',speakerClass:'neutral',text:'Inside impacts, matching footprints, and a contestant wristband. The saboteur is behind the ring.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Good. The evidence found our repair volunteer.',tail:'down'}
-      ],()=>this.updateHubObjective());else this.updateHubObjective();
-    });
+    const ring=this.state.hubQuests.mandatory.barkRing;if(ring.supports.includes(support.id))return;
+    this.pendingSupport=support;this.qtePurpose='repair';this.mode='qte';this.battle.phase='story';
+    this.root.querySelector('[data-c2-qte] h2').textContent=`STABILIZE ${support.label}`;
+    const sequences={west:['KeyA','KeyD','Space'],south:['Space','KeyA','KeyD'],east:['KeyD','Space','KeyA']};
+    this.qteSequence=sequences[support.id]||['KeyA','Space','KeyD'];this.qteIndex=0;this.qteDeadline=performance.now()+4600;this.qteGamepadState={};
+    this.root.querySelector('[data-c2-qte]').hidden=false;this.renderQte();
   }
 
-  confrontRingSaboteur(){
-    this.showDialogue([
-      {speaker:'RING SABOTEUR',speakerClass:'rival',text:'The weak ring would have made the tournament more interesting.',tail:'down'},
-      {speaker:'BARK',speakerClass:'neutral',text:'You could have injured everyone standing on it.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'He can learn about ring safety from the edge.',tail:'down'}
-    ],()=>this.startFight({id:'ring-saboteur',name:'Ring Saboteur',hp:100,xp:110,kind:'ring-repair',story:true,ringOutTutorial:true,intro:'MAIN QUEST • REPAIR THE RING'}));
+  completeRingSupport(support){
+    const ring=this.state.hubQuests.mandatory.barkRing;
+    if(ring.supports.includes(support.id))return;
+    const lines={
+      west:[
+        {speaker:'BARK',speakerClass:'neutral',text:'Look. It seems like the damage is pushing outward.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Simple. Someone attacked the ring from the inside.',tail:'down'},
+        {speaker:'BARK',speakerClass:'neutral',text:'But why would they?',tail:'down'}
+      ],
+      south:[
+        {speaker:'BARK',speakerClass:'neutral',text:'Look. Footprints—but they stop halfway. Why?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'That’s weird. Maybe I should take this more seriously.',tail:'down'}
+      ],
+      east:[
+        {speaker:'WADE',speakerClass:'neutral',text:'Look! Different shoe marks.',tail:'down'}
+      ]
+    }[support.id]||[];
+    this.showDialogue(lines,()=>{
+      ring.supports.push(support.id);this.saveChapterState();
+      this.questToast('QUEST UPDATED','THE CRACKED RING',`${ring.supports.length} / 3 supports inspected.`);
+      if(ring.supports.length>=3){
+        ring.complete=true;ring.saboteurDefeated=false;markQuestComplete(this.state.hubQuests,'barkRing');this.saveChapterState();
+        this.showDialogue([
+          {speaker:'RRVVFO',speakerClass:'p1',text:'We fixed them, but it has to be a fighter. All the spectators are kept away from the rings until the tournament starts.',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'We shouldn’t make a big deal out of it yet and worry the guests.',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'After the tournament, I’ll figure out who did it. Don’t stress about it, Bark.',tail:'down'},
+          {speaker:'BARK',speakerClass:'neutral',text:'Alright. You find the culprit. I’m gonna practice.',tail:'down'}
+        ],()=>{
+          this.questToast('MAIN QUEST COMPLETE','THE CRACKED RING','Practice ring stabilized. The sabotage remains unresolved.');
+          this.updateHubObjective();
+        });
+      }else this.updateHubObjective();
+    });
   }
 
   useWadeShortcut(shortcut){
@@ -1132,45 +1178,34 @@ class RrvvfoMission2{
   beginFakeChampionQuest(){
     const quest=this.state.hubQuests.optional.fakeChampion;
     this.showDialogue([
-      {speaker:'LOUD CHAMPION',speakerClass:'rival',text:'Pay one coin to witness the technique that made me undefeated!',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Your name is not on the bracket.',tail:'down'},
-      {speaker:'LOUD CHAMPION',speakerClass:'rival',text:'The bracket fears me.',tail:'down'}
-    ],()=>this.showChoice({
-      kicker:'OPTIONAL SIDE QUEST',title:'THE FAKE CHAMPION',
-      text:'Expose him with Lens of Truth or challenge him to prove the technique works.',
-      buttons:[{label:'USE LENS',value:'lens',primary:true},{label:'FIRST-HIT FIGHT',value:'fight'},{label:'LEAVE',value:'leave'}],
-      onChoose:value=>{
-        if(value==='lens'){
-          quest.started=true;
-          this.showDialogue([
-            {speaker:'LENS OF TRUTH',speakerClass:'neutral',text:'Prediction: he will shout, step backward, and claim the technique requires payment first.',tail:'down'},
-            {speaker:'LOUD CHAMPION',speakerClass:'rival',text:'The technique requires payment—',tail:'down'},
-            {speaker:'RRVVFO',speakerClass:'p1',text:'Refund everyone.',tail:'down'}
-          ],()=>this.finishOptionalQuest('fakeChampion',{focus:1},'+1 permanent Story Focus'));
-        }else if(value==='fight'){
-          quest.started=true;this.startFight({id:'fake-champion',name:'Loud Champion',hp:100,xp:55,kind:'fake-champion',story:false,intro:'OPTIONAL • FIRST CLEAN HIT'});
-        }else this.resumeHub();
-      }
-    }));
+      {speaker:'LOUD CHAMPION',speakerClass:'rival',text:'PAY ME 20 COINS, AND I’LL TEACH YOU MY SECRET TECHNIQUES!',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Let’s spar in the practice ring. You can showcase those techniques.',tail:'down'},
+      {speaker:'LOUD CHAMPION',speakerClass:'rival',text:'No. The technique isn’t meant for demonstrations.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I knew that guy was shady.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Fight me, or I’ll expose your sham.',tail:'down'}
+    ],()=>{
+      quest.started=true;this.saveChapterState();
+      this.startFight({id:'fake-champion',name:'Loud Champion',hp:100,xp:55,kind:'fake-champion',story:false,intro:'OPTIONAL • THE FAKE CHAMPION'});
+    });
   }
 
   beginLostFanQuest(){
     const quest=this.state.hubQuests.optional.lostFan;
     if(!quest.started){
       this.showDialogue([
-        {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'I followed Wade’s blue trail and lost my family. Do you know him?',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'You approached the Fire Ninja to ask about Wade.',tail:'down'},
-        {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'You were standing still.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'...I will find him.',tail:'down'}
+        {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'I lost my family while looking for Wade. Do you know him?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Wade? Uh, me and him used to train together. Why?',tail:'down'},
+        {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'Please help me find him.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Wade’s gonna be hard to find since he rarely stays still.',tail:'down'}
       ],()=>{quest.started=true;this.state.hubQuests.activeQuest='lostFan';this.saveChapterState();this.questToast('SIDE QUEST STARTED','WADE’S BIGGEST FAN','Bring Wade to the lost fan.');this.resumeHub()});
     }else this.showDialogue([{speaker:'LOST WADE FAN',speakerClass:'neutral',text:'Did you find Wade?',tail:'down'}]);
   }
 
   completeLostFanQuest(){
     this.showDialogue([
-      {speaker:'WADE',speakerClass:'neutral',text:'There you are! Your family is near the merchandise stand.',tail:'down'},
-      {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'You brought Rrvvfo too!',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'He brought me. Apparently.',tail:'down'}
+      {speaker:'WADE',speakerClass:'neutral',text:'Hey, bud! It’s me, Wade. Here, have this pin on me.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Hey, isn’t that your father at the food court?',tail:'down'},
+      {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'Oh, yeah! Thank you!',tail:'down'}
     ],()=>this.finishOptionalQuest('lostFan',{hp:6},'+6 permanent Story HP'));
   }
 
@@ -1209,8 +1244,8 @@ class RrvvfoMission2{
     const quest=this.state.hubQuests.optional.prizeCart;
     if(!quest.started){
       this.showDialogue([
-        {speaker:'TOURNAMENT CASHIER',speakerClass:'neutral',text:'The final prize envelope stuck to the delivery cart. It is circling the grounds.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Your money is escaping now too?',tail:'down'},
+        {speaker:'TOURNAMENT CASHIER',speakerClass:'neutral',text:'The final prize envelope stuck to the delivery cart. It’s circling the grounds.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Wow. This place really is held together with duct tape.',tail:'down'},
         {speaker:'TOURNAMENT CASHIER',speakerClass:'neutral',text:'Please stop the cart before the announcer notices.',tail:'down'}
       ],()=>{quest.started=true;this.state.hubQuests.activeQuest='prizeCart';this.saveChapterState();this.questToast('SIDE QUEST STARTED','THE MISSING PRIZE ENVELOPE','Catch the moving delivery cart.');this.resumeHub()});
     }else this.showDialogue([{speaker:'TOURNAMENT CASHIER',speakerClass:'neutral',text:'The cart keeps circling Market Street. Interact when you catch it.',tail:'down'}]);
@@ -1218,7 +1253,7 @@ class RrvvfoMission2{
 
   catchPrizeCart(){
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'A tournament almost lost its prize money to a cart moving in a circle.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I only saved the prize money since it’s going to be mine.',tail:'down'},
       {speaker:'TOURNAMENT CASHIER',speakerClass:'neutral',text:'You can keep the delivery fee. The food vendor will also give you the staff meal discount.',tail:'down'}
     ],()=>{
       const quest=this.state.hubQuests.optional.prizeCart;quest.complete=true;quest.rewardClaimed=true;
@@ -1231,7 +1266,7 @@ class RrvvfoMission2{
     const quest=this.state.hubQuests.optional.challenger;
     this.showDialogue([
       {speaker:'REJECTED CHALLENGER',speakerClass:'neutral',text:'My registration was ruined before I reached the desk. I trained for months.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Then fight me once. It will not fix the form, but it will prove the training existed.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You trained that much? Fight me. I’m a competitor, so your training doesn’t go to waste.',tail:'down'}
     ],()=>this.showChoice({
       kicker:'OPTIONAL SIDE QUEST',title:'ONE MATCH ANYWAY',
       text:'Give the rejected challenger one meaningful first-to-one match.',
@@ -1307,7 +1342,7 @@ class RrvvfoMission2{
   }
 
   ploukeReactionForClue(id){
-    return({stillness:'So he waits for people to make the first mistake.',positioning:'Then I decide where the fight happens.',timing:'Predictable does not mean weak. It means I need more than one plan.',edge:'He wants the ring to beat me for him. Not happening.'}[id]||'I will remember that.');
+    return({stillness:'So he waits for people to slip up.',positioning:'So I have to be a little more cautious.',timing:'If he has Bark on edge, I should take him a little more seriously.',edge:'Maybe that gave me some clues. He probably rings people out a lot. I should observe the matches.'}[id]||'I will remember that.');
   }
 
   questToast(kicker,title,detail){
@@ -1362,7 +1397,8 @@ class RrvvfoMission2{
   }
 
   startRunQte(npc){
-    this.pendingGrunt=npc;
+    this.pendingGrunt=npc;this.qtePurpose='run';
+    this.root.querySelector('[data-c2-qte] h2').textContent='ESCAPE SEQUENCE';
     this.mode='qte';this.battle.phase='story';
     this.root.querySelector('[data-c2-qte]').hidden=false;
     this.qteSequence=['KeyA','Space','KeyD'];this.qteIndex=0;this.qteDeadline=performance.now()+3600;
@@ -1401,13 +1437,18 @@ class RrvvfoMission2{
   finishRunQte(success){
     if(this.mode!=='qte')return;
     this.root.querySelector('[data-c2-qte]').hidden=true;this.qteGamepadState={};
+    if(this.qtePurpose==='repair'){
+      const support=this.pendingSupport;this.pendingSupport=null;this.qtePurpose='run';
+      if(success){this.completeRingSupport(support)}
+      else{this.battle.notice('THE BRACE SLIPPED • TRY THE INPUT AGAIN',1.3);this.resumeHub()}
+      return;
+    }
     const npc=this.pendingGrunt;
     if(success){
       this.gruntCooldown[npc.id]=8;
       this.showDialogue([
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I am choosing not to waste tournament energy on you.',tail:'down'},
-        {speaker:npc.label,speakerClass:'rival',text:'You ran away.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I chose quickly in another direction.',tail:'down'}
+        {speaker:'RRVVFO',speakerClass:'p1',text:'I’m not in the mood for this.',tail:'down'},
+        {speaker:npc.label,speakerClass:'rival',text:'You ran away.',tail:'down'}
       ],()=>this.resumeHub());
     }else{
       this.battle.notice('ESCAPE FAILED • FIGHT FORCED',1.4);
@@ -1437,9 +1478,8 @@ class RrvvfoMission2{
       });return;
     }
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Wade is on my side. Bark is fighting Pouki. Plouke is waiting on the opposite side.',tail:'down'},
-      {speaker:'WADE',speakerClass:'neutral',text:'The board finally has everybody’s name in the right place.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'That may be the tournament’s greatest achievement.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Looks like I’m fighting unknown fighters in the prelims.',tail:'down'},
+      {speaker:'WADE',speakerClass:'neutral',text:'What’s an unknown?',tail:'down'}
     ]);
   }
 
@@ -1525,14 +1565,12 @@ class RrvvfoMission2{
       this.root.querySelector('[data-tournament-run]').hidden=false;
       const assistText=assisted?' • STORY ASSIST ACTIVE':'';
       this.setObjective(
-        config.final?'TRY TO BEAT PLOUKE':config.ringOutTutorial?'REPAIR THE RING • SCORE 1 KO OR RING-OUT':this.currentFight.official?'SCORE 3 KOs OR RING-OUTS TO ADVANCE':'SCORE 1 KO TO WIN',
+        config.final?'TRY TO BEAT PLOUKE':this.currentFight.official?'SCORE 3 KOs OR RING-OUTS TO ADVANCE':'SCORE 1 KO TO WIN',
         config.final
           ?`Plouke is Level ${enemyLevel} with a visible boss HP bonus. Fight as long as you can.${assistText}`
-          :config.ringOutTutorial
-            ?'Use three-hit edge pressure and a strong finisher to force a visible ring-out.'
-            :this.currentFight.official
-              ?`${config.name} is Level ${enemyLevel}. KOs and ring-outs both count.${assistText}`
-              :`${config.name} is Level ${enemyLevel}. This fight ends after one KO and ring-outs are disabled.${assistText}`
+          :this.currentFight.official
+            ?`${config.name} is Level ${enemyLevel}. KOs and ring-outs both count.${assistText}`
+            :`${config.name} is Level ${enemyLevel}. This fight ends after one KO and ring-outs are disabled.${assistText}`
       );
       if(config.kind==='dummy')this.updateDummyObjective();
       this.updateLevelHud();
@@ -1547,7 +1585,7 @@ class RrvvfoMission2{
   }
 
   opponentAccent(id){
-    return({bark:'#9a6a3a',wade:'#2f91e3',pouki:'#6ca2a7',plouke:'#e6ddc7',hailey:'#e16b9a',hamual:'#c86f3d',daniel:'#5b76a9','practice-fighter':'#6f8fbe','qualifier-fighter':'#cf7446','bracket-fighter':'#9a6cc9','grunt-a':'#7d8694','grunt-b':'#5e6672','ring-saboteur':'#7c555c','fake-champion':'#d36a58','practice-dummy':'#a98c5e','rejected-challenger':'#6f84bc'}[id]||'#8667c7');
+    return({bark:'#9a6a3a',wade:'#2f91e3',pouki:'#6ca2a7',plouke:'#e6ddc7',hailey:'#e16b9a',hamual:'#c86f3d',daniel:'#5b76a9','practice-fighter':'#6f8fbe','qualifier-fighter':'#cf7446','bracket-fighter':'#9a6cc9','grunt-a':'#7d8694','grunt-b':'#5e6672','fake-champion':'#d36a58','practice-dummy':'#a98c5e','rejected-challenger':'#6f84bc'}[id]||'#8667c7');
   }
 
 
@@ -1649,45 +1687,36 @@ class RrvvfoMission2{
       if(fight.kind==='practice'){
         this.state.firstBrawlComplete=true;this.saveChapterState();
         this.showDialogue([
-          {speaker:'PRACTICE RING FIGHTER',speakerClass:'rival',text:'Sage said winning would introduce your level system.',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'He vanished and still managed to tutorialize me.',tail:'down'},
+          {speaker:'PRACTICE RING FIGHTER',speakerClass:'rival',text:'Hey, have you heard of a level system? Look in your pocket. That book that says Fighting 101 must mention it.',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'Yeah, it does. Why?',tail:'down'},
           {speaker:'WADE',speakerClass:'neutral',text:'Rrvvfo!',tail:'down'}
         ],()=>this.enterHub({spawn:{x:-420,z:80}}));
       }else if(fight.kind==='bark-spar'){
         this.state.barkSparResult='won';this.saveChapterState();
         this.showDialogue([
-          {speaker:'BARK',speakerClass:'neutral',text:'You are faster than you were after Season 1.',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'That sounded almost like praise.',tail:'down'},
-          {speaker:'BARK',speakerClass:'neutral',text:'Do not get used to it.',tail:'down'}
+          {speaker:'BARK',speakerClass:'neutral',text:'You’ve gotten faster, but save your power for the tournament.',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'I won’t need to if I’m gonna be fighting weaklings like you.',tail:'down'},
+          {speaker:'BARK',speakerClass:'neutral',text:'We’ll see when I win.',tail:'down'}
         ],()=>this.enterHub({spawn:{x:40,z:170}}));
-      }else if(fight.kind==='ring-repair'){
-        const ring=this.state.hubQuests.mandatory.barkRing;
-        ring.saboteurDefeated=true;ring.complete=true;markQuestComplete(this.state.hubQuests,'barkRing');this.saveChapterState();
-        this.showDialogue([
-          {speaker:'RING SABOTEUR',speakerClass:'rival',text:'Fine. The ring stays standing.',tail:'down'},
-          {speaker:'BARK',speakerClass:'neutral',text:'I reinforced every support. The practice ring is safe.',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'And now everyone knows the edge only counts after somebody actually sends you over it.',tail:'down'}
-        ],()=>{this.enterHub({spawn:{x:-980,z:620}});this.questToast('MAIN QUEST COMPLETE','THE CRACKED RING','Practice ring repaired. Registration unlocked.');this.updateHubObjective()});
       }else if(fight.kind==='fake-champion'){
         this.showDialogue([
-          {speaker:'LOUD CHAMPION',speakerClass:'rival',text:'My secret technique was not ready for an actual opponent.',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'Refund everyone.',tail:'down'}
+          {speaker:'RRVVFO',speakerClass:'p1',text:'Pay back everyone you scammed.',tail:'down'}
         ],()=>this.finishOptionalQuest('fakeChampion',{focus:1},'+1 permanent Story Focus'));
       }else if(fight.kind==='dummy'){
         this.showDialogue([
           {speaker:'ARENA MECHANIC',speakerClass:'neutral',text:'It stopped moving. More importantly, it stopped challenging the food carts.',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'That machine had terrible priorities.',tail:'down'}
+          {speaker:'RRVVFO',speakerClass:'p1',text:'What a weird machine.',tail:'down'}
         ],()=>this.finishOptionalQuest('dummy',{defense:1},'+1 permanent Story Defense'));
       }else if(fight.kind==='challenger'){
         this.showDialogue([
-          {speaker:'REJECTED CHALLENGER',speakerClass:'neutral',text:'That was enough. I know the training was real now.',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'Next time, bring a form that survives the trip.',tail:'down'}
+          {speaker:'REJECTED CHALLENGER',speakerClass:'neutral',text:'I have to leave early, but I’ll be rooting for you.',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'Good luck on your travels.',tail:'down'}
         ],()=>this.chooseChallengerReward());
       }else if(fight.kind==='grunt'){
         this.state.gruntDefeated=unique([...this.state.gruntDefeated,fight.id]);this.saveChapterState();
         this.showDialogue([
           {speaker:fight.name.toUpperCase(),speakerClass:'rival',text:'Fine. Go win your tournament.',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'That was already the plan.',tail:'down'}
+          {speaker:'RRVVFO',speakerClass:'p1',text:'Of course I am. Thanks for the warm-up.',tail:'down'}
         ],()=>this.enterHub({spawn:{x:550,z:300}}));
       }else if(fight.story){
         this.afterTournamentFight(fight);
@@ -1724,28 +1753,27 @@ class RrvvfoMission2{
       this.showTournamentCard('OPENING CEREMONY','Every major contestant enters the main arena before the preliminaries.',()=>this.showDialogue([
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'Welcome to the local tournament! Hamual, Daniel, Hailey, Bark, Wade, Pouki, Plouke—and first-time entrant Rrvvfo!',tail:'down'},
         {speaker:'CROWD',speakerClass:'neutral',text:'The former champion Hamual towers over the entrance line. Daniel looks ordinary enough to be tournament staff.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Sage is still missing. Plouke keeps looking this way like he knows why.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Of course the Sage isn’t here. He always disappears when I’m supposed to need him.',tail:'down'},
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'First preliminary: Hailey versus Plouke!',tail:'down'}
       ],()=>{this.state.ceremonyComplete=true;this.saveChapterState();this.startHaileyPrelim()}));
     }else if(step==='round-1'){
       discoverCombatManualPage('tournament-rules',{
         reactionLines:[
-          'Wait. Crossing the edge counts as losing a stock?',
-          'So camping near the boundary is somehow an even worse idea than usual.',
-          'Fine. Three KOs or ring-outs. I only need one of those rules.'
+          'Ring-outs are dangerous. They could push me off, so I shouldn’t camp near the edge.'
         ],
         onClose:()=>this.showDialogue([
           {speaker:'ANNOUNCER',speakerClass:'rival',text:'Official matches are first to three! A knockout or crossing the ring boundary removes one stock!',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'So the edge is an attack now. Great. At least anyone camping there is volunteering.',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'I should stay away from the edge.',tail:'down'},
           {speaker:'ANNOUNCER',speakerClass:'rival',text:'Opening round! Rrvvfo versus Hamual—the enormous former champion!',tail:'down'},
-          {speaker:'HAMUAL',speakerClass:'rival',text:'Do not confuse size with slowness. I won this bracket before you entered one.',tail:'down'},
-          {speaker:'RRVVFO',speakerClass:'p1',text:'Good. I was worried the wall might not talk.',tail:'down'}
+          {speaker:'RRVVFO',speakerClass:'p1',text:'He looks like he’d eat me for breakfast.',tail:'down'},
+          {speaker:'HAMUAL',speakerClass:'rival',text:'Don’t confuse size with slowness. I won this bracket before you entered one.',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'You couldn’t win even if you were ten times bigger.',tail:'down'}
         ],()=>this.startFight({id:'hamual',name:'Hamual',xp:110,kind:'tournament',story,intro:'ROUND ONE • POWER TEST',visualScale:1.48,hpScale:1.18}))
       });
     }else if(step==='quarterfinal'){
       this.showDialogue([
-        {speaker:'DANIEL',speakerClass:'neutral',text:'You expected another giant. That is useful.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'You look like you took a wrong turn into the bracket.',tail:'down'},
+        {speaker:'DANIEL',speakerClass:'neutral',text:'You expected another giant. That’s useful.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'You look a little casual for a tournament.',tail:'down'},
         {speaker:'DANIEL',speakerClass:'neutral',text:'Watch my feet, not my clothes.',tail:'down'}
       ],()=>this.startFight({id:'daniel',name:'Daniel',xp:125,kind:'tournament',story,intro:'QUARTERFINAL • SKILL TEST',hpScale:1.04}));
     }else if(step==='bark-pouki'){
@@ -1753,8 +1781,8 @@ class RrvvfoMission2{
     }else if(step==='wade'){
       this.showDialogue([
         {speaker:'WADE',speakerClass:'neutral',text:'Guess the bracket really wanted this.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Try not to be predictable this time.',tail:'down'},
-        {speaker:'WADE',speakerClass:'neutral',text:'Try to keep up.',tail:'down'}
+        {speaker:'RRVVFO',speakerClass:'p1',text:'You may be fast, but you’re slow in the brain.',tail:'down'},
+        {speaker:'WADE',speakerClass:'neutral',text:'I’m fast, not slow.',tail:'down'}
       ],()=>this.startFight({id:'wade',name:'Wade',hp:90,xp:140,kind:'tournament',story,intro:'SEMIFINAL • RRVVFO VS WADE'}));
     }else if(step==='final'){
       this.startFinalPreparation();
@@ -1770,13 +1798,12 @@ class RrvvfoMission2{
     }else if(fight.id==='daniel'){
       this.showDialogue([
         {speaker:'DANIEL',speakerClass:'neutral',text:'You adjusted before the third exchange. That decided it.',tail:'down'},
-        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Rrvvfo advances! Next on the other ring: Bark versus Pouki!',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I want to see what Plouke has been doing before that.',tail:'down'}
+        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Rrvvfo advances! Next on the other ring: Bark versus Pouki!',tail:'down'}
       ],()=>this.returnToHubIntermission('bark-pouki','after-quarterfinal',{x:1030,z:100}));
     }else if(fight.id==='wade'){
       this.showDialogue([
-        {speaker:'WADE',speakerClass:'neutral',text:'You win. Do not waste it in the final.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I am not planning to waste anything.',tail:'down'},
+        {speaker:'WADE',speakerClass:'neutral',text:'You won! Yay!',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'I don’t think that’s supposed to be your reaction.',tail:'down'},
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'Plouke has defeated Pouki in the opposite semifinal. The final is set!',tail:'down'}
       ],()=>this.returnToHubIntermission('final','before-final',{x:1030,z:100}));
     }
@@ -1844,10 +1871,10 @@ class RrvvfoMission2{
     if(this.mode!=='spectator'||this.currentFight?.id!=='hailey-plouke-prelim')return;
     this.mode='story';this.battle.phase='story';this.state.prelimComplete=true;this.state.tournamentStep='round-1';this.saveChapterState();
     this.showDialogue([
-      {speaker:'ANNOUNCER',speakerClass:'rival',text:'Plouke advances after a much closer preliminary than his posing suggested!',tail:'down'},
-      {speaker:'HAILEY',speakerClass:'neutral',text:'He spent half the match hunting for the best camera angle. Then he copied my timing exactly.',tail:'down'},
-      {speaker:'PLOUKE',speakerClass:'rival',text:'A good view is part of studying technique.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Sage says things like that when he wants nobody asking why he was showing off.',tail:'down'}
+      {speaker:'HAILEY',speakerClass:'neutral',text:'Stop staring and defend yourself!',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'This guy reminds me of the Sage. I hope they never meet.',tail:'down'},
+      {speaker:'ANNOUNCER',speakerClass:'rival',text:'Plouke wins by ring-out!',tail:'down'},
+      {speaker:'PLOUKE',speakerClass:'rival',text:'I might not have won if it weren’t for that pebble I placed in front of me, just in case I got distracted.',tail:'down'}
     ],()=>this.startTournamentStep('round-1'));
   }
 
@@ -1857,7 +1884,7 @@ class RrvvfoMission2{
     this.showDialogue([
       {speaker:'ANNOUNCER',speakerClass:'rival',text:'Pouki wins! Bark held the center, survived the guard break, and nearly landed one final counter!',tail:'down'},
       {speaker:'BARK',speakerClass:'neutral',text:'He changed rhythm every time I settled. My last counter was the first opening he gave me.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Then the silence after he won was the crowd realizing how dangerous he is.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'If he got Bark that easily, he must be really strong.',tail:'down'},
       {speaker:'WADE',speakerClass:'neutral',text:'You still have to beat me first.',tail:'down'}
     ],()=>this.returnToHubIntermission('wade','after-bark-pouki',{x:930,z:120}));
   }
@@ -1868,8 +1895,8 @@ class RrvvfoMission2{
     const meal=this.state.hubQuests.bonuses.meal;
     this.showDialogue([
       {speaker:'BARK',speakerClass:'neutral',text:'Stillness, positioning, timing, and the ring edge. We verified every pattern Plouke uses.',tail:'down'},
-      {speaker:'WADE',speakerClass:'neutral',text:'Do not chase his retreat. Cut through center and make him choose first.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'And Sage never came back. I am done treating that as a coincidence.',tail:'down'}
+      {speaker:'WADE',speakerClass:'neutral',text:'Don’t chase his retreat. Cut through the center and make him choose first.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'The Sage still hasn’t shown up. He’d better have a good excuse.',tail:'down'}
     ],()=>this.showChoice({
       kicker:'FINAL PREPARATION BENCH',title:'READY FOR PLOUKE?',
       text:`Level ${this.level} • HP ${stats.hp} • ${rumors.length}/4 patterns verified • ${meal?`${meal.toUpperCase()} meal prepared`:'no meal prepared'}. This checkpoint is saved.`,
@@ -1885,9 +1912,9 @@ class RrvvfoMission2{
     this.finalElapsed=0;this.finalPhase='opening';
     this.showDialogue([
       {speaker:'PLOUKE',speakerClass:'rival',text:'You used too much energy reaching this round.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'I could win this tired.',tail:'down'},
-      {speaker:'PLOUKE',speakerClass:'rival',text:'That confidence is exactly why you are tired.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Keep talking. It will make losing more embarrassing.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I can win this with my hands tied up.',tail:'down'},
+      {speaker:'PLOUKE',speakerClass:'rival',text:'That confidence is exactly why you’re tired.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Keep talking. It’ll make losing more embarrassing.',tail:'down'}
     ],()=>this.startFight({id:'plouke',name:'Plouke',hp:100,xp:0,kind:'final',story:true,final:true,intro:'FINAL • RRVVFO VS PLOUKE'}));
   }
 
@@ -1895,9 +1922,9 @@ class RrvvfoMission2{
     if(!this.currentFight?.final||this.finalPhase!=='opening')return;
     this.finalPhase='fatigue';this.mode='story';this.battle.phase='story';
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Why am I already this tired?',tail:'down'},
-      {speaker:'PLOUKE',speakerClass:'rival',text:'You fought every round as if your energy could not end.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'It usually waits longer before proving me wrong.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'My tank’s depleting fast—but why?',tail:'down'},
+      {speaker:'PLOUKE',speakerClass:'rival',text:'You fought every round like your energy couldn’t run out.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I can still win.',tail:'down'},
       {speaker:'PLOUKE',speakerClass:'rival',text:'Then keep fighting.',tail:'down'}
     ],()=>{
       this.mode='fight';this.battle.phase='play';
@@ -1910,7 +1937,7 @@ class RrvvfoMission2{
     if(!this.currentFight?.final||['awakening-ready','awakening','clash','finished'].includes(this.finalPhase))return;
     this.finalPhase='awakening-ready';this.mode='story';this.battle.phase='story';
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Fine. I will end this with Fire Awakening.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Fine. I’ll end this with Fire Awakening.',tail:'down'},
       {speaker:'PLOUKE',speakerClass:'rival',text:'Try it.',tail:'down'}
     ],()=>{
       this.mode='fight';this.battle.phase='play';
@@ -1927,8 +1954,8 @@ class RrvvfoMission2{
     this.battle.burst(player.x,player.z,'#ff8c32',38,85);
     this.showDialogue([
       {speaker:'RRVVFO',speakerClass:'p1',text:'Come on... ignite!',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Why is it not holding?',tail:'down'},
-      {speaker:'PLOUKE',speakerClass:'rival',text:'Because power does not erase exhaustion.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Why isn’t it holding?',tail:'down'},
+      {speaker:'PLOUKE',speakerClass:'rival',text:'Because power doesn’t erase exhaustion.',tail:'down'},
       {speaker:'PLOUKE',speakerClass:'rival',text:'Show me what you have left.',tail:'down'}
     ],()=>this.beginBeamClash());
   }
@@ -1982,15 +2009,18 @@ class RrvvfoMission2{
       this.battle.banner('RRVVFO WINS THE CLASH • PLOUKE RING-OUT!');
     }
     const reveal=()=>this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:clashWon?'I pushed it back—wait, where is the floor?':'My arms will not move...',tail:'down'},
-      {speaker:'PLOUKE',speakerClass:'rival',text:clashWon?'You won the clash. I won the ring.':'The match is over.',tail:'down'},
-      {speaker:'ANNOUNCER',speakerClass:'rival',text:clashWon?'Rrvvfo wins the beam clash—but Plouke wins by ring-out!':nearlyWon?'Plouke wins—but the crowd knows Rrvvfo forced him to reveal everything!':'Plouke wins the tournament!',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:clashWon?'I beat you in the beam! Haha—':'No! I lost the clash... I’m out of energy.',tail:'down'},
+      ...(clashWon?[
+        {speaker:'RRVVFO',speakerClass:'p1',text:'WAIT, I’M ON THE GRASS! AHH!',tail:'down'},
+        {speaker:'PLOUKE',speakerClass:'rival',text:'I beat you.',tail:'down'}
+      ]:[{speaker:'PLOUKE',speakerClass:'rival',text:'The match is over.',tail:'down'}]),
+      {speaker:'ANNOUNCER',speakerClass:'rival',text:clashWon?'Rrvvfo wins the beam clash—but Plouke wins by ring-out!':'Plouke wins the tournament!',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Who are you?',tail:'down'},
       {speaker:'PLOUKE',speakerClass:'rival',text:'You really did skim the disguise section.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'...No.',tail:'down'},
       {speaker:'SAGE',speakerClass:'neutral',text:'Plouke was me.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You vanished, entered the tournament, beat Pouki, exhausted me in the final, and called it training?',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:clashWon?'And you won the clash. That earns a level. It does not earn awareness of the ring edge.':nearlyWon?'You forced every strategy into the open. Keep the badge; the result still stands.':'You learned more while believing I was absent.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Now that explains what you were doing during your fight with Hailey.',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:clashWon?'And you won the clash. That earns a level. It doesn’t earn awareness of the ring edge.':nearlyWon?'You forced every strategy into the open. Keep the badge; the result still stands.':'You learned more while believing I was absent.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'I hate how planned ahead you are.',tail:'down'}
     ],()=>this.commitCompletion());
     if(clashWon){
@@ -2013,17 +2043,17 @@ class RrvvfoMission2{
     if(!fight.official){
       this.mode='story';this.battle.phase='story';
       this.showDialogue([
-        {speaker:'RRVVFO',speakerClass:'p1',text:'This one is not part of the bracket. I am saving my energy.',tail:'down'},
-        {speaker:fight.name.toUpperCase(),speakerClass:'rival',text:'You are running away.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I am leaving a fight I never needed to finish.',tail:'down'}
+        {speaker:'RRVVFO',speakerClass:'p1',text:'This one isn’t part of the bracket. I’m saving my energy.',tail:'down'},
+        {speaker:fight.name.toUpperCase(),speakerClass:'rival',text:'You’re running away.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'I’m leaving a fight I never needed to finish.',tail:'down'}
       ],()=>this.enterHub({spawn:{x:-220,z:-330}}));
       return;
     }
     const lines=[
-      ['Definitely not. I am not forfeiting.'],
+      ['Definitely not. I’m not forfeiting.'],
       ['Who do you think I am? I came here to win.'],
       ['I said I refuse. Stop asking me to forfeit.'],
-      ['Why do I keep looking at that button?','I am winning this tournament whether I like it or not.']
+      ['Why do I keep looking at that button?','I’m winning this tournament whether I like it or not.']
     ];
     const index=this.state.runRefusals%lines.length;
     this.state.runRefusals+=1;this.saveChapterState();
@@ -2239,6 +2269,7 @@ class RrvvfoMission2{
   drawHubExtras(){
     if(!this.battle?.renderer)return;
     const r=this.battle.renderer,time=performance.now()/1000,quests=this.state.hubQuests;
+    drawTournamentLandmarks(r,time,{afterHours:false});
     const missingCards=missingChapter2BracketCards(quests);
     for(const npc of this.activeNpcs()){
       const bob=Math.sin(time*2+npc.x*.01)*2;
@@ -2249,18 +2280,25 @@ class RrvvfoMission2{
         r.box({x:npc.x,y:80,z:npc.z,sx:120,sy:150,sz:18,color:npc.color});
         r.box({x:npc.x,y:155,z:npc.z,sx:135,sy:18,sz:28,color:npc.hair});
       }else if(!usesSprite){
-        r.box({x:npc.x,y:48+bob,z:npc.z,sx:32,sy:64,sz:25,color:npc.color});
-        r.box({x:npc.x,y:92+bob,z:npc.z,sx:29,sy:29,sz:27,color:'#946044'});
-        r.box({x:npc.x,y:112+bob,z:npc.z,sx:35,sy:16,sz:31,color:npc.hair});
+        const vendorLike=['vendor','cashier','announcer'].includes(npc.id),fighterLike=['fake-champion','challenger','old-competitor'].includes(npc.id);
+        r.cylinder({x:npc.x,y:49+bob,z:npc.z,rx:fighterLike?18:15,rz:fighterLike?14:12,sy:65,color:npc.color});
+        r.cylinder({x:npc.x,y:94+bob,z:npc.z,rx:14,sy:28,color:'#946044'});
+        if(vendorLike){
+          r.cone({x:npc.x,y:116+bob,z:npc.z,rx:22,rz:19,sy:19,color:npc.hair});
+          r.box({x:npc.x,y:118+bob,z:npc.z-11,sx:42,sy:5,sz:15,color:npc.hair});
+        }else if(fighterLike){
+          r.cone({x:npc.x,y:119+bob,z:npc.z,rx:19,rz:16,sy:26,color:npc.hair});
+          r.segment({x:npc.x-18,y:65+bob,z:npc.z},{x:npc.x+20,y:76+bob,z:npc.z-4},{width:7,height:7,color:npc.color});
+        }else r.cone({x:npc.x,y:117+bob,z:npc.z,rx:18,rz:15,sy:23,color:npc.hair});
       }else if(!hasSprite){
         r.billboard({x:npc.x,y:86+bob,z:npc.z,size:42,color:npc.id==='sage'?'#dff5ff':npc.id==='bark'?'#c69258':'#6ed6ff',alpha:.28});
       }
       if(npc.id==='sage')r.billboard({x:npc.x,y:145,z:npc.z,size:48,color:'#dff5ff',alpha:.22});
-      if(npc.kind==='grunt'||npc.kind==='ringSaboteur')r.disc({x:npc.x,y:7,z:npc.z,rx:42,rz:28,color:'#ffcf4d',alpha:.18});
+      if(npc.kind==='grunt')r.disc({x:npc.x,y:7,z:npc.z,rx:42,rz:28,color:'#ffcf4d',alpha:.18});
       if(npc.id==='bark'||npc.id==='wade')r.disc({x:npc.x,y:7,z:npc.z,rx:40,rz:26,color:npc.id==='bark'?'#b88750':'#59b7ff',alpha:.18});
       const announcerTarget=npc.id==='announcer'&&(!quests.mandatory.bracket.started||(!quests.mandatory.bracket.complete&&!missingCards.length));
       const fanCardTarget=npc.id==='fan'&&missingCards.some(card=>card.id==='fan-card');
-      const mainTarget=announcerTarget||fanCardTarget||(npc.id==='wade'&&this.state.metBarkWade&&!quests.mandatory.wadeRace.complete)||(npc.id==='bark'&&quests.mandatory.wadeRace.complete&&!quests.mandatory.barkRing.complete)||(npc.id==='ring-saboteur'&&!quests.mandatory.barkRing.complete)||(npc.id==='bracket'&&this.state.intermission);
+      const mainTarget=announcerTarget||fanCardTarget||(npc.id==='wade'&&this.state.metBarkWade&&!quests.mandatory.wadeRace.complete)||(npc.id==='bark'&&quests.mandatory.wadeRace.complete&&!quests.mandatory.barkRing.complete)||(npc.id==='bracket'&&this.state.intermission);
       const sideTarget=['vendor','fake-champion','lost-fan','mechanic','cashier','challenger'].includes(npc.id);
       if(mainTarget)r.billboard({x:npc.x,y:165+bob,z:npc.z,size:34,color:'#ffd34f',alpha:.88});
       else if(sideTarget)r.billboard({x:npc.x,y:155+bob,z:npc.z,size:24,color:'#6ed6ff',alpha:.72});
@@ -2283,9 +2321,15 @@ class RrvvfoMission2{
     const bracket=quests.mandatory.bracket;
     if(bracket.started&&!bracket.complete&&!bracket.cards.includes('fan-card')){
       const fan=this.npcs.find(npc=>npc.id==='fan'),pulse=1+Math.sin(time*5+.8)*.1;
-      r.box({x:fan.x+24,y:112,z:fan.z,sx:24,sy:3,sz:32,color:'#fff3b0',alpha:.96});
-      r.billboard({x:fan.x,y:158,z:fan.z,size:38*pulse,color:'#ffd34f',alpha:.92});
-      r.disc({x:fan.x,y:7,z:fan.z,rx:44*pulse,rz:30*pulse,color:'#ffd34f',alpha:.34});
+      if(bracket.fanClue){
+        r.box({x:this.fanCardX,y:74,z:this.fanCardZ,sx:27,sy:3,sz:35,color:'#fff3b0',alpha:.98});
+        r.segment({x:this.fanCardX-55,y:74,z:this.fanCardZ},{x:this.fanCardX-8,y:74,z:this.fanCardZ},{width:5,height:2,color:'#78dcff',alpha:.55,lit:false});
+        r.billboard({x:this.fanCardX,y:117,z:this.fanCardZ,size:36*pulse,color:'#ffd34f',alpha:.94});
+      }else{
+        r.box({x:fan.x+24,y:112,z:fan.z,sx:24,sy:3,sz:32,color:'#fff3b0',alpha:.96});
+        r.billboard({x:fan.x,y:158,z:fan.z,size:38*pulse,color:'#ffd34f',alpha:.92});
+        r.disc({x:fan.x,y:7,z:fan.z,rx:44*pulse,rz:30*pulse,color:'#ffd34f',alpha:.34});
+      }
     }
     if(bracket.started&&!bracket.complete&&!bracket.cards.includes('vendor-card')){
       const pulse=1+Math.sin(time*5)*.1;
@@ -2318,12 +2362,14 @@ class RrvvfoMission2{
 
     // Crowd movement makes the hub feel active without turning every person into a quest giver.
     const crowdColors=['#d45172','#4ea4d1','#d99c45','#6e58ad','#5aa36d'];
-    for(let i=0;i<22;i++){
-      const drift=((i*173+time*(18+i%4*4)*(i%2?1:-1))%1900+1900)%1900;
-      const x=-930+drift;
-      const z=(i%2?700:-700)+Math.sin(time*.5+i)*42;
-      r.box({x,y:42,z,sx:25,sy:58,sz:22,color:crowdColors[i%crowdColors.length],alpha:.82});
-      r.box({x,y:82,z,sx:23,sy:23,sz:22,color:'#8f5d42',alpha:.85});
+    for(let i=0;i<26;i++){
+      const drift=((i*151+time*(17+i%4*4)*(i%2?1:-1))%2050+2050)%2050;
+      const x=-1020+drift,z=(i%2?720:-720)+Math.sin(time*.5+i)*48,bob=Math.sin(time*2.1+i)*1.8;
+      r.cylinder({x,y:42+bob,z,rx:12+(i%3),rz:10+(i%2),sy:58+(i%4)*3,color:crowdColors[i%crowdColors.length],alpha:.84});
+      r.cylinder({x,y:80+bob+(i%4)*1.5,z,rx:11,sy:22,color:i%5===0?'#b77958':'#8f5d42',alpha:.88});
+      if(i%4===0)r.cone({x,y:97+bob,z,rx:16,rz:14,sy:16,color:i%2?'#e0b843':'#3d2c28',alpha:.9});
+      else r.cone({x,y:99+bob,z,rx:14,rz:12,sy:20,color:i%3?'#3b2c27':'#7b4d35',alpha:.9});
+      if(i%6===0)r.box({x:x+14,y:50+bob,z:z+2,sx:12,sy:28,sz:14,color:'#b68a4f',alpha:.85});
     }
 
     // A visible practice spar loops in the west ring so the grounds never look idle.

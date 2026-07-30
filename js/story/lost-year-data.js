@@ -76,6 +76,19 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         objectives:['Investigate the after-hours tournament','Complete three mandatory side stories','Follow the Lens trail beneath the arena','Defeat the Runaway Training Dummy and Unfinished Echo','Use Object Swap to reach the strange teleporter','Arrive near Shadow’s Lookout'],
         stage:'After-Hours Tournament + Abandoned Resonance Facility + Remote Highlands',
         note:'The operator remains anonymous. Project Hollow is discovered but not explained.'
+      },
+      {
+        id:'rrvvfo-04',
+        number:4,
+        title:'ECHO REGION',
+        available:true,
+        playable:true,
+        unlockAfter:'rrvvfo-03',
+        status:'PLAYABLE FULL CHAPTER + SECRET BOSS',
+        description:'Rrvvfo wakes in Echo Region, reunites with Bark and Wade, restores Echo Village, uncovers a wider Project Hollow network, and climbs toward Shadow’s Lookout.',
+        objectives:['Reach Echo Village','Restore the Echo Beacon','Recover the mountain-lift parts','Defend Echo Village','Optionally complete The Old Man’s Potions and seal Ryuzankaro','Defeat the Hollow Watcher','Enter Shadow’s Lookout'],
+        stage:'Echo Region + Echo Village + Echo Caverns + Mountain Path + Shadow’s Lookout',
+        note:'The Ryuzankaro quest unlocks only after the mandatory village defense. Vibration Sense is optional and never required for chapter completion.'
       }
     ]
 
@@ -83,7 +96,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},updatedAt:Date.now()};
 }
 
 export function loadLostYearProgress(storage=localStorage){
@@ -121,7 +134,8 @@ export function routeProgress(route,progress){
   const completedChapters=[
     ['rrvvfo-00','rrvvfo-01','rrvvfo-road'],
     ['rrvvfo-02'],
-    ['rrvvfo-03']
+    ['rrvvfo-03'],
+    ['rrvvfo-04']
   ].filter(missions=>missions.every(id=>completed.has(id))).length;
   return Math.round(completedChapters/STORY_CHAPTERS_PER_CHARACTER*100);
 }
@@ -150,6 +164,11 @@ export const RRVVFO_CHAPTERS=Object.freeze([
     id:'rrvvfo-chapter-3',number:3,title:'SOMETHING UNDER THE RING',
     description:'Investigate the after-hours tournament, follow stolen fighter energy underground, defeat the Unfinished Echo, and reach the Remote Highlands.',
     missions:['rrvvfo-03']
+  },
+  {
+    id:'rrvvfo-chapter-4',number:4,title:'ECHO REGION',
+    description:'Restore Echo Village with Bark and Wade, optionally confront Ryuzankaro, defeat the adaptive Hollow Watcher, and reach Shadow’s Lookout.',
+    missions:['rrvvfo-04']
   }
 ]);
 
@@ -164,6 +183,7 @@ export function rrvvfoNextMission(progress){
   if(!completed.has('rrvvfo-road'))return'rrvvfo-road';
   if(!completed.has('rrvvfo-02'))return'rrvvfo-02';
   if(!completed.has('rrvvfo-03'))return'rrvvfo-03';
+  if(!completed.has('rrvvfo-04'))return'rrvvfo-04';
   return null;
 }
 
@@ -173,6 +193,28 @@ export function rrvvfoChapterComplete(chapter,progress){
 }
 
 const STORY_CHAPTERS_BY_ROUTE=Object.freeze({rrvvfo:RRVVFO_CHAPTERS});
+
+
+export const MODE_UNLOCK_RULES=Object.freeze({
+  training:Object.freeze({chapter:0,label:'AVAILABLE FROM THE START'}),
+  cpu:Object.freeze({chapter:1,label:'COMPLETE CHAPTER 1'}),
+  local:Object.freeze({chapter:2,label:'COMPLETE CHAPTER 2'}),
+  arena:Object.freeze({chapter:3,label:'COMPLETE CHAPTER 3'})
+});
+
+export function completedRrvvfoChapterCount(progress=loadLostYearProgress()){
+  return RRVVFO_CHAPTERS.reduce((count,chapter)=>count+(rrvvfoChapterComplete(chapter,progress)?1:0),0);
+}
+
+export function modeUnlockedForProgress(modeId,progress=loadLostYearProgress()){
+  const rule=MODE_UNLOCK_RULES[modeId];
+  if(!rule)return true;
+  return completedRrvvfoChapterCount(progress)>=rule.chapter;
+}
+
+export function modeUnlockRequirement(modeId){
+  return MODE_UNLOCK_RULES[modeId]?.label||'AVAILABLE';
+}
 
 export function storyModeComplete(progress=loadLostYearProgress()){
   const routes=LOST_YEAR_ROUTES.filter(route=>route.available);

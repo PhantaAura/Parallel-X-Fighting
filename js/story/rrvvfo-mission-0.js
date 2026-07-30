@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a17-chapter123-repair-icon-20260729';
-import {clampToStage} from '../arena/arena-stages.js?v=29a17-chapter123-repair-icon-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyConfirm} from './story-ux.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a17-chapter123-repair-icon-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a22p1-floating-lookout-20260730';
+import {clampToStage} from '../arena/arena-stages.js?v=29a22p1-floating-lookout-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
+import {storyConfirm} from './story-ux.js?v=29a22p1-floating-lookout-20260730';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a22p1-floating-lookout-20260730';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -28,8 +28,8 @@ function installMissionUI(){
 #${UI_ID} .dialogueWrap.hidden{display:none}
 #${UI_ID} .sonicDialogueBox{position:relative;display:grid;grid-template-columns:128px 1fr;gap:16px;align-items:stretch;width:min(980px,100%);min-height:138px;margin:0 auto;padding:10px 18px 10px 10px;border:5px solid #080808;border-radius:3px;background:#fff;color:#111;box-shadow:0 7px 0 #080808;text-align:left;cursor:pointer;pointer-events:auto}
 #${UI_ID} .sonicDialogueBox:focus-visible{outline:4px solid #6bbcff;outline-offset:5px}
-#${UI_ID} .dialoguePortrait{min-height:108px;border:4px solid #080808;background-color:#263550;background-image:url('./assets/fighters/sage/sage-atlas.png');background-repeat:no-repeat;background-size:600% 600%;background-position:0 0;image-rendering:auto}
-#${UI_ID} .dialogueWrap[data-speaker="RRVVFO"] .dialoguePortrait{background-color:#74251f;background-image:url('./assets/fighters/rrvvfo/rrvvfo-atlas.png');background-size:900% 2000%}
+#${UI_ID} .dialoguePortrait{min-height:108px;border:4px solid #080808;background-color:#263550;background-image:url('./assets/fighters/sage/sage-atlas.webp');background-repeat:no-repeat;background-size:600% 600%;background-position:0 0;image-rendering:auto}
+#${UI_ID} .dialogueWrap[data-speaker="RRVVFO"] .dialoguePortrait{background-color:#74251f;background-image:url('./assets/fighters/rrvvfo/rrvvfo-atlas.webp');background-size:900% 2000%}
 #${UI_ID} .dialogueCopy{position:relative;min-width:0;padding:20px 42px 18px 2px}
 #${UI_ID} .speakerTab{position:absolute;left:0;top:-30px;min-width:180px;padding:6px 13px;border:4px solid #080808;border-bottom:0;background:#20202b;color:#fff;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;font-weight:1000;letter-spacing:.08em;text-align:center}
 #${UI_ID} .dialogueWrap[data-speaker="RRVVFO"] .speakerTab{background:#a52f27}
@@ -294,14 +294,12 @@ class RrvvfoMission0{
   showOpeningDialogue(){
     this.previewClones(0);
     this.engine.showDialogue([
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Try concentrating your energy into your hand. Like Alt did when he fought you on the space base.',tail:'down',onShow:()=>this.previewClones(0)},
-      {speaker:'RRVVFO',speakerClass:'p1',text:"Unlike Alt, my arms aren't that big. I'm not as buff as him.",tail:'down',onShow:()=>this.previewClones(0)},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'...Nothing. This is not working.',tail:'down',onShow:()=>this.previewClones(0)},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Concentrate. Stop trying to copy his muscles and copy what the energy did.',tail:'down',onShow:()=>this.previewClones(1)},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Ha! You found that out by yourself. Impressive.',tail:'down',onShow:()=>this.previewClones(1)},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Four. This is my maximum.',tail:'down',onShow:()=>this.previewClones(4)},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'There are no maximums.',tail:'down',onShow:()=>this.previewClones(4)},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'You made the copies. Now make all four attack together—and try to hit me.',tail:'down',onShow:()=>this.previewClones(0)}
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Eh, focus your energy into your hands or something. I’m getting bored. I have places to be.',tail:'down',onShow:()=>this.previewClones(0)},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Maybe this would be easier if you actually taught me stuff. I can already imagine what places a perv like you has to go.',tail:'down',onShow:()=>this.previewClones(0)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'HEY! I told you to stop calling me that!',tail:'down',onShow:()=>this.previewClones(1)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Took you long enough. Now get four out. Let’s see if you still have any fighting spirit in you.',tail:'down',onShow:()=>this.previewClones(4)},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'This is my max capacity.',tail:'down',onShow:()=>this.previewClones(4)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Eh, now you’ve done something. Summon them again and make each one attack me with a specific action.',tail:'down',onShow:()=>this.previewClones(0)}
     ],{onComplete:()=>{this.previewClones(0);this.beginFight()}});
   }
 
@@ -415,10 +413,11 @@ class RrvvfoMission0{
     battle.fighters[1].visualActionTime=.5;
     this.setObjective('TECHNIQUE COMPLETE','The four-clone volley caught the Sage off guard.');
     this.engine.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Got you.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Ha. You stopped trying to hit where I was going.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Shots of Agony.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Not bad. And stop calling four your maximum.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Caught ya.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Alright, training’s over. I’ve got important stuff to do.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Wait—no! We just got started!',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You damn perv.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I’ll name this attack... Shots of Agony.',tail:'down'}
     ],{onComplete:()=>{
       this.commitCompletion();
       this.completePanel.classList.remove('hidden');

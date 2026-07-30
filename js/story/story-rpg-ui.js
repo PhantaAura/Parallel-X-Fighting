@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a17-chapter123-repair-icon-20260729';
+import {sharedInput} from '../input-runtime.js?v=29a22p1-floating-lookout-20260730';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a22p1-floating-lookout-20260730';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast / Shots of Agony'},
@@ -34,5 +34,5 @@ export function storyPromptLabel(action,{fallback=''}={}){
 }
 
 export function storyControlLegendMarkup(){
-  return `<div class="storyControlLegend"><span><b>${storyPromptLabel('pause')}</b> Pause</span><span><b>${storyPromptLabel('manual')}</b> Sage Manual</span><span><b>${storyPromptLabel('tracker')}</b> Objective Tracker</span><span><b>${storyPromptLabel('interact')}</b> Interact</span></div>`;
+  return `<div class="storyControlLegend"><span><b>${storyPromptLabel('pause')}</b> Pause</span><span><b>${storyPromptLabel('manual')}</b> Sage Manual</span><span><b>${storyPromptLabel('tracker')}</b> Objective Tracker</span><span><b>${storyPromptLabel('interact')}</b> Interact</span><span><b>RIGHT STICK / MOUSE</b> Move Hub Camera</span></div>`;
 }

@@ -1,0 +1,878 @@
+PARALLELS X
+CHAPTER 2 — REWRITTEN DIALOGUE
+Safe-Keeping Draft
+
+==================================================
+ARRIVAL AT THE TOURNAMENT GROUNDS
+==================================================
+
+ANNOUNCER:
+“Registration delay! Nobody panic unless you’re holding part of the bracket!”
+
+RRVVFO:
+“Not my problem.”
+
+SAGE:
+“You’re bored, right? Go do that.”
+
+RRVVFO:
+“Whatever. I’ve got nothing better to be doing.”
+
+
+==================================================
+THE LOST BRACKET BEGINS
+==================================================
+
+ANNOUNCER:
+“Disaster! Three contestant cards escaped the bracket board!”
+
+RRVVFO:
+“Aren’t you the announcer I used to watch in those World Tournaments on TV when I was younger? So I guess your clumsiness wasn’t a character.”
+
+ANNOUNCER:
+“HEY! HURTFUL!”
+
+RRVVFO:
+“I’m helping you. I can be as rude as I want.”
+
+
+==================================================
+FINDING THE THREE CONTESTANT CARDS
+==================================================
+
+WADE’S CARD
+
+TOURNAMENT FAN:
+“A contestant card blew into my souvenir bag. It says Wade.”
+
+RRVVFO:
+“Of course his card traveled faster than everybody else’s.”
+
+
+BARK’S CARD
+
+RRVVFO:
+“Bark’s card landed on the upper market walkway.”
+
+FOOD VENDOR:
+“I said it went up. I did not say the wind respected stairs.”
+
+
+THE QUALIFIER’S CARD
+
+OLD COMPETITOR:
+“There it is—caught on the maintenance cart!”
+
+RRVVFO:
+“The bracket paperwork is officially faster than the staff.”
+
+
+==================================================
+RETURNING THE CARDS AND THE SAGE DISAPPEARING
+==================================================
+
+ANNOUNCER:
+“Wade, Bark, and the unreadable qualifier! The bracket lives!”
+
+RRVVFO:
+“I’m about to win.”
+
+SAGE:
+“Stay near the practice ring. I need to check something before your first brawl.”
+
+[The Sage walks behind the waiting tent and disappears.]
+
+RRVVFO:
+“Sage?”
+
+ANNOUNCER:
+“Was that pale man with you? He walked behind the waiting tent.”
+
+[Rrvvfo shrugs.]
+
+RRVVFO:
+“He’s probably spying on ladies again. Perv.”
+
+
+==================================================
+THE PRACTICE BRAWL
+==================================================
+
+PRACTICE RING FIGHTER:
+“Alright, let’s fight. A little training’s good for ya, boy.”
+
+RRVVFO:
+“Alright. Let’s do it.”
+
+
+COMBAT MANUAL REACTION
+
+RRVVFO:
+“He really wrote a level system?”
+
+RRVVFO:
+“It seems like I can choose what stuff I power up when I level up. It gets harder the more I level up, though. Whatever.”
+
+
+AFTER THE PRACTICE BRAWL
+
+PRACTICE RING FIGHTER:
+“Hey, have you heard of a level system? Look in your pocket. That book that says Fighting 101 must mention it.”
+
+RRVVFO:
+“Yeah, it does. Why?”
+
+WADE:
+“Rrvvfo!”
+
+
+==================================================
+NINJA REUNION
+==================================================
+
+WADE:
+“There you are! We’ve been looking all over—”
+
+BARK:
+“We just got here, Wade. We didn’t even start looking yet.”
+
+RRVVFO:
+“Wade, you really are dense, huh?”
+
+WADE:
+“Looks like a big ninja reunion. The three of us.”
+
+[Rrvvfo smirks.]
+
+RRVVFO:
+“But only one of us can win.”
+
+BARK:
+“It’s me.”
+
+[Rrvvfo scoffs.]
+
+WADE:
+“It’s me. I’m the most tactical.”
+
+[Bark and Rrvvfo laugh.]
+
+BARK AND RRVVFO:
+“In what world?”
+
+[Bark leaves to buy something.]
+
+WADE:
+“Then follow me. I found the fastest route through this whole place.”
+
+RRVVFO:
+“You found a route and turned it into a competition. Of course.”
+
+
+==================================================
+WADE’S SHORTCUT RACE
+==================================================
+
+IF RRVVFO WINS
+
+WADE:
+“You beat that time? I was showing you the route, not racing at full speed.”
+
+RRVVFO:
+“A shortcut only matters if I reach the end first.”
+
+BARK:
+“When you two are done, the practice ring is cracking underneath the east support.”
+
+
+IF RRVVFO LOSES
+
+WADE:
+“You made it. The route is faster when you stop arguing with every corner.”
+
+RRVVFO, very defensive:
+“Uh, well—I WAS HOLDING BACK! YOU’LL SEE IN THE TOURNAMENT!”
+
+BARK:
+“When you two are done, the practice ring is cracking underneath the east support.”
+
+
+==================================================
+THE CRACKED PRACTICE RING
+==================================================
+
+BARK:
+“Look. You see those cracks on the ring? It’s like someone’s trying to damage it. You’re the sneakiest, Rrvvfo. Could you go in and try to fix them?”
+
+RRVVFO:
+“Sure. You and Wade guard me, though. I don’t wanna get banned.”
+
+BARK:
+“There are three damaged spots. I put markers on your map.”
+
+
+==================================================
+INSPECTING THE RING
+==================================================
+
+WEST SUPPORT
+
+BARK:
+“Look. It seems like the damage is pushing outward.”
+
+RRVVFO:
+“Simple. Someone attacked the ring from the inside.”
+
+BARK:
+“But why would they?”
+
+
+SOUTH SUPPORT
+
+BARK:
+“Look. Footprints—but they stop halfway. Why?”
+
+RRVVFO:
+“That’s weird. Maybe I should take this more seriously.”
+
+
+EAST SUPPORT
+
+WADE:
+“Look! Different shoe marks.”
+
+[Bark and Rrvvfo initially shrug him off because it’s Wade. Then they look closer and realize he is right, making them even more suspicious.]
+
+
+AFTER FIXING ALL THREE SPOTS
+
+RRVVFO:
+“We fixed them, but it has to be a fighter. All the spectators are kept away from the rings until the tournament starts.”
+
+RRVVFO:
+“We shouldn’t make a big deal out of it yet and worry the guests.”
+
+
+==================================================
+THE SABOTAGE REMAINS UNSOLVED
+==================================================
+
+There is no saboteur reveal or saboteur fight during Chapter 2.
+
+RRVVFO:
+“After the tournament, I’ll figure out who did it. Don’t stress about it, Bark.”
+
+BARK:
+“Alright. You find the culprit. I’m gonna practice.”
+
+[Bark leaves to practice. The mystery remains unresolved.]
+
+
+==================================================
+TOURNAMENT FAN
+==================================================
+
+BEFORE THE TOURNAMENT
+
+TOURNAMENT FAN:
+“People say the winner gets great rewards.”
+
+
+AFTER THE TOURNAMENT BEGINS
+
+TOURNAMENT FAN:
+“Everyone’s favorite fighter is Plouke, but mine is Bark. You had a good match, though.”
+
+RRVVFO:
+“Really? Bark over me?”
+
+
+==================================================
+OLD COMPETITOR’S ADVICE
+==================================================
+
+OLD COMPETITOR:
+“Never spend all your energy early. The final round punishes people who think exhaustion is optional.”
+
+RRVVFO:
+“Hey, thanks for the tip. See ya around.”
+
+
+==================================================
+WADE’S LOST FAN
+==================================================
+
+LOST WADE FAN:
+“I lost my family while looking for Wade. Do you know him?”
+
+RRVVFO:
+“Wade? Uh, me and him used to train together. Why?”
+
+LOST WADE FAN:
+“Please help me find him.”
+
+[Rrvvfo sighs.]
+
+RRVVFO:
+“Wade’s gonna be hard to find since he rarely stays still.”
+
+
+WHEN RRVVFO FINDS WADE
+
+RRVVFO:
+“When did the ninjas get merch?”
+
+WADE:
+“Uh, I think Tangai started it after you beat Revvfo. He needed more funding since someone keeps spending money on his card.”
+
+RRVVFO:
+“A fan’s looking for you.”
+
+WADE:
+“Like the blowing ones?”
+
+[Rrvvfo thinks to himself that Wade really is dense.]
+
+RRVVFO:
+“Just follow me.”
+
+
+RETURNING TO THE FAN
+
+WADE:
+“Hey, bud! It’s me, Wade. Here, have this pin on me.”
+
+RRVVFO:
+“Hey, isn’t that your father at the food court?”
+
+LOST WADE FAN:
+“Oh, yeah! Thank you!”
+
+
+==================================================
+OPTIONAL SPAR WITH BARK
+==================================================
+
+AFTER RRVVFO WINS
+
+BARK:
+“You’ve gotten faster, but save your power for the tournament.”
+
+[Rrvvfo smirks.]
+
+RRVVFO:
+“I won’t need to if I’m gonna be fighting weaklings like you.”
+
+[Bark scoffs.]
+
+BARK:
+“We’ll see when I win.”
+
+
+==================================================
+THE FAKE CHAMPION
+==================================================
+
+LOUD CHAMPION:
+“PAY ME 20 COINS, AND I’LL TEACH YOU MY SECRET TECHNIQUES!”
+
+RRVVFO:
+“Let’s spar in the practice ring. You can showcase those techniques.”
+
+[The Fake Champion refuses. Rrvvfo becomes suspicious and activates the Lens of Truth.]
+
+RRVVFO:
+“I knew that guy was shady.”
+
+RRVVFO:
+“Fight me, or I’ll expose your sham.”
+
+
+AFTER RRVVFO WINS
+
+RRVVFO:
+“Pay back everyone you scammed.”
+
+[The Fake Champion returns the money and runs away.]
+
+
+==================================================
+RUNAWAY TRAINING DUMMY
+==================================================
+
+ARENA MECHANIC:
+“It stopped moving. More importantly, it stopped challenging the food carts.”
+
+RRVVFO:
+“What a weird machine.”
+
+
+==================================================
+THE MISSING PRIZE ENVELOPE
+==================================================
+
+TOURNAMENT CASHIER:
+“The final prize envelope stuck to the delivery cart. It’s circling the grounds.”
+
+RRVVFO:
+“Wow. This place really is held together with duct tape.”
+
+TOURNAMENT CASHIER:
+“Please stop the cart before the announcer notices.”
+
+
+AFTER CATCHING THE CART
+
+RRVVFO:
+“I only saved the prize money since it’s going to be mine.”
+
+TOURNAMENT CASHIER:
+“You can keep the delivery fee. The food vendor will also give you the staff meal discount.”
+
+
+==================================================
+THE REJECTED CHALLENGER
+==================================================
+
+REJECTED CHALLENGER:
+“My registration was ruined before I reached the desk. I trained for months.”
+
+RRVVFO:
+“You trained that much? Fight me. I’m a competitor, so your training doesn’t go to waste.”
+
+
+AFTER THE MATCH
+
+REJECTED CHALLENGER:
+“I have to leave early, but I’ll be rooting for you.”
+
+RRVVFO:
+“Good luck on your travels.”
+
+
+==================================================
+OPTIONAL GRUNT ENCOUNTERS
+==================================================
+
+SUCCESSFUL ESCAPE
+
+RRVVFO:
+“I’m not in the mood for this.”
+
+GRUNT:
+“You ran away.”
+
+
+AFTER RRVVFO WINS
+
+GRUNT:
+“Fine. Go win your tournament.”
+
+RRVVFO:
+“Of course I am. Thanks for the warm-up.”
+
+
+==================================================
+THE BRACKET BOARD
+==================================================
+
+RRVVFO:
+“Looks like I’m fighting unknown fighters in the prelims.”
+
+WADE:
+“What’s an unknown?”
+
+[Rrvvfo sighs.]
+
+
+==================================================
+PLOUKE RUMORS
+==================================================
+
+STILLNESS
+
+OLD COMPETITOR:
+“Plouke barely moves until the other fighter commits first.”
+
+RRVVFO:
+“So he waits for people to slip up.”
+
+
+POSITIONING
+
+TOURNAMENT WORKER:
+“Every fighter who faces Plouke ends up standing exactly where he wants.”
+
+RRVVFO:
+“So I have to be a little more cautious.”
+
+
+TIMING
+
+BARK:
+“Plouke doesn’t overpower people immediately. He waits until their strongest option becomes predictable.”
+
+RRVVFO:
+“If he has Bark on edge, I should take him a little more seriously.”
+
+
+RING EDGE
+
+WADE:
+“Plouke always looks at the edge. Maybe he’s in love with it.”
+
+[Rrvvfo sighs.]
+
+RRVVFO:
+“Maybe that gave me some clues. He probably rings people out a lot.”
+
+RRVVFO:
+“I should observe the matches.”
+
+
+==================================================
+BETWEEN TOURNAMENT ROUNDS
+==================================================
+
+ANNOUNCER:
+“The next bracket call is [NEXT ROUND]! Fighters may return to the grounds before reporting!”
+
+TOURNAMENT WORKER:
+[The worker explains what has changed around the tournament grounds since the previous match.]
+
+RRVVFO:
+“Good. I can prepare without pretending the last match never happened.”
+
+WHEN ANOTHER PLOUKE CLUE IS AVAILABLE
+
+TOURNAMENT WORKER:
+“Someone around the grounds saw Plouke’s last match. It might be useful.”
+
+
+==================================================
+OPENING CEREMONY
+==================================================
+
+ANNOUNCER:
+“Welcome to the local tournament! Hamual, Daniel, Hailey, Bark, Wade, Pouki, Plouke—and first-time entrant Rrvvfo!”
+
+CROWD:
+“The former champion Hamual towers over the entrance line. Daniel looks ordinary enough to be tournament staff.”
+
+RRVVFO:
+“Of course the Sage isn’t here. He’s definitely trying to look at girls, that perv.”
+
+ANNOUNCER:
+“First preliminary: Hailey versus Plouke!”
+
+
+==================================================
+HAILEY VERSUS PLOUKE
+==================================================
+
+[During the match, Plouke keeps getting distracted instead of defending himself.]
+
+HAILEY:
+“Stop staring and defend yourself!”
+
+RRVVFO:
+“This guy reminds me of the Sage. I hope they never meet.”
+
+[Plouke trips near a pebble he placed earlier and uses the opening to push Hailey out of the ring.]
+
+ANNOUNCER:
+“Plouke wins by ring-out!”
+
+PLOUKE:
+“I might not have won if it weren’t for that pebble I placed in front of me, just in case I got distracted.”
+
+
+==================================================
+TOURNAMENT RULES
+==================================================
+
+COMBAT MANUAL REACTION
+
+RRVVFO:
+“Ring-outs are dangerous. They could push me off, so I shouldn’t camp near the edge.”
+
+
+ANNOUNCER’S EXPLANATION
+
+ANNOUNCER:
+“Official matches are first to three! A knockout or crossing the ring boundary removes one stock!”
+
+RRVVFO:
+“I should stay away from the edge.”
+
+
+==================================================
+RRVVFO VERSUS HAMUAL
+==================================================
+
+ANNOUNCER:
+“Opening round! Rrvvfo versus Hamual—the enormous former champion!”
+
+RRVVFO:
+“He looks like he’d eat me for breakfast.”
+
+HAMUAL:
+“Don’t confuse size with slowness. I won this bracket before you entered one.”
+
+RRVVFO:
+“You couldn’t win even if you were ten times bigger.”
+
+
+AFTER RRVVFO WINS
+
+HAMUAL:
+“You stayed inside my reach and still found a path through. Good.”
+
+ANNOUNCER:
+“Rrvvfo advances! The grounds remain open before the quarterfinal!”
+
+
+==================================================
+RRVVFO VERSUS DANIEL
+==================================================
+
+DANIEL:
+“You expected another giant. That’s useful.”
+
+RRVVFO:
+“You look a little casual for a tournament.”
+
+DANIEL:
+“Watch my feet, not my clothes.”
+
+
+AFTER RRVVFO WINS
+
+DANIEL:
+“You adjusted before the third exchange. That decided it.”
+
+ANNOUNCER:
+“Rrvvfo advances! Next on the other ring: Bark versus Pouki!”
+
+
+==================================================
+BARK VERSUS POUKI
+==================================================
+
+ANNOUNCER:
+“Pouki wins! Bark held the center, survived the guard break, and nearly landed one final counter!”
+
+BARK:
+“He changed rhythm every time I settled. My last counter was the first opening he gave me.”
+
+RRVVFO:
+“If he got Bark that easily, he must be really strong.”
+
+WADE:
+“You still have to beat me first.”
+
+
+==================================================
+RRVVFO VERSUS WADE
+==================================================
+
+WADE:
+“Guess the bracket really wanted this.”
+
+RRVVFO:
+“You may be fast, but you’re slow in the brain.”
+
+WADE:
+“I’m fast, not slow.”
+
+
+AFTER RRVVFO WINS
+
+WADE:
+“You won! Yay!”
+
+RRVVFO:
+“I don’t think that’s supposed to be your reaction.”
+
+ANNOUNCER:
+“Plouke has defeated Pouki in the opposite semifinal. The final is set!”
+
+
+==================================================
+PREPARING FOR PLOUKE
+==================================================
+
+BARK:
+“Stillness, positioning, timing, and the ring edge. We verified every pattern Plouke uses.”
+
+WADE:
+“Don’t chase his retreat. Cut through the center and make him choose first.”
+
+RRVVFO:
+“The Sage must still be doing pervy stuff.”
+
+
+==================================================
+THE TOURNAMENT FINAL BEGINS
+==================================================
+
+PLOUKE:
+“You used too much energy reaching this round.”
+
+RRVVFO:
+“I can win this with my hands tied up.”
+
+PLOUKE:
+“That confidence is exactly why you’re tired.”
+
+RRVVFO:
+“Keep talking. It’ll make losing more embarrassing.”
+
+
+==================================================
+RRVVFO STARTS LOSING ENERGY
+==================================================
+
+RRVVFO:
+“My tank’s depleting fast—but why?”
+
+PLOUKE:
+“You fought every round like your energy couldn’t run out.”
+
+RRVVFO:
+“I can still win.”
+
+PLOUKE:
+“Then keep fighting.”
+
+
+==================================================
+ATTEMPTING FIRE AWAKENING
+==================================================
+
+RRVVFO:
+“Fine. I’ll end this with Fire Awakening.”
+
+PLOUKE:
+“Try it.”
+
+
+WHEN IT FAILS
+
+RRVVFO:
+“Come on... ignite!”
+
+RRVVFO:
+“Why isn’t it holding?”
+
+PLOUKE:
+“Because power doesn’t erase exhaustion.”
+
+PLOUKE:
+“Show me what you have left.”
+
+
+==================================================
+RRVVFO WINS THE BEAM CLASH BUT LOSES BY RING-OUT
+==================================================
+
+RRVVFO:
+“I beat you in the beam! Haha—”
+
+[Rrvvfo looks down and realizes he landed outside the ring.]
+
+RRVVFO:
+“WAIT, I’M ON THE GRASS! AHH!”
+
+PLOUKE:
+“I beat you.”
+
+ANNOUNCER:
+“Rrvvfo wins the beam clash—but Plouke wins by ring-out!”
+
+
+==================================================
+RRVVFO LOSES THE BEAM CLASH
+==================================================
+
+RRVVFO:
+“No! I lost the clash... I’m out of energy.”
+
+PLOUKE:
+“The match is over.”
+
+ANNOUNCER:
+“Plouke wins the tournament!”
+
+
+==================================================
+PLOUKE’S REVEAL
+==================================================
+
+RRVVFO:
+“Who are you?”
+
+PLOUKE:
+“You really did skim the disguise section.”
+
+RRVVFO:
+“...No.”
+
+SAGE:
+“Plouke was me.”
+
+RRVVFO:
+“Now that explains what you were doing during your fight with Hailey.”
+
+
+SAGE — IF RRVVFO WON THE BEAM CLASH
+
+SAGE:
+“And you won the clash. That earns a level. It doesn’t earn awareness of the ring edge.”
+
+
+SAGE — IF RRVVFO NEARLY DEFEATED PLOUKE
+
+SAGE:
+“You forced every strategy into the open. Keep the badge; the result still stands.”
+
+
+SAGE — NORMAL RESULT
+
+SAGE:
+“You learned more while believing I was absent.”
+
+
+RRVVFO:
+“I hate how planned ahead you are.”
+
+
+==================================================
+PRESSING RUN DURING AN OPTIONAL FIGHT
+==================================================
+
+RRVVFO:
+“This one isn’t part of the bracket. I’m saving my energy.”
+
+OPPONENT:
+“You’re running away.”
+
+RRVVFO:
+“I’m leaving a fight I never needed to finish.”
+
+
+==================================================
+PRESSING RUN DURING AN OFFICIAL MATCH
+==================================================
+
+ROTATING RRVVFO LINES:
+
+“Definitely not. I’m not forfeiting.”
+
+“Who do you think I am? I came here to win.”
+
+“I said I refuse. Stop asking me to forfeit.”
+
+“Why do I keep looking at that button?”
+
+“I’m winning this tournament whether I like it or not.”

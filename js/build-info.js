@@ -1,10 +1,17 @@
-export const BUILD_VERSION='Prototype 2.9A.17 — Chapter 1–3 Repair';
-export const SAVE_SCHEMA_VERSION=261;
+export const BUILD_VERSION='Prototype 2.9A.22.1 — Floating Lookout Object Swap';
+export const SAVE_SCHEMA_VERSION=263;
 export const BUILD_FEATURES=Object.freeze([
+  'progressive-mode-unlocks','unified-3d-combat-modes','mentor-only-sage','adaptive-habit-ai',
+  'chapter-4-echo-region','echo-village-hub','echo-beacon-team-mission','echo-caverns-elemental-doors','village-defense-team-battle',
+  'optional-ryuzankaro-secret-boss','planet-impact-qte','vibration-sense','lens-mastery-level-1','improved-object-swap-targeting',
+  'hollow-watcher-adaptive-boss','floating-shadow-lookout','pebble-object-swap-finale','shadow-lookout-ending','reliable-multi-size-favicons',
+  'expressive-dialogue-portraits','dialogue-history-auto-speed','richer-procedural-music','story-theme-transitions',
+  'streamlined-chapter1-road','active-bracket-card-challenges','cracked-ring-repair-qtes','shared-hub-landmark-art','visual-geometry-primitives','distinct-world-silhouettes','sloped-tournament-roofs','mountain-trail-landmarks','festival-crowd-silhouettes',
+  'balanced-story-growth','story-catch-up-xp','webp-runtime-atlases','release-source-asset-cleanup',
   'responsive-no-overlap-touch-layout','portrait-safe-control-zone','short-phone-mode-layout',
   'touch-first-menu-prompts','swipe-cued-classic-settings','comfortable-touch-targets',
   'unified-chapter-controls','shared-chapter-1-2-3-story-engine','automatic-story-chaining','rrvvfo-story-only-release-ui',
-  'six-chapter-classic-and-arena-unlocks','hidden-pre-clear-modes','quick-continue-unlock-guard',
+  'progressive-mode-unlocks','chapter-based-cpu-local-arena-unlocks','quick-continue-unlock-guard',
   'artifact-cleaned-core-fighter-atlases','tangai-dojo-visual-overhaul','rrvvfo-hub-camera-follow','hub-camera-occlusion-avoidance',
   'sage-36-pose-production-atlas','atlas-backed-roster-portraits','classic-fighter-readability-scale',
   'six-chapter-story-progress-meter','frame-rate-independent-hub-actors','startup-progress-rollback','compact-round-banners',
@@ -19,6 +26,9 @@ export const BUILD_FEATURES=Object.freeze([
   'persistent-side-quest-stat-rewards','wade-route-race','bark-ring-repair','controlled-flame-minigame','district-navigation',
   'chapter-2-story-assist','persistent-tournament-run-refusal','try-to-beat-plouke-objective','unified-story-overlays',
   'three-visible-bracket-cards','announcer-quest-save-recovery','sage-atlas-backed-hub-npc',
+  'chapter-1-rewritten-dialogue','chapter-2-rewritten-dialogue','unresolved-cracked-ring-mystery',
+  'distinct-chapter-hub-identities','original-martial-arts-tournament-plaza','after-hours-closed-tournament-state',
+  'right-stick-hub-camera','mouse-and-trackpad-hub-camera','automatic-hub-camera-recenter','fight-camera-lock',
   'full-chapter-3-investigation','after-hours-tournament-hub','three-mandatory-chapter-3-side-stories','ten-optional-chapter-3-quests',
   'bracket-record-reconstruction','locked-night-shift-route','plouke-bag-investigation','lens-energy-trail',
   'abandoned-resonance-facility','auxiliary-power-puzzle','recorded-attack-corridor','runaway-training-dummy',

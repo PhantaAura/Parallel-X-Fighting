@@ -162,6 +162,58 @@ function discMesh(gl,segments=40){
   return createMesh(gl,p,uv,n,indices);
 }
 
+
+function cylinderMesh(gl,segments=18){
+  const p=[],uv=[],n=[],indices=[];
+  for(let i=0;i<=segments;i++){
+    const a=i/segments*Math.PI*2,c=Math.cos(a),z=Math.sin(a);
+    p.push(c,-.5,z,c,.5,z);uv.push(i/segments,0,i/segments,1);n.push(c,0,z,c,0,z);
+  }
+  for(let i=0;i<segments;i++){const o=i*2;indices.push(o,o+1,o+3,o,o+3,o+2)}
+  const bottom=p.length/3;p.push(0,-.5,0);uv.push(.5,.5);n.push(0,-1,0);
+  const top=p.length/3;p.push(0,.5,0);uv.push(.5,.5);n.push(0,1,0);
+  for(let i=0;i<segments;i++){
+    const a=i*2,b=((i+1)%segments)*2;
+    indices.push(bottom,b,a);
+    indices.push(top,a+1,b+1);
+  }
+  return createMesh(gl,p,uv,n,indices);
+}
+
+function coneMesh(gl,segments=18){
+  const p=[],uv=[],n=[],indices=[];
+  const slope=.62;
+  for(let i=0;i<=segments;i++){
+    const a=i/segments*Math.PI*2,c=Math.cos(a),z=Math.sin(a);
+    p.push(c,-.5,z,0,.5,0);uv.push(i/segments,0,i/segments,1);
+    const normal=normalize3(c,slope,z);n.push(...normal,...normal);
+  }
+  for(let i=0;i<segments;i++){const o=i*2;indices.push(o,o+1,o+3,o,o+3,o+2)}
+  const center=p.length/3;p.push(0,-.5,0);uv.push(.5,.5);n.push(0,-1,0);
+  for(let i=0;i<segments;i++)indices.push(center,(i+1)*2,i*2);
+  return createMesh(gl,p,uv,n,indices);
+}
+
+function gableRoofMesh(gl){
+  // Triangular prism: a true sloped roof without changing collision geometry.
+  const p=[
+    -.5,-.5,.5, .5,-.5,.5, 0,.5,.5,
+    .5,-.5,-.5, -.5,-.5,-.5, 0,.5,-.5,
+    -.5,-.5,-.5, -.5,-.5,.5, 0,.5,.5, 0,.5,-.5,
+    .5,-.5,.5, .5,-.5,-.5, 0,.5,-.5, 0,.5,.5,
+    -.5,-.5,-.5, .5,-.5,-.5, .5,-.5,.5, -.5,-.5,.5
+  ];
+  const uv=[0,0,1,0,.5,1, 0,0,1,0,.5,1, 0,0,1,0,1,1,0,1, 0,0,1,0,1,1,0,1, 0,0,1,0,1,1,0,1];
+  const left=normalize3(-1,1,0),right=normalize3(1,1,0);
+  const n=[
+    0,0,1,0,0,1,0,0,1, 0,0,-1,0,0,-1,0,0,-1,
+    ...left,...left,...left,...left, ...right,...right,...right,...right,
+    0,-1,0,0,-1,0,0,-1,0,0,-1,0
+  ];
+  const indices=[0,1,2,3,4,5, 6,7,8,6,8,9, 10,11,12,10,12,13, 14,15,16,14,16,17];
+  return createMesh(gl,p,uv,n,indices);
+}
+
 export class WebGLArenaRenderer{
   constructor(canvas){
     this.canvas=canvas;
@@ -228,7 +280,7 @@ void main(){
       fogColor:gl.getUniformLocation(this.program,'uFogColor'),
       fogRange:gl.getUniformLocation(this.program,'uFogRange')
     };
-    this.meshes={cube:cubeMesh(gl),quad:quadMesh(gl),disc:discMesh(gl)};
+    this.meshes={cube:cubeMesh(gl),quad:quadMesh(gl),disc:discMesh(gl),cylinder:cylinderMesh(gl),cone:coneMesh(gl),gable:gableRoofMesh(gl)};
     this.whiteTexture=this.makeWhiteTexture();
     this.eye=[520,390,650];
     this.target=[0,35,0];
@@ -325,6 +377,22 @@ void main(){
   disc(options={}){
     const{x=0,y=.3,z=0,rx=1,rz=1}=options;
     this.draw(this.meshes.disc,modelMatrix({x,y,z,sx:rx,sy:1,sz:rz}),{...options,lit:false,cull:false,depthWrite:false});
+  }
+
+
+  cylinder(options={}){
+    const{x=0,y=0,z=0,rx=1,rz=rx,sy=1,rotationY=0}=options;
+    this.draw(this.meshes.cylinder,modelMatrix({x,y,z,sx:rx,sy,sz:rz,rotationY}),options);
+  }
+
+  cone(options={}){
+    const{x=0,y=0,z=0,rx=1,rz=rx,sy=1,rotationY=0}=options;
+    this.draw(this.meshes.cone,modelMatrix({x,y,z,sx:rx,sy,sz:rz,rotationY}),options);
+  }
+
+  gableRoof(options={}){
+    const{x=0,y=0,z=0,sx=1,sy=1,sz=1,rotationY=0}=options;
+    this.draw(this.meshes.gable,modelMatrix({x,y,z,sx,sy,sz,rotationY}),options);
   }
 
   segment(a,b,{width=4,height=4,color='#ffffff',alpha=1,y=null,lit=true}={}){

@@ -1,8 +1,8 @@
-import {CONTROL_MAPS} from '../input.js?v=29a17-chapter123-repair-icon-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
-import {grantCombatManual} from './combat-manual.js?v=29a17-chapter123-repair-icon-20260729';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyConfirm} from './story-ux.js?v=29a17-chapter123-repair-icon-20260729';
+import {CONTROL_MAPS} from '../input.js?v=29a22p1-floating-lookout-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
+import {grantCombatManual} from './combat-manual.js?v=29a22p1-floating-lookout-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a22p1-floating-lookout-20260730';
+import {storyConfirm} from './story-ux.js?v=29a22p1-floating-lookout-20260730';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
@@ -291,15 +291,14 @@ class RrvvfoMission1{
 
   showOpeningDialogue(){
     this.engine.showDialogue([
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'I signed you up for a tournament.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You did what?',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'You need real opponents. You might meet some old faces there.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Old faces? You could have mentioned that before signing me up.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'I just did. But first, you have gotten rusty.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'I beat Revvfo.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'And apparently forgot how to block afterward. Here. Take the manual.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'The field will now tell you exactly what to press. Even you should understand it.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'That sounded more insulting than helpful.',tail:'down'}
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'I signed you up for this tournament. I heard there’d be some nice ladies there.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Oh, I was about to praise you for once. Now I know your motive, perv.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'HEY! DON’T CALL ME THAT!',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I’ll be winning. I’m the one who defeated Perfected Revvfo.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'You’ve gotten cocky. You’ll lose for sure if you keep that up.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'So what?',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'I’d rather not teach you with words. It’d go in one ear and out the other. So here’s a manual.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'As if I’d need it.',tail:'down'}
     ],{onComplete:()=>this.showManual()});
   }
 
@@ -623,12 +622,12 @@ class RrvvfoMission1{
     this.battle.phase='story';
     this.setObjective('TRAINING COMPLETE','The tournament entry is ready.');
     this.engine.showDialogue([
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'You are still reckless, impatient, and far too proud.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'So I am ready?',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Unfortunately, yes.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Do not underestimate anyone there. Especially the familiar ones.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You keep saying that like I am supposed to be worried.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'You should be.',tail:'down'}
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'You’re too prideful. You’ll probably lose. Maybe it’ll be a reality check.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'As if. You’re just trying to put me down.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'I’d be on my guard if I were you.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I defeated Revvfo. No one has a feat anywhere near that.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Heh. I have—many times. If only you’d care to listen to my stories.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Yeah, no.',tail:'down'}
     ],{onComplete:()=>this.commitCompletion()});
   }
 

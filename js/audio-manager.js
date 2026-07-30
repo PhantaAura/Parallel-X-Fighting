@@ -25,10 +25,13 @@ export const AUDIO_HOOKS={
 };
 
 const MUSIC_THEMES=Object.freeze({
-  menu:{tempo:92,wave:'triangle',bass:'sine',notes:[220,277.18,329.63,277.18,196,246.94,293.66,246.94],bassNotes:[110,110,98,98],accent:'#55d9ff'},
-  dojo:{tempo:104,wave:'triangle',bass:'sine',notes:[220,261.63,329.63,392,329.63,261.63,246.94,293.66],bassNotes:[110,123.47,98,110],accent:'#ffd447'},
-  tournament:{tempo:126,wave:'square',bass:'triangle',notes:[196,246.94,293.66,392,293.66,246.94,220,329.63],bassNotes:[98,110,123.47,110],accent:'#ef3f2e'},
-  battle:{tempo:116,wave:'sawtooth',bass:'triangle',notes:[174.61,220,261.63,349.23,261.63,220,196,293.66],bassNotes:[87.31,98,110,98],accent:'#ff8a32'}
+  menu:{tempo:92,wave:'triangle',bass:'sine',notes:[220,277.18,329.63,277.18,196,246.94,293.66,246.94],bassNotes:[110,110,98,98],chords:[[220,261.63,329.63],[196,246.94,293.66]],drums:'soft',accent:'#55d9ff'},
+  dojo:{tempo:104,wave:'triangle',bass:'sine',notes:[220,261.63,329.63,392,329.63,261.63,246.94,293.66],bassNotes:[110,123.47,98,110],chords:[[220,261.63,329.63],[196,246.94,293.66]],drums:'wood',accent:'#ffd447'},
+  road:{tempo:110,wave:'triangle',bass:'sine',notes:[246.94,293.66,369.99,329.63,277.18,329.63,415.3,369.99],bassNotes:[123.47,110,138.59,123.47],chords:[[246.94,293.66,369.99],[220,277.18,329.63]],drums:'light',accent:'#75d77b'},
+  tournament:{tempo:126,wave:'square',bass:'triangle',notes:[196,246.94,293.66,392,293.66,246.94,220,329.63],bassNotes:[98,110,123.47,110],chords:[[196,246.94,293.66],[220,261.63,329.63]],drums:'festival',accent:'#ef3f2e'},
+  mystery:{tempo:82,wave:'sine',bass:'triangle',notes:[174.61,207.65,233.08,207.65,164.81,196,220,196],bassNotes:[82.41,77.78,73.42,77.78],chords:[[174.61,207.65,261.63],[164.81,196,246.94]],drums:'pulse',accent:'#8bd5ff'},
+  facility:{tempo:108,wave:'sawtooth',bass:'sine',notes:[146.83,174.61,220,233.08,174.61,146.83,138.59,207.65],bassNotes:[73.42,69.3,65.41,69.3],chords:[[146.83,174.61,220],[138.59,164.81,207.65]],drums:'industrial',accent:'#a46cff'},
+  battle:{tempo:116,wave:'sawtooth',bass:'triangle',notes:[174.61,220,261.63,349.23,261.63,220,196,293.66],bassNotes:[87.31,98,110,98],chords:[[174.61,220,261.63],[196,246.94,293.66]],drums:'battle',accent:'#ff8a32'}
 });
 
 export class AudioManager{
@@ -37,8 +40,11 @@ export class AudioManager{
     this.musicTimer=null;
     this.musicTheme='';
     this.musicStep=0;
+    this.musicVariation=0;
     this.musicGeneration=0;
     this.musicBus=null;
+    this.noiseBuffer=null;
+    this.musicVariation=0;
     this.configure(settings);
   }
 
@@ -102,6 +108,43 @@ export class AudioManager{
     }catch{}
   }
 
+  createNoiseBuffer(){
+    if(!this.context)return null;
+    if(this.noiseBuffer&&this.noiseBuffer.sampleRate===this.context.sampleRate)return this.noiseBuffer;
+    const length=Math.max(1,Math.floor(this.context.sampleRate*.35)),buffer=this.context.createBuffer(1,length,this.context.sampleRate),data=buffer.getChannelData(0);
+    for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*(1-i/length);
+    this.noiseBuffer=buffer;return buffer;
+  }
+
+  noise(duration=.06,volume=.012,filterFrequency=2200,when=0){
+    if(!this.context)return;
+    try{
+      const source=this.context.createBufferSource(),filter=this.context.createBiquadFilter(),gain=this.context.createGain(),start=Math.max(this.context.currentTime,when||this.context.currentTime);
+      source.buffer=this.createNoiseBuffer();filter.type='bandpass';filter.frequency.setValueAtTime(filterFrequency,start);filter.Q.value=.8;
+      const level=Math.max(.0001,this.channelGain(volume,'music'));gain.gain.setValueAtTime(level,start);gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
+      source.connect(filter).connect(gain).connect(this.musicBus||this.context.destination);source.start(start);source.stop(start+duration+.02);
+    }catch{}
+  }
+
+  chord(notes,duration,when,volume=.005){
+    (notes||[]).forEach((note,index)=>this.tone(note,duration,index===0?'sine':'triangle',volume/(1+index*.18),'music',when));
+  }
+
+  scheduleDrums(style,beat,start){
+    const kick=(when,strong=false)=>{this.tone(strong?52:58,beat*.12,'sine',strong?.017:.012,'music',when);this.noise(beat*.05,strong?.009:.006,180,when)};
+    const snare=when=>this.noise(beat*.12,.012,1450,when);
+    const hat=when=>this.noise(beat*.035,.0045,5200,when);
+    for(let step=0;step<8;step++){
+      const when=start+step*beat*.5;
+      if(['battle','festival','industrial'].includes(style)&&step%2===0)kick(when,step===0||step===4);
+      else if(['soft','wood','light','pulse'].includes(style)&&(step===0||step===4))kick(when,step===0);
+      if(['battle','festival','industrial'].includes(style)&&(step===2||step===6))snare(when);
+      if(style==='wood'&&(step===2||step===6))this.tone(310,beat*.045,'triangle',.006,'music',when);
+      if(style==='industrial'&&(step===1||step===5))this.tone(92,beat*.07,'square',.006,'music',when);
+      if(style!=='soft'&&step%2===1)hat(when);
+    }
+  }
+
   play(name){
     const cue=AUDIO_HOOKS[name],channel=/^(menu|controller)/.test(name)?'ui':'sfx';
     if(cue)this.tone(cue.frequency,cue.duration,cue.type,cue.volume,channel);
@@ -109,19 +152,16 @@ export class AudioManager{
 
   scheduleMusicPhrase(theme,generation){
     if(!this.context||generation!==this.musicGeneration||this.musicTheme!==theme)return;
-    const data=MUSIC_THEMES[theme]||MUSIC_THEMES.menu;
-    const beat=60/data.tempo;
-    const start=this.context.currentTime+.06;
-    const phrase=8;
+    const data=MUSIC_THEMES[theme]||MUSIC_THEMES.menu,beat=60/data.tempo,start=this.context.currentTime+.08,phrase=8;
+    const variation=this.musicVariation++%4;
+    this.scheduleDrums(data.drums,beat,start);
     for(let i=0;i<phrase;i++){
-      const index=(this.musicStep+i)%data.notes.length;
-      const when=start+i*beat*.5;
-      this.tone(data.notes[index],beat*.34,data.wave,.012,'music',when);
-      if(i%2===0){
-        const bassIndex=(Math.floor((this.musicStep+i)/2))%data.bassNotes.length;
-        this.tone(data.bassNotes[bassIndex],beat*.62,data.bass,.014,'music',when);
-      }
-      if(i===0||i===4)this.tone(55,beat*.08,'square',.008,'music',when);
+      const index=(this.musicStep+i)%data.notes.length,when=start+i*beat*.5;
+      const octave=variation===3&&i>=6?2:1;
+      this.tone(data.notes[index]*octave,beat*(i%2?.25:.34),data.wave,.0105,'music',when);
+      if(i%2===0){const bassIndex=Math.floor((this.musicStep+i)/2)%data.bassNotes.length;this.tone(data.bassNotes[bassIndex],beat*.68,data.bass,.014,'music',when)}
+      if(i===0||i===4){const chord=data.chords[(Math.floor((this.musicStep+i)/4)+variation)%data.chords.length];this.chord(chord,beat*1.75,when,.0048)}
+      if((theme==='mystery'||theme==='facility')&&i===7)this.tone(data.notes[index]/2,beat*.55,'sine',.006,'music',when);
     }
     this.musicStep=(this.musicStep+phrase)%data.notes.length;
   }

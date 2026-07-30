@@ -1,6 +1,7 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
 
-export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,240,420,650,930,1260,1640]);
+export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,250,450,700,1000,1360,1780]);
+export const STORY_RECOMMENDED_LEVELS=Object.freeze({1:1,2:2,3:4,4:5,5:6,6:7});
 
 export function storyLevelFromProgress(progress=loadLostYearProgress()){
   return Math.max(1,Number(progress?.storyLevel)||1);
@@ -24,11 +25,11 @@ export function storyStatsForLevel(level=1,bonusStats={}){
   const safe=Math.max(1,Math.floor(Number(level)||1)),growth=safe-1,bonus=normalizeStoryBonusStats(bonusStats);
   return Object.freeze({
     level:safe,
-    hp:100+growth*6+bonus.hp,
-    power:10+growth*2+bonus.power,
-    defense:10+growth+bonus.defense,
-    speed:10+growth+bonus.speed,
-    focus:10+growth*2+bonus.focus
+    hp:100+growth*4+bonus.hp,
+    power:10+Math.round(growth*1.25)+bonus.power,
+    defense:10+Math.round(growth*.75)+bonus.defense,
+    speed:10+Math.round(growth*.75)+bonus.speed,
+    focus:10+growth+bonus.focus
   });
 }
 
@@ -38,22 +39,37 @@ export function storyStatsForProgress(progress=loadLostYearProgress()){
 
 export function storyAttackMultiplier(level=1,bonusStats={}){
   const stats=storyStatsForLevel(level,bonusStats);
-  return 1+(stats.power-10)*.0175;
+  return 1+(stats.power-10)*.014;
 }
 
 export function storyDefenseMultiplier(level=1,bonusStats={}){
   const stats=storyStatsForLevel(level,bonusStats);
-  return Math.max(.72,1-(stats.defense-10)*.018);
+  return Math.max(.80,1-(stats.defense-10)*.014);
 }
 
 export function storySpeedMultiplier(level=1,bonusStats={}){
   const stats=storyStatsForLevel(level,bonusStats);
-  return 1+(stats.speed-10)*.015;
+  return 1+(stats.speed-10)*.011;
 }
 
 export function storyEnergyControlMultiplier(level=1,bonusStats={}){
   const stats=storyStatsForLevel(level,bonusStats);
-  return 1+(stats.focus-10)*.012;
+  return 1+(stats.focus-10)*.01;
+}
+
+export function recommendedStoryLevel(chapter=1){
+  return STORY_RECOMMENDED_LEVELS[Math.max(1,Math.min(6,Number(chapter)||1))]||1;
+}
+
+export function catchUpXpForChapter(chapter=1,progress=loadLostYearProgress()){
+  const target=recommendedStoryLevel(chapter),current=storyLevelFromProgress(progress);
+  if(current>=target)return 0;
+  return Math.max(0,(STORY_LEVEL_THRESHOLDS[target-1]||0)-storyXpFromProgress(progress));
+}
+
+export function storyBalanceBand(chapter=1,progress=loadLostYearProgress()){
+  const current=storyLevelFromProgress(progress),recommended=recommendedStoryLevel(chapter);
+  return current<recommended?'UNDER-LEVELED':current>recommended+2?'OVER-LEVELED':'ON TRACK';
 }
 
 export function applyStoryProgressionToFighter(fighter,progress=loadLostYearProgress(),{restoreHealth=true}={}){
@@ -66,6 +82,9 @@ export function applyStoryProgressionToFighter(fighter,progress=loadLostYearProg
   fighter.storyDefenseMultiplier=storyDefenseMultiplier(level,bonus);
   fighter.storySpeedMultiplier=storySpeedMultiplier(level,bonus);
   fighter.storyEnergyControlMultiplier=storyEnergyControlMultiplier(level,bonus);
+  fighter.objectSwapRangeBonus=Math.max(0,Number(progress?.chapter4State?.rewards?.objectSwapRange)||0);
+  fighter.lensMastery=Math.max(0,Number(progress?.chapter4State?.rewards?.lensMastery)||0);
+  fighter.vibrationSense=Boolean(progress?.chapter4State?.rewards?.vibrationSense);
   fighter.maxHp=stats.hp;
   fighter.hp=restoreHealth?stats.hp:Math.max(1,Math.round(stats.hp*ratio));
   return fighter;

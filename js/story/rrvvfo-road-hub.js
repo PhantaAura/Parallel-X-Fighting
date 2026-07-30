@@ -1,12 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a17-chapter123-repair-icon-20260729';
-import {sharedInput} from '../input-runtime.js?v=29a17-chapter123-repair-icon-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a17-chapter123-repair-icon-20260729';
-import {StoryMap} from './story-map.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyConfirm} from './story-ux.js?v=29a17-chapter123-repair-icon-20260729';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a17-chapter123-repair-icon-20260729';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a17-chapter123-repair-icon-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a22p1-floating-lookout-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a22p1-floating-lookout-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a22p1-floating-lookout-20260730';
+import {StoryMap} from './story-map.js?v=29a22p1-floating-lookout-20260730';
+import {storyConfirm} from './story-ux.js?v=29a22p1-floating-lookout-20260730';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a22p1-floating-lookout-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a22p1-floating-lookout-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a22p1-floating-lookout-20260730';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a22p1-floating-lookout-20260730';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -41,8 +42,8 @@ function buildUI(){
       <article>
         <small>NON-STORY ENCOUNTER</small>
         <h2>ROADSIDE CHALLENGER</h2>
-        <p>This fighter is optional. Fight normally or attempt the escape sequence.</p>
-        <div><button type="button" data-road-fight>FIGHT</button><button type="button" data-road-run>RUN</button></div>
+        <p>This fighter is optional. Beat him for the spectator pass or leave before the fight begins.</p>
+        <div><button type="button" data-road-fight>FIGHT HIM</button><button type="button" data-road-run>LEAVE</button></div>
       </article>
     </div>
     <div class="roadQte" data-road-qte hidden>
@@ -116,6 +117,7 @@ class RrvvfoRoadHub{
     this.gateOpen=false;
     this.lensRevealed=false;
     this.encounterResolved=false;
+    this.lostCompetitorDecision=null;
     this.fighterVisible=true;
     this.noticeCooldown=0;
     this.playerFlip=false;
@@ -152,7 +154,7 @@ class RrvvfoRoadHub{
     this.root.querySelector('[data-road-defeat-exit]').addEventListener('click',()=>this.exitToStory());
     this.root.querySelector('[data-road-exit]').addEventListener('click',()=>this.requestExit());
     this.root.querySelector('[data-road-fight]').addEventListener('click',()=>this.startRoadFight());
-    this.root.querySelector('[data-road-run]').addEventListener('click',()=>this.startRunQte());
+    this.root.querySelector('[data-road-run]').addEventListener('click',()=>this.leaveRoadsideChallenge());
     this.root.querySelectorAll('[data-qte-input]').forEach(button=>button.addEventListener('click',()=>this.acceptQteInput(button.dataset.qteInput)));
     this.root.querySelector('[data-road-continue]').addEventListener('click',()=>this.exitToStory());
     this.keyHandler=event=>this.onKey(event);
@@ -160,6 +162,7 @@ class RrvvfoRoadHub{
   }
 
   start(){
+    document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'road'}));
     this.battle=createStoryBattle({stageId:'training-road',opponent:{id:'sage',name:'The Sage',accent:'#d9e7f3',cpu:true,appearance:'down'}});
     this.engine=attachStoryEngine(this.battle,{
       chapterLabel:'RRVVFO CHAPTER 1 ROAD',
@@ -266,22 +269,19 @@ class RrvvfoRoadHub{
 
   showOpeningDialogue(){
     this.showDialogue([
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'The tournament is east. I marked the road, placed a few training checks, and wrote the useful parts into the manual.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You are not coming with me?',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'I have important training.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You mean sleeping somewhere closer to the tournament than I am.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Excellent. Your deductive reasoning survived the year.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'And you still personally taught me Shots of Agony, so I guess you did one useful thing.',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'One? Read the manual this time. And touch the three red training flags before you leave.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You added homework after the lesson?',tail:'down'},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'I added proof that your legs still work.',tail:'down'}
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'The tournament’s that way. There are a lot of trainers around here. They might’ve left some markers.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'I’ve gotta go do some important training. Don’t mind this camera or these binoculars.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Lemme guess. Your ‘important training’ is going to the spa and spying on women, perv.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'I’VE HAD IT WITH YOU CALLING ME THAT!',tail:'down'}
     ],()=>{
       this.fighterVisible=false;
       this.hideSecondFighter();
       this.mode='hub';
       this.battle.phase='play';
-      this.setObjective('COMPLETE THE MOVEMENT WARM-UP','Walk through MOVE, jump through JUMP, then dash through DASH.');
-      this.battle.notice('MOVE • JUMP • DASH',2);
+      this.warmupMarkers.forEach(marker=>{marker.done=true});
+      this.step='leave-training';
+      this.setObjective('LEAVE THE TRAINING GROUNDS','Follow the tan road east. The old movement flags are optional practice now.');
+      this.battle.notice('ROAD OPEN • MOVEMENT PRACTICE IS OPTIONAL',2);
     });
   }
 
@@ -296,7 +296,7 @@ class RrvvfoRoadHub{
   }
 
   updateCamera(){
-    updateHubCamera(this.battle,{frameFight:this.mode==='fight',hubDistance:1010});
+    updateHubCamera(this.battle,{frameFight:this.mode==='fight',allowLook:this.mode==='hub',hubDistance:1010});
   }
 
   updateHub(dt,previous){
@@ -363,16 +363,9 @@ class RrvvfoRoadHub{
     }
     if(changed&&this.warmupMarkers.every(marker=>marker.done)){
       this.step='leave-training';
-      this.showDialogue([
-        {speaker:'RRVVFO',speakerClass:'p1',text:'There. All three. My legs remain tragically functional.',tail:'down'},
-        {speaker:'THE SAGE',speakerClass:'neutral',text:'Excellent. The road is east.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Were you listening from somewhere?',tail:'down'},
-        {speaker:'THE SAGE',speakerClass:'neutral',text:'No.',tail:'down'}
-      ],()=>{
-        this.mode='hub';
-        this.battle.phase='play';
-        this.setObjective('LEAVE THE TRAINING GROUNDS','Follow the tan road east toward the tournament banners.');
-      });
+      this.mode='hub';
+      this.battle.phase='play';
+      this.setObjective('LEAVE THE TRAINING GROUNDS','Follow the tan road east toward the tournament banners.');
     }
   }
 
@@ -397,9 +390,8 @@ class RrvvfoRoadHub{
       this.step='cart-dialogue';
       this.showAreaTitle('ROADSIDE DELAY');
       this.showDialogue([
-        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Stop! A practice log rolled loose and pinned the supply cart.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'That sounds like a flammable problem.',tail:'down'},
-        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Please solve it with slightly less confidence than that sentence had.',tail:'down'}
+        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Help! This wood is too big for me to push. Hey, you’re the hero who beat Revvfo! Please, please burn this wood for me!',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'No problemo.',tail:'down'}
       ],()=>this.pauseForManual('field-fire',()=>{
         this.step='cart-ready';
         this.setObjective('CLEAR THE FALLEN LOG','Stand near the roadblock and press hotbar slot 1.');
@@ -414,19 +406,23 @@ class RrvvfoRoadHub{
       return;
     }
     if(this.step==='encounter'&&player.x>760&&!this.encounterResolved&&!this.manualPending){
-      this.step='encounter-ready';
-      this.pauseForManual('run-encounters',()=>this.beginEncounter());
+      if(this.lostCompetitorDecision==='help'){
+        this.step='encounter-ready';
+        this.pauseForManual('run-encounters',()=>this.beginEncounter());
+      }else{
+        this.encounterResolved=true;
+        this.step='checkpoint';
+        this.setObjective('PASS THE TOURNAMENT CHECKPOINT','Continue east and speak with the checkpoint worker.');
+      }
       return;
     }
     if(this.step==='checkpoint'&&player.x>895&&!this.checkpointDialogueShown){
       this.checkpointDialogueShown=true;
       this.step='checkpoint-dialogue';
       this.showDialogue([
-        {speaker:'TOURNAMENT CHECKPOINT',speakerClass:'neutral',text:'Name and reason for entering the grounds.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Rrvvfo. Winning.',tail:'down'},
-        {speaker:'TOURNAMENT CHECKPOINT',speakerClass:'neutral',text:'Winning is not a reason.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Then your form is asking the wrong question.',tail:'down'},
-        {speaker:'TOURNAMENT CHECKPOINT',speakerClass:'neutral',text:'...Proceed.',tail:'down'}
+        {speaker:'TOURNAMENT CHECKPOINT',speakerClass:'neutral',text:'Name and reason. Spectator or challenger?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'My name’s Rrvvfo. I’m a challenger—and I’m gonna win.',tail:'down'},
+        {speaker:'TOURNAMENT CHECKPOINT',speakerClass:'neutral',text:'Proceed.',tail:'down'}
       ],()=>{
         this.mode='hub';
         this.battle.phase='play';
@@ -447,10 +443,11 @@ class RrvvfoRoadHub{
       this.finishDialogueShown=true;
       this.step='finish-dialogue';
       this.showDialogue([
-        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'There it is! The tournament stadium!',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'That is definitely trying to look like another tournament.',tail:'down'},
-        {speaker:'SIGN PAINTER',speakerClass:'neutral',text:'Legally, the banners are inspired.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Legally, I am already embarrassed.',tail:'down'}
+        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'Look at that—wait, don’t you look familiar? I’ve seen you on the news somewhere.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Yeah, I beat Revvfo. No big deal.',tail:'down'},
+        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'WAIT, REALLY?! HOLY—BIG DEAL!',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'This seems like a knockoff of the World Martial Arts Tournament.',tail:'down'},
+        {speaker:'SIGN PAINTER',speakerClass:'neutral',text:'They’re owned by the same CEO.',tail:'down'}
       ],()=>this.commitCompletion());
     }
   }
@@ -482,36 +479,47 @@ class RrvvfoRoadHub{
     const player=this.battle.fighters[0];
     const nearby=this.npcs.find(npc=>distance(player,npc)<115);
     if(!nearby)return;
+    if(nearby.label==='LOST COMPETITOR'){
+      if(this.lostCompetitorDecision==='help'){
+        this.showDialogue([{speaker:'LOST COMPETITOR',speakerClass:'neutral',text:'The fighter with the spectator pass is up ahead. Please make sure he keeps his word.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play'});return;
+      }
+      if(this.lostCompetitorDecision==='decline'){
+        this.showDialogue([{speaker:'LOST COMPETITOR',speakerClass:'neutral',text:'I understand. Good luck in the tournament.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play'});return;
+      }
+      this.showDialogue([
+        {speaker:'LOST COMPETITOR',speakerClass:'neutral',text:'Ugh, I forgot to sign up. I can’t enter, and I wanted to spectate.',tail:'down'},
+        {speaker:'LOST COMPETITOR',speakerClass:'neutral',text:'There’s some guy up ahead who isn’t even gonna spectate. He said he’d give me his pass only if I beat him.',tail:'down'}
+      ],async()=>{
+        const help=await storyConfirm({title:'HELP HIM?',message:'Fight the roadside fighter for the spectator pass?',confirmLabel:'HELP HIM',cancelLabel:'DON’T HELP'});
+        this.lostCompetitorDecision=help?'help':'decline';
+        this.showDialogue([{speaker:'RRVVFO',speakerClass:'p1',text:help?'Alright. I’ll fight him and pry it out of his hands.':'Eh, I’m in a rush. Sorry.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play'});
+      });return;
+    }
     const lines={
       'DOJO STUDENT':[
-        {speaker:'DOJO STUDENT',speakerClass:'neutral',text:'The Sage said this entire road is a lesson.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'That sounds like something he made up after building it badly.',tail:'down'}
+        {speaker:'DOJO STUDENT',speakerClass:'neutral',text:'There was a weird old man who said he had to look at some people swimming. Do you know why?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Yeah. You’re too young to understand.',tail:'down'}
       ],
       'TRAVELER':[
-        {speaker:'TRAVELER',speakerClass:'neutral',text:'Everybody is heading to the tournament. The decorations look suspiciously familiar.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Good. I was worried I was the only one seeing it.',tail:'down'}
+        {speaker:'TRAVELER',speakerClass:'neutral',text:'The decorations look so similar.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'I heard they’re owned by the same company. I’m not sure.',tail:'down'}
       ],
       'ROAD WORKER':[
-        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Please do not destroy the gate. It is mostly paint and confidence.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'That is not reassuring.',tail:'down'}
-      ],
-      'LOST COMPETITOR':[
-        {speaker:'LOST COMPETITOR',speakerClass:'neutral',text:'Is the tournament east or west?',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'The stadium is visible from here.',tail:'down'},
-        {speaker:'LOST COMPETITOR',speakerClass:'neutral',text:'So... east?',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I suddenly understand why the signs are so large.',tail:'down'}
+        {speaker:'WORRIED WORKER',speakerClass:'neutral',text:'Don’t go to the tournament. Something seems fishy about it, kid.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Don’t worry. I beat Revvfo. I’m capable of anything.',tail:'down'}
       ],
       'TOURNAMENT FAN':[
-        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'I heard the red-haired entrant survived a black hole.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'The story improves every time someone repeats it.',tail:'down'}
+        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'I heard someone with red hair summoned a black hole, and someone with brown hair outran it!',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'You’re looking at him.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Look at the news. The name’s Rrvvfo. I’m in a rush, kid.',tail:'down'}
       ],
       'SIGN PAINTER':[
-        {speaker:'SIGN PAINTER',speakerClass:'neutral',text:'Do not stare at the lettering too closely.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'I was not planning to until you said that.',tail:'down'}
+        {speaker:'SIGN PAINTER',speakerClass:'neutral',text:'Don’t enter. You’re not cut out for it, kid.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'As if.',tail:'down'}
       ],
       'VENDOR':[
-        {speaker:'VENDOR',speakerClass:'neutral',text:'Tournament snacks. Twice the price, half the ingredients.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'At least the business model is honest.',tail:'down'}
+        {speaker:'VENDOR',speakerClass:'neutral',text:'Ugh, my boss is making me sell this horrible food.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Food is food, but I don’t got cash on me right now.',tail:'down'}
       ]
     }[nearby.label]||[];
     if(lines.length)this.showDialogue(lines,()=>{this.mode='hub';this.battle.phase='play'});
@@ -545,10 +553,8 @@ class RrvvfoRoadHub{
       this.battle.burst(340,0,'#ff7b38',30,76);
       this.battle.notice('FALLEN LOG CLEARED',1.4);
       this.showDialogue([
-        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'That was supposed to be moved carefully.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'It moved.',tail:'down'},
-        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'It evaporated.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Even more efficient.',tail:'down'}
+        {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Thank you—but you should be more careful! You almost caused a forest fire!',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'My bad. I’m in a rush.',tail:'down'}
       ],()=>{
         this.mode='hub';
         this.battle.phase='play';
@@ -606,6 +612,13 @@ class RrvvfoRoadHub{
     this.battle.phase='story';
     this.choice.hidden=false;
     this.choice.querySelector('[data-road-fight]').focus();
+  }
+
+  leaveRoadsideChallenge(){
+    this.choice.hidden=true;
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I’m busy, and I can’t miss the tournament. Sorry.',tail:'down'}
+    ],()=>this.resolveEncounter('left'));
   }
 
   startRunQte(){
@@ -675,6 +688,14 @@ class RrvvfoRoadHub{
   startRoadFight(){
     this.choice.hidden=true;
     this.qte.hidden=true;
+    if(this.mode!=='fight-intro'){
+      this.mode='fight-intro';
+      this.showDialogue([
+        {speaker:'ROADSIDE FIGHTER',speakerClass:'rival',text:'If you’re strong enough, fight me. Beat me, and I’ll give you this spectator pass.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Try me. You better keep your word, or I’ll force you to.',tail:'down'}
+      ],()=>{this.mode='fight-intro';this.startRoadFight()});
+      return;
+    }
     const player=this.battle.fighters[0];
     const foe=this.battle.fighters[1];
     this.mode='fight';
@@ -743,10 +764,8 @@ class RrvvfoRoadHub{
   finishRoadFight(won){
     if(this.mode!=='fight'||this.aborted)return;
     this.battle.root.classList.remove('storyRoadFight');
-    this.showDialogue([
-      {speaker:'ROADSIDE FIGHTER',speakerClass:'rival',text:'Fine. You are tournament-ready.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'I knew that before you delayed me.',tail:'down'}
-    ],()=>this.resolveEncounter(won?'won':'escaped'));
+    saveLostYearProgress({...loadLostYearProgress(),spectatorPassWon:true});
+    this.resolveEncounter(won?'won':'escaped');
   }
 
   resolveEncounter(result){
@@ -786,14 +805,23 @@ class RrvvfoRoadHub{
 
   drawHubExtras(){
     if(!this.battle?.renderer||this.aborted)return;
-    const r=this.battle.renderer;
-    const time=performance.now()/1000;
+    const r=this.battle.renderer,time=performance.now()/1000;
+    drawRoadLandmarks(r,time);
     const drawPerson=(npc,index)=>{
-      const bob=Math.sin(time*2+npc.phase)*2;
+      const bob=Math.sin(time*2+npc.phase)*2,traveler=index%3===0,worker=index%3===1;
       r.disc({x:npc.x,y:5,z:npc.z,rx:25,rz:16,color:'#000000',alpha:.25});
-      r.box({x:npc.x,y:48+bob,z:npc.z,sx:30,sy:62,sz:24,color:npc.color});
-      r.box({x:npc.x,y:92+bob,z:npc.z,sx:28,sy:28,sz:26,color:'#9b6848'});
-      r.box({x:npc.x,y:111+bob,z:npc.z,sx:33,sy:15,sz:30,color:index%2?'#33211c':'#d5b04d'});
+      r.cylinder({x:npc.x,y:49+bob,z:npc.z,rx:15,rz:12,sy:64,color:npc.color});
+      r.cylinder({x:npc.x,y:93+bob,z:npc.z,rx:14,sy:27,color:'#9b6848'});
+      if(worker){
+        r.cone({x:npc.x,y:113+bob,z:npc.z,rx:22,rz:18,sy:18,color:'#d5b04d'});
+        r.box({x:npc.x,y:115+bob,z:npc.z-10,sx:42,sy:5,sz:14,color:'#d5b04d'});
+      }else{
+        r.cone({x:npc.x,y:116+bob,z:npc.z,rx:19,rz:16,sy:24,color:index%2?'#33211c':'#6e4b32'});
+      }
+      if(traveler){
+        r.box({x:npc.x+17,y:54+bob,z:npc.z+4,sx:16,sy:42,sz:20,color:'#5b4335'});
+        r.segment({x:npc.x-23,y:20+bob,z:npc.z},{x:npc.x-23,y:102+bob,z:npc.z},{width:4,height:4,color:'#7d5a36'});
+      }
     };
     this.npcs.forEach(drawPerson);
     // Small moving creatures and delivery carts keep the road active even when

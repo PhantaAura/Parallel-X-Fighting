@@ -1,0 +1,17 @@
+{
+  "name": "Parallels X Prototype 2.9A.22.1 Complete Cumulative Build",
+  "version": "2.9A.22.1",
+  "build_label": "Prototype 2.9A.22.1 \u2014 Floating Lookout Object Swap",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cache_id": "29a22p1-floating-lookout-20260730",
+  "save_schema": 263,
+  "foundation": "Prototype 2.9A.22 Echo Region",
+  "hotfix_changes": [
+    "Shadow's Lookout is now visibly floating above the mountain summit",
+    "Rrvvfo cannot climb directly to the lookout",
+    "The finale requires charging and throwing a pebble onto the lookout",
+    "The player locks onto the pebble and uses Object Swap to reach the entrance",
+    "Failed lookout QTE attempts restart at the safe summit moment"
+  ]
+}

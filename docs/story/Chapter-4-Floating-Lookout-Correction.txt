@@ -1,0 +1,15 @@
+# Chapter 4 Locked Correction — Shadow’s Floating Lookout
+
+This correction overrides any wording in the original Echo Region source plan that implies Rrvvfo can climb directly into Shadow’s Lookout.
+
+Locked ending sequence:
+
+1. Rrvvfo climbs only as far as the mountain summit.
+2. Shadow’s Lookout is a flying structure floating above the summit and cannot be reached physically.
+3. Rrvvfo picks up a pebble.
+4. He throws the pebble onto the floating lookout.
+5. He locks onto the pebble as an Object Swap target.
+6. He uses Object Swap to reach Shadow’s entrance.
+7. The existing Shadow conversation begins after the swap.
+
+This is mandatory Story progression, not an optional shortcut.

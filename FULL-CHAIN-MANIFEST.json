@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X Prototype 2.9A.17 Complete Cumulative Build",
-  "version": "2.9A.17",
+  "name": "Parallels X Prototype 2.9A.22.1 Complete Cumulative Build",
+  "version": "2.9A.22.1",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -20,8 +20,14 @@
     "2.9A.14 Sage & Complete Polish Pass: 36-pose Sage atlas, camera occlusion avoidance, correct Story progress, fixed hub animation timing, readable Classic scale, real roster portraits, compact round banners, and startup progress rollback",
     "2.9A.15 Mobile & Controller Comfort: safe responsive touch layouts, portrait battle separation, compact phone menus, swipe cues, and touch-first prompts",
     "2.9A.16 Full Chapter 3: after-hours investigation hub, three mandatory stories, ten optional quests, Abandoned Resonance Facility, Unfinished Echo, Project Hollow, Object Swap escape, and Remote Highlands ending",
-    "2.9A.17 Chapter 1–3 Repair: visible announcer cards, resilient bracket saves, atlas-backed Sage hub NPC, and the uploaded Parallels X site icon"
+    "2.9A.17 Chapter 1\u20133 Repair: visible announcer cards, resilient bracket saves, atlas-backed Sage hub NPC, and the uploaded Parallels X site icon",
+    "2.9A.18 Distinct Hub Worlds & Camera Look: Sage sanctuary scenery, an original tiled martial-arts tournament plaza, a stripped after-hours state, right-stick camera look, mouse/trackpad camera look, automatic recentering, and unchanged arena fight maps",
+    "2.9A.19 Chapter 1 & 2 Dialogue Rewrite: approved Safe-Keeping dialogue, interactive Lost Competitor choice, rewritten tournament conversations, and unresolved cracked-ring continuity",
+    "2.9A.20 Game Feel & Combat Foundation: progressive mode unlocks, shared 3D combat, mentor-only Sage, adaptive AI, expressive dialogue, richer procedural music, active Chapter 2 quest challenges, shared landmark art, balanced Story growth, WebP runtime atlases, and release cleanup",
+    "2.9A.21 Distinct Worlds Pass: new visual geometry primitives, mountain-training Chapter 1 identity, martial-arts festival Chapter 2 identity, varied hub silhouettes, and unchanged fight arenas",
+    "2.9A.22 Echo Region: full Chapter 4 route, Echo Village team missions, optional Ryuzankaro secret boss, Vibration Sense, Hollow Watcher, Shadow\u2019s Lookout, and reliable multi-size favicons",
+    "2.9A.22.1 Floating Lookout Object Swap: visible flying lookout, summit pebble throw, lock-on, and mandatory Object Swap entrance"
   ],
-  "cache_tag": "29a17-chapter123-repair-icon-20260729",
-  "save_schema": 261
+  "cache_tag": "29a22p1-floating-lookout-20260730",
+  "save_schema": 263
 }

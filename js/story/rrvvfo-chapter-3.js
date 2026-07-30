@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a17-chapter123-repair-icon-20260729';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a17-chapter123-repair-icon-20260729';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a17-chapter123-repair-icon-20260729';
-import {StoryMap} from './story-map.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyConfirm} from './story-ux.js?v=29a17-chapter123-repair-icon-20260729';
-import {openCombatManual} from './combat-manual.js?v=29a17-chapter123-repair-icon-20260729';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a17-chapter123-repair-icon-20260729';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a17-chapter123-repair-icon-20260729';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a22p1-floating-lookout-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a22p1-floating-lookout-20260730';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a22p1-floating-lookout-20260730';
+import {StoryMap} from './story-map.js?v=29a22p1-floating-lookout-20260730';
+import {storyConfirm} from './story-ux.js?v=29a22p1-floating-lookout-20260730';
+import {openCombatManual} from './combat-manual.js?v=29a22p1-floating-lookout-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a22p1-floating-lookout-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a22p1-floating-lookout-20260730';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,7 +22,7 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a17-chapter123-repair-icon-20260729';
+} from './chapter3-content.js?v=29a22p1-floating-lookout-20260730';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -261,6 +261,7 @@ class RrvvfoChapter3{
   }
 
   start(){
+    document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:this.state.location==='facility'?'facility':'mystery'}));
     const stageId=this.state.location==='remote-region'?'remote-highlands':this.state.location==='facility'?'resonance-facility':'after-hours-tournament';
     this.battle=createStoryBattle({stageId,opponent:{id:'sage',name:'The Sage',cpu:true}});
     this.engine=attachStoryEngine(this.battle,{
@@ -361,6 +362,7 @@ class RrvvfoChapter3{
       },
       updateCamera:()=>updateHubCamera(battle,{
         frameFight:this.mode==='fight',
+        allowLook:['hub','dungeon','remote'].includes(this.mode),
         hubDistance:this.area==='facility'?960:this.area==='remote'?1080:1120,
         fightBaseDistance:920,
         fightMaxDistance:1160
@@ -945,6 +947,7 @@ class RrvvfoChapter3{
   }
 
   enterFacility({restored=false}={}){
+    document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'facility'}));
     this.area='facility';this.state.location='facility';
     if(!this.state.requiredCompleted.includes('facilityEntered'))this.completeRequired('facilityEntered');
     this.switchStage('resonance-facility');

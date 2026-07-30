@@ -1,4 +1,116 @@
 function lerp(a,b,t){return a+(b-a)*t}
+function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
+
+const HUB_CAMERA_LOOK=new WeakMap();
+const LOOK_RECENTER_DELAY=900;
+
+export function createHubCameraLookState(){
+  return{
+    yawOffset:0,
+    pitchOffset:0,
+    pointerX:0,
+    pointerY:0,
+    lastPointerX:null,
+    lastPointerY:null,
+    lastInputAt:0,
+    enabled:false,
+    canvas:null,
+    pointerMove:null
+  };
+}
+
+function nowMs(){
+  return typeof performance!=='undefined'&&typeof performance.now==='function'?performance.now():Date.now();
+}
+
+function lookStateFor(battle){
+  if(!battle||typeof battle!=='object')return createHubCameraLookState();
+  let state=HUB_CAMERA_LOOK.get(battle);
+  if(!state){
+    state=createHubCameraLookState();
+    HUB_CAMERA_LOOK.set(battle,state);
+  }
+  const canvas=battle.root?.querySelector?.('canvas');
+  if(canvas&&state.canvas!==canvas){
+    if(state.canvas&&state.pointerMove)state.canvas.removeEventListener('pointermove',state.pointerMove);
+    state.canvas=canvas;
+    state.pointerMove=event=>{
+      if(!state.enabled||(event.pointerType&&event.pointerType!=='mouse'))return;
+      let movementX=Number(event.movementX)||0,movementY=Number(event.movementY)||0;
+      if(!movementX&&!movementY&&state.lastPointerX!==null){
+        movementX=Number(event.clientX)-state.lastPointerX;
+        movementY=Number(event.clientY)-state.lastPointerY;
+      }
+      state.lastPointerX=Number(event.clientX);
+      state.lastPointerY=Number(event.clientY);
+      if(Math.abs(movementX)>180||Math.abs(movementY)>180)return;
+      state.pointerX+=clamp(movementX,-70,70);
+      state.pointerY+=clamp(movementY,-70,70);
+      if(Math.abs(movementX)>.01||Math.abs(movementY)>.01)state.lastInputAt=nowMs();
+    };
+    canvas.addEventListener('pointermove',state.pointerMove,{passive:true});
+  }
+  return state;
+}
+
+function assignedGamepad(battle){
+  if(typeof navigator==='undefined'||typeof navigator.getGamepads!=='function')return null;
+  const pads=Array.from(navigator.getGamepads()||[]);
+  const assignment=battle?.controls?.input?.getControllerAssignment?.(1);
+  return pads[assignment===null||assignment===undefined?0:assignment]||pads.find(Boolean)||null;
+}
+
+function deadZoneAxis(value,deadZone=.18){
+  const amount=Number(value)||0,absolute=Math.abs(amount);
+  if(absolute<=deadZone)return 0;
+  return Math.sign(amount)*(absolute-deadZone)/(1-deadZone);
+}
+
+export function applyHubCameraLook(state,{
+  rightX=0,
+  rightY=0,
+  mouseX=0,
+  mouseY=0,
+  now=nowMs(),
+  frameFight=false
+}={}){
+  const controllerX=deadZoneAxis(rightX),controllerY=deadZoneAxis(rightY);
+  const moved=Math.abs(controllerX)>.001||Math.abs(controllerY)>.001||Math.abs(mouseX)>.001||Math.abs(mouseY)>.001;
+  if(!frameFight&&moved){
+    state.yawOffset=clamp(state.yawOffset+controllerX*2.05+mouseX*.18,-165,165);
+    state.pitchOffset=clamp(state.pitchOffset-controllerY*1.05-mouseY*.09,-18,24);
+    state.lastInputAt=now;
+  }
+  const shouldRecenter=frameFight||now-state.lastInputAt>LOOK_RECENTER_DELAY;
+  if(shouldRecenter){
+    const amount=frameFight?.24:.045;
+    state.yawOffset=lerp(state.yawOffset,0,amount);
+    state.pitchOffset=lerp(state.pitchOffset,0,amount);
+    if(Math.abs(state.yawOffset)<.03)state.yawOffset=0;
+    if(Math.abs(state.pitchOffset)<.03)state.pitchOffset=0;
+  }
+  return state;
+}
+
+function updateHubCameraLook(battle,frameFight){
+  const state=lookStateFor(battle);
+  state.enabled=!frameFight;
+  const pad=assignedGamepad(battle);
+  const mouseX=state.pointerX,mouseY=state.pointerY;
+  state.pointerX=0;state.pointerY=0;
+  applyHubCameraLook(state,{
+    rightX:Number(pad?.axes?.[2])||0,
+    rightY:Number(pad?.axes?.[3])||0,
+    mouseX,mouseY,frameFight
+  });
+  battle.root?.classList?.toggle('hubCameraLookEnabled',!frameFight);
+  return state;
+}
+
+export function resetHubCameraLook(battle){
+  const state=lookStateFor(battle);
+  state.yawOffset=0;state.pitchOffset=0;state.pointerX=0;state.pointerY=0;state.lastInputAt=0;
+}
 
 function cameraFollowRate(camera,targetX,targetZ){
   const gap=Math.hypot((camera.x||0)-targetX,(camera.z||0)-targetZ);
@@ -50,14 +162,14 @@ export function resolveHubCameraOcclusion(stage,target,desiredEye){
   ];
 }
 
-function renderCamera(battle,targetY,{avoidOcclusion=false}={}){
+function renderCamera(battle,targetY,{avoidOcclusion=false,look=null}={}){
   const c=battle.stage.camera;
-  const yaw=c.yawDeg*Math.PI/180;
+  const yaw=(c.yawDeg+(look?.yawOffset||0))*Math.PI/180;
   const horizontal=battle.camera.distance*c.horizontalDistanceScale;
   battle.camera.target=[battle.camera.x,c.targetHeight+targetY*c.jumpTargetScale,battle.camera.z];
   const desiredEye=[
     battle.camera.x+Math.sin(yaw)*horizontal,
-    c.heightBase+battle.camera.distance*c.heightDistanceScale,
+    c.heightBase+battle.camera.distance*c.heightDistanceScale+(look?.pitchOffset||0)*8,
     battle.camera.z+Math.cos(yaw)*horizontal
   ];
   battle.camera.eye=avoidOcclusion
@@ -69,6 +181,7 @@ function renderCamera(battle,targetY,{avoidOcclusion=false}={}){
 
 export function snapHubCamera(battle,player,{distance=1010}={}){
   if(!battle?.camera||!player)return;
+  resetHubCameraLook(battle);
   battle.camera.x=player.x;
   battle.camera.z=player.z;
   battle.camera.distance=distance;
@@ -79,11 +192,14 @@ export function updateHubCamera(battle,{
   player=battle?.fighters?.[0],
   foe=battle?.fighters?.[1],
   frameFight=false,
+  allowLook=!frameFight,
   hubDistance=1010,
   fightBaseDistance=930,
   fightMaxDistance=1180
 }={}){
   if(!battle?.camera||!player)return;
+  const lookState=updateHubCameraLook(battle,frameFight||!allowLook);
+  const look=frameFight||!allowLook?null:lookState;
   let focusX=player.x,focusZ=player.z,distanceTarget=hubDistance,targetY=player.y||0;
   if(frameFight&&foe){
     const separation=Math.hypot(player.x-foe.x,player.z-foe.z);
@@ -96,5 +212,5 @@ export function updateHubCamera(battle,{
   battle.camera.x=lerp(battle.camera.x,focusX,follow);
   battle.camera.z=lerp(battle.camera.z,focusZ,follow);
   battle.camera.distance=lerp(battle.camera.distance,distanceTarget,frameFight?.065:.085);
-  renderCamera(battle,targetY,{avoidOcclusion:!frameFight});
+  renderCamera(battle,targetY,{avoidOcclusion:!frameFight,look});
 }

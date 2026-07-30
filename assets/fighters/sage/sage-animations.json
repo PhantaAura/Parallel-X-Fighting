@@ -1,7 +1,7 @@
 {
   "version": 5,
   "fighter": "sage",
-  "image": "./sage-atlas.png",
+  "image": "./sage-atlas.webp",
   "atlas": {
     "width": 1536,
     "height": 1536,

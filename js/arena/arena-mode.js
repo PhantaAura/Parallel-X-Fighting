@@ -1,32 +1,34 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a17-chapter123-repair-icon-20260729';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a22p1-floating-lookout-20260730';
 import {drawArenaStage} from './arena-stage-renderer.js';
 import {WebGLArenaRenderer} from './webgl-renderer.js';
-import {ArenaControlManager} from './arena-controls.js?v=29a17-chapter123-repair-icon-20260729';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a17-chapter123-repair-icon-20260729';
+import {ArenaControlManager} from './arena-controls.js?v=29a22p1-floating-lookout-20260730';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a22p1-floating-lookout-20260730';
+import {ROSTER} from '../roster.js?v=29a22p1-floating-lookout-20260730';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a22p1-floating-lookout-20260730';
 
 const ID='arenaModeScreen';
 const W=960;
 const H=540;
-const STEP=1/60;
+const STEP=COMBAT_RULES.step;
 const PERFECT_BLOCK_WINDOW=.11;
 const MAX_BLOCK_TIME=1.65;
 const BLOCK_LOCKOUT=.72;
 const RUN_BUILD_TIME=.12;
 const DASH_CANCEL_TIME=.055;
-const KO_TARGET=3;
-const CPU_HEALTH=100;
-const START_ENERGY=45;
-const RESPAWN_ENERGY=50;
-const COUNTER_COST=18;
-const COUNTER_COOLDOWN=2.4;
+const KO_TARGET=COMBAT_RULES.koTarget;
+const CPU_HEALTH=COMBAT_RULES.maxHealth;
+const START_ENERGY=COMBAT_RULES.startEnergy;
+const RESPAWN_ENERGY=COMBAT_RULES.respawnEnergy;
+const COUNTER_COST=COMBAT_RULES.counterCost;
+const COUNTER_COOLDOWN=COMBAT_RULES.counterCooldown;
 const COUNTER_ACTIVE=.14;
 const COUNTER_RECOVERY=.62;
-const BREAKER_COST=60;
-const BREAKER_COOLDOWN=6.5;
-const JUGGLE_LIMIT=6;
-const EDGE_PRESSURE_HITS=3;
-const EDGE_PRESSURE_WINDOW=2.35;
+const BREAKER_COST=COMBAT_RULES.breakerCost;
+const BREAKER_COOLDOWN=COMBAT_RULES.breakerCooldown;
+const JUGGLE_LIMIT=COMBAT_RULES.juggleLimit;
+const EDGE_PRESSURE_HITS=COMBAT_RULES.edgePressureHits;
+const EDGE_PRESSURE_WINDOW=COMBAT_RULES.edgePressureWindow;
 const LENS_MASTERY_KEY='pxLensMasteryV1';
 
 const MOVEMENT_PROFILES=Object.freeze({
@@ -57,6 +59,38 @@ const ARENA_ABILITIES=Object.freeze([
   {id:'lensOfTruth',label:'Lens of Truth',icon:'◉',cost:60,cooldown:8,hp:25,category:'trick'},
   {id:'ultimate',label:'Solar Weave',icon:'☀',cost:90,cooldown:8,ultimate:true,category:'power'}
 ]);
+
+
+const PLAYER_LOADOUTS=Object.freeze({
+  rrvvfo:ARENA_ABILITIES,
+  revvfo:Object.freeze([
+    {id:'genericBlast',label:'Astrylte Blast',icon:'◆',cost:24,cooldown:1.75,category:'shot',character:true},
+    {id:'genericBlast',label:'Warp Pressure',icon:'✧',cost:24,cooldown:1.75,category:'trick',character:true,locked:true},
+    {id:'genericBlast',label:'Astrylte Guard',icon:'⬡',cost:24,cooldown:1.75,category:'trick',character:true,locked:true},
+    {id:'genericBlast',label:'Perfected Beam',icon:'◈',cost:24,cooldown:1.75,category:'power',character:true,locked:true},
+    {id:'genericBlast',label:'Perfection',icon:'✹',cost:24,cooldown:1.75,category:'power',character:true,locked:true}
+  ]),
+  wade:Object.freeze([
+    {id:'lightningBlast',label:'Lightning Blast',icon:'ϟ',cost:10,cooldown:.58,category:'shot',character:true},
+    {id:'lightningDash',label:'Lightning Dash',icon:'➜',cost:24,cooldown:2.7,category:'trick',character:true},
+    {id:'thunderstorm',label:'Thunderstorm',icon:'☁',cost:34,cooldown:5.2,category:'trick',character:true},
+    {id:'lightningBeam',label:'Lightning Beam',icon:'⚡',cost:90,cooldown:8,category:'power',character:true},
+    {id:'lightningDash',label:'Flash Pursuit',icon:'✦',cost:24,cooldown:2.7,category:'power',character:true}
+  ]),
+  bark:Object.freeze([
+    {id:'rockShot',label:'Rock Shot',icon:'●',cost:16,cooldown:1.35,category:'shot',character:true},
+    {id:'groundQuake',label:'Ground Quake',icon:'⌁',cost:30,cooldown:4.6,category:'power',character:true},
+    {id:'rockArmor',label:'Rock Armor',icon:'⬢',cost:24,cooldown:7,category:'trick',character:true},
+    {id:'earthWall',label:'Earth Wall',icon:'▰',cost:24,cooldown:4.8,category:'trick',character:true},
+    {id:'seismicCounter',label:'Seismic Counter',icon:'↶',cost:20,cooldown:3.4,category:'trick',character:true}
+  ])
+});
+
+function playerLoadout(fighterId){return PLAYER_LOADOUTS[fighterId]||PLAYER_LOADOUTS.revvfo}
+function fighterPreset(id,side,cpu,appearance='down'){
+  const data=ROSTER[id]||{n:String(id||'Fighter'),a:side===1?'#ff493d':'#a855f7'};
+  return{id,name:data.n,accent:data.a,cpu,appearance};
+}
 
 function installUI(){
   let root=document.getElementById(ID);
@@ -124,7 +158,7 @@ function installUI(){
 <canvas data-fighter-layer width="${W}" height="${H}" aria-hidden="true"></canvas>
 
 <div class="arenaStageSelect hidden" data-arena-stage-select role="dialog" aria-modal="true" aria-label="Arena select"><div class="arenaStageCard">
-  <header><small>PROTOTYPE 2.9A.17</small><h2>SELECT ARENA</h2><p>Choose a stage. Kinetic movement, pursuit attacks, and Shot / Power / Trick techniques use the same rules everywhere.</p></header>
+  <header><small>PROTOTYPE 2.9A.22</small><h2>SELECT ARENA</h2><p>Choose a stage. Kinetic movement, pursuit attacks, and Shot / Power / Trick techniques use the same rules everywhere.</p></header>
   <div class="arenaStageGrid" data-arena-stage-grid></div>
   <button class="arenaStageBack" data-stage-back>BACK TO MAIN MENU</button>
 </div></div>
@@ -135,7 +169,7 @@ function installUI(){
   <div class="clock"><b data-time>90</b><small data-round>ROUND 1</small></div>
   <div class="side r"><div class="name"><span>REVVFO</span><span data-s2>0</span></div><div class="track"><div class="fill" data-h2></div></div><div class="resourceLine"><span data-e2-text>45</span><span>ENERGY</span></div><div class="resourceTrack"><div class="energyFill" data-e2></div></div><div class="resourceLine"><span data-g2-text>100</span><span>GUARD</span></div><div class="resourceTrack"><div class="guardFill" data-g2></div></div><div class="resourceLine"><span data-m2-text>0</span><span>MOMENTUM</span></div><div class="resourceTrack"><div class="momentumFill" data-m2></div></div></div>
 </div>
-<div class="badge"><strong>PROTOTYPE 2.9A.17 • KINETIC COMBAT</strong><span data-stage-name>TANGAI DOJO</span><br>REUSABLE ARENA PIPELINE • DATA-DRIVEN STAGE</div><div class="banner hidden" data-banner></div>
+<div class="badge"><strong>PROTOTYPE 2.9A.22 • KINETIC COMBAT</strong><span data-stage-name>TANGAI DOJO</span><br>REUSABLE ARENA PIPELINE • DATA-DRIVEN STAGE</div><div class="banner hidden" data-banner></div>
 <div class="result hidden" data-result><small>ARENA BATTLE</small><h2 data-title>MATCH COMPLETE</h2><p data-text></p><div class="actions"><button class="primary" data-rematch>REMATCH</button><button data-change-arena>CHANGE ARENA</button><button data-return>MAIN MENU</button></div></div>
 <div class="arenaNotice" data-arena-notice></div><div class="edgeWarning" data-edge-warning>EDGE PRESSURE • ESCAPE OR COUNTER</div>
 <div class="arenaHotbar" data-arena-hotbar><div class="arenaSlots">${ARENA_ABILITIES.map((ability,index)=>`<button class="arenaAbility ${ability.ultimate?'ultimate':''}" data-arena-slot="${index+1}" aria-label="Slot ${index+1}: ${ability.label}, ${SPECIAL_CATEGORIES[ability.category].label} category"><span class="arenaCooldown"></span><span class="arenaNumber">${index+1}</span><span class="arenaCategory">${SPECIAL_CATEGORIES[ability.category].label}</span><span class="arenaIcon">${ability.icon}</span><span class="arenaAbilityName">${ability.label}</span><span class="arenaCost">${ability.cost} ENERGY${ability.hp?` • ${ability.hp} HP`:''}</span><span class="arenaState" data-arena-state>READY</span></button>`).join('')}</div></div>
@@ -158,7 +192,7 @@ function installUI(){
 <div class="arenaTouchUtilities"><button data-arena-touch-pause aria-label="Pause">Ⅱ</button><button data-arena-touch-settings aria-label="Control settings">⚙</button></div>
 <div class="rotateHint"><div><strong>ROTATE TO LANDSCAPE</strong><span>Arena controls are designed for two-thumb play.</span></div></div>
 <div class="arenaControlSettings hidden" data-arena-control-settings role="dialog" aria-modal="true" aria-label="Arena control settings"><div class="arenaControlCard">
-  <header><div><small>PROTOTYPE 2.9A.17</small><h2>CONTROL LAYOUTS</h2><p>Desktop and mobile settings save separately from combat balance.</p></div><button data-arena-controls-close aria-label="Close">×</button></header>
+  <header><div><small>PROTOTYPE 2.9A.22</small><h2>CONTROL LAYOUTS</h2><p>Desktop and mobile settings save separately from combat balance.</p></div><button data-arena-controls-close aria-label="Close">×</button></header>
   <div class="arenaControlGrid">
     <fieldset><legend>PC</legend><label>Keyboard profile<select data-control-pc-layout><option value="shared">Chapter 1–3 Controls — used in every mode</option></select></label><label>Left mouse click<select data-control-mouse-attack><option value="light">Light Attack</option><option value="heavy">Heavy Attack</option></select></label><p><strong>Movement:</strong> WASD<br><strong>Jump:</strong> Space<br><strong>Light / Heavy / Launcher:</strong> J / K / I<br><strong>Dash:</strong> Shift<br><strong>Block:</strong> L or Mouse 2<br><strong>Charge:</strong> C<br><strong>Grab:</strong> U<br><strong>Abilities:</strong> 1–5</p></fieldset>
     <fieldset><legend>MOBILE</legend><label>Touch controls<select data-control-touch-mode><option value="auto">Auto detect</option><option value="on">Always on</option><option value="off">Off</option></select></label><label>Button size<select data-control-mobile-layout><option value="compact">Compact</option><option value="standard">Standard</option><option value="large">Large Buttons</option></select></label><label>Handedness<select data-control-handedness><option value="right">Joystick left / attacks right</option><option value="left">Joystick right / attacks left</option></select></label><label>Opacity<input data-control-opacity type="range" min=".45" max="1" step=".05"></label><label><input data-control-labels type="checkbox"> Show action labels</label></fieldset>
@@ -235,7 +269,7 @@ class ArenaFighter{
   constructor(id,name,x,z,cpu,accent,appearance='down'){Object.assign(this,{id,name,x,z,cpu,accent,appearance});this.asset=null;this.maxHp=100;this.reset(x,z)}
   reset(x,z){
     const maxHp=Math.max(1,Number(this.maxHp)||100);
-    Object.assign(this,{x,z,y:0,vy:0,kvx:0,kvz:0,moveVX:0,moveVZ:0,runTime:0,speedRatio:0,maxHp,hp:maxHp,en:START_ENERGY,guard:100,momentum:0,grounded:true,moving:false,moveX:0,moveZ:0,block:false,blockAge:0,blockLockout:0,guardDelay:0,guardBreak:0,stun:0,inv:0,knockdown:0,dashTime:0,dashElapsed:0,dashRecovery:0,dashCooldown:0,dashX:0,dashZ:0,airDashUsed:false,attackState:null,abilityState:null,characterAbilityState:null,abilityRecovery:0,flash:0,aimX:this.id==='rrvvfo'?1:-1,aimZ:0,animation:'idle',animationClock:0,visualAction:'',visualActionTime:0,lens:0,lensAutoDodges:0,lensStartHp:maxHp,lensWasHit:false,lensPrediction:'',lensPredictionTriggered:false,lensPredictionTimer:0,comboHits:0,comboDamage:0,comboTimer:0,comboTextTime:0,lightChain:0,airHitsTaken:0,juggleProtection:0,bodyCenter:68,collisionRadius:29,charging:false,chargePulse:0,stallTime:0,grabCooldown:0,grabRecovery:0,armorDurability:0,counterWindow:0,counterRecovery:0,counterCooldown:0,counterKind:'',breakerCooldown:0,breakerLocked:false,pursuitWindow:0,pursuitUsed:false,pursuitTime:0,pursuitFollowupWindow:0,pursuitTarget:null,edgePressureHits:0,edgePressureTimer:0,ringOutFall:0,ringOutComplete:false,ringOutVX:0,ringOutVZ:0,edgeTime:0,respawnProtection:0,cooldowns:{fireBlast:0,shotsOfAgony:0,objectSwap:0,lensOfTruth:0,ultimate:0,astrylteBlast:0,lightningBlast:0,lightningDash:0,thunderstorm:0,lightningBeam:0,groundQuake:0,rockArmor:0,earthWall:0,seismicCounter:0,rockShot:0,characterSpecial:0},aiThink:0,aiReaction:0,aiMove:{x:0,z:0},aiPulse:{},aiBlock:false,aiIntent:'idle',aiQueuedAbility:null,aiHabit:{chargePunishes:0,blocksSeen:0,edgePressure:0}});
+    Object.assign(this,{x,z,y:0,vy:0,kvx:0,kvz:0,moveVX:0,moveVZ:0,runTime:0,speedRatio:0,maxHp,hp:maxHp,en:START_ENERGY,guard:100,momentum:0,grounded:true,moving:false,moveX:0,moveZ:0,block:false,blockAge:0,blockLockout:0,guardDelay:0,guardBreak:0,stun:0,inv:0,knockdown:0,dashTime:0,dashElapsed:0,dashRecovery:0,dashCooldown:0,dashX:0,dashZ:0,airDashUsed:false,attackState:null,abilityState:null,characterAbilityState:null,abilityRecovery:0,flash:0,aimX:this.id==='rrvvfo'?1:-1,aimZ:0,animation:'idle',animationClock:0,visualAction:'',visualActionTime:0,lens:0,lensAutoDodges:0,lensStartHp:maxHp,lensWasHit:false,lensPrediction:'',lensPredictionTriggered:false,lensPredictionTimer:0,comboHits:0,comboDamage:0,comboTimer:0,comboTextTime:0,lightChain:0,airHitsTaken:0,juggleProtection:0,bodyCenter:68,collisionRadius:29,charging:false,chargePulse:0,stallTime:0,grabCooldown:0,grabRecovery:0,armorDurability:0,counterWindow:0,counterRecovery:0,counterCooldown:0,counterKind:'',breakerCooldown:0,breakerLocked:false,pursuitWindow:0,pursuitUsed:false,pursuitTime:0,pursuitFollowupWindow:0,pursuitTarget:null,edgePressureHits:0,edgePressureTimer:0,ringOutFall:0,ringOutComplete:false,ringOutVX:0,ringOutVZ:0,edgeTime:0,respawnProtection:0,cooldowns:{fireBlast:0,shotsOfAgony:0,objectSwap:0,lensOfTruth:0,ultimate:0,astrylteBlast:0,lightningBlast:0,lightningDash:0,thunderstorm:0,lightningBeam:0,groundQuake:0,rockArmor:0,earthWall:0,seismicCounter:0,rockShot:0,characterSpecial:0},aiThink:0,aiReaction:0,aiMove:{x:0,z:0},aiPulse:{},aiBlock:false,aiIntent:'idle',aiQueuedAbility:null,aiHabit:{chargePunishes:0,blocksSeen:0,edgePressure:0},combatHabits:{blockTime:0,chargeTime:0,projectiles:0,launchers:0,repeats:0,lastAction:'',actionLatch:''}});
   }
   setAnimation(name){if(name===this.animation)return;this.animation=name;this.animationClock=0}
   jump(){if(this.grounded&&!this.stun&&!this.guardBreak&&!this.attackState&&!this.dashRecovery){this.grounded=false;this.vy=410;this.animationClock=0;return true}return false}
@@ -246,10 +280,47 @@ class ArenaBattle{
     this.root=installUI();this.canvas=this.root.querySelector('[data-world-layer]');this.fighterCanvas=this.root.querySelector('[data-fighter-layer]');this.fighterContext=this.fighterCanvas.getContext('2d',{alpha:true});this.renderer=new WebGLArenaRenderer(this.canvas);this.audio=new CombatAudio();this.stage=getArenaStage(stageId);
     this.active=false;this.paused=false;this.accumulator=0;this.last=0;this.raf=0;this.hitstop=0;this.cameraShake=0;this.flashTime=0;
     const [spawn1,spawn2]=this.stage.spawnPoints;this.fighters=[new ArenaFighter('rrvvfo','Rrvvfo',spawn1.x,spawn1.z,false,'#ff493d','down'),new ArenaFighter('revvfo','Revvfo',spawn2.x,spawn2.z,true,'#a855f7','down')];
-    this.trainingMode=false;this.trainingDummy='stand';this.trainingDrill='free';this.camera={x:0,z:0,distance:850,eye:[520,420,650],target:[0,35,0]};this.particles=[];this.projectiles=[];this.agonyClones=[];this.thunderZones=[];this.quakes=[];this.earthWalls=[];this.breakables=[];this.noticeTime=0;this.koTarget=KO_TARGET;this.scores=[0,0];this.round=1;this.time=Infinity;this.phase='intro';this.phaseTime=1.55;this.lastLoser=-1;this.ringOutEnabled=false;this.onRingOut=null;this.difficulty=this.readDifficulty();this.lensMastery=this.readLensMastery();
-    this.controlSettingsPaused=false;this.controls=new ArenaControlManager(this.root,{onPause:()=>this.togglePause(),onExit:()=>this.exit(),onAbility:slot=>this.castAbility(slot),onSettings:()=>this.notice('CONTROL LAYOUT SAVED'),onOpenSettings:()=>{if(!this.paused){this.controlSettingsPaused=true;this.togglePause()}},onCloseSettings:()=>{if(this.controlSettingsPaused){this.controlSettingsPaused=false;this.togglePause()}}});
+    this.trainingMode=false;this.localMode=false;this.matchMode='cpu';this.trainingDummy='stand';this.trainingDrill='free';this.camera={x:0,z:0,distance:850,eye:[520,420,650],target:[0,35,0]};this.particles=[];this.projectiles=[];this.agonyClones=[];this.thunderZones=[];this.quakes=[];this.earthWalls=[];this.breakables=[];this.noticeTime=0;this.koTarget=KO_TARGET;this.scores=[0,0];this.round=1;this.time=Infinity;this.phase='intro';this.phaseTime=1.55;this.lastLoser=-1;this.ringOutEnabled=false;this.onRingOut=null;this.difficulty=this.readDifficulty();this.lensMastery=this.readLensMastery();
+    this.controlSettingsPaused=false;this.controls=new ArenaControlManager(this.root,{onPause:()=>this.togglePause(),onExit:()=>this.exit(),onAbility:(slot,side=1)=>this.castAbility(slot,side),onSettings:()=>this.notice('CONTROL LAYOUT SAVED'),onOpenSettings:()=>{if(!this.paused){this.controlSettingsPaused=true;this.togglePause()}},onCloseSettings:()=>{if(this.controlSettingsPaused){this.controlSettingsPaused=false;this.togglePause()}}});
     this.root.querySelector('[data-exit]').onclick=()=>this.exit();this.root.querySelector('[data-return]').onclick=()=>this.exit();this.root.querySelector('[data-restart]').onclick=async()=>{if(this.beforeRestart&&await this.beforeRestart()===false)return;this.restart()};this.root.querySelector('[data-rematch]').onclick=async()=>{if(this.beforeRestart&&await this.beforeRestart()===false)return;this.restart()};this.root.querySelector('[data-change-arena]').onclick=()=>this.showStageSelect();this.root.querySelector('[data-stage-back]').onclick=()=>this.exit();this.renderStageSelect();this.root.querySelectorAll('[data-arena-slot]').forEach(button=>button.addEventListener('click',()=>this.castAbility(Number(button.dataset.arenaSlot))));this.root.querySelector('[data-training-reset]')?.addEventListener('click',()=>this.restart());this.root.querySelector('[data-training-dummy]')?.addEventListener('change',event=>{this.trainingDummy=event.target.value;this.notice(`DUMMY • ${this.trainingDummy.toUpperCase()}`)});this.root.querySelector('[data-training-drill]')?.addEventListener('change',event=>{this.trainingDrill=event.target.value;this.applyTrainingDrill()});this.root.querySelector('[data-training-moves]')?.addEventListener('click',()=>this.notice('M1/J LIGHT • K HEAVY • I LAUNCHER • DASH AFTER LAUNCH TO PURSUE • U GRAB • C CHARGE • R BREAKER • Q COUNTER • M2/L BLOCK • 1–5 ABILITIES',3));this.root.querySelector('[data-training-advanced]')?.addEventListener('click',()=>{this.exit();window.__openClassicTraining?.()});
   }
+
+  configureMatch({mode='cpu',fighters=['rrvvfo','revvfo'],appearances=['down','down'],stageId='dojo',difficulty='normal',koTarget=KO_TARGET}={}){
+    this.stopMatch();
+    this.matchMode=['cpu','local','training'].includes(mode)?mode:'cpu';
+    this.trainingMode=this.matchMode==='training';
+    this.localMode=this.matchMode==='local';
+    this.difficulty=['easy','normal','hard'].includes(difficulty)?difficulty:'normal';
+    this.koTarget=Math.max(1,Math.min(5,Number(koTarget)||KO_TARGET));
+    this.setStage(stageId);
+    const [spawn1,spawn2]=this.stage.spawnPoints;
+    const first=fighterPreset(fighters[0]||'rrvvfo',1,false,appearances[0]||'down');
+    const second=fighterPreset(fighters[1]||'revvfo',2,!this.localMode,appearances[1]||'down');
+    this.fighters=[
+      new ArenaFighter(first.id,first.name,spawn1.x,spawn1.z,first.cpu,first.accent,first.appearance),
+      new ArenaFighter(second.id,second.name,spawn2.x,spawn2.z,second.cpu,second.accent,second.appearance)
+    ];
+    this.refreshPlayerHotbar();
+    return this;
+  }
+
+  refreshPlayerHotbar(){
+    const fighter=this.fighters[0],loadout=playerLoadout(fighter.id);
+    this.root.querySelectorAll('[data-arena-slot]').forEach((button,index)=>{
+      const ability=loadout[index]||loadout[0];
+      button.classList.toggle('ultimate',Boolean(ability?.category==='power'));
+      button.classList.toggle('loadoutLocked',Boolean(ability?.locked));
+      button.setAttribute('aria-disabled',ability?.locked?'true':'false');
+      button.setAttribute('aria-label',`Slot ${index+1}: ${ability?.label||'Unavailable'}`);
+      const category=button.querySelector('.arenaCategory');if(category)category.textContent=SPECIAL_CATEGORIES[ability?.category||'trick']?.label||'TRICK';
+      const icon=button.querySelector('.arenaIcon');if(icon)icon.textContent=ability?.icon||'—';
+      const name=button.querySelector('.arenaAbilityName');if(name)name.textContent=ability?.label||'Unavailable';
+      const cost=button.querySelector('.arenaCost');if(cost)cost.textContent=ability?.locked?'LEARN LATER':`${ability?.cost||0} ENERGY`;
+      const state=button.querySelector('[data-arena-state]');if(state)state.textContent=ability?.locked?'LOCKED':'READY';
+    });
+  }
+
+  playerAbility(fighter,slot){return playerLoadout(fighter.id)[slot-1]||null}
 
   readDifficulty(){try{return JSON.parse(localStorage.getItem('pxQolLastActivity')||'null')?.difficulty||'normal'}catch{return'normal'}}
   readLensMastery(){try{return clamp(Number(localStorage.getItem(LENS_MASTERY_KEY)||0),0,100)}catch{return 0}}
@@ -304,21 +375,51 @@ class ArenaBattle{
   banner(text){const banner=this.root.querySelector('[data-banner]');banner.textContent=text;banner.classList.remove('hidden')}
   hideBanner(){this.root.querySelector('[data-banner]').classList.add('hidden')}
 
-  input(){return this.controls.read()}
+  input(side=1,options){return this.controls.read(side,options)}
+
+  observeHabits(fighter,dt){
+    const habit=fighter.combatHabits||(fighter.combatHabits={blockTime:0,chargeTime:0,projectiles:0,launchers:0,repeats:0,lastAction:'',actionLatch:''});
+    habit.blockTime=fighter.block?Math.min(4,habit.blockTime+dt):decayHabit(habit.blockTime,dt,.55);
+    habit.chargeTime=fighter.charging?Math.min(4,habit.chargeTime+dt):decayHabit(habit.chargeTime,dt,.7);
+    habit.projectiles=decayHabit(habit.projectiles,dt,.24);
+    habit.launchers=decayHabit(habit.launchers,dt,.3);
+    habit.repeats=decayHabit(habit.repeats,dt,.42);
+    let action='idle';
+    if(fighter.abilityState)action=fighter.abilityState.ability?.id||'ability';
+    else if(fighter.characterAbilityState)action=fighter.characterAbilityState.ability||'special';
+    else if(fighter.attackState)action=fighter.attackState.def?.kind||'attack';
+    else if(fighter.block)action='block';
+    else if(fighter.charging)action='charge';
+    if(action!==habit.actionLatch){
+      if(action===habit.lastAction&&action!=='idle')habit.repeats=Math.min(5,habit.repeats+1);
+      if(action!=='idle')habit.lastAction=action;
+      habit.actionLatch=action;
+    }
+  }
 
   cpu(fighter,foe,dt){
     if(this.trainingMode&&this.trainingDummy!=='cpu')return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:this.trainingDummy==='block',charge:false,grab:false,breaker:false,counter:false,special:false};
-    const settings={easy:{reaction:.24,mistake:.30,block:.22,combo:.36},normal:{reaction:.15,mistake:.14,block:.40,combo:.62},hard:{reaction:.095,mistake:.06,block:.58,combo:.82}}[this.difficulty]||{reaction:.15,mistake:.14,block:.40,combo:.62};
+    const settings=difficultyProfile(this.difficulty);
     fighter.aiThink-=dt;fighter.aiReaction-=dt;
     if(fighter.aiReaction<=0){
       fighter.aiReaction=settings.reaction*(.85+Math.random()*.35);
       const dx=foe.x-fighter.x,dz=foe.z-fighter.z,distance=Math.hypot(dx,dz),toward=normalizeMovement(dx,dz),side=Math.random()<.5?-1:1,wall=stageWallAvoidance(this.stage,fighter.x,fighter.z,this.stage.ai?.wallMargin??70);
       const incoming=this.projectiles.find(projectile=>projectile.owner!==fighter&&Math.hypot(projectile.x-fighter.x,projectile.z-fighter.z)<230);
       const edge=this.isNearRingEdge(fighter,125),foeCharging=!!foe.charging,foeBlocking=!!foe.block,foeWhiff=!!(foe.attackState&&foe.attackState.elapsed>foe.attackState.def.activeEnd),lowGuard=fighter.guard<28;
+      const habits=foe.combatHabits||{},adaptiveRoll=Math.random()<settings.adaptation;
+      const habitualBlock=adaptiveRoll&&(habits.blockTime||0)>.75;
+      const projectilePattern=adaptiveRoll&&(habits.projectiles||0)>1.65;
+      const launcherPattern=adaptiveRoll&&(habits.launchers||0)>1.45;
       let moveX=0,moveZ=0,block=false,intent='observe';const pulse={};
       if(fighter.pursuitFollowupWindow>0){pulse.heavy=true;intent='pursuit follow-up'}
       else if(fighter.pursuitWindow>0&&!fighter.pursuitUsed){pulse.dash=true;intent='pursuit chase'}
       else if(edge){moveX=-Math.sign(fighter.x||1)*.75;moveZ=-Math.sign(fighter.z||1)*.75;intent='recover center';fighter.aiHabit.edgePressure++}
+      else if(habitualBlock&&distance<118&&fighter.grabCooldown<=0){pulse.grab=true;moveX=toward.x;moveZ=toward.z;intent='adapt: punish repeated guard'}
+      else if(projectilePattern&&distance>155){
+        if(fighter.id==='bark'&&fighter.en>=24&&fighter.cooldowns.earthWall<=0){pulse.special=true;fighter.aiQueuedAbility='earthWall';intent='adapt: projectile wall'}
+        else{moveX=-toward.z*side;moveZ=toward.x*side;pulse.dash=true;intent='adapt: projectile flank'}
+      }
+      else if(launcherPattern&&distance<145){block=true;moveX=-toward.x*.2;moveZ=-toward.z*.2;intent='adapt: bait launcher'}
       else if(incoming){
         if(fighter.id==='bark'&&fighter.en>=24&&fighter.cooldowns.earthWall<=0){pulse.special=true;fighter.aiQueuedAbility='earthWall';intent='earth wall'}
         else if(Math.random()<.52){moveX=-toward.z*side;moveZ=toward.x*side;pulse.dash=true;intent='projectile dodge'}
@@ -378,7 +479,14 @@ class ArenaBattle{
     if(this.phase==='over'){this.phaseTime-=dt;if(this.phaseTime<=0){if(Math.max(...this.scores)>=this.koTarget)this.showResult();else{this.round++;this.respawnAfterKo(this.lastLoser)}}return}
     if(this.phase!=='play')return;
     if(this.hitstop>0){this.hitstop=Math.max(0,this.hitstop-dt);this.hud();return}
-    const playerCommand=this.input(),cpuCommand=this.cpu(this.fighters[1],this.fighters[0],dt);this.stepFighter(this.fighters[0],this.fighters[1],playerCommand,dt);this.stepFighter(this.fighters[1],this.fighters[0],cpuCommand,dt);if(playerCommand.special&&this.fighters[0].cpu)this.castCharacterAbility(this.fighters[0],this.fighters[1],this.fighters[0].aiQueuedAbility);if(cpuCommand.special)this.castCharacterAbility(this.fighters[1],this.fighters[0],this.fighters[1].aiQueuedAbility);this.updateSpecials(dt);this.separateFighters();this.resolveMeleeClash();this.resolveAttackHit(this.fighters[0],this.fighters[1]);this.resolveAttackHit(this.fighters[1],this.fighters[0]);if(this.trainingMode){for(const fighter of this.fighters){if(fighter.hp<=0){fighter.hp=100;fighter.stun=0;fighter.knockdown=0;fighter.inv=.5;this.notice('TRAINING HEALTH RESTORED',.7)}}}for(const fighter of this.fighters){if(this.isRingOut(fighter)){if(this.onRingOut)this.onRingOut(fighter);else fighter.hp=0;break}}if(!this.trainingMode&&this.fighters.some(fighter=>fighter.hp<=0))this.finishRound();this.hud();
+    this.controls.poll();
+    for(const fighter of this.fighters)this.observeHabits(fighter,dt);
+    const playerCommand=this.input(1,{poll:false});
+    const opponentCommand=this.localMode?this.input(2,{poll:false}):this.cpu(this.fighters[1],this.fighters[0],dt);
+    this.stepFighter(this.fighters[0],this.fighters[1],playerCommand,dt);
+    this.stepFighter(this.fighters[1],this.fighters[0],opponentCommand,dt);
+    if(opponentCommand.special&&!this.localMode)this.castCharacterAbility(this.fighters[1],this.fighters[0],this.fighters[1].aiQueuedAbility);
+    this.updateSpecials(dt);this.separateFighters();this.resolveMeleeClash();this.resolveAttackHit(this.fighters[0],this.fighters[1]);this.resolveAttackHit(this.fighters[1],this.fighters[0]);if(this.trainingMode){for(const fighter of this.fighters){if(fighter.hp<=0){fighter.hp=100;fighter.stun=0;fighter.knockdown=0;fighter.inv=.5;this.notice('TRAINING HEALTH RESTORED',.7)}}}for(const fighter of this.fighters){if(this.isRingOut(fighter)){if(this.onRingOut)this.onRingOut(fighter);else fighter.hp=0;break}}if(!this.trainingMode&&this.fighters.some(fighter=>fighter.hp<=0))this.finishRound();this.hud();
   }
 
   respawnAfterKo(index){
@@ -515,7 +623,7 @@ class ArenaBattle{
     if(Math.hypot(foe.x-fighter.x,foe.z-fighter.z)<175&&Math.abs(fighter.y-foe.y)<95){
       const assist=Math.min(18,Math.max(0,Math.hypot(foe.x-fighter.x,foe.z-fighter.z)-55)*.12);fighter.x+=aim.x*assist;fighter.z+=aim.z*assist;
     }
-    fighter.attackState={def,elapsed:0,hit:false,locked:false,aimX:aim.x,aimZ:aim.z,lungeRemaining:def.lunge,magnetRemaining:fighter.comboTimer>0?28:0,buffer:null};
+    fighter.attackState={def,elapsed:0,hit:false,locked:false,aimX:aim.x,aimZ:aim.z,lungeRemaining:def.lunge,magnetRemaining:fighter.comboTimer>0?28:0,buffer:null};if(def.kind==='launcher')fighter.combatHabits.launchers=Math.min(5,(fighter.combatHabits.launchers||0)+1);
     fighter.block=false;fighter.animationClock=0;fighter.visualAction='';fighter.visualActionTime=0;if(kind.startsWith('light'))fighter.lightChain=Number(kind.slice(-1));return true;
   }
 
@@ -684,8 +792,9 @@ class ArenaBattle{
     return(allowed[ability.id]||[]).includes(state.def.kind);
   }
 
-  castAbility(slot){
-    const fighter=this.fighters[0],foe=this.fighters[1],ability=ARENA_ABILITIES[slot-1];if(!this.active||!ability)return false;
+  castAbility(slot,side=1){
+    const index=Math.max(0,Math.min(1,Number(side)-1)),fighter=this.fighters[index],foe=this.fighters[1-index],ability=this.playerAbility(fighter,slot);if(!this.active||!ability||ability.locked)return false;
+    if(ability.character)return this.castCharacterAbility(fighter,foe,ability.id);
     if(this.phase!=='play'||this.paused){this.notice(this.paused?'MATCH PAUSED':'WAIT FOR FIGHT');return false}
     const cancel=this.canCancelAbility(fighter,ability),lensCosts=this.lensCosts(),energyCost=ability.id==='lensOfTruth'?lensCosts.energy:ability.cost;
     if(fighter.stun||fighter.guardBreak||!fighter.grounded||fighter.abilityState||fighter.characterAbilityState||(fighter.attackState&&!cancel)){this.notice('ABILITY UNAVAILABLE • FINISH YOUR ACTION');return false}
@@ -694,6 +803,7 @@ class ArenaBattle{
     if(fighter.en<energyCost){this.notice(`NEED ${energyCost} ENERGY`);return false}
 
     const timing=abilityTiming(ability.id),finisher=ability.category==='power'&&fighter.momentum>=100;
+    if(['fireBlast','shotsOfAgony','ultimate'].includes(ability.id))fighter.combatHabits.projectiles=Math.min(5,(fighter.combatHabits.projectiles||0)+1);
     fighter.attackState=null;fighter.charging=false;fighter.en=ability.id==='shotsOfAgony'?0:fighter.en-energyCost;fighter.cooldowns[ability.id]=ability.id==='shotsOfAgony'?0:ability.cooldown;
     const aim=aimVector(fighter,foe);fighter.aimX=aim.x;fighter.aimZ=aim.z;
     const visual={fireBlast:'fireBlastFire',shotsOfAgony:'shotsSummon',objectSwap:'objectSwapDisappear',lensOfTruth:'lensActivate',ultimate:'ultimateAttack'}[ability.id]||'chargeEnergy';
@@ -716,7 +826,7 @@ class ArenaBattle{
     }else if(ability.id==='shotsOfAgony'){
       const radius=132;for(let index=0;index<4;index++){const angle=index/4*Math.PI*2,point=clampToStage(this.stage,foe.x+Math.cos(angle)*radius,foe.z+Math.sin(angle)*radius);this.agonyClones.push({owner:fighter,target:foe,x:point.x,z:point.z,life:1.35,fireAt:.58,fired:false,index,color:'#6ebcff'})}this.notice('SHOT • SHOTS OF AGONY • ALL ENERGY COMMITTED',1.4);
     }else if(ability.id==='objectSwap'){
-      const oldX=fighter.x,oldZ=fighter.z;({x:fighter.x,z:fighter.z}=clampToStage(this.stage,foe.x-aim.x*88-aim.z*38,foe.z-aim.z*88+aim.x*38));fighter.inv=.16;fighter.moveVX=fighter.moveVZ=0;this.burst(oldX,oldZ,'#ffd079',18,50);this.burst(fighter.x,fighter.z,'#ffd079',18,50);this.notice('TRICK • OBJECT SWAP • ARRIVAL RECOVERY');
+      const oldX=fighter.x,oldZ=fighter.z,swapDistance=88+Math.max(0,Number(fighter.objectSwapRangeBonus)||0)*28,swapSide=38+Math.max(0,Number(fighter.objectSwapRangeBonus)||0)*12;({x:fighter.x,z:fighter.z}=clampToStage(this.stage,foe.x-aim.x*swapDistance-aim.z*swapSide,foe.z-aim.z*swapDistance+aim.x*swapSide));fighter.inv=.16;fighter.moveVX=fighter.moveVZ=0;this.burst(oldX,oldZ,'#ffd079',18,50);this.burst(fighter.x,fighter.z,'#ffd079',18,50);this.notice('TRICK • OBJECT SWAP • ARRIVAL RECOVERY');
     }else if(ability.id==='lensOfTruth'){
       const costs=state.lensCosts||this.lensCosts();fighter.hp=Math.max(1,fighter.hp-costs.hp);fighter.lens=costs.duration;fighter.lensAutoDodges=costs.autoDodges;fighter.lensStartHp=fighter.hp;fighter.lensWasHit=false;fighter.lensPrediction=this.predictedAction(foe);fighter.lensPredictionTriggered=false;this.burst(fighter.x,fighter.z,'#d4fbff',28,70);this.notice(`TRICK • LENS • ${costs.hp} HP • ${fighter.lensPrediction}`,1.8);
     }else if(ability.id==='ultimate'){
@@ -740,6 +850,7 @@ class ArenaBattle{
   castCharacterAbility(fighter,foe,requested=null){
     if(this.phase!=='play'||fighter.stun||fighter.guardBreak||fighter.attackState||fighter.abilityState||fighter.characterAbilityState||!fighter.grounded)return false;
     const ability=requested||fighter.aiQueuedAbility||'genericBlast',spec=this.characterAbilitySpec(ability);
+    if(['genericBlast','lightningBlast','lightningBeam','rockShot'].includes(ability))fighter.combatHabits.projectiles=Math.min(5,(fighter.combatHabits.projectiles||0)+1);
     if(fighter.en<spec.cost||fighter.cooldowns[spec.key]>0)return false;
     // Spend on startup, not on impact. Interrupting a major technique is therefore
     // a real punish instead of a free reset.
@@ -843,7 +954,22 @@ class ArenaBattle{
     }
     this.root.querySelector('[data-s1]').textContent=`${this.scores[0]}/${this.koTarget}`;this.root.querySelector('[data-s2]').textContent=`${this.scores[1]}/${this.koTarget}`;this.root.querySelector('[data-time]').textContent='∞';this.root.querySelector('[data-round]').textContent=`FIRST TO ${this.koTarget} • BATTLE ${this.round}`;
     const combo=this.root.querySelector('[data-combo]');combo.classList.toggle('show',player.comboTextTime>0&&player.comboHits>1);combo.innerHTML=player.comboHits>1?`${player.comboHits} HIT COMBO<small>${player.comboDamage.toFixed(1)} DAMAGE • ${Math.max(55,100-(player.comboHits-1)*8)}% SCALE</small>`:'';
-    const lensCosts=this.lensCosts();this.root.querySelectorAll('[data-arena-slot]').forEach((button,index)=>{const ability=ARENA_ABILITIES[index],cooldown=player.cooldowns[ability.id]||0,active=ability.id==='shotsOfAgony'?this.volleyActive(player):ability.id==='lensOfTruth'&&player.lens>0,available=this.abilityReady(player,ability),cost=ability.id==='lensOfTruth'?lensCosts.energy:ability.cost;button.classList.toggle('active',active);button.classList.toggle('unavailable',!available&&!active);button.setAttribute('aria-disabled',String(!available));button.style.setProperty('--cooldown-fill',`${ability.cooldown?clamp(cooldown/ability.cooldown,0,1)*100:0}%`);let state='READY';if(player.abilityState?.ability?.id===ability.id)state=player.abilityState.executed?'RECOVERY':'STARTUP';else if(active)state=ability.id==='lensOfTruth'?`${Math.ceil(player.lens)}s • ${this.lensMastery}%`:'ACTIVE';else if(cooldown>0)state=`${cooldown.toFixed(1)}s`;else if(ability.ultimate&&player.momentum>=100)state='FINISHER READY';else if(player.en<cost)state=`NEED ${cost}`;button.querySelector('[data-arena-state]').textContent=state;const costNode=button.querySelector('.arenaCost');if(costNode)costNode.textContent=ability.id==='lensOfTruth'?`${lensCosts.energy} ENERGY • ${lensCosts.hp} HP`:ability.id==='shotsOfAgony'?'ALL ENERGY':`${ability.cost} ENERGY`});
+    const lensCosts=this.lensCosts(),loadout=playerLoadout(player.id);this.root.querySelectorAll('[data-arena-slot]').forEach((button,index)=>{
+      const ability=loadout[index]||null;
+      if(!ability){button.classList.add('unavailable');button.setAttribute('aria-disabled','true');return}
+      const spec=ability.character?this.characterAbilitySpec(ability.id):null;
+      const cooldownKey=spec?.key||ability.id,cooldown=player.cooldowns[cooldownKey]||0;
+      const active=ability.character?player.characterAbilityState?.ability===ability.id:ability.id==='shotsOfAgony'?this.volleyActive(player):ability.id==='lensOfTruth'&&player.lens>0;
+      const cost=ability.id==='lensOfTruth'?lensCosts.energy:(spec?.cost??ability.cost??0);
+      const available=!ability.locked&&(ability.character?this.phase==='play'&&!this.paused&&!player.stun&&!player.guardBreak&&player.grounded&&!player.attackState&&!player.abilityState&&!player.characterAbilityState&&cooldown<=0&&player.en>=cost:this.abilityReady(player,ability));
+      button.classList.toggle('active',Boolean(active));button.classList.toggle('unavailable',!available&&!active);button.classList.toggle('loadoutLocked',Boolean(ability.locked));button.setAttribute('aria-disabled',String(!available));
+      const maxCooldown=spec?.cooldown??ability.cooldown??0;button.style.setProperty('--cooldown-fill',`${maxCooldown?clamp(cooldown/maxCooldown,0,1)*100:0}%`);
+      let state=ability.locked?'LOCKED':'READY';
+      if(player.abilityState?.ability?.id===ability.id||player.characterAbilityState?.ability===ability.id)state=(player.abilityState?.executed||player.characterAbilityState?.executed)?'RECOVERY':'STARTUP';
+      else if(active)state=ability.id==='lensOfTruth'?`${Math.ceil(player.lens)}s • ${this.lensMastery}%`:'ACTIVE';else if(cooldown>0)state=`${cooldown.toFixed(1)}s`;else if(ability.ultimate&&player.momentum>=100)state='FINISHER READY';else if(player.en<cost)state=`NEED ${cost}`;
+      button.querySelector('[data-arena-state]').textContent=state;
+      const costNode=button.querySelector('.arenaCost');if(costNode)costNode.textContent=ability.locked?'LEARN LATER':ability.id==='lensOfTruth'?`${lensCosts.energy} ENERGY • ${lensCosts.hp} HP`:ability.id==='shotsOfAgony'?'ALL ENERGY':`${cost} ENERGY`;
+    });
     const edge=this.root.querySelector('[data-edge-warning]');if(edge){const danger=this.phase==='play'&&this.isNearRingEdge(player,95);edge.classList.toggle('show',danger||player.ringOutFall>0);edge.textContent=player.ringOutFall>0?'FALLING OUT!':`EDGE PRESSURE ${player.edgePressureHits}/${EDGE_PRESSURE_HITS} • ESCAPE OR COUNTER`}
     this.updateLensBlindness();
   }
@@ -942,7 +1068,9 @@ class ArenaBattle{
 
 let instance=null;
 export function resetArenaBattleInstance(){if(instance)instance.stopMatch();instance=null}
-export function startArenaTraining(){try{if(!instance)instance=new ArenaBattle('dojo');instance.stopMatch();instance.trainingMode=true;instance.trainingDummy='stand';instance.setStage('dojo');instance.start()}catch(error){console.error('[Arena Training]',error);alert(`Arena Training could not start: ${error.message}`)}}
+export function startArenaTraining(){try{if(!instance)instance=new ArenaBattle('dojo');instance.configureMatch({mode:'training',fighters:['rrvvfo','revvfo'],stageId:'dojo',koTarget:3});instance.trainingDummy='stand';instance.start()}catch(error){console.error('[Arena Training]',error);alert(`Arena Training could not start: ${error.message}`)}}
 
-export function startArenaBattle(stageId=null){try{if(!instance)instance=new ArenaBattle(stageId||'dojo');instance.trainingMode=false;if(stageId){instance.setStage(stageId);instance.start()}else instance.showStageSelect()}catch(error){console.error('[Arena 2.5C]',error);alert(`Arena Battle could not start: ${error.message}`)}}
+export function startConfiguredArenaBattle(config={}){try{if(!instance)instance=new ArenaBattle(config.stageId||'dojo');instance.configureMatch(config);instance.start();return instance}catch(error){console.error('[Arena Configured Battle]',error);alert(`Arena Battle could not start: ${error.message}`);return null}}
+
+export function startArenaBattle(stageId=null){try{if(!instance)instance=new ArenaBattle(stageId||'dojo');instance.configureMatch({mode:'cpu',fighters:['rrvvfo','revvfo'],stageId:stageId||'dojo',difficulty:instance.readDifficulty(),koTarget:KO_TARGET});if(stageId)instance.start();else instance.showStageSelect()}catch(error){console.error('[Arena 2.9A.22]',error);alert(`Arena Battle could not start: ${error.message}`)}}
 export{ArenaBattle,ArenaFighter,ATTACKS,animationName,frameFor};

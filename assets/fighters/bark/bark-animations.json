@@ -1,7 +1,7 @@
 {
   "version": 2,
   "fighter": "bark",
-  "image": "./bark-atlas.png",
+  "image": "./bark-atlas.webp",
   "atlas": {
     "width": 1728,
     "height": 1920,

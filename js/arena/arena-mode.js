@@ -1,11 +1,12 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a24p5-browser-icon-validation-20260730';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a25-feel-team-collision-20260730';
 import {drawArenaStage} from './arena-stage-renderer.js';
 import {WebGLArenaRenderer} from './webgl-renderer.js';
-import {ArenaControlManager} from './arena-controls.js?v=29a24p5-browser-icon-validation-20260730';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a24p5-browser-icon-validation-20260730';
-import {ROSTER} from '../roster.js?v=29a24p5-browser-icon-validation-20260730';
-import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a24p5-browser-icon-validation-20260730';
+import {ArenaControlManager} from './arena-controls.js?v=29a25-feel-team-collision-20260730';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a25-feel-team-collision-20260730';
+import {ROSTER} from '../roster.js?v=29a25-feel-team-collision-20260730';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a25-feel-team-collision-20260730';
+import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a25-feel-team-collision-20260730';
 
 const ID='arenaModeScreen';
 const W=960;
@@ -625,6 +626,7 @@ class ArenaBattle{
       if(fighter.y<=0){fighter.y=0;fighter.vy=0;fighter.grounded=true;fighter.airDashUsed=false;fighter.airHitsTaken=0;fighter.juggleProtection=0;fighter.animationClock=0;if(fighter.knockdown>0)fighter.stun=Math.max(fighter.stun,.42);this.burst(fighter.x,fighter.z,fighter.accent,8,2)}
     }
     ({x:fighter.x,z:fighter.z}=clampToStage(this.stage,fighter.x,fighter.z));
+    resolveHubWorldCollision(this.stage,fighter);
   }
   nextLight(fighter){if(fighter.comboTimer>0&&fighter.lightChain===1)return'light2';if(fighter.comboTimer>0&&fighter.lightChain===2)return'light3';return'light1'}
 

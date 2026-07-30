@@ -1,4 +1,4 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a24p5-browser-icon-validation-20260730';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a25-feel-team-collision-20260730';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
@@ -8,7 +8,7 @@ import {
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a24p5-browser-icon-validation-20260730';
+} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -52,10 +52,11 @@ function countTruthy(value,depth=0){
   if(typeof value==='object')return Object.values(value).reduce((sum,item)=>sum+countTruthy(item,depth+1),0);
   return 0;
 }
+function completedQuestCount(group){return Object.values(group||{}).filter(entry=>entry===true||entry?.complete===true).length}
 function chapterOptionalScore(chapter,progress){
   if(chapter===1)return Number(Boolean(progress.roadEncounterResult))+Number(Boolean(progress.unlocks?.includes('combatManual')));
-  if(chapter===2)return countTruthy(progress.chapter2State?.quests||progress.chapter2State?.optional||{});
-  if(chapter===3)return countTruthy(progress.chapter3State?.optionalCompleted||progress.chapter3State?.sideStories||{});
+  if(chapter===2)return completedQuestCount(progress.chapter2State?.hubQuests?.optional);
+  if(chapter===3)return completedQuestCount(progress.chapter3State?.optional);
   if(chapter===4)return Number(Boolean(progress.chapter4State?.ryuzankaro?.bossDefeated))*4+Number(Boolean(progress.unlocks?.includes('vibrationSense')));
   return 0;
 }
@@ -80,7 +81,7 @@ class StoryPolishController{
   constructor(){
     this.root=null;this.transition=null;this.objective=null;this.results=null;this.playtest=null;this.combatCallout=null;
     this.objectiveTimer=0;this.transitionTimer=0;this.lastObjective='';this.codeBuffer=[];this.controllerFrame=0;this.controllerButtons=[];
-    this.observer=null;this.initialized=false;this.currentMode='';this.currentChapter=0;
+    this.observer=null;this.initialized=false;this.currentMode='';this.currentChapter=0;this.nativeContinue=null;this.nativeCompletionOverlay=null;
     this.onKey=this.onKey.bind(this);this.pollController=this.pollController.bind(this);this.scanObjectives=this.scanObjectives.bind(this);
   }
 
@@ -122,8 +123,8 @@ class StoryPolishController{
     this.combatCallout=this.root.querySelector('[data-story-combat-callout]');
     this.results=this.root.querySelector('[data-story-results]');
     this.playtest=this.root.querySelector('[data-story-playtest]');
-    this.root.querySelector('[data-story-results-close]').addEventListener('click',()=>this.closeResults());
-    this.root.querySelector('[data-story-results-menu]').addEventListener('click',()=>{this.closeResults();document.dispatchEvent(new CustomEvent('pxplaytestopenstory'))});
+    this.root.querySelector('[data-story-results-close]').addEventListener('click',()=>this.continueFromResults());
+    this.root.querySelector('[data-story-results-menu]').addEventListener('click',()=>{this.closeResults();this.nativeContinue?.click();document.dispatchEvent(new CustomEvent('pxplaytestopenstory'))});
     this.root.querySelector('[data-playtest-close]').addEventListener('click',()=>this.closePlaytest());
     this.root.querySelectorAll('[data-playtest-action]').forEach(button=>button.addEventListener('click',()=>this.handlePlaytestAction(button.dataset.playtestAction)));
     this.root.querySelectorAll('[data-playtest-chapter]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.playtestChapter))));
@@ -146,8 +147,13 @@ class StoryPolishController{
 
   onStoryStepStart({chapter=0,stepId=''}){
     this.currentChapter=Number(chapter)||chapterNumberFromLabel(stepId)||0;
-    const key=`pxStoryChapterStarted:${this.currentChapter||stepId}`;
-    try{if(!sessionStorage.getItem(key))sessionStorage.setItem(key,String(Date.now()))}catch{}
+    const number=this.currentChapter||stepId,key=`pxStoryChapterRun:${number}`;
+    try{
+      if(!sessionStorage.getItem(key)){
+        const progress=loadLostYearProgress();
+        sessionStorage.setItem(key,JSON.stringify({startedAt:Date.now(),fights:0,retries:0,startXp:Number(progress.storyXp)||0,startLevel:Number(progress.storyLevel)||1,startUnlocks:[...(progress.unlocks||[])],startOptional:chapterOptionalScore(Number(this.currentChapter)||0,progress)}));
+      }
+    }catch{}
     document.body.dataset.storyChapter=String(this.currentChapter||'');
   }
 
@@ -156,6 +162,9 @@ class StoryPolishController{
     document.body.dataset.storyMode=to||'';
     if(this.currentChapter)document.body.dataset.storyChapter=String(this.currentChapter);
     if(from===to)return;
+    if(to==='combat'){
+      try{const key=`pxStoryChapterRun:${this.currentChapter}`,run=JSON.parse(sessionStorage.getItem(key)||'{}');run.fights=(Number(run.fights)||0)+1;sessionStorage.setItem(key,JSON.stringify(run))}catch{}
+    }
     if(to==='combat'||to==='tutorial'){
       try{sessionStorage.setItem('pxStoryPreFightBackupV1',JSON.stringify(loadLostYearProgress()))}catch{}
       this.showTransition({kicker:to==='tutorial'?'TRAINING ENGAGED':'STORY BATTLE',title:opponent?`VS ${safe(opponent).toUpperCase()}`:'FIGHT',detail:'Checkpoint secured • exploration UI hidden • combat controls active'});
@@ -220,33 +229,44 @@ class StoryPolishController{
 
   onChapterComplete({chapter,progress}={}){
     const number=Number(chapter?.number)||0;if(!number)return;
-    setTimeout(()=>this.showResults(number,chapter,progress||loadLostYearProgress()),620);
+    queueMicrotask(()=>{
+      const selectors=['[data-road-complete]','[data-route-end]','[data-c3-complete]','[data-c4-complete]'];
+      this.nativeCompletionOverlay=selectors.map(selector=>document.querySelector(selector)).find(element=>element&&!element.hidden)||null;
+      this.nativeContinue=this.nativeCompletionOverlay?.querySelector('[data-road-continue],[data-end-route],[data-c3-continue],[data-c4-continue]')||null;
+      if(this.nativeCompletionOverlay)this.nativeCompletionOverlay.hidden=true;
+      this.showResults(number,chapter,progress||loadLostYearProgress());
+    });
   }
 
   showResults(number,chapter,progress){
-    this.build();
-    const key=`pxStoryChapterStarted:${number}`;let duration=0;
-    try{duration=Date.now()-Number(sessionStorage.getItem(key)||Date.now());sessionStorage.removeItem(key)}catch{}
-    const rank=chapterRank(number,progress),completed=completedRrvvfoChapterCount(progress),percent=routeProgress(LOST_YEAR_ROUTES[0],progress),optional=chapterOptionalScore(number,progress);
+    this.build();const key=`pxStoryChapterRun:${number}`;let run={};
+    try{run=JSON.parse(sessionStorage.getItem(key)||'{}');sessionStorage.removeItem(key)}catch{}
+    const duration=Math.max(0,Date.now()-(Number(run.startedAt)||Date.now()));
+    const optionalTotal=chapterOptionalScore(number,progress),optionalThisRun=Math.max(0,optionalTotal-(Number(run.startOptional)||0));
+    const rank=chapterRank(number,progress),completed=completedRrvvfoChapterCount(progress),percent=routeProgress(LOST_YEAR_ROUTES[0],progress);
+    const newUnlocks=(progress.unlocks||[]).filter(value=>!(run.startUnlocks||[]).includes(value));
+    const xpGained=Math.max(0,(Number(progress.storyXp)||0)-(Number(run.startXp)||0));
     this.results.querySelector('[data-story-results-title]').textContent=`CHAPTER ${number} • ${safe(chapter?.title||'COMPLETE')}`;
     this.results.querySelector('[data-story-result-rank]').textContent=rank;
     this.results.querySelector('[data-story-result-rank]').dataset.rank=rank;
     this.results.querySelector('[data-story-result-stats]').innerHTML=`
       <div><dt>Completion time</dt><dd>${formatTime(duration)}</dd></div>
+      <div><dt>Story fights</dt><dd>${Number(run.fights)||0}</dd></div>
+      <div><dt>XP earned this run</dt><dd>${xpGained}</dd></div>
+      <div><dt>Optional quests</dt><dd>${optionalThisRun?`${optionalThisRun} completed this run`:`${optionalTotal} total completed`}</dd></div>
       <div><dt>Story level</dt><dd>${Number(progress.storyLevel)||1}</dd></div>
-      <div><dt>Optional progress</dt><dd>${optional?`${optional} discoveries`:'Main route cleared'}</dd></div>
       <div><dt>Total route</dt><dd>${completed}/${RRVVFO_PLANNED_CHAPTER_COUNT} • ${percent}%</dd></div>`;
-    const rewards=unique(progress.unlocks||[]).slice(-6);
-    this.results.querySelector('[data-story-result-rewards]').innerHTML=`<small>RECENT UNLOCKS</small><p>${rewards.length?rewards.map(value=>safe(value).replaceAll(/([A-Z])/g,' $1').toUpperCase()).join(' • '):'STORY CHECKPOINT SECURED'}</p>`;
+    this.results.querySelector('[data-story-result-rewards]').innerHTML=`<small>CHAPTER REWARDS</small><p>${newUnlocks.length?newUnlocks.map(value=>safe(value).replaceAll(/([A-Z])/g,' $1').toUpperCase()).join(' • '):xpGained?`${xpGained} STORY XP`:'STORY CHECKPOINT SECURED'}</p>`;
     this.results.hidden=false;this.results.classList.add('show');this.results.querySelector('[data-story-results-close]').focus();
     document.dispatchEvent(new CustomEvent('pxstoryuicue',{detail:{cue:'chapterComplete'}}));
   }
   closeResults(){this.results?.classList.remove('show');setHidden(this.results,true)}
+  continueFromResults(){const button=this.nativeContinue;this.closeResults();this.nativeContinue=null;this.nativeCompletionOverlay=null;if(button)button.click()}
 
-  storyContextActive(){return Boolean((document.getElementById('lostYearStoryScreen')&&!document.getElementById('lostYearStoryScreen').hidden)||currentStoryRoot())}
+  storyMenuContextActive(){const screen=document.getElementById('lostYearStoryScreen');return Boolean(screen&&!screen.hidden&&!currentStoryRoot())}
   onKey(event){
     if(event.key==='Escape'&&!this.playtest?.hidden){event.preventDefault();this.closePlaytest();return}
-    const token=KEY_TO_CODE[event.code]||KEY_TO_CODE[event.key];if(!token||!this.storyContextActive())return;
+    const token=KEY_TO_CODE[event.code]||KEY_TO_CODE[event.key];if(!token||!this.storyMenuContextActive())return;
     this.acceptCodeToken(token);
   }
   acceptCodeToken(token){
@@ -255,7 +275,7 @@ class StoryPolishController{
     if(this.codeBuffer.length===CODE.length){this.codeBuffer=[];this.openPlaytest()}
   }
   pollController(){
-    if(this.storyContextActive()){
+    if(this.storyMenuContextActive()){
       const pad=navigator.getGamepads?.()?.find(Boolean);
       if(pad){
         const pressed=pad.buttons.map(button=>Boolean(button?.pressed));
@@ -319,7 +339,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a24p5-browser-icon-validation-20260730`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a25-feel-team-collision-20260730`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'remote-highlands':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }

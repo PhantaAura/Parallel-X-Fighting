@@ -2,6 +2,7 @@ function lerp(a,b,t){return a+(b-a)*t}
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
 
 const HUB_CAMERA_LOOK=new WeakMap();
+const ACTIVE_HUB_CAMERA_STATES=new Set();
 
 export function createHubCameraLookState(){
   return{
@@ -69,7 +70,7 @@ function lookStateFor(battle){
   let state=HUB_CAMERA_LOOK.get(battle);
   if(!state){
     state=createHubCameraLookState();
-    HUB_CAMERA_LOOK.set(battle,state);
+    HUB_CAMERA_LOOK.set(battle,state);ACTIVE_HUB_CAMERA_STATES.add(state);
   }
   const canvas=battle.root?.querySelector?.('canvas');
   if(canvas&&state.canvas!==canvas){
@@ -159,9 +160,15 @@ export function applyHubCameraLook(state,{
   return state;
 }
 
+function hubCameraUiBlocked(battle){
+  if(battle?.paused)return true;
+  if(typeof document==='undefined')return false;
+  return Boolean(document.querySelector('[aria-modal="true"]:not([hidden]), .storyRpgPause:not([hidden]), .dialogueOverlay:not([hidden]), .fullMap:not([hidden])'));
+}
+
 function updateHubCameraLook(battle,frameFight){
   const state=lookStateFor(battle),preferences=cameraPreferences();
-  const enabled=!frameFight&&preferences.enabled;
+  const enabled=!frameFight&&!hubCameraUiBlocked(battle)&&preferences.enabled;
   state.enabled=enabled;
   if(!enabled&&state.dragging)stopPointerDrag(state);
   const pad=enabled?assignedGamepad(battle):null;
@@ -176,6 +183,8 @@ function updateHubCameraLook(battle,frameFight){
   battle.root?.classList?.toggle('hubCameraLookDisabled',!enabled&&!frameFight);
   return state;
 }
+
+export function resetAllHubCameras(){for(const state of ACTIVE_HUB_CAMERA_STATES){stopPointerDrag(state);state.yawOffset=0;state.pitchOffset=0;state.pointerX=0;state.pointerY=0;state.lastInputAt=0}}
 
 export function resetHubCameraLook(battle){
   const state=lookStateFor(battle);
@@ -210,9 +219,16 @@ function segmentAabbEntry(start,end,box,padding=12){
   return near;
 }
 
+function cameraPrimitiveBoxes(stage){
+  const scenery=stage?.scenery||{},boxes=[...(scenery.boxes||[])];
+  for(const item of scenery.cylinders||[])boxes.push({...item,sx:(item.rx||20)*2,sy:item.sy||80,sz:(item.rz||item.rx||20)*2});
+  for(const item of scenery.cones||[])boxes.push({...item,sx:(item.rx||20)*2,sy:item.sy||80,sz:(item.rz||item.rx||20)*2});
+  for(const item of scenery.roofs||[])boxes.push({...item,sx:item.sx||120,sy:item.sy||50,sz:item.sz||120});
+  return boxes;
+}
 function cameraBlockers(stage,target,eye){
-  return(stage?.scenery?.boxes||[])
-    .filter(box=>(box.alpha??1)>.3&&(box.sy||0)>55&&(box.sx||0)<900&&(box.sz||0)<900)
+  return cameraPrimitiveBoxes(stage)
+    .filter(box=>(box.alpha??1)>.3&&(box.sy||0)>45&&(box.sx||0)<1100&&(box.sz||0)<1100)
     .map(box=>({box,entry:segmentAabbEntry(target,eye,box)}))
     .filter(hit=>hit.entry!==null&&hit.entry>.04&&hit.entry<.96)
     .sort((a,b)=>a.entry-b.entry);

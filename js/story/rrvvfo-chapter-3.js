@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24p5-browser-icon-validation-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p5-browser-icon-validation-20260730';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a24p5-browser-icon-validation-20260730';
-import {StoryMap} from './story-map.js?v=29a24p5-browser-icon-validation-20260730';
-import {storyConfirm} from './story-ux.js?v=29a24p5-browser-icon-validation-20260730';
-import {openCombatManual} from './combat-manual.js?v=29a24p5-browser-icon-validation-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a24p5-browser-icon-validation-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a24p5-browser-icon-validation-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a25-feel-team-collision-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a25-feel-team-collision-20260730';
+import {StoryMap} from './story-map.js?v=29a25-feel-team-collision-20260730';
+import {storyConfirm} from './story-ux.js?v=29a25-feel-team-collision-20260730';
+import {openCombatManual} from './combat-manual.js?v=29a25-feel-team-collision-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a25-feel-team-collision-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a25-feel-team-collision-20260730';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,7 +22,7 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a24p5-browser-icon-validation-20260730';
+} from './chapter3-content.js?v=29a25-feel-team-collision-20260730';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -541,10 +541,12 @@ class RrvvfoChapter3{
       items.push({kind:'night-route',label:`REACH ${point.label}`,x:point.x,z:point.z,point});
     }
     if(next==='crackedRing'){
-      for(const point of RING_COLLECTORS)if(!this.state.ringCollectors.includes(point.id))items.push({kind:'ring-collector',label:`INSPECT ${point.label}`,x:point.x,z:point.z,point});
+      const point=RING_COLLECTORS.find(entry=>!this.state.ringCollectors.includes(entry.id))||RING_COLLECTORS[0];
+      items.push({kind:'ring-evidence-sweep',label:'OPEN THE RING EVIDENCE BOARD',x:point.x,z:point.z,point});
     }
     if(next==='ploukeBag'){
-      for(const point of BAG_SEARCH)if(!this.state.bagLocations.includes(point.id))items.push({kind:'bag-search',label:`SEARCH ${point.label}`,x:point.x,z:point.z,point});
+      const point=BAG_SEARCH.find(entry=>!this.state.bagLocations.includes(entry.id))||BAG_SEARCH[0];
+      items.push({kind:'bag-evidence-board',label:'REVIEW THE PLOUKE BAG LEADS',x:point.x,z:point.z,point});
     }
     if(next==='strangeManWarningSeen')items.push({kind:'strange-man',label:'QUESTION THE STRANGE MAN',x:STRANGE_MAN_POINT.x,z:STRANGE_MAN_POINT.z});
     if(next==='medicalWorkerRevisited')items.push({kind:'medical-revisit',label:'SPEAK TO THE MEDICAL WORKER AGAIN',x:640,z:-520});
@@ -605,8 +607,8 @@ class RrvvfoChapter3{
       'restore-recording':()=>this.restorePublicRecording(),
       bracket:()=>this.beginBracketPuzzle(),
       'night-route':()=>this.advanceNightRoute(item.point),
-      'ring-collector':()=>this.inspectRingCollector(item.point),
-      'bag-search':()=>this.searchBagLocation(item.point),
+      'ring-evidence-sweep':()=>this.beginRingEvidenceSweep(),
+      'bag-evidence-board':()=>this.beginBagEvidenceBoard(),
       'lens-point':()=>this.useInvestigationLens(),
       elevator:()=>this.sageExplanation(),
       'enter-facility':()=>this.confirmFacilityEntry(),
@@ -898,6 +900,62 @@ class RrvvfoChapter3{
       this.completeRequired('lockedNightShift');
       this.mode='hub';this.battle.phase='play';this.updateObjective();
       this.toast('REQUIRED STORY COMPLETE','LOCKED ON THE NIGHT SHIFT','Workers freed. Staff shortcut permanently opened.');
+    });
+  }
+
+  beginRingEvidenceSweep(){
+    const remaining=RING_COLLECTORS.filter(point=>!this.state.ringCollectors.includes(point.id));
+    if(!remaining.length){this.finishRingEvidenceSweep();return}
+    this.showTask({
+      kicker:'INVESTIGATION BOARD • CRACKED RING',
+      title:'COMPARE THE THREE ENERGY COLLECTORS',
+      text:`Use the recovered ring scan instead of running between supports. ${this.state.ringCollectors.length} / ${RING_COLLECTORS.length} compared.`,
+      progress:this.state.ringCollectors.map(id=>RING_COLLECTORS.find(point=>point.id===id)?.label).filter(Boolean).join('  •  '),
+      buttons:remaining.map(point=>({label:point.label,value:point.id,detail:'Compare residue, timing, and mounting marks.'})),
+      onChoose:id=>{
+        const point=RING_COLLECTORS.find(entry=>entry.id===id);if(!point)return;
+        this.state.ringCollectors=unique([...this.state.ringCollectors,id]);this.battle.burst(point.x,point.z,'#8fe8ff',20,55);this.saveState();
+        if(this.state.ringCollectors.length<RING_COLLECTORS.length)this.beginRingEvidenceSweep();else this.finishRingEvidenceSweep();
+      }
+    });
+  }
+
+  finishRingEvidenceSweep(){
+    this.showDialogue([
+      {speaker:'RING MECHANIC',speakerClass:'neutral',text:'Bark and Pouki did not cause all of this. These devices were attached to the supports before their match.',tail:'down'},
+      {speaker:'RING MECHANIC',speakerClass:'neutral',text:'Every major attack fed energy into them. The largest overload came from your beam clash with Plouke.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Great. Now the eye decides when we are working.',tail:'down'}
+    ],()=>{
+      this.battle.burst(this.battle.fighters[0].x,this.battle.fighters[0].z,'#d4fbff',34,75);this.addEvidence('ringCollector');this.completeRequired('crackedRing');
+      this.mode='hub';this.battle.phase='play';this.updateObjective();this.toast('EVIDENCE BOARD UPDATED','HIDDEN RING COLLECTORS','All three support scans were compared without another lap around the stadium.');
+    });
+  }
+
+  beginBagEvidenceBoard(){
+    const remaining=BAG_SEARCH.filter(point=>!this.state.bagLocations.includes(point.id));
+    if(!remaining.length){this.finishBagEvidenceBoard();return}
+    const notes={costume:'Heavy bag collected by costume staff.','lost-found':'Fake moustache and mislabeled costume parts.',vendor:'Food debt and a rushed departure.',cart:'Capes and cleanup inventory were mixed together.',impersonators:'The fake Ploukes copied the costume, not the equipment.'};
+    this.showTask({
+      kicker:'INVESTIGATION BOARD • PLOUKE’S BAG',
+      title:'CROSS-CHECK THE REMAINING LEADS',
+      text:`Review witness notes from one evidence board instead of crossing the plaza five times. ${this.state.bagLocations.length} / ${BAG_SEARCH.length} checked.`,
+      progress:this.state.bagLocations.map(id=>BAG_SEARCH.find(point=>point.id===id)?.label).filter(Boolean).join('  •  '),
+      buttons:remaining.map(point=>({label:point.label,value:point.id,detail:notes[point.id]})),
+      onChoose:id=>{this.state.bagLocations=unique([...this.state.bagLocations,id]);this.saveState();if(this.state.bagLocations.length<BAG_SEARCH.length)this.beginBagEvidenceBoard();else this.finishBagEvidenceBoard()}
+    });
+  }
+
+  finishBagEvidenceBoard(){
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Food. Cheap facial hair. Costume pieces. False credentials. Magazines. Tangai’s credit card.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'This is your advanced investigation equipment?',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'The food maintained my energy.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'And Tangai’s credit card?',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'Maintained the food.',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'The detector is the part currently pointing at the elevator.',tail:'down'}
+    ],()=>{
+      this.state.detector=true;this.addEvidence('energyDetector');this.completeRequired('ploukeBag');this.mode='hub';this.battle.phase='play';this.updateObjective();
+      this.toast('EVIDENCE BOARD UPDATED','PLOUKE’S BAG LOCATED','The witness notes now point directly to the Strange Man encounter.');
     });
   }
 

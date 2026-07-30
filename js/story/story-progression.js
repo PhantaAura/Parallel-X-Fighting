@@ -1,4 +1,4 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p5-browser-icon-validation-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
 
 export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,250,450,700,1000,1360,1780,2260,2810]);
 export const STORY_RECOMMENDED_LEVELS=Object.freeze({1:1,2:2,3:4,4:5,5:6,6:7,7:8,8:9});
@@ -21,8 +21,21 @@ export function normalizeStoryBonusStats(value={}){
   });
 }
 
+
+export function effectiveStoryBonusStats(value={}){
+  const raw=normalizeStoryBonusStats(value);
+  const soften=(amount,fullCap)=>Math.round(Math.min(amount,fullCap)+Math.max(0,amount-fullCap)*.25);
+  return Object.freeze({
+    hp:soften(raw.hp,20),
+    power:soften(raw.power,4),
+    defense:soften(raw.defense,4),
+    speed:soften(raw.speed,4),
+    focus:soften(raw.focus,4)
+  });
+}
+
 export function storyStatsForLevel(level=1,bonusStats={}){
-  const safe=Math.max(1,Math.floor(Number(level)||1)),growth=safe-1,bonus=normalizeStoryBonusStats(bonusStats);
+  const safe=Math.max(1,Math.floor(Number(level)||1)),growth=safe-1,bonus=effectiveStoryBonusStats(bonusStats);
   return Object.freeze({
     level:safe,
     hp:100+growth*4+bonus.hp,

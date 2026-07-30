@@ -6,18 +6,25 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.24.5 — Browser Icon Validation Fix**
+**Prototype 2.9A.25 — Feel, Team Combat & Collision Repair**
 
 This is a complete cumulative build. No older package is required.
 
-## 2.9A.24.5 highlights
+## 2.9A.25 highlights
 
-- The Old Man’s Potions and Ryuzankaro secret boss now unlock only after the mandatory Echo Village defense is completed.
-- The Old Man interaction has a strict runtime guard and cannot be started early through stale UI, debug calls, or malformed saves.
-- The mountain-gate choice is also blocked until `villageDefended` is complete.
-- Chapter 4 save normalization now derives quest availability from the village-defense state, preventing contradictory saves.
-- The smoke test now checks actual pre-defense and post-defense state behavior instead of relying on fragile source-text ordering.
-- All 2.9A.24.2 click-and-drag camera improvements remain included.
+- Chapter 2 and Chapter 3 results now score their actual optional-quest state.
+- Chapter clear presentation is merged into one results flow with per-run time, fights, XP, optional progress, and newly earned rewards.
+- The secret playtest code only works from the Story route menu, not during movement or combat.
+- Unsupported settings are removed from the visible menu; Voice Volume is clearly reserved for future voice acting.
+- Hub camera collision now accounts for boxes, cylinders, cones, roofs, and paused/modal UI; Gameplay includes Reset Hub Camera.
+- Hub-world player collision blocks major walls, buildings, trees, pillars, and explicit Echo Village structures while preserving safe spawns.
+- Chapter 3 replaces repeated support and bag-search laps with consolidated evidence sweeps.
+- Chapter 4 Beacon and elemental-door teamwork now uses role-specific input challenges.
+- Echo Village defense is a three-wave team battle with visible Bark and Wade support.
+- Rootstone and Triad Seed can trigger optional three-wave Project Hollow swarms, and the potion building opens a Rootstone cavern shortcut.
+- Hollow Watcher now learns move, timing, spacing, approach, and alternating two-move habits.
+- Optional permanent stats use diminishing returns so completionists and main-route players stay closer in strength.
+- Procedural music now includes six phrase variations, quiet sections, ambient breaks, and rotating melodic starts.
 
 ## 2.9A.24 highlights
 
@@ -94,7 +101,7 @@ Save-export schema: **266**. Existing Story saves continue through the current s
 
 ## Testing
 
-Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.24.5.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.24.5.md) for the real-device pass. See [`PATCH-NOTES-2.9A.24.5.md`](PATCH-NOTES-2.9A.24.5.md) and [`VALIDATION-2.9A.24.5.md`](VALIDATION-2.9A.24.5.md) for release details.
+Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.25.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.25.md) for the real-device pass. See [`PATCH-NOTES-2.9A.25.md`](PATCH-NOTES-2.9A.25.md) and [`VALIDATION-2.9A.25.md`](VALIDATION-2.9A.25.md) for release details.
 
 
 ## 2.9A.24.1 Chapter 3 addition

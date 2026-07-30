@@ -1,5 +1,5 @@
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
-export const CHAPTER4_STATE_VERSION=2;
+export const CHAPTER4_STATE_VERSION=3;
 
 export const CHAPTER4_REQUIRED_STEPS=Object.freeze([
   'opening','villageReached','barkWadeArrive','beaconRestored','cavernsEntered',
@@ -47,7 +47,7 @@ export function freshChapter4State(){
     requiredCompleted:[],
     beaconNodes:[],cavernDoors:[],liftParts:[],mountainSignals:[],
     villageDefenseComplete:false,
-    ryuzankaro:{available:false,started:false,ingredients:[],bossDefeated:false,skipped:false,phase:'idle',checkpoint:'none',rewardsGranted:false},
+    ryuzankaro:{available:false,started:false,ingredients:[],swarmsCleared:[],bossDefeated:false,skipped:false,phase:'idle',checkpoint:'none',rewardsGranted:false},
     rewards:{lensMastery:0,vibrationSense:false,objectSwapRange:0,teamBadge:false,ryuzankaroCodex:false},
     hollowWatcher:{defeated:false,patternsRecorded:0,highestConfidence:0},
     chapterComplete:false
@@ -75,7 +75,7 @@ export function normalizeChapter4State(value={}){
     requiredCompleted,
     beaconNodes:unique(source.beaconNodes),cavernDoors:unique(source.cavernDoors),liftParts:unique(source.liftParts),mountainSignals:unique(source.mountainSignals),
     villageDefenseComplete,
-    ryuzankaro:{...base.ryuzankaro,...sourceRyuzankaro,available:villageDefenseComplete,ingredients:unique(sourceRyuzankaro.ingredients)},
+    ryuzankaro:{...base.ryuzankaro,...sourceRyuzankaro,available:villageDefenseComplete,ingredients:unique(sourceRyuzankaro.ingredients),swarmsCleared:unique(sourceRyuzankaro.swarmsCleared)},
     rewards:{...base.rewards,...(source.rewards||{})},
     hollowWatcher:{...base.hollowWatcher,...(source.hollowWatcher||{})},
     chapterComplete:Boolean(source.chapterComplete)

@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a24p5-browser-icon-validation-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a24p5-browser-icon-validation-20260730';
+import {CONTROL_MAPS} from '../input.js?v=29a25-feel-team-collision-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a25-feel-team-collision-20260730';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

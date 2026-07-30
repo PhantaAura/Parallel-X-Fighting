@@ -169,18 +169,24 @@ export class AudioManager{
   scheduleMusicPhrase(theme,generation){
     if(!this.context||generation!==this.musicGeneration||this.musicTheme!==theme)return;
     const data=MUSIC_THEMES[theme]||MUSIC_THEMES.menu,beat=60/data.tempo,start=this.context.currentTime+.08,phrase=8;
-    const variation=this.musicVariation++%4;
-    this.scheduleDrums(data.drums,beat,start);
+    const variation=this.musicVariation++%6;
+    const quietPhrase=variation===4,ambientPhrase=variation===5;
+    if(!quietPhrase&&!ambientPhrase)this.scheduleDrums(data.drums,beat,start);
+    else if(quietPhrase&&['battle','hollow'].includes(theme))this.scheduleDrums('light',beat,start);
     this.scheduleThemeAccent(theme,start,beat,variation);
+    const rotation=(variation*2)%data.notes.length;
     for(let i=0;i<phrase;i++){
-      const index=(this.musicStep+i)%data.notes.length,when=start+i*beat*.5;
-      const octave=variation===3&&i>=6?2:1;
-      this.tone(data.notes[index]*octave,beat*(i%2?.25:.34),data.wave,.0105,'music',when);
-      if(i%2===0){const bassIndex=Math.floor((this.musicStep+i)/2)%data.bassNotes.length;this.tone(data.bassNotes[bassIndex],beat*.68,data.bass,.014,'music',when)}
-      if(i===0||i===4){const chord=data.chords[(Math.floor((this.musicStep+i)/4)+variation)%data.chords.length];this.chord(chord,beat*1.75,when,.0048)}
-      if((theme==='mystery'||theme==='facility')&&i===7)this.tone(data.notes[index]/2,beat*.55,'sine',.006,'music',when);
+      const index=(this.musicStep+i+rotation)%data.notes.length,when=start+i*beat*.5;
+      if(ambientPhrase&&i%3!==0)continue;
+      if(quietPhrase&&i%2!==0)continue;
+      const octave=variation===3&&i>=6?2:variation===5&&i===6?.5:1;
+      const noteVolume=ambientPhrase?.0055:quietPhrase?.0075:.0105;
+      this.tone(data.notes[index]*octave,beat*(ambientPhrase?.72:i%2?.25:.34),ambientPhrase?'sine':data.wave,noteVolume,'music',when);
+      if(!ambientPhrase&&i%2===0){const bassIndex=Math.floor((this.musicStep+i+variation)/2)%data.bassNotes.length;this.tone(data.bassNotes[bassIndex],beat*.68,data.bass,quietPhrase?.009:.014,'music',when)}
+      if((i===0||i===4)&&!ambientPhrase){const chord=data.chords[(Math.floor((this.musicStep+i)/4)+variation)%data.chords.length];this.chord(chord,beat*1.75,when,quietPhrase?.0032:.0048)}
+      if((theme==='mystery'||theme==='facility')&&i===7&&!ambientPhrase)this.tone(data.notes[index]/2,beat*.55,'sine',.006,'music',when);
     }
-    this.musicStep=(this.musicStep+phrase)%data.notes.length;
+    this.musicStep=(this.musicStep+phrase+variation)%data.notes.length;
   }
 
   async startMusic(theme='menu'){

@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a24p5-browser-icon-validation-20260730';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a24p5-browser-icon-validation-20260730';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a25-feel-team-collision-20260730';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a25-feel-team-collision-20260730';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a24p5-browser-icon-validation-20260730';
-import {Fighter} from '../js/fighter.js?v=29a24p5-browser-icon-validation-20260730';
+import {EffectSystem} from '../js/effects.js?v=29a25-feel-team-collision-20260730';
+import {Fighter} from '../js/fighter.js?v=29a25-feel-team-collision-20260730';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,17 +17,18 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a24p5-browser-icon-validation-20260730';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a24p5-browser-icon-validation-20260730';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a25-feel-team-collision-20260730';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a25-feel-team-collision-20260730';
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a24p5-browser-icon-validation-20260730';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a24p5-browser-icon-validation-20260730';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a24p5-browser-icon-validation-20260730';
-import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a24p5-browser-icon-validation-20260730';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a24p5-browser-icon-validation-20260730';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,modeUnlockedForProgress,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a24p5-browser-icon-validation-20260730';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a24p5-browser-icon-validation-20260730';
-import {getArenaStage,validateArenaStage} from '../js/arena/arena-stages.js?v=29a24p5-browser-icon-validation-20260730';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a25-feel-team-collision-20260730';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a25-feel-team-collision-20260730';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a25-feel-team-collision-20260730';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a25-feel-team-collision-20260730';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a25-feel-team-collision-20260730';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,modeUnlockedForProgress,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a25-feel-team-collision-20260730';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a25-feel-team-collision-20260730';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a25-feel-team-collision-20260730';
+import {getArenaStage,validateArenaStage} from '../js/arena/arena-stages.js?v=29a25-feel-team-collision-20260730';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -38,16 +39,16 @@ import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringif
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a24p5-browser-icon-validation-20260730';
+import {LoadingManager} from '../js/loading-manager.js?v=29a25-feel-team-collision-20260730';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a24p5-browser-icon-validation-20260730';
-import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a24p5-browser-icon-validation-20260730';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a25-feel-team-collision-20260730';
+import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a25-feel-team-collision-20260730';
 
-const RELEASE_CACHE_ID='29a24p5-browser-icon-validation-20260730';
+const RELEASE_CACHE_ID='29a25-feel-team-collision-20260730';
 const nativeFetch=globalThis.fetch.bind(globalThis);
 function fetchFresh(input,init={}){
   let request=input;
@@ -215,7 +216,7 @@ await test('controller detection and disconnection assignment stay deterministic
 await test('InputManager honors explicit player device assignment',()=>{const pads=[makePad(),null,makePad()],input=new InputManager(()=>pads);input.setControllerStyle(1,'xbox');input.setControllerAssignment(1,2);pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=true;input.poll();pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=false;settleChordWindow(input);assert(input.consumeAction(1,'a'),'assigned Player 1 controller input was ignored')});
 await test('round and Training cleanup clear visual-only state',()=>{const setup=pair();setup.world.fighterVisuals={resetFighter:fighter=>{fighter.__visualReset=true}};setup.one.visualAction='ultimateAttack';setup.one.visualActionTimer=99;setup.one.resetRuntime();assert(setup.one.__visualReset&&!setup.one.visualAction&&!setup.one.visualActionTimer,'fighter reset retained visual state');trainingState.enabled=true;resetTrainingWorld(setup.world);assert(setup.world.projectiles.length===0&&setup.world.effects.effects.length===0,'Training cleanup retained transient visuals')});
 
-await test('Prototype 2.9A.24.4 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.24.4 — Validation Sync & Story Gate Verification','build label is outdated');assert(SAVE_SCHEMA_VERSION===266,'save schema version is outdated')});
+await test('Prototype 2.9A.25 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.25 — Feel, Team Combat & Collision Repair','build label is outdated');assert(SAVE_SCHEMA_VERSION===267,'save schema version is outdated')});
 await test('Bark and Wade are first-class sprite fighters with complete manifests',async()=>{
   assert(SPRITE_FIGHTER_IDS.includes('bark')&&SPRITE_FIGHTER_IDS.includes('wade'),'Bark or Wade is missing from the sprite fighter pipeline');
   for(const [name,url,specials] of [['Bark',BARK_MANIFEST_URL,['rockShot','rockArmor','earthWall','groundQuake','seismicCounter']],['Wade',WADE_MANIFEST_URL,['lightningBlast','lightningDash','thunderstorm','lightningBeam']]]){
@@ -504,7 +505,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a24p5-browser-icon-validation-20260730');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a25-feel-team-collision-20260730');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
@@ -554,7 +555,7 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a24p5-browser-icon-validation-20260730');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a25-feel-team-collision-20260730');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','reachLookout'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
@@ -784,9 +785,6 @@ await test('Procedural chapter audio crossfades and adds distinct ambience accen
   assert(audio.includes('fadeMusicBus(oldBus,.34)')&&audio.includes('stopMusic({fade=.34}={})'),'music crossfade timing was not polished');
 });
 
-const failed=results.filter(result=>!result.pass),output=results.map(result=>`${result.pass?'PASS':'FAIL'}  ${result.name}${result.error?` — ${result.error}`:''}`).join('\n');
-document.getElementById('results').textContent=`${output}\n\n${results.length-failed.length}/${results.length} passing`;document.getElementById('results').className=failed.length?'fail':'pass';
-
 await test('Chapter 3 Strange Man sequence preserves order, flags, and facility migration',()=>{
   const base=normalizeChapter3State({requiredCompleted:['opening','medicalLead','fighterNobodyRecorded','bracketRecords','lockedNightShift','crackedRing','ploukeBag']});
   assert(chapter3NextRequired(base)==='strangeManWarningSeen','Strange Man does not enter after the required witness investigation');
@@ -809,5 +807,64 @@ await test('Chapter 3 Strange Man dialogue, hat, Lens contradictions, and east-s
   ])assert(source.includes(token),`Strange Man implementation omitted ${token}`);
 });
 
+await test('2.9A.25 chapter results use real optional quest state and one merged clear screen',async()=>{
+  const source=await fetchFresh('../js/story/story-polish.js').then(r=>r.text());
+  assert(source.includes('chapter2State?.hubQuests?.optional'),'Chapter 2 results still read the wrong quest state');
+  assert(source.includes('chapter3State?.optional'),'Chapter 3 results still read the wrong quest state');
+  assert(source.includes('nativeCompletionOverlay')&&source.includes('nativeContinue'),'native and global completion screens are not merged');
+  assert(source.includes('XP earned this run')&&source.includes('Optional quests'),'per-run results are incomplete');
+});
+
+await test('2.9A.25 secret code is menu-only and settings only expose connected features',async()=>{
+  const [polish,settings]=await Promise.all([fetchFresh('../js/story/story-polish.js').then(r=>r.text()),fetchFresh('../js/settings-panel.js').then(r=>r.text())]);
+  assert(polish.includes('storyMenuContextActive')&&polish.includes('!currentStoryRoot()'),'secret code can still open during active gameplay');
+  for(const removed of ['Resolution Scale','Clash Input','Hold Instead of Mash','Input Buffer Display'])assert(!settings.includes(removed),`unsupported setting still visible: ${removed}`);
+  assert(settings.includes('Voice Volume (Future Voice Acting)')&&settings.includes('rangeFuture'),'future voice setting is not honestly labeled');
+  assert(settings.includes('Reset Hub Camera'),'camera reset action is missing');
+});
+
+await test('2.9A.25 hub collision blocks structures and keeps Echo Village spawns clear',()=>{
+  const stage=getArenaStage('echo-village'),colliders=stageHubColliders(stage);
+  assert(colliders.length>=25,'Echo Village lacks enough structure colliders');
+  const fighter={x:-520,z:210,y:0,collisionRadius:36,moveVX:4,moveVZ:3,kvx:0,kvz:0};
+  assert(resolveHubWorldCollision(stage,fighter),'player passed through an Echo Village house');
+  assert(Math.hypot(fighter.x+520,fighter.z-210)>20,'collision did not move the player outside the wall');
+  for(const point of [{x:-1363,z:100},{x:-820,z:60},{x:-680,z:300},{x:777,z:450},{x:100,z:120}]){
+    const probe={...point,y:0,collisionRadius:36};
+    assert(!resolveHubWorldCollision(stage,probe),`Chapter 4 spawn ${point.x},${point.z} begins inside a wall`);
+  }
+});
+
+await test('2.9A.25 Chapter 3 consolidates evidence instead of forcing repeated plaza laps',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-3.js').then(r=>r.text());
+  for(const token of ['ring-evidence-sweep','bag-evidence-board','beginRingEvidenceSweep','beginBagEvidenceBoard'])assert(source.includes(token),`Chapter 3 evidence pass omitted ${token}`);
+});
+
+await test('2.9A.25 Chapter 4 makes teamwork playable with QTE roles, waves, allies, and optional swarms',async()=>{
+  const [source,content]=await Promise.all([fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text()),fetchFresh('../js/story/chapter4-content.js').then(r=>r.text())]);
+  for(const token of ['startTeamMechanicQte','TEAM BATTLE • VILLAGE DEFENSE','advanceFightWave','drawTeamAllies','ingredient-swarm','SHORTCUT TO ROOTSTONE CHAMBER'])assert(source.includes(token),`Chapter 4 team gameplay omitted ${token}`);
+  assert(source.includes("waves:[{id:'hollow-grunt'")&&source.includes("teamBattle:true"),'mandatory team defense is not a multi-wave fight');
+  assert(content.includes('swarmsCleared'),'optional swarm completion is not saved');
+});
+
+await test('2.9A.25 Hollow Watcher learns full combat routes instead of one repeated button',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
+  for(const token of ['spacing=','approach=','alternatingPattern','memory.signature','CHANGE ROUTE OR TIMING'])assert(source.includes(token),`Hollow Watcher adaptation omitted ${token}`);
+});
+
+await test('2.9A.25 optional stat rewards use diminishing returns',()=>{
+  const raw={hp:60,power:12,defense:12,speed:12,focus:12},effective=effectiveStoryBonusStats(raw);
+  assert(effective.hp<raw.hp&&effective.power<raw.power,'optional bonuses do not use a soft cap');
+  assert(storyStatsForLevel(5,raw).hp<100+16+raw.hp,'soft-capped bonuses are not applied to Story stats');
+});
+
+await test('2.9A.25 procedural music includes quiet and ambient phrase variation',async()=>{
+  const source=await fetchFresh('../js/audio-manager.js').then(r=>r.text());
+  for(const token of ['%6','quietPhrase','ambientPhrase','rotation='])assert(source.includes(token),`music variation omitted ${token}`);
+});
+
+const failed=results.filter(result=>!result.pass),output=results.map(result=>`${result.pass?'PASS':'FAIL'}  ${result.name}${result.error?` — ${result.error}`:''}`).join('\n');
+document.getElementById('results').textContent=`${output}\n\n${results.length-failed.length}/${results.length} passing`;document.getElementById('results').className=failed.length?'fail':'pass';
 window.__SMOKE_RESULTS__={results,passed:results.length-failed.length,failed:failed.length};
 if(failed.length)console.error('Smoke tests failed',failed);else console.info(`Smoke tests passed: ${results.length}`);
+

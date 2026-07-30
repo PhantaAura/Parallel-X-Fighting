@@ -843,7 +843,7 @@ const ECHO_VILLAGE={
   id:'echo-village',name:'Echo Village',subtitle:'Ancient resonance settlement beneath Shadow’s Lookout',available:true,
   performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.68},
   bounds:{minX:-1600,maxX:1600,minZ:-920,maxZ:920},
-  spawnPoints:[{x:-1320,z:80},{x:120,z:-40}],projectileLimits:{padding:240,minY:-70,maxY:980},ai:{wallMargin:140},
+  spawnPoints:[{x:-1363,z:100},{x:120,z:-40}],projectileLimits:{padding:240,minY:-70,maxY:980},ai:{wallMargin:140},
   camera:{yawDeg:38,fov:44,clear:'#b9aa8d',fogColor:'#d8ccb1',fogRange:[1050,3450],focusClampX:1500,focusClampZ:850,baseDistance:1120,separationScale:.17,minDistance:1030,maxDistance:1300,heightBase:490,heightDistanceScale:.16,horizontalDistanceScale:.82,targetHeight:48,jumpTargetScale:.17,focusSmoothing:.09,zoomSmoothing:.065},
   floor:{
     base:{x:0,y:-42,z:0,sx:3440,sy:84,sz:2020,color:'#433d31'},
@@ -862,6 +862,12 @@ const ECHO_VILLAGE={
     {x:1320,y:180,z:-520,sx:36,sy:360,sz:36,color:'#61472f'},
     {x:1200,y:180,z:-520,sx:36,sy:360,sz:36,color:'#61472f'},
     ...Array.from({length:16},(_,i)=>({x:-1200+i*160,y:52+(i%3)*10,z:i%2?760:-760,sx:84,sy:104,sz:72,color:i%2?'#66533d':'#78654a'}))
+  ],
+  colliders:[
+    ...[[-520,210],[-280,360],[10,210],[300,380],[610,200],[-120,-330],[230,-410],[560,-300]].map(([x,z])=>({x,z,sx:150,sz:135,minY:-10,maxY:210})),
+    {x:-420,z:520,sx:540,sz:360,minY:-10,maxY:120},
+    {x:1010,z:460,sx:420,sz:330,minY:-10,maxY:150},
+    {x:1260,z:-430,sx:280,sz:220,minY:-10,maxY:180}
   ],lamps:[]}
 };
 

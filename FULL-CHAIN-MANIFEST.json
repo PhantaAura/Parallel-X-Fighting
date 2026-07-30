@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X Prototype 2.9A.24.5 Complete Cumulative Build",
-  "version": "2.9A.24.5",
+  "name": "Parallels X Prototype 2.9A.25 Complete Cumulative Build",
+  "version": "2.9A.25",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -33,20 +33,22 @@
     "2.9A.24 All-Chapter Story Polish: shared fight transitions, atlas dialogue portraits, unified objectives, checkpoint display, chapter results, combat feedback, chapter ambience, and secret playtest menu",
     "2.9A.24.1 Strange Man Investigation: restored demo witness, altered medical-worker revisit, persistent hat key item, contradictory Lens predictions, and east-support facility clue",
     "2.9A.24.2 Hub Camera Comfort: optional exploration free camera, click-and-drag mouse/trackpad look, UI-safe pointer capture, persistent camera angles, sensitivity control, and unchanged fight framing",
-    "2.9A.24.4 Ryuzankaro Quest Gate Fix: strict village-defense gating, state-normalization repair, and behavior-based smoke coverage",
+    "2.9A.24.3 Ryuzankaro Quest Gate Fix: strict village-defense gating, state-normalization repair, and behavior-based smoke coverage",
     "2.9A.24.4 Validation Sync & Story Gate Verification: fresh smoke-test asset requests, corrected Strange Man identity validation, explicit Chapter 4 gate predicates, and current tiled-plaza checks",
-    "2.9A.24.5 Browser Icon Validation Fix: explicit browser and install icon declarations with semantic smoke coverage"
+    "2.9A.24.5 Browser Icon Validation Fix: explicit browser and install icon declarations with semantic smoke coverage",
+    "2.9A.25 Feel, Team Combat & Collision Repair: corrected chapter results, merged clear screens, menu-only debug code, honest settings, camera reset and modal safety, hub collision, Chapter 3 evidence sweeps, three-ninja wave battles, optional swarms, smarter Hollow Watcher adaptation, reward soft caps, and longer music variation"
   ],
-  "cache_tag": "29a24p5-browser-icon-validation-20260730",
-  "save_schema": 266,
+  "cache_tag": "29a25-feel-team-collision-20260730",
+  "save_schema": 267,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo’s atlas across Chapter 2–4 fight transitions and rejects stale asynchronous sprite loads",
     "2.9A.23.2 Story Combat UI Cleanup: hides exploration UI during combat and restores it afterward",
     "2.9A.24 All-Chapter Story Polish: shared fight transitions, atlas dialogue portraits, unified objectives, checkpoint display, chapter results, combat feedback, chapter ambience, and secret playtest menu",
     "2.9A.24.1 Strange Man Investigation: Chapter 3 mystery sequence and save-safe key-item persistence",
     "2.9A.24.2 Hub Camera Comfort: replaces hover-look with click-and-drag, prevents menus from rotating the camera, and adds Gameplay settings for enable/disable and sensitivity",
-    "2.9A.24.4 Ryuzankaro Quest Gate Fix: prevents the optional quest and mountain choice from becoming available before the mandatory village defense",
+    "2.9A.24.3 Ryuzankaro Quest Gate Fix: prevents the optional quest and mountain choice from becoming available before the mandatory village defense",
     "2.9A.24.4 Validation Sync & Story Gate Verification: eliminates mixed-cache false failures and verifies current Chapter 3, Chapter 4, and tournament-hub behavior",
-    "2.9A.24.5 Browser Icon Validation Fix: aligns index favicon declarations, app-install icons, and smoke validation"
+    "2.9A.24.5 Browser Icon Validation Fix: aligns index favicon declarations, app-install icons, and smoke validation",
+    "2.9A.25 Feel, Team Combat & Collision Repair: upgrades whole-route game feel, Chapter 3 investigation pacing, Chapter 4 teamwork, hub solidity, adaptive boss behavior, balance, and procedural audio variation"
   ]
 }

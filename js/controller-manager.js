@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a24p5-browser-icon-validation-20260730';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a25-feel-team-collision-20260730';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

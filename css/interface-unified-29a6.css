@@ -3586,3 +3586,6 @@ body.storyFeedback-perfectParry #arenaModeScreen{filter:brightness(1.22) contras
 /* 2.9A.24.2 — hub camera comfort */
 .hubCameraLookEnabled canvas{cursor:grab}
 .hubCameraLookEnabled canvas.hubCameraDragging{cursor:grabbing}
+
+/* 2.9A.25 settings honesty */
+.futureSetting{opacity:.72}.futureSetting small{display:block;margin-top:6px;color:#aeb8ca;font-size:.74rem}.futureSetting input:disabled{filter:grayscale(1);cursor:not-allowed}

@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a24p5-browser-icon-validation-20260730';
+import {InputManager} from './input.js?v=29a25-feel-team-collision-20260730';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

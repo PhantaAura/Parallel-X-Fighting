@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a24-all-story-polish-20260730';
+import {InputManager} from './input.js?v=29a24p3-ryuzankaro-gate-20260730';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

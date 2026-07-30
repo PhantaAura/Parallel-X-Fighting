@@ -1,11 +1,11 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a24-all-story-polish-20260730';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a24p3-ryuzankaro-gate-20260730';
 import {drawArenaStage} from './arena-stage-renderer.js';
 import {WebGLArenaRenderer} from './webgl-renderer.js';
-import {ArenaControlManager} from './arena-controls.js?v=29a24-all-story-polish-20260730';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a24-all-story-polish-20260730';
-import {ROSTER} from '../roster.js?v=29a24-all-story-polish-20260730';
-import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a24-all-story-polish-20260730';
+import {ArenaControlManager} from './arena-controls.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {ROSTER} from '../roster.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a24p3-ryuzankaro-gate-20260730';
 
 const ID='arenaModeScreen';
 const W=960;

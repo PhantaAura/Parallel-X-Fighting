@@ -1,17 +1,17 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24-all-story-polish-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24-all-story-polish-20260730';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a24-all-story-polish-20260730';
-import {StoryMap} from './story-map.js?v=29a24-all-story-polish-20260730';
-import {storyConfirm} from './story-ux.js?v=29a24-all-story-polish-20260730';
-import {openCombatManual} from './combat-manual.js?v=29a24-all-story-polish-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a24-all-story-polish-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a24p2-camera-comfort-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {StoryMap} from './story-map.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {storyConfirm} from './story-ux.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {openCombatManual} from './combat-manual.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a24p3-ryuzankaro-gate-20260730';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a24-all-story-polish-20260730';
+} from './chapter4-content.js?v=29a24p3-ryuzankaro-gate-20260730';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -375,6 +375,11 @@ class RrvvfoChapter4{
   collectLiftPart(id){const part=CHAPTER4_LIFT_PARTS.find(item=>item.id===id);if(!part)return;this.state.liftParts=unique([...this.state.liftParts,id]);this.battle.burst(part.x,part.z,'#ffd16e',20,50);this.toast('LIFT PART RECOVERED',part.label,`${this.state.liftParts.length} / ${CHAPTER4_LIFT_PARTS.length}`);this.saveState();this.updateObjective()}
 
   startOldManQuest(){
+    if(!this.state.villageDefenseComplete||!this.state.requiredCompleted.includes('villageDefended')||!this.state.ryuzankaro.available){
+      this.toast('QUEST LOCKED','DEFEND ECHO VILLAGE FIRST','The Old Man’s Potions unlocks only after the mandatory village-defense battle.');
+      this.updateObjective();
+      return;
+    }
     if(!this.state.ryuzankaro.started){this.showDialogue([
       {speaker:'OLD MAN',speakerClass:'neutral',text:'You three look like you’ve fought your way across half the world.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'They have. I’m fine.',tail:'down'},
@@ -433,7 +438,12 @@ class RrvvfoChapter4{
     {speaker:'BARK',speakerClass:'neutral',text:'This place might still be a target. We should stay and protect it.',tail:'down'}
   ],()=>{this.mode='explore';this.battle.phase='play';this.saveState();this.updateObjective();this.toast('SECRET BOSS COMPLETE','VIBRATION SENSE UNLOCKED','Lens Mastery Lv. 1 • Object Swap targeting improved • Team badge earned')})}
 
-  chooseMountainDeparture(){if(!this.state.ryuzankaro.available){this.state.ryuzankaro.available=true;this.saveState()}
+  chooseMountainDeparture(){
+    if(!this.state.villageDefenseComplete||!this.state.requiredCompleted.includes('villageDefended')){
+      this.toast('ROUTE LOCKED','DEFEND ECHO VILLAGE FIRST','The mountain gate and Old Man’s Potions remain locked until the village-defense battle is complete.');
+      this.updateObjective();
+      return;
+    }
     if(!ryuzankaroQuestResolved(this.state)){
       this.showChoice({kicker:'OPTIONAL QUEST AVAILABLE',title:'LEAVE ECHO VILLAGE?',text:'The Old Man’s Potions and Ryuzankaro secret boss must be completed before leaving. Skipping remains permanent for this playthrough.',buttons:[{label:'START THE OLD MAN’S POTIONS',value:'quest',primary:true},{label:'LEAVE FOR THE MOUNTAIN',value:'skip'}],onChoose:value=>{if(value==='quest'){this.startOldManQuest()}else{this.state.ryuzankaro.skipped=true;this.state.ryuzankaro.checkpoint='skipped';this.completeRequired('mountainDecision');this.enterMountain()}}});return
     }

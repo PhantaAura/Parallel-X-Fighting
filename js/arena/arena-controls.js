@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a24-all-story-polish-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a24-all-story-polish-20260730';
+import {CONTROL_MAPS} from '../input.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a24p3-ryuzankaro-gate-20260730';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

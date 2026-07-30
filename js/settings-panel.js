@@ -1,4 +1,4 @@
-import {DEFAULT_QOL_SETTINGS,SETTINGS_CATEGORIES,categoryDefaults,sanitizeQolSettings} from './qol-settings.js?v=29a24p2-camera-comfort-20260730';
+import {DEFAULT_QOL_SETTINGS,SETTINGS_CATEGORIES,categoryDefaults,sanitizeQolSettings} from './qol-settings.js?v=29a24p3-ryuzankaro-gate-20260730';
 
 const FIELDS={
   Gameplay:[['combatMessages','Combat Messages','select',['full','important','off']],['hubCamera','Hub Free Camera','select',['drag','off']],['hubCameraSensitivity','Camera Look Sensitivity','rangeScale'],['firstTimeHints','First-time Hints','check'],['resetHints','Reset Hints','action'],['holdConfirm','Hold Confirmation for Restarts','check'],['skipAnimations','Skip Menu Animations','check'],['reducedMotion','Reduced Menu Motion','check'],['showQuickContinue','Show Quick Continue','check']],

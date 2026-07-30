@@ -9,16 +9,16 @@ import {
   rrvvfoRouteStarted,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a24p1-strange-man-20260730';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a24-all-story-polish-20260730';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a24-all-story-polish-20260730';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a24-all-story-polish-20260730';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a24-all-story-polish-20260730';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a24p1-strange-man-20260730';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a24-all-story-polish-20260730';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a24-all-story-polish-20260730';
-import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a24-all-story-polish-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a24-all-story-polish-20260730';
+} from './lost-year-data.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a24p3-ryuzankaro-gate-20260730';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a24-all-story-polish-20260730';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a24-all-story-polish-20260730';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a24p3-ryuzankaro-gate-20260730';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a24-all-story-polish-20260730';
-import {Fighter} from '../js/fighter.js?v=29a24-all-story-polish-20260730';
+import {EffectSystem} from '../js/effects.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {Fighter} from '../js/fighter.js?v=29a24p3-ryuzankaro-gate-20260730';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,17 +17,17 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a24-all-story-polish-20260730';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a24-all-story-polish-20260730';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a24p3-ryuzankaro-gate-20260730';
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a24-all-story-polish-20260730';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a24-all-story-polish-20260730';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,freshChapter4State,markChapter4Required,normalizeChapter4State} from '../js/story/chapter4-content.js?v=29a24-all-story-polish-20260730';
-import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a24-all-story-polish-20260730';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a24-all-story-polish-20260730';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,modeUnlockedForProgress,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a24-all-story-polish-20260730';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a24p2-camera-comfort-20260730';
-import {getArenaStage,validateArenaStage} from '../js/arena/arena-stages.js?v=29a24-all-story-polish-20260730';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,freshChapter4State,markChapter4Required,normalizeChapter4State} from '../js/story/chapter4-content.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,modeUnlockedForProgress,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {getArenaStage,validateArenaStage} from '../js/arena/arena-stages.js?v=29a24p3-ryuzankaro-gate-20260730';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -38,14 +38,14 @@ import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringif
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a24-all-story-polish-20260730';
+import {LoadingManager} from '../js/loading-manager.js?v=29a24p3-ryuzankaro-gate-20260730';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a24-all-story-polish-20260730';
-import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a24-all-story-polish-20260730';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a24p3-ryuzankaro-gate-20260730';
 
 const results=[],assert=(condition,message)=>{if(!condition)throw new Error(message)};
 async function test(name,fn){try{await fn();results.push({name,pass:true})}catch(error){results.push({name,pass:false,error:error.message})}}
@@ -204,7 +204,7 @@ await test('controller detection and disconnection assignment stay deterministic
 await test('InputManager honors explicit player device assignment',()=>{const pads=[makePad(),null,makePad()],input=new InputManager(()=>pads);input.setControllerStyle(1,'xbox');input.setControllerAssignment(1,2);pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=true;input.poll();pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=false;settleChordWindow(input);assert(input.consumeAction(1,'a'),'assigned Player 1 controller input was ignored')});
 await test('round and Training cleanup clear visual-only state',()=>{const setup=pair();setup.world.fighterVisuals={resetFighter:fighter=>{fighter.__visualReset=true}};setup.one.visualAction='ultimateAttack';setup.one.visualActionTimer=99;setup.one.resetRuntime();assert(setup.one.__visualReset&&!setup.one.visualAction&&!setup.one.visualActionTimer,'fighter reset retained visual state');trainingState.enabled=true;resetTrainingWorld(setup.world);assert(setup.world.projectiles.length===0&&setup.world.effects.effects.length===0,'Training cleanup retained transient visuals')});
 
-await test('Prototype 2.9A.24.2 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.24.2 — Hub Camera Comfort','build label is outdated');assert(SAVE_SCHEMA_VERSION===266,'save schema version is outdated')});
+await test('Prototype 2.9A.24.3 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.24.3 — Ryuzankaro Quest Gate Fix','build label is outdated');assert(SAVE_SCHEMA_VERSION===266,'save schema version is outdated')});
 await test('Bark and Wade are first-class sprite fighters with complete manifests',async()=>{
   assert(SPRITE_FIGHTER_IDS.includes('bark')&&SPRITE_FIGHTER_IDS.includes('wade'),'Bark or Wade is missing from the sprite fighter pipeline');
   for(const [name,url,specials] of [['Bark',BARK_MANIFEST_URL,['rockShot','rockArmor','earthWall','groundQuake','seismicCounter']],['Wade',WADE_MANIFEST_URL,['lightningBlast','lightningDash','thunderstorm','lightningBeam']]]){
@@ -493,7 +493,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a24-all-story-polish-20260730');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a24p3-ryuzankaro-gate-20260730');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
   const source=await(await fetch('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
@@ -532,18 +532,24 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(CHAPTER4_REQUIRED_STEPS.join('|').includes('beaconRestored|cavernsEntered|liftPartsRecovered|villageDefended|mountainDecision'),'Chapter 4 structural order changed');
   assert(CHAPTER4_REQUIRED_STEPS.indexOf('villageDefended')<CHAPTER4_REQUIRED_STEPS.indexOf('mountainDecision'),'Ryuzankaro quest can open before village defense');
   assert(CHAPTER4_BEACON_NODES.length===3&&CHAPTER4_CAVERN_DOORS.length===3&&CHAPTER4_LIFT_PARTS.length===3&&CHAPTER4_INGREDIENTS.length===4&&CHAPTER4_MOUNTAIN_SIGNALS.length===3,'Chapter 4 content counts changed');
-  const state=normalizeChapter4State({requiredCompleted:['opening','opening'],beaconNodes:['signal-blocker','signal-blocker'],ryuzankaro:{ingredients:['emberBloom','emberBloom']}});
+  const state=normalizeChapter4State({requiredCompleted:['opening','opening'],beaconNodes:['signal-blocker','signal-blocker'],ryuzankaro:{available:true,ingredients:['emberBloom','emberBloom']}});
   assert(state.requiredCompleted.length===1&&state.beaconNodes.length===1&&state.ryuzankaro.ingredients.length===1,'Chapter 4 save migration retained duplicates');
+  assert(!state.villageDefenseComplete&&!state.ryuzankaro.available,'Ryuzankaro became available before the village defense');
+  const defended=normalizeChapter4State({requiredCompleted:['opening','villageDefended'],villageDefenseComplete:true,ryuzankaro:{available:false}});
+  assert(defended.villageDefenseComplete&&defended.ryuzankaro.available,'Ryuzankaro did not unlock after the village defense');
   assert(chapter4NextRequired(state)==='villageReached'&&chapter4CompletionPercent(state)>0&&!chapter4Complete(state),'partial Chapter 4 state was misread');
   const complete=freshChapter4State();for(const step of CHAPTER4_REQUIRED_STEPS)markChapter4Required(complete,step);
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a24-all-story-polish-20260730');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a24p3-ryuzankaro-gate-20260730');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetch('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','reachLookout'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
-  assert(source.includes("this.state.ryuzankaro.available=true")&&source.indexOf("this.state.ryuzankaro.available=true")>source.indexOf("fight.kind==='village-defense'"),'Ryuzankaro quest unlock is not tied to the village defense');
+  const defenseUnlock="if(fight.kind==='village-defense'){this.state.villageDefenseComplete=true;this.state.ryuzankaro.available=true";
+  assert(source.includes(defenseUnlock),'Ryuzankaro quest unlock is not tied to the village defense');
+  assert(source.includes("if(!this.state.villageDefenseComplete||!this.state.requiredCompleted.includes('villageDefended')||!this.state.ryuzankaro.available)"),'Old Man quest lacks a strict village-defense gate');
+  assert(source.includes("if(!this.state.villageDefenseComplete||!this.state.requiredCompleted.includes('villageDefended'))"),'Mountain departure lacks a strict village-defense gate');
   assert(source.includes('PROJECT HOLLOW — COMBAT DATA TRANSMITTED'),'Hollow Watcher does not transmit combat data');
   assert(source.includes('Ryuzankaro')&&source.includes('VIBRATION SENSE UNLOCKED'),'secret-boss reward path is incomplete');
 });

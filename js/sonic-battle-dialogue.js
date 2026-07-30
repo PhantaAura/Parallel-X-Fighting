@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a24-all-story-polish-20260730';
+import {storyConfirm} from './story/story-ux.js?v=29a24p3-ryuzankaro-gate-20260730';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

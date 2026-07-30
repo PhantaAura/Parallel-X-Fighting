@@ -6,19 +6,18 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.24.2 — Hub Camera Comfort**
+**Prototype 2.9A.24.3 — Ryuzankaro Quest Gate Fix**
 
 This is a complete cumulative build. No older package is required.
 
-## 2.9A.24.2 highlights
+## 2.9A.24.3 highlights
 
-- Hub free camera is now optional under **Settings → Gameplay**.
-- Mouse and Mac trackpad look requires **clicking and dragging on the 3D world**.
-- Pointer movement alone no longer rotates the camera.
-- Clicking menus, dialogue, maps, journals, or other UI cannot start camera movement.
-- Exploration camera angles remain where the player leaves them instead of recentering after 900 ms.
-- Camera sensitivity is adjustable from 40% to 160%.
-- Controller right-stick exploration look and fixed fight framing remain supported.
+- The Old Man’s Potions and Ryuzankaro secret boss now unlock only after the mandatory Echo Village defense is completed.
+- The Old Man interaction has a strict runtime guard and cannot be started early through stale UI, debug calls, or malformed saves.
+- The mountain-gate choice is also blocked until `villageDefended` is complete.
+- Chapter 4 save normalization now derives quest availability from the village-defense state, preventing contradictory saves.
+- The smoke test now checks actual pre-defense and post-defense state behavior instead of relying on fragile source-text ordering.
+- All 2.9A.24.2 click-and-drag camera improvements remain included.
 
 ## 2.9A.24 highlights
 
@@ -95,7 +94,7 @@ Save-export schema: **266**. Existing Story saves continue through the current s
 
 ## Testing
 
-Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.24.2.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.24.2.md) for the real-device pass. See [`PATCH-NOTES-2.9A.24.2.md`](PATCH-NOTES-2.9A.24.2.md) and [`VALIDATION-2.9A.24.2.md`](VALIDATION-2.9A.24.2.md) for release details.
+Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.24.3.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.24.3.md) for the real-device pass. See [`PATCH-NOTES-2.9A.24.3.md`](PATCH-NOTES-2.9A.24.3.md) and [`VALIDATION-2.9A.24.3.md`](VALIDATION-2.9A.24.3.md) for release details.
 
 
 ## 2.9A.24.1 Chapter 3 addition

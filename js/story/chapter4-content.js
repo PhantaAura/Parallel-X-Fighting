@@ -56,11 +56,16 @@ export function freshChapter4State(){
 
 export function normalizeChapter4State(value={}){
   const base=freshChapter4State(),source=value&&typeof value==='object'?value:{};
+  const requiredCompleted=unique(source.requiredCompleted);
+  const villageDefenseIndex=CHAPTER4_REQUIRED_STEPS.indexOf('villageDefended');
+  const villageDefenseComplete=Boolean(source.villageDefenseComplete||requiredCompleted.some(id=>CHAPTER4_REQUIRED_STEPS.indexOf(id)>=villageDefenseIndex));
+  const sourceRyuzankaro=source.ryuzankaro||{};
   return{
     ...base,...source,version:CHAPTER4_STATE_VERSION,
-    requiredCompleted:unique(source.requiredCompleted),
+    requiredCompleted,
     beaconNodes:unique(source.beaconNodes),cavernDoors:unique(source.cavernDoors),liftParts:unique(source.liftParts),mountainSignals:unique(source.mountainSignals),
-    ryuzankaro:{...base.ryuzankaro,...(source.ryuzankaro||{}),ingredients:unique(source.ryuzankaro?.ingredients)},
+    villageDefenseComplete,
+    ryuzankaro:{...base.ryuzankaro,...sourceRyuzankaro,available:villageDefenseComplete,ingredients:unique(sourceRyuzankaro.ingredients)},
     rewards:{...base.rewards,...(source.rewards||{})},
     hollowWatcher:{...base.hollowWatcher,...(source.hollowWatcher||{})},
     chapterComplete:Boolean(source.chapterComplete)

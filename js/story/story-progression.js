@@ -1,4 +1,4 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p4-validation-sync-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p5-browser-icon-validation-20260730';
 
 export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,250,450,700,1000,1360,1780,2260,2810]);
 export const STORY_RECOMMENDED_LEVELS=Object.freeze({1:1,2:2,3:4,4:5,5:6,6:7,7:8,8:9});

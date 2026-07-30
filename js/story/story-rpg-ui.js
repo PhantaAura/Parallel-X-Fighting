@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a24p4-validation-sync-20260730';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a24p4-validation-sync-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a24p5-browser-icon-validation-20260730';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a24p5-browser-icon-validation-20260730';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast / Shots of Agony'},

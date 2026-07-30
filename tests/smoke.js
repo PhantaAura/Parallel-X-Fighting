@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a24p4-validation-sync-20260730';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a24p4-validation-sync-20260730';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {Fighter} from '../js/fighter.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {EffectSystem} from '../js/effects.js?v=29a24p4-validation-sync-20260730';
+import {Fighter} from '../js/fighter.js?v=29a24p4-validation-sync-20260730';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,17 +17,17 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a24p4-validation-sync-20260730';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a24p4-validation-sync-20260730';
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,freshChapter4State,markChapter4Required,normalizeChapter4State} from '../js/story/chapter4-content.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,modeUnlockedForProgress,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {getArenaStage,validateArenaStage} from '../js/arena/arena-stages.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a24p4-validation-sync-20260730';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a24p4-validation-sync-20260730';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a24p4-validation-sync-20260730';
+import {storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a24p4-validation-sync-20260730';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a24p4-validation-sync-20260730';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,modeUnlockedForProgress,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a24p4-validation-sync-20260730';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a24p4-validation-sync-20260730';
+import {getArenaStage,validateArenaStage} from '../js/arena/arena-stages.js?v=29a24p4-validation-sync-20260730';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -38,14 +38,25 @@ import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringif
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {LoadingManager} from '../js/loading-manager.js?v=29a24p4-validation-sync-20260730';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a24p4-validation-sync-20260730';
+import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a24p4-validation-sync-20260730';
+
+const RELEASE_CACHE_ID='29a24p4-validation-sync-20260730';
+const nativeFetch=globalThis.fetch.bind(globalThis);
+function fetchFresh(input,init={}){
+  let request=input;
+  if(typeof input==='string'&&input.startsWith('../')){
+    const separator=input.includes('?')?'&':'?';
+    request=`${input}${separator}v=${RELEASE_CACHE_ID}`;
+  }
+  return nativeFetch(request,{...init,cache:'no-store'});
+}
 
 const results=[],assert=(condition,message)=>{if(!condition)throw new Error(message)};
 async function test(name,fn){try{await fn();results.push({name,pass:true})}catch(error){results.push({name,pass:false,error:error.message})}}
@@ -171,10 +182,10 @@ await test('controller attack buttons contribute independently to clashes',()=>{
 await test('Training clash reset clears active and armed states',()=>{const{world,one,two}=pair();trainingState.forceNextClash=true;startClash(world,'melee',one,two,{powerA:12,powerB:12});trainingState.forceNextClash=true;resetTrainingClash(world);assert(!world.clash.active&&!trainingState.forceNextClash,'Training clash reset left active or armed state')});
 
 let rrvvfoManifest;
-await test('Rrvvfo atlas manifest loads with normalized anchors',async()=>{const response=await fetch('../assets/fighters/rrvvfo/rrvvfo-animations.json');assert(response.ok,'manifest request failed');rrvvfoManifest=await response.json();assert(validateSpriteManifest(rrvvfoManifest),'manifest validation failed');assert(rrvvfoManifest.atlas.frameCanvas.join('x')==='192x192','frame canvas is not normalized');for(const [name,frame] of Object.entries(rrvvfoManifest.frames)){assert(frame.groundPivot[0]===96&&frame.groundPivot[1]===178,`${name} has an inconsistent ground pivot`);assert(frame.projectileOrigin.length===2,`${name} has no projectile anchor`) }});
+await test('Rrvvfo atlas manifest loads with normalized anchors',async()=>{const response=await fetchFresh('../assets/fighters/rrvvfo/rrvvfo-animations.json');assert(response.ok,'manifest request failed');rrvvfoManifest=await response.json();assert(validateSpriteManifest(rrvvfoManifest),'manifest validation failed');assert(rrvvfoManifest.atlas.frameCanvas.join('x')==='192x192','frame canvas is not normalized');for(const [name,frame] of Object.entries(rrvvfoManifest.frames)){assert(frame.groundPivot[0]===96&&frame.groundPivot[1]===178,`${name} has an inconsistent ground pivot`);assert(frame.projectileOrigin.length===2,`${name} has no projectile anchor`) }});
 await test('Rrvvfo sprite paths are GitHub Pages relative',()=>{assert(isRepositoryRelativePath(rrvvfoManifest.image),'atlas image path is root-relative');for(const path of Object.values(rrvvfoManifest.effects))assert(isRepositoryRelativePath(path),`${path} is unsafe for project Pages`)});
 let revvfoManifest;
-await test('Revvfo atlas manifest loads with normalized anchors and original moveset animations',async()=>{const response=await fetch('../assets/fighters/revvfo/revvfo-animations.json');assert(response.ok,'Revvfo manifest request failed');revvfoManifest=await response.json();assert(validateSpriteManifest(revvfoManifest),'Revvfo manifest validation failed');assert(revvfoManifest.fighter==='revvfo','wrong fighter manifest');for(const name of ['astrylteBlast','teleportRush','beamAttack','ultimateAttack'])assert(revvfoManifest.animations[name],`Revvfo animation ${name} missing`);for(const frame of Object.values(revvfoManifest.frames))assert(frame.groundPivot.join(',')==='96,178','Revvfo pivot mismatch')});
+await test('Revvfo atlas manifest loads with normalized anchors and original moveset animations',async()=>{const response=await fetchFresh('../assets/fighters/revvfo/revvfo-animations.json');assert(response.ok,'Revvfo manifest request failed');revvfoManifest=await response.json();assert(validateSpriteManifest(revvfoManifest),'Revvfo manifest validation failed');assert(revvfoManifest.fighter==='revvfo','wrong fighter manifest');for(const name of ['astrylteBlast','teleportRush','beamAttack','ultimateAttack'])assert(revvfoManifest.animations[name],`Revvfo animation ${name} missing`);for(const frame of Object.values(revvfoManifest.frames))assert(frame.groundPivot.join(',')==='96,178','Revvfo pivot mismatch')});
 await test('Rrvvfo Hood Up has complete matching animation coverage',()=>{for(const [name,animation] of Object.entries(rrvvfoManifest.animations)){assert(animation.variants?.up?.length===animation.frames.length,`${name} Hood Up frame count mismatch`);for(const frame of animation.variants.up)assert(rrvvfoManifest.frames[frame],`${name} references missing Hood Up frame ${frame}`)}assert(rrvvfoManifest.notes.fullAlternateAnimationCoverage===true,'manifest did not report complete Hood Up coverage')});
 await test('Revvfo sprite paths remain GitHub Pages relative',()=>{assert(isRepositoryRelativePath(revvfoManifest.image),'Revvfo atlas image path is unsafe');for(const path of Object.values(revvfoManifest.effects))assert(isRepositoryRelativePath(path),`${path} is unsafe for project Pages`)});
 await test('idle and run sprite animations loop',()=>{const atlas=new SpriteAtlas(rrvvfoManifest,{},new URL('../assets/fighters/rrvvfo/rrvvfo-animations.json',document.baseURI)),animator=new SpriteAnimator(atlas);animator.play('idle',{restart:true});animator.update(5000);assert(!animator.complete&&animator.name==='idle','idle did not loop');animator.play('run',{priority:ANIMATION_PRIORITY.movement,restart:true});animator.update(5000);assert(!animator.complete&&animator.name==='run','run did not loop')});
@@ -204,26 +215,26 @@ await test('controller detection and disconnection assignment stay deterministic
 await test('InputManager honors explicit player device assignment',()=>{const pads=[makePad(),null,makePad()],input=new InputManager(()=>pads);input.setControllerStyle(1,'xbox');input.setControllerAssignment(1,2);pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=true;input.poll();pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=false;settleChordWindow(input);assert(input.consumeAction(1,'a'),'assigned Player 1 controller input was ignored')});
 await test('round and Training cleanup clear visual-only state',()=>{const setup=pair();setup.world.fighterVisuals={resetFighter:fighter=>{fighter.__visualReset=true}};setup.one.visualAction='ultimateAttack';setup.one.visualActionTimer=99;setup.one.resetRuntime();assert(setup.one.__visualReset&&!setup.one.visualAction&&!setup.one.visualActionTimer,'fighter reset retained visual state');trainingState.enabled=true;resetTrainingWorld(setup.world);assert(setup.world.projectiles.length===0&&setup.world.effects.effects.length===0,'Training cleanup retained transient visuals')});
 
-await test('Prototype 2.9A.24.3 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.24.3 — Ryuzankaro Quest Gate Fix','build label is outdated');assert(SAVE_SCHEMA_VERSION===266,'save schema version is outdated')});
+await test('Prototype 2.9A.24.4 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.24.4 — Validation Sync & Story Gate Verification','build label is outdated');assert(SAVE_SCHEMA_VERSION===266,'save schema version is outdated')});
 await test('Bark and Wade are first-class sprite fighters with complete manifests',async()=>{
   assert(SPRITE_FIGHTER_IDS.includes('bark')&&SPRITE_FIGHTER_IDS.includes('wade'),'Bark or Wade is missing from the sprite fighter pipeline');
   for(const [name,url,specials] of [['Bark',BARK_MANIFEST_URL,['rockShot','rockArmor','earthWall','groundQuake','seismicCounter']],['Wade',WADE_MANIFEST_URL,['lightningBlast','lightningDash','thunderstorm','lightningBeam']]]){
-    const response=await fetch(url);assert(response.ok,`${name} manifest did not load`);const manifest=await response.json();
+    const response=await fetchFresh(url);assert(response.ok,`${name} manifest did not load`);const manifest=await response.json();
     for(const animation of ['idle','fightingStance','run','jumpRise','fall','dash','light1','light2','light3','heavyStartup','launcherStartup','blockHold','perfectBlock','grab','hurtLight','knockdown','getUp','defeated','victory',...specials])assert(manifest.animations?.[animation],`${name} omitted ${animation}`);
   }
 });
 await test('all five cleaned fighter atlases have valid manifests and reachable images',async()=>{
   for(const fighter of ['rrvvfo','revvfo','bark','wade','sage']){
-    const manifestResponse=await fetch(`../assets/fighters/${fighter}/${fighter}-animations.json`);
+    const manifestResponse=await fetchFresh(`../assets/fighters/${fighter}/${fighter}-animations.json`);
     assert(manifestResponse.ok,`${fighter} cleaned manifest did not load`);
     const manifest=await manifestResponse.json();
     assert(validateSpriteManifest(manifest),`${fighter} cleaned manifest is invalid`);
-    const imageResponse=await fetch(new URL(manifest.image,new URL(`../assets/fighters/${fighter}/${fighter}-animations.json`,document.baseURI)));
+    const imageResponse=await fetchFresh(new URL(manifest.image,new URL(`../assets/fighters/${fighter}/${fighter}-animations.json`,document.baseURI)));
     assert(imageResponse.ok,`${fighter} cleaned atlas image did not load`);
   }
 });
 await test('Sage uses the supplied full production sheet instead of twelve reused poses',async()=>{
-  const manifest=await(await fetch('../assets/fighters/sage/sage-animations.json')).json();
+  const manifest=await(await fetchFresh('../assets/fighters/sage/sage-animations.json')).json();
   const used=new Set(Object.values(manifest.animations).flatMap(animation=>animation.frames));
   assert(Object.keys(manifest.frames).length===36,'Sage does not have 36 production frames');
   assert(used.size>=32,'Sage animations still reuse too few poses');
@@ -231,11 +242,11 @@ await test('Sage uses the supplied full production sheet instead of twelve reuse
 });
 await test('Classic fighter sprites are readable and off-model turnaround cells stay inactive',async()=>{
   for(const fighter of ['rrvvfo','revvfo','bark','wade','sage']){
-    const manifest=await(await fetch(`../assets/fighters/${fighter}/${fighter}-animations.json`)).json();
+    const manifest=await(await fetchFresh(`../assets/fighters/${fighter}/${fighter}-animations.json`)).json();
     assert(manifest.defaults.scale>=.7,`${fighter} remains too small in Classic`);
     assert(!(manifest.animations.turn?.frames||[]).some(frame=>frame.includes('turn_')),`${fighter} still activates an off-model turnaround cell`);
   }
-  const css=await(await fetch('../css/interface-unified-29a6.css')).text();
+  const css=await(await fetchFresh('../css/interface-unified-29a6.css')).text();
   assert(/#menuScreen \.roster\{\s*display:block!important/.test(css),'Classic roster can collapse back into the outer legacy grid');
   assert(/#menuScreen \.playableRoster\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)!important\}/.test(css),'playable Classic roster is not a four-card row');
 });
@@ -319,12 +330,12 @@ await test('mouse and trackpad camera look starts only from a left-button canvas
 await test('Chapter hubs have distinct scenery while the tournament fight arena stays separate',()=>{
   const road=getArenaStage('training-road'),hub=getArenaStage('tournament-hub'),night=getArenaStage('after-hours-tournament'),arena=getArenaStage('tournament');
   assert(road.scenery.boxes.length>=90,'Chapter 1 training sanctuary is visually underdeveloped');
-  assert(hub.floor.surface.color==='#d6c59d'&&hub.scenery.boxes.length>=100,'Chapter 2 does not read as a tiled tournament plaza');
+  assert(hub.floor.surface.color==='#cbb98f'&&hub.floor.grid?.stepX===120&&hub.floor.grid?.stepZ===120&&hub.scenery.boxes.length>=120,'Chapter 2 does not read as a tiled tournament plaza');
   assert(night.scenery!==hub.scenery&&night.scenery.boxes.length>=120&&night.scenery.boxes.some(box=>box.color==='#74d7e4'),'Chapter 3 after-hours hub is only a palette alias');
   assert(arena.id==='tournament'&&arena.bounds.maxX===750&&arena.floor.surface.color==='#d7c79f','the arena fight map was changed with the hub');
 });
 await test('Story startup failure does not create false Continue progress',async()=>{
-  const source=await(await fetch('../js/story/lost-year-story.js')).text();
+  const source=await(await fetchFresh('../js/story/lost-year-story.js')).text();
   const openRoute=source.slice(source.indexOf('openRoute(){'),source.indexOf('showRouteHome('));
   const startStep=source.slice(source.indexOf('startStep(stepId'),source.indexOf('export function openLostYearStory'));
   assert(!openRoute.includes('saveLostYearProgress'),'opening the route saves progress before the chapter exists');
@@ -332,7 +343,7 @@ await test('Story startup failure does not create false Continue progress',async
   assert(startStep.includes('saveLostYearProgress(progressBeforeStart)'),'failed startup does not restore the previous save');
 });
 await test('Chapter 2 hub animation timing advances in simulation updates only',async()=>{
-  const source=await(await fetch('../js/story/rrvvfo-mission-2.js')).text();
+  const source=await(await fetchFresh('../js/story/rrvvfo-mission-2.js')).text();
   assert(source.includes('this.hubAnimationClock+=Math.max(0,dt)*1000'),'hub actors do not use elapsed simulation time');
   assert(!source.includes('actor.animationClock+=16.67'),'render refresh rate still advances hub animation');
 });
@@ -362,7 +373,7 @@ await test('first-time hints use active prompts and can be dismissed or reset',(
 await test('HUD model reports Rrvvfo cooldowns active volley Lens and breaker state',()=>{const{one}=pair();one.agonyActiveVolley=true;one.lens=121;one.dashCd=61;one.ultCd=180;one.throwProtection=20;one.breakerUsed=true;const model=fighterHudModel(one),text=cooldownText(model);assert(/SHOTS VOLLEY ACTIVE/.test(text)&&/LENS 3s/.test(text)&&/SWAP 2s/.test(text)&&/ULT 3s/.test(text),'Rrvvfo cooldown HUD is incomplete');assert(/LENS COSTS 25 HP/.test(text)&&!/50 HP/.test(text),'Lens HUD cost disagrees with combat');assert(model.statuses.includes('THROW PROTECTION')&&!model.breakerReady,'HUD omitted protection or breaker state')});
 await test('audio manager preserves separate volume and mute settings',()=>{const audio=new AudioManager({master:40,music:30,sfx:20,ui:10,voice:5,mute:true});assert(audio.settings.master===40&&audio.settings.music===30&&audio.settings.sfx===20&&audio.settings.ui===10&&audio.settings.voice===5&&audio.settings.mute,'audio channels did not configure independently');audio.configure({mute:false,ui:72});assert(!audio.settings.mute&&audio.settings.ui===72,'audio settings could not update without replacing the manager')});
 await test('loading manager exposes progress retry return and safe no-root fallback',()=>{const loading=new LoadingManager(null);assert(typeof loading.start==='function'&&typeof loading.set==='function'&&typeof loading.finish==='function'&&typeof loading.fail==='function','loading recovery API is incomplete');loading.start();loading.set(50);loading.finish();loading.fail()});
-await test('main page contains first-time start polished menu recovery and confirmation shells',async()=>{const html=await(await fetch('../index.html')).text();for(const id of ['startScreen','mainMenuScreen','quickContinue','pauseMenu','resultsScreen','loadingScreen','confirmDialog'])assert(html.includes(`id="${id}"`),`index omitted ${id}`);assert(/ARCADE MODE/.test(html)===false,'static markup should source Arcade availability from menu data');assert(html.includes('viewport-fit=cover'),'safe-area viewport support was removed')});
+await test('main page contains first-time start polished menu recovery and confirmation shells',async()=>{const html=await(await fetchFresh('../index.html')).text();for(const id of ['startScreen','mainMenuScreen','quickContinue','pauseMenu','resultsScreen','loadingScreen','confirmDialog'])assert(html.includes(`id="${id}"`),`index omitted ${id}`);assert(/ARCADE MODE/.test(html)===false,'static markup should source Arcade availability from menu data');assert(html.includes('viewport-fit=cover'),'safe-area viewport support was removed')});
 await test('touch layout lock defaults on and survives saved settings',()=>{const settings=createDefaultTouchSettings();assert(settings.layoutLocked,'touch layout did not default locked');const storage=memoryStorage();settings.layoutLocked=false;saveTouchSettings(settings,storage);assert(loadTouchSettings(storage,createDefaultTouchSettings).layoutLocked===false,'touch layout lock did not persist')});
 await test('video particle caps reduce visuals without changing effect semantics',()=>{const effects=new EffectSystem().configure({particleCap:50});effects.burst(10,10,'#fff',200);assert(effects.particles.length===50,'low quality did not cap particles');effects.update();assert(effects.particles.length<=50,'particle cap created extra runtime particles')});
 
@@ -402,15 +413,15 @@ await test('Training Reset stays outside the mobile stage HUD',()=>{const width=
 await test('fullscreen is requested only through the explicit interaction method',async()=>{let requests=0,dismissed=0;const classes=new Set(),listeners={},doc={fullscreenElement:null,body:{classList:{add:value=>classes.add(value),remove:value=>classes.delete(value),toggle:(value,on)=>on?classes.add(value):classes.delete(value)}},addEventListener:(name,fn)=>{listeners[name]=fn},exitFullscreen:async()=>{doc.fullscreenElement=null}},element={requestFullscreen:async()=>{requests++;doc.fullscreenElement=element}};const manager=new FullscreenManager({root:null,doc,element,settings:createMobilePresentationSettings(),onDismiss:()=>dismissed++});manager.start({touch:true});assert(requests===0,'fullscreen was requested before user interaction');assert(fullscreenSupported(doc,element),'supported fullscreen was not detected');assert(await manager.enter()&&requests===1&&dismissed===1,'explicit fullscreen interaction failed')});
 await test('unsupported fullscreen falls back without failing the match',async()=>{const classes=new Set(),notices=[];const doc={fullscreenElement:null,body:{classList:{add:value=>classes.add(value),remove:value=>classes.delete(value),toggle:(value,on)=>on?classes.add(value):classes.delete(value)}},addEventListener:()=>{}},manager=new FullscreenManager({root:null,doc,element:{},settings:createMobilePresentationSettings(),onNotice:message=>notices.push(message)});assert(!fullscreenSupported(doc,{}),'unsupported fullscreen was marked available');assert(await manager.enter()===false&&classes.has('fullscreen-fallback')&&notices.length===1,'unsupported fullscreen did not enter safe fallback')});
 await test('fullscreen exit is explicit and Pause exposes it conditionally',async()=>{let exited=0;const element={requestFullscreen:async()=>{}},doc={fullscreenElement:element,body:{classList:{toggle:()=>{}}},addEventListener:()=>{},exitFullscreen:async()=>{exited++;doc.fullscreenElement=null}},manager=new FullscreenManager({root:null,doc,element,settings:createMobilePresentationSettings()});assert(await manager.exit()&&exited===1,'explicit fullscreen exit failed');assert(PAUSE_ACTIONS.some(action=>action.id==='exitFullscreen'&&action.fullscreenOnly),'Pause does not expose conditional Exit Fullscreen')});
-await test('main page includes landscape fullscreen and hotbar presentation shells',async()=>{const html=await(await fetch('../index.html')).text();for(const id of ['abilityHotbar','orientationPrompt','fullscreenPrompt','hotbarCustomizeModal'])assert(html.includes(`id="${id}"`),`index omitted ${id}`);assert(html.includes('css/ability-hotbar.css'),'hotbar stylesheet was not loaded');assert(/Rotate your phone for the best experience\./.test(html),'portrait recommendation copy was missing')});
+await test('main page includes landscape fullscreen and hotbar presentation shells',async()=>{const html=await(await fetchFresh('../index.html')).text();for(const id of ['abilityHotbar','orientationPrompt','fullscreenPrompt','hotbarCustomizeModal'])assert(html.includes(`id="${id}"`),`index omitted ${id}`);assert(html.includes('css/ability-hotbar.css'),'hotbar stylesheet was not loaded');assert(/Rotate your phone for the best experience\./.test(html),'portrait recommendation copy was missing')});
 
 
 await test('menu confirm and cancel follow Nintendo Xbox and PlayStation layouts',()=>{const n=controllerMenuButtons('nintendo'),x=controllerMenuButtons('xbox'),p=controllerMenuButtons('playstation');assert(n.confirm===1&&n.cancel===0,'Nintendo did not use A confirm and B cancel');assert(x.confirm===0&&x.cancel===1,'Xbox confirm/cancel changed');assert(p.confirm===0&&p.cancel===1,'PlayStation confirm/cancel changed')});
 await test('controller settings track configured devices separately per player',()=>{const storage=memoryStorage(),settings=createDefaultControllerSettings();settings.configuredControllerIds=['Nintendo Pro Controller',null];saveControllerSettings(settings,storage);const loaded=loadControllerSettings(storage);assert(loaded.configuredControllerIds[0]==='Nintendo Pro Controller'&&loaded.configuredControllerIds[1]===null,'controller setup state remained global')});
-await test('controller assignment panel and separate controls panel are present',async()=>{const html=await(await fetch('../index.html')).text();assert(html.includes('id="controllerAssignments"'),'controller assignment panel missing');assert(html.includes('id="controlsPanel"'),'separate controls panel missing')});
+await test('controller assignment panel and separate controls panel are present',async()=>{const html=await(await fetchFresh('../index.html')).text();assert(html.includes('id="controllerAssignments"'),'controller assignment panel missing');assert(html.includes('id="controlsPanel"'),'separate controls panel missing')});
 await test('touch-capable menus advertise tap before the first gameplay touch',()=>{const nav={maxTouchPoints:5},view={matchMedia:()=>({matches:true})};assert(mainMenuConfirmLabel('keyboard',nav,view)==='TAP TO CONFIRM','touch-capable menu still advertised Enter');assert(mainMenuConfirmLabel('mouse',{maxTouchPoints:0},{matchMedia:()=>({matches:false})})==='M1 / ENTER — CONFIRM','mouse prompt changed')});
-await test('Classic settings rail explains swiping and uses comfortable touch targets',async()=>{const [html,css]=await Promise.all([fetch('../index.html').then(response=>response.text()),fetch('../css/interface-unified-29a6.css').then(response=>response.text())]);assert(/Swipe left or right to see every setting/.test(html),'settings rail has no swipe cue');assert(/min-height:46px!important/.test(css),'coarse-pointer character select targets are undersized');assert(/max-height:520px/.test(css)&&/grid-template-columns:repeat\(3,minmax\(94px,1fr\)\)/.test(css),'short-phone mode layout was not defined')});
-await test('portrait phone main menu separates its header choices preview and touch hint',async()=>{const css=await fetch('../css/interface-unified-29a6.css').then(response=>response.text());assert(/pointer:coarse\) and \(orientation:portrait\) and \(max-width:620px\)/.test(css),'portrait phone menu rules are missing');assert(/grid-template-columns:96px minmax\(0,1fr\)/.test(css),'portrait preview was not compacted');assert(/\[data-main-menu-controls\]\{display:block!important\}/.test(css),'portrait touch hint remains hidden')});
+await test('Classic settings rail explains swiping and uses comfortable touch targets',async()=>{const [html,css]=await Promise.all([fetchFresh('../index.html').then(response=>response.text()),fetchFresh('../css/interface-unified-29a6.css').then(response=>response.text())]);assert(/Swipe left or right to see every setting/.test(html),'settings rail has no swipe cue');assert(/min-height:46px!important/.test(css),'coarse-pointer character select targets are undersized');assert(/max-height:520px/.test(css)&&/grid-template-columns:repeat\(3,minmax\(94px,1fr\)\)/.test(css),'short-phone mode layout was not defined')});
+await test('portrait phone main menu separates its header choices preview and touch hint',async()=>{const css=await fetchFresh('../css/interface-unified-29a6.css').then(response=>response.text());assert(/pointer:coarse\) and \(orientation:portrait\) and \(max-width:620px\)/.test(css),'portrait phone menu rules are missing');assert(/grid-template-columns:96px minmax\(0,1fr\)/.test(css),'portrait preview was not compacted');assert(/\[data-main-menu-controls\]\{display:block!important\}/.test(css),'portrait touch hint remains hidden')});
 await test('hotbar exposes an information-close callback for pause recovery',()=>{let closed=0;const hotbar=new AbilityHotbar({root:null,onInfoClose:()=>closed++});hotbar.onInfoClose();assert(closed===1,'hotbar info close callback was not retained')});
 
 
@@ -439,7 +450,7 @@ await test('loading manager reports task-derived progress and fighter identity',
   assert(root.querySelector('#loadingPercent').textContent==='50%','task progress did not reach 50%');assert(root.querySelector('#loadingFighterArt').dataset.fighter==='revvfo','fighter loading identity did not update');root.remove();
 });
 await test('active page uses one release cache ID and presentation assets',async()=>{
-  const html=await(await fetch('../index.html')).text();
+  const html=await(await fetchFresh('../index.html')).text();
   const tags=[...html.matchAll(/\?v=([A-Za-z0-9._-]+)/g)].map(match=>match[1]);
   assert(new Set(tags).size===1,`index uses ${new Set(tags).size} cache IDs`);
   for(const asset of ['css/design-tokens.css','css/interface-unified-29a6.css','startTagline','loadingTaskList','THE SAGE’S MANUAL'])assert(html.includes(asset),`index omitted ${asset}`);
@@ -457,7 +468,7 @@ await test('Shot Power and Trick categories organize Rrvvfo techniques',()=>{
   assert(abilityCategory('shotsOfAgony')==='shot'&&abilityCategory('ultimate')==='power'&&abilityCategory('lensOfTruth')==='trick','ability categories are incorrect');
 });
 await test('Kinetic Arena balance has pursuit scaling fair defense and visible ring-outs',async()=>{
-  const [source,core]=await Promise.all([fetch('../js/arena/arena-mode.js').then(response=>response.text()),fetch('../js/combat-core.js').then(response=>response.text())]);
+  const [source,core]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(response=>response.text()),fetchFresh('../js/combat-core.js').then(response=>response.text())]);
   for(const token of ['startEnergy:45','counterCost:18','counterCooldown:2.4','breakerCost:60','juggleLimit:6','edgePressureHits:3'])assert(core.includes(token),`shared combat balance omitted ${token}`);
   for(const token of ['startPursuit','pursuitFollowupWindow','comboScale','JUGGLE LIMIT • FORCED RECOVERY','triggerRingOutFall','ringOutComplete','kind===\'grab\''])assert(source.includes(token),`Kinetic combat omitted ${token}`);
   assert(source.includes("damage=finisher?58:44")&&source.includes("fighter.momentum=0"),'Momentum Finisher is missing or became an instant KO');
@@ -468,34 +479,34 @@ await test('the Sage Manual explains pursuit categories and Momentum counterplay
 });
 
 await test('Chapter 1 tutorial grab is close-range assisted and confirmed by a connected grab hit',async()=>{
-  const source=await(await fetch('../js/story/rrvvfo-mission-1.js')).text();
+  const source=await(await fetchFresh('../js/story/rrvvfo-mission-1.js')).text();
   assert(source.includes("meta.kind==='grab'&&connected&&this.phase==='basics'"),'tutorial does not confirm a connected grab');
   assert(source.includes('distance<=112')&&source.includes('Math.min(64,distance)'),'tutorial grab range assist is missing');
   assert(source.includes('CLOSE-RANGE GRAB'),'tutorial does not explain that Grab requires close range');
 });
 
 await test('Story menu exposes only Rrvvfo and chains Chapters 1–4 without route-menu swaps',async()=>{
-  const source=await(await fetch('../js/story/lost-year-story.js')).text();
+  const source=await(await fetchFresh('../js/story/lost-year-story.js')).text();
   assert(source.includes("const route=LOST_YEAR_ROUTES[0]")&&source.includes('rrvvfoOnlyRoute'),'Rrvvfo is not the only released Story card');
   assert(source.includes("'rrvvfo-00':'rrvvfo-01'")&&source.includes("'rrvvfo-road':'rrvvfo-02'")&&source.includes("'rrvvfo-02':'rrvvfo-03'")&&source.includes("'rrvvfo-03':'rrvvfo-04'"),'automatic Story chain is incomplete');
   assert(!source.includes('routeVisible(')&&!source.includes('ALT & ROVER'),'unreleased Story routes leaked into the player screen');
 });
 await test('Chapter 1 uses clear attempt counts, saved checkpoints, and the correct Lens charge target',async()=>{
-  const m0=await(await fetch('../js/story/rrvvfo-mission-0.js')).text(),m1=await(await fetch('../js/story/rrvvfo-mission-1.js')).text();
+  const m0=await(await fetchFresh('../js/story/rrvvfo-mission-0.js')).text(),m1=await(await fetchFresh('../js/story/rrvvfo-mission-1.js')).text();
   assert(m0.includes("TEST THE SAGE'S DODGE • 0 / 3")&&m0.includes('DIRECT ATTEMPTS REQUIRED'),'direct-attack requirement is still hidden');
   assert(m1.includes('CHARGE TO 60')&&!m1.includes('CHARGE TO 90'),'Lens charge instruction is contradictory');
   for(const checkpoint of ['movement','parry','abilities','lensCharge','final'])assert(m1.includes(checkpoint),`tutorial checkpoint ${checkpoint} is missing`);
 });
 await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permanent tournament Run refusal',async()=>{
-  const source=await(await fetch('../js/story/rrvvfo-mission-2.js')).text();
+  const source=await(await fetchFresh('../js/story/rrvvfo-mission-2.js')).text();
   for(const token of ['storyStatsForLevel','applyStoryLevelToFighter','enemyLevelFor','USE STORY ASSIST','TRY TO BEAT PLOUKE','Definitely not. I’m not forfeiting.'])assert(source.includes(token),`Chapter 2 omitted ${token}`);
   assert(source.includes("this.root.querySelector('[data-tournament-run]').hidden=false"),'Run does not stay visible in tournament fights');
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a24p3-ryuzankaro-gate-20260730');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a24p4-validation-sync-20260730');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
-  const source=await(await fetch('../js/story/rrvvfo-chapter-3.js')).text();
+  const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
   assert(source.includes("this.engine.invokeRuntime('castAbility',[3])"),'the closing door does not use the real Object Swap ability');
   assert(source.includes("this.mode==='door-qte'&&slot===3"),'the Chapter 3 ability filter blocks Object Swap at the closing door');
@@ -503,7 +514,8 @@ await test('Chapter 3 contains the complete investigation, facility, and Remote 
   assert(source.includes("fight.kind==='optional'?'RETURN TO TOURNAMENT':'RETURN TO FACILITY'"),'the optional hub fight can return the player to the locked facility');
   assert(source.includes('REACH SHADOW’S LOOKOUT')&&source.includes('PROJECT HOLLOW'),'Chapter 3 ending discoveries are incomplete');
   assert(!/CHAPTER 3 DEMO|PLAYABLE DEMO|DEVELOPMENT PREVIEW|NEXT BUILD/.test(source),'Chapter 3 still exposes demo language');
-  assert(!/SOVAR|STRANGE MAN/i.test(source),'the hidden operator is revealed too early');
+  assert(!/\bSOVAR\b/i.test(source),'the hidden operator identity is revealed too early');
+  assert(source.includes('STRANGE MAN')&&source.includes("Strange Man’s Hat"),'the approved Strange Man investigation is missing');
 });
 await test('Chapter 3 stages are valid and the reused tournament hub has a true after-hours treatment',()=>{
   for(const id of ['after-hours-tournament','resonance-facility','remote-highlands']){
@@ -534,29 +546,29 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(CHAPTER4_BEACON_NODES.length===3&&CHAPTER4_CAVERN_DOORS.length===3&&CHAPTER4_LIFT_PARTS.length===3&&CHAPTER4_INGREDIENTS.length===4&&CHAPTER4_MOUNTAIN_SIGNALS.length===3,'Chapter 4 content counts changed');
   const state=normalizeChapter4State({requiredCompleted:['opening','opening'],beaconNodes:['signal-blocker','signal-blocker'],ryuzankaro:{available:true,ingredients:['emberBloom','emberBloom']}});
   assert(state.requiredCompleted.length===1&&state.beaconNodes.length===1&&state.ryuzankaro.ingredients.length===1,'Chapter 4 save migration retained duplicates');
-  assert(!state.villageDefenseComplete&&!state.ryuzankaro.available,'Ryuzankaro became available before the village defense');
+  assert(!state.villageDefenseComplete&&!state.ryuzankaro.available&&!chapter4VillageDefenseComplete(state)&&!ryuzankaroQuestAvailable(state),'Ryuzankaro became available before the village defense');
   const defended=normalizeChapter4State({requiredCompleted:['opening','villageDefended'],villageDefenseComplete:true,ryuzankaro:{available:false}});
-  assert(defended.villageDefenseComplete&&defended.ryuzankaro.available,'Ryuzankaro did not unlock after the village defense');
+  assert(defended.villageDefenseComplete&&defended.ryuzankaro.available&&chapter4VillageDefenseComplete(defended)&&ryuzankaroQuestAvailable(defended),'Ryuzankaro did not unlock after the village defense');
   assert(chapter4NextRequired(state)==='villageReached'&&chapter4CompletionPercent(state)>0&&!chapter4Complete(state),'partial Chapter 4 state was misread');
   const complete=freshChapter4State();for(const step of CHAPTER4_REQUIRED_STEPS)markChapter4Required(complete,step);
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a24p3-ryuzankaro-gate-20260730');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a24p4-validation-sync-20260730');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
-  const source=await(await fetch('../js/story/rrvvfo-chapter-4.js')).text();
+  const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','reachLookout'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
   const defenseUnlock="if(fight.kind==='village-defense'){this.state.villageDefenseComplete=true;this.state.ryuzankaro.available=true";
   assert(source.includes(defenseUnlock),'Ryuzankaro quest unlock is not tied to the village defense');
-  assert(source.includes("if(!this.state.villageDefenseComplete||!this.state.requiredCompleted.includes('villageDefended')||!this.state.ryuzankaro.available)"),'Old Man quest lacks a strict village-defense gate');
-  assert(source.includes("if(!this.state.villageDefenseComplete||!this.state.requiredCompleted.includes('villageDefended'))"),'Mountain departure lacks a strict village-defense gate');
+  assert(source.includes('if(!ryuzankaroQuestAvailable(this.state))'),'Old Man quest lacks a strict village-defense gate');
+  assert(source.includes('if(!chapter4VillageDefenseComplete(this.state))'),'Mountain departure lacks a strict village-defense gate');
   assert(source.includes('PROJECT HOLLOW — COMBAT DATA TRANSMITTED'),'Hollow Watcher does not transmit combat data');
   assert(source.includes('Ryuzankaro')&&source.includes('VIBRATION SENSE UNLOCKED'),'secret-boss reward path is incomplete');
 });
 await test('Chapter 4 stages and favicon assets are valid',async()=>{
   for(const id of ['echo-village','echo-caverns','echo-sky','echo-mountain']){const stage=getArenaStage(id),validation=validateArenaStage(stage);assert(validation.valid,`${id} is invalid: ${validation.errors.join(', ')}`)}
-  for(const path of ['../favicon-16x16.png','../favicon-32x32.png','../favicon.ico','../apple-touch-icon.png']){const response=await fetch(path);assert(response.ok,`missing favicon asset ${path}`)}
-  const index=await(await fetch('../index.html')).text();assert(index.includes('favicon-32x32.png')&&index.includes('favicon.ico')&&index.includes('apple-touch-icon.png'),'index does not declare reliable favicon variants');
+  for(const path of ['../favicon-16x16.png','../favicon-32x32.png','../favicon.ico','../apple-touch-icon.png']){const response=await fetchFresh(path);assert(response.ok,`missing favicon asset ${path}`)}
+  const index=await(await fetchFresh('../index.html')).text();assert(index.includes('favicon-32x32.png')&&index.includes('favicon.ico')&&index.includes('apple-touch-icon.png'),'index does not declare reliable favicon variants');
 });
 
 
@@ -584,7 +596,7 @@ await test('permanent Chapter 2 side-quest stats affect Story calculations',()=>
   assert(storyAttackMultiplier(4,{power:2})>storyAttackMultiplier(4)&&storyDefenseMultiplier(4,{defense:2})<storyDefenseMultiplier(4)&&storySpeedMultiplier(4,{speed:2})>storySpeedMultiplier(4),'side-quest stats do not change battle multipliers');
 });
 await test('Chapter 2 tournament returns to the hub and exposes mandatory and optional activities',async()=>{
-  const source=await(await fetch('../js/story/rrvvfo-mission-2.js')).text();
+  const source=await(await fetchFresh('../js/story/rrvvfo-mission-2.js')).text();
   for(const token of ['startWadeRace','useWadeShortcut','inspectRingSupport','returnToHubIntermission','startHaileyPrelim','startFinalPreparation','playPloukeClueActivity','recordDummyParry','beginFoodQuest','beginFakeChampionQuest','beginLostFanQuest','beginDummyQuest','beginPrizeCartQuest','beginRejectedChallengerQuest'])assert(source.includes(token),`Chapter 2 hub omitted ${token}`);
   for(const fighter of ["id:'hamual'","id:'daniel'","id='hailey'"])assert(source.includes(fighter),`Chapter 2 tournament omitted ${fighter}`);
   assert(source.includes("returnToHubIntermission('quarterfinal'")&&source.includes("returnToHubIntermission('bark-pouki'")&&source.includes("returnToHubIntermission('wade'")&&source.includes("returnToHubIntermission('final'"),'tournament rounds do not reopen the hub');
@@ -595,7 +607,7 @@ await test('Chapter 2 tournament returns to the hub and exposes mandatory and op
 
 
 await test('Chapter 4 reaches the floating lookout with a pebble Object Swap sequence',async()=>{
-  const source=await fetch('../js/story/rrvvfo-chapter-4.js').then(response=>response.text());
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(response=>response.text());
   assert(source.includes("title:'FLOATING LOOKOUT OBJECT SWAP'"),'floating-lookout QTE is missing');
   assert(source.includes("sequence:['CHARGE','RELEASE','LOCK','OBJECT SWAP']"),'pebble Object Swap sequence is incomplete');
   assert(source.includes("It’s floating. I can’t reach it from the mountain."),'floating-lookout setup dialogue is missing');
@@ -603,7 +615,7 @@ await test('Chapter 4 reaches the floating lookout with a pebble Object Swap seq
 await test('Prototype 2.9A.22 preserves the approved Chapter 1 and Chapter 2 dialogue sources',async()=>{
   const [mission0,mission1,road,mission2,questData]=await Promise.all([
     'rrvvfo-mission-0.js','rrvvfo-mission-1.js','rrvvfo-road-hub.js','rrvvfo-mission-2.js','chapter2-hub-quests.js'
-  ].map(file=>fetch(`../js/story/${file}`).then(response=>response.text())));
+  ].map(file=>fetchFresh(`../js/story/${file}`).then(response=>response.text())));
   for(const line of ['Eh, focus your energy into your hands or something. I’m getting bored. I have places to be.','You damn perv.','I’ll name this attack... Shots of Agony.'])assert(mission0.includes(line),`Chapter 1 training omitted: ${line}`);
   assert(mission1.includes('I signed you up for this tournament. I heard there’d be some nice ladies there.'),'Chapter 1 manual handoff dialogue is stale');
   for(const line of ['Lemme guess. Your ‘important training’ is going to the spa and spying on women, perv.','This seems like a knockoff of the World Martial Arts Tournament.'])assert(road.includes(line),`Tournament Road omitted: ${line}`);
@@ -614,21 +626,21 @@ await test('Prototype 2.9A.22 preserves the approved Chapter 1 and Chapter 2 dia
 
 await test('runtime fighter atlases use compressed WebP files',async()=>{
   for(const fighter of ['rrvvfo','revvfo','bark','wade','sage']){
-    const manifest=await(await fetch(`../assets/fighters/${fighter}/${fighter}-animations.json`)).json();
+    const manifest=await(await fetchFresh(`../assets/fighters/${fighter}/${fighter}-animations.json`)).json();
     assert(manifest.image.endsWith('.webp'),`${fighter} manifest still loads a PNG atlas`);
-    const image=await fetch(`../assets/fighters/${fighter}/${manifest.image.replace('./','')}`);assert(image.ok,`${fighter} WebP atlas did not load`);
+    const image=await fetchFresh(`../assets/fighters/${fighter}/${manifest.image.replace('./','')}`);assert(image.ok,`${fighter} WebP atlas did not load`);
   }
 });
 await test('Chapter 1 road skips the repeated mandatory movement marker lesson',async()=>{
-  const source=await(await fetch('../js/story/rrvvfo-road-hub.js')).text();
+  const source=await(await fetchFresh('../js/story/rrvvfo-road-hub.js')).text();
   assert(source.includes("this.step='leave-training'")&&source.includes("warmupMarkers.forEach(marker=>{marker.done=true})"),'Chapter 1 road does not bypass the repeated movement gate');
 });
 await test('Chapter 2 mandatory preparation includes active card and repair challenges',async()=>{
-  const source=await(await fetch('../js/story/rrvvfo-mission-2.js')).text();
+  const source=await(await fetchFresh('../js/story/rrvvfo-mission-2.js')).text();
   for(const token of ['bracketFanCard','TOO FAST TO GRAB','STABILIZE','pendingSupport','THE BRACE SLIPPED'])assert(source.includes(token),`Chapter 2 interactive quest pass omitted ${token}`);
 });
 await test('the uploaded Parallels X icon is wired for browser tabs and installed apps',async()=>{
-  const [html,manifestResponse]=await Promise.all([fetch('../index.html').then(response=>response.text()),fetch('../site.webmanifest')]);
+  const [html,manifestResponse]=await Promise.all([fetchFresh('../index.html').then(response=>response.text()),fetchFresh('../site.webmanifest')]);
   assert(html.includes('assets/site-icon-512.png')&&html.includes('assets/site-icon-180.png')&&html.includes('site.webmanifest'),'site icon links are missing from index.html');
   assert(manifestResponse.ok,'site.webmanifest did not load');
   const manifest=await manifestResponse.json();
@@ -637,9 +649,9 @@ await test('the uploaded Parallels X icon is wired for browser tabs and installe
 
 await test('Prototype 2.9A.22 preserves the distinct Chapter 1 and Chapter 2 visual silhouettes',async()=>{
   const [renderer,art,stages]=await Promise.all([
-    fetch('../js/arena/webgl-renderer.js').then(r=>r.text()),
-    fetch('../js/story/hub-landmark-art.js').then(r=>r.text()),
-    fetch('../js/arena/arena-stages.js').then(r=>r.text())
+    fetchFresh('../js/arena/webgl-renderer.js').then(r=>r.text()),
+    fetchFresh('../js/story/hub-landmark-art.js').then(r=>r.text()),
+    fetchFresh('../js/arena/arena-stages.js').then(r=>r.text())
   ]);
   for(const primitive of ['cylinder(options={})','cone(options={})','gableRoof(options={})'])assert(renderer.includes(primitive),`renderer omitted ${primitive}`);
   for(const roadToken of ['mountain trail','pine(','stoneBoulder(','toriiTrailGate(','distant mountain silhouette'])assert(art.includes(roadToken),`Chapter 1 identity omitted ${roadToken}`);
@@ -648,42 +660,42 @@ await test('Prototype 2.9A.22 preserves the distinct Chapter 1 and Chapter 2 vis
 });
 
 await test('Story chapters use one shared runtime controller without method monkey-patching',async()=>{
-  const source=await(await fetch('../js/story/story-engine.js')).text();
+  const source=await(await fetchFresh('../js/story/story-engine.js')).text();
   for(const token of ['useChapterProfile','installUnifiedRuntime','storyUnifiedRuntime','storyCommandForMode','invokeRuntime'])assert(source.includes(token),`Story Engine omitted ${token}`);
   assert(source.includes("STORY_ENGINE_VERSION='2.9A.24'"),'Story Engine version is stale');
   const chapters=['rrvvfo-mission-0.js','rrvvfo-mission-1.js','rrvvfo-road-hub.js','rrvvfo-mission-2.js','rrvvfo-chapter-3.js','rrvvfo-chapter-4.js'];
-  for(const file of chapters){const chapter=await(await fetch(`../js/story/${file}`)).text();assert(chapter.includes('useChapterProfile'),`${file} did not register a Story profile`);assert(!/battle\.(?:input|cpu|update|hud|draw|drawFighterLayer|drawFallback2D|flipFor|updateCamera|castAbility|applyDamage|updateSpecials|exit)\s*=/.test(chapter),`${file} still replaces an engine method`) }
+  for(const file of chapters){const chapter=await(await fetchFresh(`../js/story/${file}`)).text();assert(chapter.includes('useChapterProfile'),`${file} did not register a Story profile`);assert(!/battle\.(?:input|cpu|update|hud|draw|drawFighterLayer|drawFallback2D|flipFor|updateCamera|castAbility|applyDamage|updateSpecials|exit)\s*=/.test(chapter),`${file} still replaces an engine method`) }
 });
 
 
 await test('Prototype 2.9A.24 preserves the eight-chapter route without inventing Chapters 5–8',async()=>{
-  const [data,story]=await Promise.all([fetch('../js/story/lost-year-data.js').then(r=>r.text()),fetch('../js/story/lost-year-story.js').then(r=>r.text())]);
+  const [data,story]=await Promise.all([fetchFresh('../js/story/lost-year-data.js').then(r=>r.text()),fetchFresh('../js/story/lost-year-story.js').then(r=>r.text())]);
   assert(data.includes('RRVVFO_PLANNED_CHAPTER_COUNT=8'),'eight-chapter foundation is missing');
   assert(story.includes('4 RELEASED / 8 PLANNED')&&story.includes('PLANNED • NOT YET RELEASED'),'future chapter slots are not presented honestly');
   assert(story.includes('No plot details are being invented before the official plan.'),'future chapter cards invent unsupported story information');
 });
 await test('Echo Village has a low-tech resonance identity and invasive Hollow contrast',async()=>{
-  const [chapter,stages]=await Promise.all([fetch('../js/story/rrvvfo-chapter-4.js').then(r=>r.text()),fetch('../js/arena/arena-stages.js').then(r=>r.text())]);
+  const [chapter,stages]=await Promise.all([fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text()),fetchFresh('../js/arena/arena-stages.js').then(r=>r.text())]);
   for(const token of ['hand-cut stone, timber, ropes, bells, water, and resonance craft','Old pulley lift, visibly non-electric','Wind chimes and bells','Project Hollow hardware deliberately clashes'])assert(chapter.includes(token),`Echo Village identity omitted ${token}`);
   assert(stages.includes("id:'echo-village',name:'Echo Village'")&&stages.includes("clear:'#b9aa8d'")&&stages.includes("surface:{x:0,y:1,z:0,sx:3300,sy:5,sz:1880,color:'#8a7c61'}"),'Echo Village stage palette is still generic tech-gray');
 });
 await test('Chapter 4 secret-boss checkpoints migrate and one-time rewards cannot duplicate',async()=>{
   const state=normalizeChapter4State({version:1,ryuzankaro:{started:true,ingredients:['emberBloom']}});
   assert(state.version===2&&state.ryuzankaro.checkpoint==='none'&&!state.ryuzankaro.rewardsGranted,'Chapter 4 v1 state did not migrate into the checkpoint model');
-  const source=await fetch('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
   for(const token of ['resumeRyuzankaroCheckpoint','checkpoint=\'impact\'','checkpoint=\'aerial\'','checkpoint=\'village-final\'','checkpoint=\'seal\'','const firstReward=!this.state.ryuzankaro.rewardsGranted'])assert(source.includes(token),`Ryuzankaro reliability omitted ${token}`);
 });
 await test('Hollow Watcher adaptation is readable, breakable, and never full immunity',async()=>{
-  const source=await fetch('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
   for(const token of ['PATTERN BROKEN • WATCHER RECALIBRATING','PATTERN LEARNED','PARTIALLY COUNTERED','SCANNING REPEATED HABIT','vary timing, spacing, or technique','adjusted*=.58','adjusted*=.82'])assert(source.includes(token),`Hollow Watcher fairness omitted ${token}`);
   assert(!source.includes('adjusted*=.38'),'Hollow Watcher still applies the old severe resistance');
 });
 await test('Chapter 4 QTEs support keyboard, controller, touch abilities, and safe retries',async()=>{
-  const source=await fetch('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
   for(const token of ["if(this.mode==='qte')","command.x<-.55","slot===3?'OBJECT SWAP'","type==='lookout-swap'","RETRYING FROM THE SAFE MOMENT"])assert(source.includes(token),`QTE compatibility omitted ${token}`);
 });
 await test('Echo Region uses separate procedural identities for village, cavern, mountain, and Hollow combat',async()=>{
-  const [audio,chapter]=await Promise.all([fetch('../js/audio-manager.js').then(r=>r.text()),fetch('../js/story/rrvvfo-chapter-4.js').then(r=>r.text())]);
+  const [audio,chapter]=await Promise.all([fetchFresh('../js/audio-manager.js').then(r=>r.text()),fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text())]);
   for(const theme of ['echoVillage','echoCavern','echoMountain','hollow'])assert(audio.includes(`${theme}:{`),`audio manager omitted ${theme}`);
   for(const theme of ["detail:'echoVillage'","detail:'echoCavern'","detail:'echoMountain'","detail:config.kind==='watcher'?'hollow':'battle'"])assert(chapter.includes(theme),`Chapter 4 does not request ${theme}`);
 });
@@ -691,10 +703,10 @@ await test('Echo Region uses separate procedural identities for village, cavern,
 
 await test('Story fights preserve and recover Rrvvfo sprite assets across Chapters 2–4',async()=>{
   const [arenaSource,chapter2Source,chapter3Source,chapter4Source]=await Promise.all([
-    fetch('../js/arena/arena-mode.js').then(response=>response.text()),
-    fetch('../js/story/rrvvfo-mission-2.js').then(response=>response.text()),
-    fetch('../js/story/rrvvfo-chapter-3.js').then(response=>response.text()),
-    fetch('../js/story/rrvvfo-chapter-4.js').then(response=>response.text())
+    fetchFresh('../js/arena/arena-mode.js').then(response=>response.text()),
+    fetchFresh('../js/story/rrvvfo-mission-2.js').then(response=>response.text()),
+    fetchFresh('../js/story/rrvvfo-chapter-3.js').then(response=>response.text()),
+    fetchFresh('../js/story/rrvvfo-chapter-4.js').then(response=>response.text())
   ]);
   assert(arenaSource.includes('ensureFighterAsset(fighter,id=fighter?.id'), 'shared asset recovery helper is missing');
   assert(arenaSource.includes('fighter.assetLoadToken!==token'), 'stale sprite-load protection is missing');
@@ -707,10 +719,10 @@ await test('Story fights preserve and recover Rrvvfo sprite assets across Chapte
 
 await test('Story combat hides exploration HUD, maps, and menus without hiding combat-specific panels',async()=>{
   const [engine,css,chapter3,chapter4]=await Promise.all([
-    fetch('../js/story/story-engine.js').then(response=>response.text()),
-    fetch('../css/interface-unified-29a6.css').then(response=>response.text()),
-    fetch('../js/story/rrvvfo-chapter-3.js').then(response=>response.text()),
-    fetch('../js/story/rrvvfo-chapter-4.js').then(response=>response.text())
+    fetchFresh('../js/story/story-engine.js').then(response=>response.text()),
+    fetchFresh('../css/interface-unified-29a6.css').then(response=>response.text()),
+    fetchFresh('../js/story/rrvvfo-chapter-3.js').then(response=>response.text()),
+    fetchFresh('../js/story/rrvvfo-chapter-4.js').then(response=>response.text())
   ]);
   for(const token of ['storyFightUiSafe','chapter2FightMode','storyChapter3Combat','storyChapter4Combat','.storyMapOverlay'])assert(engine.includes(token),`shared combat UI controller omitted ${token}`);
   for(const selector of ['#rrvvfoMission2UI .chapter2Hud','#rrvvfoChapter3PreviewUI .c3Hud','#rrvvfoChapter4UI .c4Hud','.storyMiniMap','.storyObjectiveCompass'])assert(css.includes(selector),`combat-safe CSS omitted ${selector}`);
@@ -720,47 +732,47 @@ await test('Story combat hides exploration HUD, maps, and menus without hiding c
 
 
 await test('All-chapter polish is initialized from the main runtime',async()=>{
-  const [main,polish]=await Promise.all([fetch('../js/main.js').then(r=>r.text()),fetch('../js/story/story-polish.js').then(r=>r.text())]);
+  const [main,polish]=await Promise.all([fetchFresh('../js/main.js').then(r=>r.text()),fetchFresh('../js/story/story-polish.js').then(r=>r.text())]);
   assert(main.includes('initializeStoryPolish')&&main.includes('pxstoryuicue'),'main runtime does not initialize Story polish and audio cues');
   for(const token of ['StoryPolishController','storySceneTransition','storyObjectiveToast','storyChapterResults','storyPlaytestPanel'])assert(polish.includes(token),`Story polish omitted ${token}`);
 });
 await test('Secret playtest menu uses the exact keyboard and controller code',async()=>{
-  const source=await fetch('../js/story/story-polish.js').then(r=>r.text());
+  const source=await fetchFresh('../js/story/story-polish.js').then(r=>r.text());
   assert(source.includes("['up','up','down','down','left','right','left','right','b','a']"),'secret code sequence changed');
   for(const token of ["ArrowUp:'up'","ArrowDown:'down'","KeyB:'b'","KeyA:'a'","[12,'up']","[13,'down']","[1,'b']","[0,'a']"])assert(source.includes(token),`secret-code input mapping omitted ${token}`);
 });
 await test('Playtest menu exposes recovery chapter jumps combat tests and bug reports',async()=>{
-  const source=await fetch('../js/story/story-polish.js').then(r=>r.text());
+  const source=await fetchFresh('../js/story/story-polish.js').then(r=>r.text());
   for(const token of ['RESTART FROM SAVED CHECKPOINT','OPEN CHAPTER SELECT','RESET CURRENT CHAPTER','QUICK COMBAT TEST','COPY BUG REPORT','DOWNLOAD REPORT','pxplayteststartchapter'])assert(source.includes(token),`playtest menu omitted ${token}`);
 });
 await test('Story fight transitions are centralized and preserve a pre-fight save snapshot',async()=>{
-  const [engine,polish]=await Promise.all([fetch('../js/story/story-engine.js').then(r=>r.text()),fetch('../js/story/story-polish.js').then(r=>r.text())]);
+  const [engine,polish]=await Promise.all([fetchFresh('../js/story/story-engine.js').then(r=>r.text()),fetchFresh('../js/story/story-polish.js').then(r=>r.text())]);
   assert(engine.includes('pxstorymodechange')&&engine.includes('opponent:this.battle?.fighters?.[1]?.name'),'Story Engine does not publish shared fight transitions');
   assert(polish.includes('pxStoryPreFightBackupV1')&&polish.includes('Checkpoint secured • exploration UI hidden'),'pre-fight recovery snapshot is missing');
 });
 await test('Dialogue presentation uses atlas portraits expressions and camera focus',async()=>{
-  const [dialogue,css]=await Promise.all([fetch('../js/sonic-battle-dialogue.js').then(r=>r.text()),fetch('../css/interface-unified-29a6.css').then(r=>r.text())]);
+  const [dialogue,css]=await Promise.all([fetchFresh('../js/sonic-battle-dialogue.js').then(r=>r.text()),fetchFresh('../css/interface-unified-29a6.css').then(r=>r.text())]);
   for(const token of ['ATLAS_FIGHTERS','inferEmotion','renderAtlasPortrait','frameForEmotion'])assert(dialogue.includes(token),`dialogue portrait system omitted ${token}`);
   for(const token of ['storyDialogueOpen [data-world-layer]','data-dialogue-speaker="rrvvfo"','emotion-angry','sbDialogueChoice:before'])assert(css.includes(token),`dialogue presentation CSS omitted ${token}`);
 });
 await test('Unified objectives autosave and route home shows the recovery checkpoint',async()=>{
-  const [polish,story]=await Promise.all([fetch('../js/story/story-polish.js').then(r=>r.text()),fetch('../js/story/lost-year-story.js').then(r=>r.text())]);
+  const [polish,story]=await Promise.all([fetchFresh('../js/story/story-polish.js').then(r=>r.text()),fetchFresh('../js/story/lost-year-story.js').then(r=>r.text())]);
   assert(polish.includes('lastStoryObjective')&&polish.includes('OBJECTIVE_PAIRS'),'objective updates do not use the shared autosave presenter');
   assert(story.includes('AUTO-SAVE RECOVERY')&&story.includes('storyCheckpointLabel'),'Story route home does not show the current checkpoint');
 });
 await test('Chapter completion creates a ranked Story results screen',async()=>{
-  const [data,polish]=await Promise.all([fetch('../js/story/lost-year-data.js').then(r=>r.text()),fetch('../js/story/story-polish.js').then(r=>r.text())]);
+  const [data,polish]=await Promise.all([fetchFresh('../js/story/lost-year-data.js').then(r=>r.text()),fetchFresh('../js/story/story-polish.js').then(r=>r.text())]);
   assert(data.includes('pxstorychaptercomplete')&&data.includes('newlyCompleted'),'save system does not publish chapter completion');
   for(const token of ['CHAPTER RESULTS','storyResultRank','chapterRank','Completion time','Total route'])assert(polish.includes(token),`chapter results omitted ${token}`);
 });
 await test('Combat feedback adds perfect-parry guard-break heavy-impact and low-health cues',async()=>{
-  const [arena,polish,css]=await Promise.all([fetch('../js/arena/arena-mode.js').then(r=>r.text()),fetch('../js/story/story-polish.js').then(r=>r.text()),fetch('../css/interface-unified-29a6.css').then(r=>r.text())]);
+  const [arena,polish,css]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(r=>r.text()),fetchFresh('../js/story/story-polish.js').then(r=>r.text()),fetchFresh('../css/interface-unified-29a6.css').then(r=>r.text())]);
   for(const type of ['perfectParry','guardBreak','heavyImpact'])assert(arena.includes(`type:'${type}'`),`arena omitted ${type} feedback event`);
   assert(arena.includes("classList.toggle('arenaLowHealth'")&&css.includes('arenaLowHealth:before'),'low-health warning is missing');
   assert(polish.includes('onCombatFeedback')&&css.includes('storyCombatCallout'),'shared combat callouts are missing');
 });
 await test('Procedural chapter audio crossfades and adds distinct ambience accents',async()=>{
-  const audio=await fetch('../js/audio-manager.js').then(r=>r.text());
+  const audio=await fetchFresh('../js/audio-manager.js').then(r=>r.text());
   assert(audio.includes('scheduleThemeAccent')&&audio.includes('echoVillage')&&audio.includes('echoCavern')&&audio.includes('echoMountain'),'chapter ambience accents are incomplete');
   assert(audio.includes('fadeMusicBus(oldBus,.34)')&&audio.includes('stopMusic({fade=.34}={})'),'music crossfade timing was not polished');
 });
@@ -778,7 +790,7 @@ await test('Chapter 3 Strange Man sequence preserves order, flags, and facility 
 });
 
 await test('Chapter 3 Strange Man dialogue, hat, Lens contradictions, and east-support clue are packaged',async()=>{
-  const source=await (await fetch('../js/story/rrvvfo-chapter-3.js')).text();
+  const source=await (await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of [
     'You’re wasting your time.',
     'The people you’re talking to aren’t the real people.',

@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X Prototype 2.9A.24.3 Complete Cumulative Build",
-  "version": "2.9A.24.3",
+  "name": "Parallels X Prototype 2.9A.24.4 Complete Cumulative Build",
+  "version": "2.9A.24.4",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -33,9 +33,10 @@
     "2.9A.24 All-Chapter Story Polish: shared fight transitions, atlas dialogue portraits, unified objectives, checkpoint display, chapter results, combat feedback, chapter ambience, and secret playtest menu",
     "2.9A.24.1 Strange Man Investigation: restored demo witness, altered medical-worker revisit, persistent hat key item, contradictory Lens predictions, and east-support facility clue",
     "2.9A.24.2 Hub Camera Comfort: optional exploration free camera, click-and-drag mouse/trackpad look, UI-safe pointer capture, persistent camera angles, sensitivity control, and unchanged fight framing",
-    "2.9A.24.3 Ryuzankaro Quest Gate Fix: strict village-defense gating, state-normalization repair, and behavior-based smoke coverage"
+    "2.9A.24.4 Ryuzankaro Quest Gate Fix: strict village-defense gating, state-normalization repair, and behavior-based smoke coverage",
+    "2.9A.24.4 Validation Sync & Story Gate Verification: fresh smoke-test asset requests, corrected Strange Man identity validation, explicit Chapter 4 gate predicates, and current tiled-plaza checks"
   ],
-  "cache_tag": "29a24p3-ryuzankaro-gate-20260730",
+  "cache_tag": "29a24p4-validation-sync-20260730",
   "save_schema": 266,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo\u2019s atlas across Chapter 2\u20134 fight transitions and rejects stale asynchronous sprite loads",
@@ -43,6 +44,7 @@
     "2.9A.24 All-Chapter Story Polish: shared fight transitions, atlas dialogue portraits, unified objectives, checkpoint display, chapter results, combat feedback, chapter ambience, and secret playtest menu",
     "2.9A.24.1 Strange Man Investigation: Chapter 3 mystery sequence and save-safe key-item persistence",
     "2.9A.24.2 Hub Camera Comfort: replaces hover-look with click-and-drag, prevents menus from rotating the camera, and adds Gameplay settings for enable/disable and sensitivity",
-    "2.9A.24.3 Ryuzankaro Quest Gate Fix: prevents the optional quest and mountain choice from becoming available before the mandatory village defense"
+    "2.9A.24.4 Ryuzankaro Quest Gate Fix: prevents the optional quest and mountain choice from becoming available before the mandatory village defense",
+    "2.9A.24.4 Validation Sync & Story Gate Verification: eliminates mixed-cache false failures and verifies current Chapter 3, Chapter 4, and tournament-hub behavior"
   ]
 }

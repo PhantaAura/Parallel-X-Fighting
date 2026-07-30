@@ -6,11 +6,11 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.24.3 — Ryuzankaro Quest Gate Fix**
+**Prototype 2.9A.24.4 — Validation Sync & Story Gate Verification**
 
 This is a complete cumulative build. No older package is required.
 
-## 2.9A.24.3 highlights
+## 2.9A.24.4 highlights
 
 - The Old Man’s Potions and Ryuzankaro secret boss now unlock only after the mandatory Echo Village defense is completed.
 - The Old Man interaction has a strict runtime guard and cannot be started early through stale UI, debug calls, or malformed saves.
@@ -94,7 +94,7 @@ Save-export schema: **266**. Existing Story saves continue through the current s
 
 ## Testing
 
-Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.24.3.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.24.3.md) for the real-device pass. See [`PATCH-NOTES-2.9A.24.3.md`](PATCH-NOTES-2.9A.24.3.md) and [`VALIDATION-2.9A.24.3.md`](VALIDATION-2.9A.24.3.md) for release details.
+Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.24.4.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.24.4.md) for the real-device pass. See [`PATCH-NOTES-2.9A.24.4.md`](PATCH-NOTES-2.9A.24.4.md) and [`VALIDATION-2.9A.24.4.md`](VALIDATION-2.9A.24.4.md) for release details.
 
 
 ## 2.9A.24.1 Chapter 3 addition

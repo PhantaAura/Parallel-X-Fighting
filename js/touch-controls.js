@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a24p4-validation-sync-20260730';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',

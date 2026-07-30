@@ -1,17 +1,17 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {StoryMap} from './story-map.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {storyConfirm} from './story-ux.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {openCombatManual} from './combat-manual.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24p4-validation-sync-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p4-validation-sync-20260730';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a24p4-validation-sync-20260730';
+import {StoryMap} from './story-map.js?v=29a24p4-validation-sync-20260730';
+import {storyConfirm} from './story-ux.js?v=29a24p4-validation-sync-20260730';
+import {openCombatManual} from './combat-manual.js?v=29a24p4-validation-sync-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a24p4-validation-sync-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a24p4-validation-sync-20260730';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
-  chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,freshChapter4State,
-  markChapter4Required,normalizeChapter4State,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a24p3-ryuzankaro-gate-20260730';
+  chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
+  markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
+} from './chapter4-content.js?v=29a24p4-validation-sync-20260730';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -322,10 +322,10 @@ class RrvvfoChapter4{
       if(next==='beaconRestored')for(const point of CHAPTER4_BEACON_NODES)if(!this.state.beaconNodes.includes(point.id))items.push({kind:`beacon:${point.id}`,...point});
       if(next==='cavernsEntered'||(this.state.ryuzankaro.started&&!this.state.ryuzankaro.ingredients.includes('rootstone')))items.push({kind:'cavern-entrance',...VILLAGE_POINTS.cavern,label:this.state.ryuzankaro.started?'RETURN TO ECHO CAVERNS':'ENTER ECHO CAVERNS'});
       if(next==='villageDefended'&&this.state.liftParts.length===CHAPTER4_LIFT_PARTS.length)items.push({kind:'defense',x:360,z:50,label:'DEFEND ECHO VILLAGE'});
-      if(this.state.ryuzankaro.available&&!ryuzankaroQuestResolved(this.state)&&this.state.ryuzankaro.ingredients.length<CHAPTER4_INGREDIENTS.length)items.push({kind:'old-man',...VILLAGE_POINTS.oldMan,label:this.state.ryuzankaro.started?'CONTINUE OLD MAN’S POTIONS':'THE OLD MAN’S POTIONS'});
+      if(ryuzankaroQuestAvailable(this.state)&&!ryuzankaroQuestResolved(this.state)&&this.state.ryuzankaro.ingredients.length<CHAPTER4_INGREDIENTS.length)items.push({kind:'old-man',...VILLAGE_POINTS.oldMan,label:this.state.ryuzankaro.started?'CONTINUE OLD MAN’S POTIONS':'THE OLD MAN’S POTIONS'});
       if(this.state.ryuzankaro.started&&!this.state.ryuzankaro.bossDefeated)for(const ingredient of CHAPTER4_INGREDIENTS)if(ingredient.area==='village'&&!this.state.ryuzankaro.ingredients.includes(ingredient.id))items.push({kind:`ingredient:${ingredient.id}`,...ingredient});
       if(this.state.ryuzankaro.started&&this.state.ryuzankaro.ingredients.length===CHAPTER4_INGREDIENTS.length&&!this.state.ryuzankaro.bossDefeated)items.push({kind:'mix-potion',...VILLAGE_POINTS.oldMan,label:'PREPARE THE POTION'});
-      if(next==='mountainDecision'&&this.state.villageDefenseComplete)items.push({kind:'mountain-gate',...VILLAGE_POINTS.mountain,label:'LEAVE FOR THE MOUNTAIN'});
+      if(next==='mountainDecision'&&chapter4VillageDefenseComplete(this.state))items.push({kind:'mountain-gate',...VILLAGE_POINTS.mountain,label:'LEAVE FOR THE MOUNTAIN'});
     }
     if(this.area==='cavern'){
       if(next==='liftPartsRecovered'||this.state.ryuzankaro.started){
@@ -375,7 +375,7 @@ class RrvvfoChapter4{
   collectLiftPart(id){const part=CHAPTER4_LIFT_PARTS.find(item=>item.id===id);if(!part)return;this.state.liftParts=unique([...this.state.liftParts,id]);this.battle.burst(part.x,part.z,'#ffd16e',20,50);this.toast('LIFT PART RECOVERED',part.label,`${this.state.liftParts.length} / ${CHAPTER4_LIFT_PARTS.length}`);this.saveState();this.updateObjective()}
 
   startOldManQuest(){
-    if(!this.state.villageDefenseComplete||!this.state.requiredCompleted.includes('villageDefended')||!this.state.ryuzankaro.available){
+    if(!ryuzankaroQuestAvailable(this.state)){
       this.toast('QUEST LOCKED','DEFEND ECHO VILLAGE FIRST','The Old Man’s Potions unlocks only after the mandatory village-defense battle.');
       this.updateObjective();
       return;
@@ -439,7 +439,7 @@ class RrvvfoChapter4{
   ],()=>{this.mode='explore';this.battle.phase='play';this.saveState();this.updateObjective();this.toast('SECRET BOSS COMPLETE','VIBRATION SENSE UNLOCKED','Lens Mastery Lv. 1 • Object Swap targeting improved • Team badge earned')})}
 
   chooseMountainDeparture(){
-    if(!this.state.villageDefenseComplete||!this.state.requiredCompleted.includes('villageDefended')){
+    if(!chapter4VillageDefenseComplete(this.state)){
       this.toast('ROUTE LOCKED','DEFEND ECHO VILLAGE FIRST','The mountain gate and Old Man’s Potions remain locked until the village-defense battle is complete.');
       this.updateObjective();
       return;
@@ -545,7 +545,7 @@ class RrvvfoChapter4{
     if(!this.state.villageDefenseComplete){for(const [x,z,i] of [[-620,-430,0],[720,-470,1],[920,410,2]]){r.box({x,y:48,z,sx:88,sy:96,sz:70,color:'#252d39'});r.segment({x,y:95,z},{x:x+110,y:18,z:z+70},{width:9,height:9,color:'#1c222c'});r.billboard({x,y:112,z,size:28,color:'#63dce3',alpha:.38+Math.sin(time*5+i)*.08})}}
     // Companion and old-man silhouettes.
     if(this.state.requiredCompleted.includes('barkWadeArrive')){const exhausted=this.state.ryuzankaro.bossDefeated;this.drawCompanion(r,exhausted?90:-20,exhausted?170:50,'#ad8655','B',exhausted);this.drawCompanion(r,exhausted?220:80,exhausted?180:-20,'#4b9fe2','W',exhausted)}
-    if(this.state.ryuzankaro.available&&!ryuzankaroQuestResolved(this.state))this.drawOldMan(r,260,610);
+    if(ryuzankaroQuestAvailable(this.state)&&!ryuzankaroQuestResolved(this.state))this.drawOldMan(r,260,610);
     for(let i=0;i<16;i++){const x=((time*(18+i%4*4)+i*210)%3200)-1600,z=-820+(i%6)*290;r.billboard({x,y:72,z,size:5,color:'#ffe0a8',alpha:.10})}
   }
   drawCompanion(r,x,z,color,label,seated=false){r.cylinder({x,y:seated?34:58,z,rx:17,sy:seated?58:92,color});r.cylinder({x,y:seated?77:120,z,rx:15,sy:26,color:'#8a6752'});r.billboard({x,y:seated?112:158,z,size:22,color:'#fff',alpha:.18})}

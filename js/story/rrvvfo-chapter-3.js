@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {StoryMap} from './story-map.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {storyConfirm} from './story-ux.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {openCombatManual} from './combat-manual.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a24p3-ryuzankaro-gate-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a24p3-ryuzankaro-gate-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a24p4-validation-sync-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a24p4-validation-sync-20260730';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a24p4-validation-sync-20260730';
+import {StoryMap} from './story-map.js?v=29a24p4-validation-sync-20260730';
+import {storyConfirm} from './story-ux.js?v=29a24p4-validation-sync-20260730';
+import {openCombatManual} from './combat-manual.js?v=29a24p4-validation-sync-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a24p4-validation-sync-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a24p4-validation-sync-20260730';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,7 +22,7 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a24p3-ryuzankaro-gate-20260730';
+} from './chapter3-content.js?v=29a24p4-validation-sync-20260730';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;

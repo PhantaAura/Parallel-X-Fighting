@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X Prototype 2.9A.28.1 Complete Cumulative Build",
-  "version": "2.9A.28.1",
+  "name": "Parallels X Prototype 2.9A.29 Complete Cumulative Build",
+  "version": "2.9A.29",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -43,9 +43,10 @@
     "2.9A.27.1 Chapter 4 Replay Recovery: clean temporary replay state, legacy completion recognition, checkpoint preservation, and completion-HUD cleanup",
     "2.9A.27.2 Roadside Fight & Map Recovery: visible loss recovery, combat-safe Tournament Road HUD, complete route-map objectives, marker legend, and smoke-test synchronization",
     "2.9A.28 Mode & Route Carousel Overhaul: one-mode-at-a-time main carousel, one-character-at-a-time Story Route Select, Rrvvfo route description, and preserved chapter flow",
-    "2.9A.28.1 Spacious Mobile Story UI: compact hub headers, expandable objective details, map-on-demand, full-width Story sheets, and readable mobile journals"
+    "2.9A.28.1 Spacious Mobile Story UI: compact hub headers, expandable objective details, map-on-demand, full-width Story sheets, and readable mobile journals",
+    "2.9A.29 Pursuit & Combat Identity: buffered chase, linked pursuit finishers, pursuit tech escapes, one-use wall splats and ground bounces, fighter movement identities, and new Training trials"
   ],
-  "cache_tag": "29a28p1-mobile-hub-space-20260730",
+  "cache_tag": "29a29-pursuit-combat-20260731",
   "save_schema": 268,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo’s atlas across Chapter 2–4 fight transitions and rejects stale asynchronous sprite loads",
@@ -63,9 +64,10 @@
     "2.9A.27.1 Chapter 4 Replay Recovery: fixes Replay opening immediately on Shadow’s Lookout and preserves the original Chapter 4 save",
     "2.9A.27.2 Roadside Fight & Map Recovery: fixes the optional roadside fight freeze, combat HUD overlap, unclear road map points, and stale full-suite assertions",
     "2.9A.28 Mode & Route Carousel Overhaul: replaces the dashboard-style mode grid with a console-style carousel and adds matching Story route selection",
-    "2.9A.28.1 Spacious Mobile Story UI: gives Chapters 1–4 a phone-first in-game HUD and menu layout without changing desktop or combat systems"
+    "2.9A.28.1 Spacious Mobile Story UI: gives Chapters 1–4 a phone-first in-game HUD and menu layout without changing desktop or combat systems",
+    "2.9A.29 Pursuit & Combat Identity: makes launcher routes reliable and readable while adding bounded arena reactions and defensive counterplay"
   ],
-  "currentBuild": "Prototype 2.9A.28.1 — Spacious Mobile Story UI",
-  "cacheId": "29a28p1-mobile-hub-space-20260730",
+  "currentBuild": "Prototype 2.9A.29 — Pursuit & Combat Identity",
+  "cacheId": "29a29-pursuit-combat-20260731",
   "saveSchema": 268
 }

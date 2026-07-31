@@ -3,6 +3,10 @@ export const TRAINING_TRIALS=Object.freeze({
   parry:Object.freeze({id:'parry',label:'Perfect-Parry Trial',goal:'Perfect-parry three attacks.',target:3}),
   charge:Object.freeze({id:'charge',label:'Energy Discipline',goal:'Reach 100 energy while standing still.',target:100}),
   combo:Object.freeze({id:'combo',label:'Launch → Pursuit Trial',goal:'Land a launcher, pursue, then connect a follow-up.',target:3}),
+  finisher:Object.freeze({id:'finisher',label:'Pursuit Finisher Trial',goal:'Launcher → pursuit → Light → Heavy finisher.',target:4}),
+  wall:Object.freeze({id:'wall',label:'Wall Splat Trial',goal:'Cause one wall splat with a strong hit.',target:1}),
+  bounce:Object.freeze({id:'bounce',label:'Ground Bounce Trial',goal:'Trigger one ground bounce with an aerial finisher.',target:1}),
+  escape:Object.freeze({id:'escape',label:'Pursuit Escape Trial',goal:'Dash during an incoming pursuit to tech away.',target:1}),
   guard:Object.freeze({id:'guard',label:'Guard-Break Punish',goal:'Break guard, then punish with a grab.',target:2}),
   variation:Object.freeze({id:'variation',label:'Unpredictable Route',goal:'Connect five different attack or ability types.',target:5})
 });
@@ -40,6 +44,16 @@ export function recordTrainingTrialEvent(state,event,detail={}){
     if(event==='pursuitFollowupHit'&&state.stage===2)return finish(state,'Trial complete • launcher pursuit route');
     if(event==='whiff'&&state.stage>0){state.stage=0;state.progress=0;state.message='Route dropped • start again with a launcher.';return{changed:true,completed:false}}
   }
+  if(state.trial==='finisher'){
+    if(event==='launcherHit'&&state.stage===0){state.stage=1;state.progress=1;state.message='Launcher connected • Dash to pursue.';return{changed:true,completed:false}}
+    if(event==='pursuitStart'&&state.stage===1){state.stage=2;state.progress=2;state.message='Pursuit started • connect Light first.';return{changed:true,completed:false}}
+    if(event==='pursuitFollowupHit'&&detail.kind==='pursuitLight'&&state.stage===2){state.stage=3;state.progress=3;state.message='Light connected • press Heavy during the link window.';return{changed:true,completed:false}}
+    if(event==='pursuitFinisherHit'&&state.stage===3)return finish(state,'Trial complete • linked pursuit finisher');
+    if(event==='whiff'&&state.stage>0){state.stage=0;state.progress=0;state.message='Route dropped • restart with Launcher.';return{changed:true,completed:false}}
+  }
+  if(state.trial==='wall'&&event==='wallSplat')return finish(state,'Trial complete • wall splat');
+  if(state.trial==='bounce'&&event==='groundBounce')return finish(state,'Trial complete • ground bounce');
+  if(state.trial==='escape'&&event==='pursuitEscape')return finish(state,'Trial complete • pursuit escaped');
   if(state.trial==='guard'){
     if(event==='guardBreak'){state.stage=1;state.progress=1;state.message='Guard broken • land a grab before they recover.';return{changed:true,completed:false}}
     if(event==='grabHit'&&state.stage===1)return finish(state,'Trial complete • guard break into grab');

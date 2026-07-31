@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a28p1-mobile-hub-space-20260730';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a29-pursuit-combat-20260731';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

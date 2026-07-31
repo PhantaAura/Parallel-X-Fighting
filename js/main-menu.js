@@ -1,8 +1,8 @@
-import {BUILD_VERSION} from './build-info.js?v=29a28p1-mobile-hub-space-20260730';
-import {sharedInput} from './input-runtime.js?v=29a28p1-mobile-hub-space-20260730';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a28p1-mobile-hub-space-20260730';
+import {BUILD_VERSION} from './build-info.js?v=29a29-pursuit-combat-20260731';
+import {sharedInput} from './input-runtime.js?v=29a29-pursuit-combat-20260731';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a29-pursuit-combat-20260731';
 
-const MENU_MODULE_CACHE='29a28p1-mobile-hub-space-20260730';
+const MENU_MODULE_CACHE='29a29-pursuit-combat-20260731';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([

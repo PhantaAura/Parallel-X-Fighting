@@ -6,9 +6,19 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.28.1 — Spacious Mobile Story UI**
+**Prototype 2.9A.29 — Pursuit & Combat Identity**
 
 This is a complete cumulative build. No older package is required.
+
+
+## 2.9A.29 combat highlights
+
+- Launchers and heavy attacks open clear, bounded pursuit windows; Dash begins the chase and Light or Heavy can be buffered during travel.
+- A pursuit Light can link into one Heavy finisher, while combo scaling and juggle protection continue preventing loops.
+- Defenders can spend 18 Energy to Dash-tech an incoming pursuit; CPU opponents learn this defense based on difficulty.
+- Strong hits can create one wall splat per combo, and aerial Heavy finishers can create one ground bounce per combo.
+- Rrvvfo, Revvfo, Wade, Bark, Phanta, and Creed now have distinct movement traits without damage bonuses.
+- Pursuit camera framing, prompts, hit feedback, sound cues, and Training trials make the new routes readable.
 
 
 ## 2.9A.28.1 mobile comfort hotfix

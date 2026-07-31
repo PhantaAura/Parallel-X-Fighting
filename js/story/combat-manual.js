@@ -46,10 +46,11 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     summary:'Movement is defense and offense. Heavy or launcher hits can open one pursuit chase before juggle protection forces recovery.',
     entries:[
       ['Pursuit','Land Heavy or Launcher, then press Dash during PURSUIT WINDOW'],
-      ['Follow-up','Press Light for control or Heavy for a committed slam'],
-      ['One chase','Only one pursuit and one wall bounce are allowed per combo'],
-      ['Juggle limit','Six airborne hits force recovery so stunlocks cannot continue'],
-      ['Depth assist','Attacks gently correct depth at close range, but movement still matters']
+      ['Buffered chase','Press Light or Heavy during the chase so the follow-up comes out on arrival'],
+      ['Linked finisher','Pursuit Light can link into one Heavy finisher during the short follow-up window'],
+      ['Pursuit tech','The defender can spend 18 energy and Dash during the incoming chase to escape'],
+      ['Arena reactions','Strong hits can cause one wall splat and aerial finishers can cause one ground bounce per combo'],
+      ['Juggle limit','Six airborne hits force recovery so stunlocks cannot continue']
     ],
     drill:'Launch the dummy, press Dash to pursue, then finish with a pursuit Heavy.'
   },
@@ -117,9 +118,12 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     entries:[
       ['Perfect Parry','Practice the opening guard window'],
       ['Pursuit Route','Launch, press Dash to chase, then choose a Light or Heavy follow-up'],
+      ['Pursuit Finisher','Launcher → Dash → Light → Heavy'],
+      ['Wall Splat','Drive the dummy into a stage wall with a strong hit'],
+      ['Ground Bounce','Use an aerial Heavy finisher and continue after the bounce'],
+      ['Pursuit Escape','Dash during an incoming chase to tech away'],
       ['Energy Discipline','Fight with Infinite Energy disabled'],
-      ['Guard Pressure','Practice grabs and guard damage against a blocking dummy'],
-      ['Lens Read','Activate Lens and react to the prediction instead of admiring the effect']
+      ['Guard Pressure','Practice grabs and guard damage against a blocking dummy']
     ],
     drill:'Choose one Suggested Drill in Training and complete its listed objective.'
   },
@@ -246,6 +250,9 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
       ['Ring-out','Leaving the tournament boundary during an enabled match'],
       ['Story XP','Progress used for small Story-only training improvements'],
       ['Hit-stop','A tiny pause on impact that makes attacks readable and heavy'],
+      ['Wall splat','A strong hit pins the target near a stage boundary once per combo'],
+      ['Ground bounce','An aerial finisher rebounds the target from the floor once per combo'],
+      ['Pursuit tech','A timed defensive Dash that spends energy to escape an incoming chase'],
       ['Respawn protection','Brief safety given to the fighter who just returned after a KO']
     ]
   }

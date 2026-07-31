@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a27p2-roadside-map-smoke-20260730';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a28-mode-route-carousel-20260730';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

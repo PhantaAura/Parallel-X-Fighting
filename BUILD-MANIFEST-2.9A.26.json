@@ -4,7 +4,7 @@
   "build_label": "Prototype 2.9A.26 \u2014 Combat Feel, Training & Evidence Pass",
   "type": "full repository build",
   "requires_previous_patch": false,
-  "cache_id": "29a27p2-roadside-map-smoke-20260730",
+  "cache_id": "29a28-mode-route-carousel-20260730",
   "save_schema": 267,
   "foundation": "Prototype 2.9A.25.1 Chapter Select Layout & Replay",
   "focus": [

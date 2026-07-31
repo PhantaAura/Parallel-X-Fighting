@@ -9,16 +9,16 @@ import {
   rrvvfoRouteStarted,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a27p2-roadside-map-smoke-20260730';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a27p2-roadside-map-smoke-20260730';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a27p2-roadside-map-smoke-20260730';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a27p2-roadside-map-smoke-20260730';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a27p2-roadside-map-smoke-20260730';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a27p2-roadside-map-smoke-20260730';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a27p2-roadside-map-smoke-20260730';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a27p2-roadside-map-smoke-20260730';
-import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a27p2-roadside-map-smoke-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a27p2-roadside-map-smoke-20260730';
+} from './lost-year-data.js?v=29a28-mode-route-carousel-20260730';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a28-mode-route-carousel-20260730';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a28-mode-route-carousel-20260730';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a28-mode-route-carousel-20260730';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a28-mode-route-carousel-20260730';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a28-mode-route-carousel-20260730';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a28-mode-route-carousel-20260730';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a28-mode-route-carousel-20260730';
+import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a28-mode-route-carousel-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a28-mode-route-carousel-20260730';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -31,10 +31,10 @@ function buildScreen(){
     <div class="lyShell">
       <header class="lyTop">
         <button type="button" data-ly-back>← MODE SELECT</button>
-        <div class="storyModeTitle"><small>PARALLELS X • STORY</small><h1>THE LOST <span>YEAR</span></h1></div>
+        <div class="storyModeTitle"><small>PARALLELS X • STORY</small><h1>ROUTE <span>SELECT</span></h1></div>
         <button type="button" data-story-help>CONTROLS</button>
       </header>
-      <div class="lyMeta"><span class="lyChip">RRVVFO STORY</span><span class="lyChip">CHAPTERS 1–4</span><span class="lyChip">AUTO-SAVE</span><span class="lyChip">RPG LEVELS</span></div>
+      <div class="lyMeta"><span class="lyChip">1 ROUTE AVAILABLE</span><span class="lyChip">MORE ROUTES UNLOCK THROUGH STORY</span><span class="lyChip">AUTO-SAVE</span><span class="lyChip">RPG LEVELS</span></div>
       <div class="lyLayout" data-ly-layout>
         <main class="routeView" data-route-view><div class="routeGrid" data-route-grid></div></main>
         <aside class="routePanel" data-route-panel></aside>
@@ -103,30 +103,31 @@ class LostYearStoryScreen{
     this.progress=loadLostYearProgress();this.routeView.hidden=false;this.routePanel.hidden=false;this.routeHome.hidden=true;
     const route=LOST_YEAR_ROUTES[0],next=rrvvfoNextMission(this.progress),started=rrvvfoRouteStarted(this.progress);
     const card=this.root.querySelector('[data-route-grid]');
-    card.innerHTML=`<button type="button" class="routeCard selected rrvvfoOnlyRoute" style="--route-color:${route.color}" data-route-id="rrvvfo">
-      <span class="routePortrait routePortraitRrvvfo" aria-hidden="true"><b>R</b></span>
-      <span class="routeCopy"><span class="status">${next?started?'CONTINUE AVAILABLE':'NEW STORY':'RELEASED STORY COMPLETE'}</span><h2>RRVVFO</h2><h3>RESTLESS FLAME</h3><p>Training, exploration, RPG growth, tournament combat, and the Project Hollow investigation across the first four released chapters of an eight-chapter route.</p></span>
-      <span class="routeStartHint">${next?`${storyPromptLabel('confirm')} • ${started?'CONTINUE':'BEGIN'}`:'OPEN CHAPTER SELECT'}</span>
-    </button>`;
-    card.querySelector('button').addEventListener('click',()=>this.openRoute());
+    card.innerHTML=`
+      <header class="storyRouteCarouselHeading"><small>STORY MODE</small><h2>ROUTE SELECT</h2><p>Select one character story at a time. More routes will appear as the larger story introduces them.</p></header>
+      <div class="storyRouteCarouselStage">
+        <button type="button" class="storyRouteArrow previous" disabled aria-label="Previous route">‹</button>
+        <button type="button" class="routeCard selected rrvvfoOnlyRoute" style="--route-color:${route.color}" data-route-id="rrvvfo" aria-current="true">
+          <span class="routePortrait routePortraitRrvvfo" aria-hidden="true"><b>R</b></span>
+          <span class="routeCopy"><span class="status">${next?started?'CONTINUE AVAILABLE':'NEW STORY':'RELEASED CHAPTERS COMPLETE'}</span><h2>RRVVFO</h2><h3>THE LOST YEAR</h3><p>Experience what happened after Rrvvfo defeated Revvfo. Follow Rrvvfo through training, Tournament Road, the tournament, the mystery under the ring, and Echo Region.</p></span>
+          <span class="routeStartHint">${storyPromptLabel('confirm')} • OPEN ROUTE</span>
+        </button>
+        <button type="button" class="storyRouteArrow next" disabled aria-label="Next route">›</button>
+      </div>
+      <div class="storyRoutePosition"><span class="selected"></span><strong>1 / 1</strong><small>RRVVFO</small></div>`;
+    card.querySelector('[data-route-id="rrvvfo"]').addEventListener('click',()=>this.openRoute());
     this.routePanel.style.setProperty('--route-color',route.color);
     this.routePanel.innerHTML=`<div class="routeFeature routeFeatureRrvvfo"><b>R</b></div><div class="routeDetails">
-      <small>RRVVFO STORY • 4 RELEASED / 8 PLANNED</small><h2>RESTLESS FLAME</h2>
-      <p>Click Rrvvfo to ${next?(started?'continue from the next unfinished checkpoint':'begin Chapter 1'):'open the RPG route menu and replay released chapters'}.</p>
+      <small>RRVVFO STORY • 4 RELEASED / 8 PLANNED</small><h2>THE LOST YEAR</h2>
+      <p>Experience what happened after Rrvvfo defeated Revvfo. Follow Rrvvfo through training, Tournament Road, the tournament, the mystery under the ring, and Echo Region.</p>
       ${storyStatsMarkup(this.progress,{compact:true})}${storyAttackStripMarkup({compact:true})}
-      <div class="routeActions"><button type="button" class="primary" data-open-route>${next?(started?'CONTINUE STORY':'BEGIN STORY'):'OPEN STORY MENU'}</button></div>
+      <div class="routeActions"><button type="button" class="primary" data-open-route>OPEN RRVVFO ROUTE</button></div>
     </div>`;
     this.routePanel.querySelector('[data-open-route]').addEventListener('click',()=>this.openRoute());
-    if(focus)card.querySelector('button')?.focus();
+    if(focus)card.querySelector('[data-route-id="rrvvfo"]')?.focus();
   }
 
-  openRoute(){
-    this.progress=loadLostYearProgress();const next=rrvvfoNextMission(this.progress);
-    if(next){
-      this.startStep(next,'route');return;
-    }
-    this.showRouteHome({focus:true});
-  }
+  openRoute(){this.showRouteHome({focus:true})}
 
   showRouteHome({focus=false}={}){
     this.progress=loadLostYearProgress();this.routeView.hidden=true;this.routePanel.hidden=true;this.routeHome.hidden=false;document.dispatchEvent(new CustomEvent('pxstorymenuopen'));

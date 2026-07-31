@@ -6,9 +6,19 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.27.2 — Roadside Fight & Map Recovery**
+**Prototype 2.9A.28 — Mode & Route Carousel Overhaul**
 
 This is a complete cumulative build. No older package is required.
+
+
+## 2.9A.28 highlights
+
+- Main Menu now uses a one-mode-at-a-time carousel with arrows, swipe navigation, controller/keyboard support, side previews, and a dedicated information panel.
+- Story Mode now opens a matching one-character-at-a-time Route Select screen.
+- Rrvvfo is the only currently selectable story route; the structure is ready for later routes without inventing their details or unlock milestones.
+- Story description now begins: “Experience what happened after Rrvvfo defeated Revvfo.”
+- Selecting Rrvvfo opens his route and Chapter Select instead of automatically launching a chapter.
+- Existing mode unlocks, Quick Continue, chapter replay, saves, and Chapters 1–4 remain intact.
 
 ## 2.9A.27.2 hotfix
 

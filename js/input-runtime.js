@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a27p2-roadside-map-smoke-20260730';
+import {InputManager} from './input.js?v=29a28-mode-route-carousel-20260730';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

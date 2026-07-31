@@ -1,20 +1,20 @@
-import {BUILD_VERSION} from './build-info.js?v=29a27p2-roadside-map-smoke-20260730';
-import {sharedInput} from './input-runtime.js?v=29a27p2-roadside-map-smoke-20260730';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a27p2-roadside-map-smoke-20260730';
+import {BUILD_VERSION} from './build-info.js?v=29a28-mode-route-carousel-20260730';
+import {sharedInput} from './input-runtime.js?v=29a28-mode-route-carousel-20260730';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a28-mode-route-carousel-20260730';
 
-const MENU_MODULE_CACHE='29a27p2-roadside-map-smoke-20260730';
+const MENU_MODULE_CACHE='29a28-mode-route-carousel-20260730';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([
-  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Follow Rrvvfo through training, the Tournament Road, RPG growth, a living tournament hub, and the full local bracket. New battle modes unlock naturally after Chapters 1, 2, 3, and 4.',players:'1',availability:'Rrvvfo • Chapters 1–4 of 8'},
-  {id:'arena',label:'ARENA',kicker:'3D BATTLE',description:'Enter Tangai Dojo or the Global Tournament in continuous first-to-3-KO battles with adaptive AI, charging, parries, grabs, and projectile clashes.',players:'1',availability:'Tangai Dojo and Global Tournament'},
-  {id:'cpu',label:'VS CPU',kicker:'SINGLE BATTLE',description:'Choose a fighter and choose Quick Battle or a full first-to-3 match against a fair 100-health rival.',players:'1',availability:'Available'},
-  {id:'local',label:'2 PLAYER',kicker:'LOCAL VS',description:'Choose two finished fighters on the same device. Quick and full match formats use the same unified controls; separate assigned devices are recommended.',players:'2',availability:'Available'},
-  {id:'training',label:'TRAINING',kicker:'PRACTICE',description:'Practice the same 3D combat used by Story Mode with focused drills, a configurable dummy, and instant resets.',players:'1',availability:'Available'},
-  {id:'arcade',label:'ARCADE',kicker:'BATTLE ROAD',description:'A locked sequence of escalating battles built around the finished combat roster.',players:'1',availability:'Coming Later',disabled:true},
-  {id:'settings',label:'OPTIONS',kicker:'SETTINGS',description:'Adjust gameplay, controls, audio, video, accessibility, HUD, and save-data options.',players:'—',availability:'Available'},
-  {id:'extras',label:'EXTRAS',kicker:'SAGE ARCHIVES',description:'Open the Sage’s Manual, move lists, fighter profiles, stage information, controls, and build details.',players:'—',availability:'Available'},
-  {id:'credits',label:'CREDITS',kicker:'PARALLELS X',description:'View project and development credits for Parallels X: Clash of Souls.',players:'—',availability:'Available'}
+  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Experience what happened after Rrvvfo defeated Revvfo. Follow Rrvvfo through training, Tournament Road, the tournament, the mystery under the ring, and Echo Region.',players:'1',availability:'Rrvvfo • Chapters 1–4 of 8',accent:'story'},
+  {id:'arena',label:'ARENA',kicker:'3D BATTLE',description:'Enter Tangai Dojo or the Global Tournament in continuous first-to-3-KO battles with adaptive AI, charging, parries, grabs, and projectile clashes.',players:'1',availability:'Tangai Dojo and Global Tournament',accent:'arena'},
+  {id:'cpu',label:'VS CPU',kicker:'SINGLE BATTLE',description:'Choose a fighter and play a quick battle or a full first-to-3 match against a fair 100-health rival.',players:'1',availability:'Available',accent:'cpu'},
+  {id:'local',label:'2 PLAYER',kicker:'LOCAL VS',description:'Choose two finished fighters on the same device. Quick and full match formats use the same unified controls.',players:'2',availability:'Available',accent:'local'},
+  {id:'training',label:'TRAINING',kicker:'PRACTICE',description:'Practice the same 3D combat used by Story Mode with technique trials, defensive dummy settings, and instant resets.',players:'1',availability:'Available',accent:'training'},
+  {id:'extras',label:'EXTRAS',kicker:'SAGE ARCHIVES',description:'Open the Sage’s Manual, move lists, fighter profiles, stage information, controls, records, and build details.',players:'—',availability:'Available',accent:'extras'},
+  {id:'settings',label:'OPTIONS',kicker:'SETTINGS',description:'Adjust gameplay, controls, audio, video, accessibility, HUD, camera, and save-data options.',players:'—',availability:'Available',accent:'settings'},
+  {id:'credits',label:'CREDITS',kicker:'PARALLELS X',description:'View project and development credits for Parallels X: Clash of Souls.',players:'—',availability:'Available',accent:'credits'},
+  {id:'arcade',label:'ARCADE',kicker:'BATTLE ROAD',description:'A future mode focused on escalating combat runs using the finished roster and battle systems.',players:'1',availability:'Coming Later',disabled:true,accent:'arcade'}
 ]);
 
 export function mainMenuModesForProgress(storage=globalThis.localStorage){
@@ -54,26 +54,45 @@ export function mainMenuConfirmLabel(
   return'ENTER — CONFIRM';
 }
 
-function renderModeButtons(){
-  const modes=this.modes;
-  const groups=[
-    {label:'PLAY',ids:['story','arena','cpu','local','training','arcade']},
-    {label:'SYSTEM',ids:['settings','extras','credits']}
-  ];
-  return groups.map(group=>{
-    const groupModes=group.ids.map(id=>modes.find(mode=>mode.id===id)).filter(Boolean);
-    if(!groupModes.length)return'';
-    return`<div class="mainMenuGroupLabel" role="presentation"><span>${group.label}</span></div>${groupModes.map(mode=>{
-    const index=modes.findIndex(candidate=>candidate.id===mode.id);
-    return `<button type="button" class="mainMode ${index===this.index?'selected':''}" data-main-menu-id="${mode.id}" aria-current="${index===this.index?'true':'false'}" ${mode.disabled||mode.locked?'aria-disabled="true"':''}>
-      <span class="modeIndex">${index+1}</span><span class="modeWords"><span>${mode.label}</span>${mode.disabled?'<small>COMING LATER</small>':mode.locked?'<small>STORY LOCKED</small>':`<small>${mode.kicker}</small>`}</span>
-    </button>`;
-  }).join('')}`;
-  }).join('');
+function modeMini(mode,index,position){
+  const unavailable=mode.disabled||mode.locked;
+  return `<button type="button" class="modePeek ${position} ${unavailable?'isLocked':''}" data-carousel-index="${index}" aria-label="Switch to ${mode.label}">
+    <span>${String(index+1).padStart(2,'0')}</span><strong>${mode.label}</strong><small>${unavailable?'LOCKED':mode.kicker}</small>
+  </button>`;
+}
+
+function renderModeCarousel(){
+  const length=this.modes.length;
+  const previousIndex=(this.index-1+length)%length;
+  const nextIndex=(this.index+1)%length;
+  const previous=this.modes[previousIndex];
+  const mode=this.modes[this.index];
+  const next=this.modes[nextIndex];
+  const unavailable=mode.disabled||mode.locked;
+  return `
+    <header class="modeCarouselHeading">
+      <small>PARALLELS X • CLASH OF SOULS</small>
+      <h1>MODE SELECT</h1>
+      <p>Choose one mode. Use the arrows, swipe, or press left and right.</p>
+    </header>
+    <div class="modeCarouselStage" data-mode-carousel-stage>
+      <button type="button" class="modeArrow previous" data-carousel-direction="-1" aria-label="Previous mode">‹</button>
+      ${modeMini(previous,previousIndex,'previous')}
+      <button type="button" class="mainMode selected" data-main-menu-id="${mode.id}" aria-current="true" ${unavailable?'aria-disabled="true"':''}>
+        <span class="modeIndex">${String(this.index+1).padStart(2,'0')}</span>
+        <span class="modeWords"><span>${mode.label}</span><small>${unavailable?(mode.disabled?'COMING LATER':'STORY LOCKED'):mode.kicker}</small></span>
+        <span class="modeSelectPrompt">${unavailable?'VIEW DETAILS':'SELECT'}</span>
+      </button>
+      ${modeMini(next,nextIndex,'next')}
+      <button type="button" class="modeArrow next" data-carousel-direction="1" aria-label="Next mode">›</button>
+    </div>
+    <div class="modeCarouselDots" role="tablist" aria-label="Mode position">
+      ${this.modes.map((item,index)=>`<button type="button" data-carousel-index="${index}" class="${index===this.index?'selected':''}" aria-label="${item.label}" aria-selected="${index===this.index?'true':'false'}"><span></span></button>`).join('')}
+    </div>`;
 }
 
 export class MainMenu{
-  constructor(root,{onSelect=()=>{},storage=localStorage,now=()=>Date.now()}={}){
+  constructor(root,{onSelect=()=>{},storage=globalThis.localStorage,now=()=>Date.now()}={}){
     this.root=root;
     this.onSelect=onSelect;
     this.storage=storage;
@@ -84,40 +103,41 @@ export class MainMenu{
     this.list=root?.querySelector('[data-main-menu-list]');
     this.preview=root?.querySelector('[data-main-menu-preview]');
     this.version=root?.querySelector('[data-build-version]');
+    this.swipeStart=null;
     if(this.version)this.version.textContent=BUILD_VERSION;
     this.render();
 
-    this.list?.addEventListener('focusin',event=>{
-      const button=event.target.closest('[data-main-menu-id]');
-      if(!button)return;
-      const index=this.modes.findIndex(mode=>mode.id===button.dataset.mainMenuId);
-      if(index<0||index===this.index)return;
-      this.index=index;
-      this.root.dispatchEvent(new CustomEvent('menumove',{detail:this.modes[index]}));
-      this.render({focus:true});
-    });
-
-    this.list?.addEventListener('pointerover',event=>{
-      const button=event.target.closest('[data-main-menu-id]');
-      if(!button||button.dataset.hovered==='true')return;
-      this.list.querySelectorAll('[data-main-menu-id]').forEach(item=>delete item.dataset.hovered);
-      button.dataset.hovered='true';
-      const index=this.modes.findIndex(mode=>mode.id===button.dataset.mainMenuId);
-      if(index<0||index===this.index)return;
-      this.index=index;
-      this.root.dispatchEvent(new CustomEvent('menumove',{detail:this.modes[index]}));
-      this.render();
-    });
-
     this.list?.addEventListener('click',event=>{
-      const button=event.target.closest('[data-main-menu-id]');
-      if(!button)return;
-      const index=this.modes.findIndex(mode=>mode.id===button.dataset.mainMenuId);
-      if(index<0)return;
-      this.index=index;
-      this.render();
-      this.confirm();
+      const directionButton=event.target.closest('[data-carousel-direction]');
+      if(directionButton){this.move(Number(directionButton.dataset.carouselDirection)||0);return}
+      const indexButton=event.target.closest('[data-carousel-index]');
+      if(indexButton){this.setIndex(Number(indexButton.dataset.carouselIndex),{focus:true});return}
+      if(event.target.closest('[data-main-menu-id]'))this.confirm();
     });
+
+    this.preview?.addEventListener('click',event=>{
+      if(event.target.closest('[data-main-menu-confirm]'))this.confirm();
+    });
+
+    this.list?.addEventListener('pointerdown',event=>{
+      if(event.pointerType==='mouse')return;
+      this.swipeStart={x:event.clientX,y:event.clientY,id:event.pointerId};
+    });
+    this.list?.addEventListener('pointerup',event=>{
+      const start=this.swipeStart;this.swipeStart=null;
+      if(!start||start.id!==event.pointerId)return;
+      const dx=event.clientX-start.x,dy=event.clientY-start.y;
+      if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.25)this.move(dx<0?1:-1);
+    });
+    this.list?.addEventListener('pointercancel',()=>{this.swipeStart=null});
+  }
+
+  setIndex(index,{focus=false}={}){
+    const length=this.modes.length;
+    if(!length)return;
+    const next=((Number(index)||0)%length+length)%length;
+    if(next!==this.index){this.index=next;this.root?.dispatchEvent(new CustomEvent('menumove',{detail:this.modes[next]}))}
+    this.render({focus});
   }
 
   render({focus=false}={}){
@@ -126,9 +146,11 @@ export class MainMenu{
     this.modes=mainMenuModesForProgress(this.storage);
     const refreshedIndex=this.modes.findIndex(mode=>mode.id===selectedId);
     this.index=refreshedIndex>=0?refreshedIndex:Math.min(this.index,Math.max(0,this.modes.length-1));
-    this.list.innerHTML=renderModeButtons.call(this);
+    this.list.innerHTML=renderModeCarousel.call(this);
 
     const mode=this.modes[this.index];
+    const unavailable=mode.disabled||mode.locked;
+    this.root.dataset.selectedMode=mode.accent||mode.id;
     this.preview.dataset.mode=mode.id;
     this.preview.innerHTML=`
       <div class="modeArt" aria-hidden="true">${renderModeArt(mode)}</div>
@@ -141,20 +163,13 @@ export class MainMenu{
           <div><dt>Status</dt><dd>${mode.availability}</dd></div>
         </dl>
         ${mode.disabled?'<span id="arcade-coming-tooltip" class="comingTooltip" role="tooltip">ARCADE MODE IS COMING LATER</span>':mode.locked?`<span class="comingTooltip" role="status">${mode.availability}</span>`:''}
-        <span class="modeConfirm">${mode.disabled||mode.locked?'LOCKED — SELECT FOR DETAILS':mainMenuConfirmLabel()}</span>
+        <div class="modePanelActions"><button type="button" class="modeConfirm" data-main-menu-confirm>${unavailable?'LOCKED — VIEW REQUIREMENT':mainMenuConfirmLabel()}</button></div>
       </div>`;
 
-    const selected=this.list.querySelector(`[data-main-menu-id="${mode.id}"]`);
-    selected?.scrollIntoView({block:'nearest',inline:'center'});
-    if(focus)selected?.focus({preventScroll:true});
+    if(focus)this.list.querySelector('[data-main-menu-id]')?.focus({preventScroll:true});
   }
 
-  move(direction){
-    const length=this.modes.length;
-    this.index=(this.index+direction+length)%length;
-    this.root?.dispatchEvent(new CustomEvent('menumove',{detail:this.modes[this.index]}));
-    this.render({focus:true});
-  }
+  move(direction){this.setIndex(this.index+(direction<0?-1:1),{focus:true})}
 
   async confirm(){
     if(this.now()<this.lockedUntil)return false;
@@ -166,7 +181,6 @@ export class MainMenu{
     }
 
     this.root.dispatchEvent(new CustomEvent('menuselect',{detail:mode}));
-
     try{
       if(mode.id==='story'){
         const {openLostYearStory}=await import(`./story/lost-year-story.js?v=${MENU_MODULE_CACHE}`);

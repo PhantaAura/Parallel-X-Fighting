@@ -5,6 +5,7 @@ import {tint} from './effects.js';
 import {tryMeleeClash,tryUltimateClash} from './clash-system.js';
 import {DEFENSE_BALANCE,defensiveDashFrames,resetDefenseState,resolveBlockedHit,updateDefenseState} from './guard-system.js';
 import {beginCinematicUltimate,clearCinematic,ULTIMATES} from './ultimate-system.js';
+import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a301-stability-cleanup-20260731';
 
 const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 const LENS_MASTERY_KEY='pxLensMasteryV1';
@@ -18,7 +19,7 @@ export class Fighter{
   resetRuntime(){
     const maxHp=Math.max(1,Number(this.maxHp)||100);
     Object.assign(this,{x:this.side===1?150:762,y:this.world.ground-this.h,vx:0,vy:0,face:this.side===1?1:-1,grounded:1,maxHp,hp:maxHp,en:45,attackCd:0,specialCd:0,ultCd:0,ultimateRecovery:0,dashCd:0,clashCooldown:0,ultimateStartup:0,pendingUltimate:false,lensCooldown:0,agonyCooldown:0,agonyActiveVolley:false,agonyVolleyFired:false,agonyVolleyId:0,stun:0,inv:0,freeze:0,aura:0,armor:0,trap:0,lens:0,lensAutoDodges:0,lensWasHit:false,lensPrediction:'UNKNOWN',lensMastery:readLensMastery(),block:0,windup:0,knockdown:0,getup:0,juggles:0,lightChain:0,lightChainTimer:0,chainLockout:0,airDashes:0,pending:null,pendingMove:null,queuedAttack:null,counterStartup:0,counterActive:0,counterRecovery:0,counterCd:0,counterKind:'',charging:false,tick:0,visualAction:null,visualActionTimer:0,visualHitKind:null,visualPerfectTimer:0,visualBlockTimer:0,visualDashTimer:0,hitFlash:0});
-    resetDefenseState(this);
+    resetDefenseState(this);resetFocusRecovery(this);
     resetCombo(this.combo);
     this.world.fighterVisuals?.resetFighter(this);
   }
@@ -30,8 +31,8 @@ export class Fighter{
     if(!this.visualActionTimer)this.visualAction=null;
     if(this.world.clash?.active)return;
     if(this.freeze>0){this.freeze--;return}
-    const foe=this.foe();if(!foe)return;this.tick++;this.face=foe.x>this.x?1:-1;
-    updateDefenseState(this,command);
+    const foe=this.foe();if(!foe)return;this.tick++;this.face=foe.x>this.x?1:-1;tickFocusRecovery(this,1/60);const rawFocusIntent=Boolean(command.down('k')&&command.down('b')),focusSafe=this.grounded&&!this.inv&&!this.attackCd&&!this.windup&&!this.stun&&!this.knockdown&&!this.guardBreakStun&&!this.world.cinematic?.active&&!command.down('l')&&!command.down('r'),focusReady=focusRecoveryAvailability(this,{eligible:focusSafe}).available,focusIntent=rawFocusIntent&&(focusReady||this.focusRecovering||this.focusRecoveryStartup>0),suppressGuard=focusIntent||this.focusRecoveryRelease>0,defenseCommand=suppressGuard?{down:key=>key==='b'?false:command.down(key),pressed:key=>command.pressed(key)}:command;
+    updateDefenseState(this,defenseCommand);
     if(command.pressed('q'))this.comboBreaker();
     if(this.combo.timer>0&&--this.combo.timer===0){resetCombo(this.combo);this.lightChain=0}
     if(this.lightChainTimer>0&&--this.lightChainTimer===0)this.lightChain=0;
@@ -47,13 +48,14 @@ export class Fighter{
     else if(this.counterStartup>0){this.vx*=.5;if(!--this.counterStartup)this.counterActive=8}
     else if(this.counterActive>0){this.vx*=.5;if(!--this.counterActive)this.counterRecovery=38}
     else if(this.counterRecovery>0){this.vx*=.65;this.counterRecovery--}
+    else if(this.focusRecoveryRelease>0){this.vx*=.65}
     else if(this.windup>0){this.windup--;if(!this.windup&&this.pending)this.resolveAttack()}
     else if(this.stun>0)this.stun--;
     else if(!this.knockdown&&!this.getup){
       const speed=this.c.sp*(this.aura?1.2:1)*(this.armor?.78:1);
-      this.charging=Boolean(command.down('k')&&this.grounded&&!this.attackCd&&!this.windup);
-      if(this.charging){this.vx*=.45;this.en=clamp(this.en+.42,0,100);this.guard=clamp(this.guard+.18,0,this.guardMax||100);this.visualAction='chargeEnergy';this.visualActionTimer=3}
-      else if(command.down('l'))this.vx=-speed;else if(command.down('r'))this.vx=speed;else this.vx*=.65;
+      const focusEligible=focusSafe;
+      if(focusIntent){this.charging=focusEligible;this.vx*=.42;const recovery=channelFocusRecovery(this,1/60,{eligible:focusEligible});this.visualAction=recovery.active?'focusRecovery':'focusRecoveryStart';this.visualActionTimer=3;if(recovery.started){this.world.effects?.burst(this.x+24,this.y+40,'#b7ffe8',18);this.world.notifications?.push('FOCUS RECOVERY • VULNERABLE',{key:`focus-${this.side}`})}if(recovery.healed>0&&this.focusRecoverySoundCooldown<=0){this.world.sound(690,.03,'sine');this.focusRecoverySoundCooldown=.20}}
+      else{if(this.focusRecoveryStartup>0)endFocusRecovery(this);this.charging=Boolean(command.down('k')&&!command.down('b')&&this.grounded&&!this.attackCd&&!this.windup);if(this.charging){this.vx*=.45;this.en=clamp(this.en+.42,0,100);this.guard=clamp(this.guard+.18,0,this.guardMax||100);this.visualAction='chargeEnergy';this.visualActionTimer=3}else if(command.down('l'))this.vx=-speed;else if(command.down('r'))this.vx=speed;else this.vx*=.65}
       if(!this.charging&&command.pressed('j')&&this.grounded){this.vy=-this.c.j;this.grounded=0;this.world.sound(180)}
       // Normal/throw buffers must survive hit-stop and the remaining recovery.
       // Only consume them once a normal could legally begin.
@@ -63,17 +65,19 @@ export class Fighter{
         else if(command.pressed('a'))this.attack(this.grounded?'light':'air');
         else if(command.pressed('h'))this.attack(this.grounded?'heavy':'airHeavy');
       }
-      if(command.pressed('characterSpecial'))this.special();
-      if(command.pressed('fireBlast'))this.fireBlast();
-      if(command.pressed('shotsOfAgony'))this.beginShotsOfAgony();
-      if(command.pressed('objectSwap'))this.dash();
-      if(command.pressed('lensOfTruth'))this.lensAbility();
-      if(command.pressed('ultimate'))this.ultimate();
-      if(command.pressed('s'))this.throw();
-      if(command.pressed('u'))this.ultimate();
-      if(command.pressed('n'))this.lensAbility();
-      if(command.pressed('d'))this.dash();
-      if(command.pressed('c'))this.counter();
+      if(!this.charging){
+        if(command.pressed('characterSpecial'))this.special();
+        if(command.pressed('fireBlast'))this.fireBlast();
+        if(command.pressed('shotsOfAgony'))this.beginShotsOfAgony();
+        if(command.pressed('objectSwap'))this.dash();
+        if(command.pressed('lensOfTruth'))this.lensAbility();
+        if(command.pressed('ultimate'))this.ultimate();
+        if(command.pressed('s'))this.throw();
+        if(command.pressed('u'))this.ultimate();
+        if(command.pressed('n'))this.lensAbility();
+        if(command.pressed('d'))this.dash();
+        if(command.pressed('c'))this.counter();
+      }
     }
     this.x+=this.vx;this.y+=this.vy;this.vy+=.72;
     if(this.y>=this.world.ground-this.h){this.y=this.world.ground-this.h;this.vy=0;if(!this.grounded&&this.stun>0){this.knockdown=35;this.stun=0}this.grounded=1;this.juggles=0;this.airDashes=0}else this.grounded=0;
@@ -81,7 +85,7 @@ export class Fighter{
     for(const key of ['attackCd','specialCd','ultCd','dashCd','inv','aura','armor','trap','lens'])this[key]=Math.max(0,this[key]-1);
     if(this.lens>0)this.updateLensPrediction(foe);
     if(lensBefore>0&&this.lens<=0){const gain=this.lensWasHit?1:4;this.lensMastery=saveLensMastery(this.lensMastery+gain);this.lensAutoDodges=0;this.world.notifications?.push(`LENS MASTERY +${gain} • ${this.lensMastery}%`,{important:true,key:`lens-mastery-${this.side}`})}
-    if(!this.agonyActiveVolley)this.en=clamp(this.en+.12+(this.aura?.16:0),0,100);
+    if(!this.agonyActiveVolley&&!this.focusRecovering)this.en=clamp(this.en+.12+(this.aura?.16:0),0,100);
   }
   updateLensPrediction(foe){
     const mastery=this.lensMastery||0,distance=Math.abs((foe?.x||0)-this.x);let prediction='MOVEMENT SHIFT';
@@ -129,7 +133,7 @@ export class Fighter{
     const foe=this.foe();this.pendingThrow=false;
     if(!foe||Math.abs(foe.x-this.x)>DEFENSE_BALANCE.throwRange||foe.throwProtection||foe.inv||foe.grabbed){this.throwRecovery=DEFENSE_BALANCE.throwRecovery;return false}
     foe.block=0;foe.wasBlocking=false;foe.grabbed=24;foe.stun=24;foe.throwProtection=DEFENSE_BALANCE.throwProtection;foe.vx=this.face*11;
-    const before=foe.hp;foe.hp=Math.max(1,foe.hp-6/(foe.c.d||1));this.throwRecovery=16;this.world.statistics?.add(this.side,'throws');this.world.statistics?.recordDamage(this.side,before-foe.hp);this.world.notifications?.push('THROW',{key:`throw-${this.side}`});
+    const before=foe.hp;foe.hp=Math.max(1,foe.hp-6/(foe.c.d||1));registerRecoverableDamage(foe,before-foe.hp,{strong:true});this.throwRecovery=16;this.world.statistics?.add(this.side,'throws');this.world.statistics?.recordDamage(this.side,before-foe.hp);this.world.notifications?.push('THROW',{key:`throw-${this.side}`});
     this.world.effects.add({t:'throw',x:foe.x+24,y:foe.y+40,c:this.c.a,l:22});this.world.effects.burst(foe.x+24,foe.y+40,this.c.a,22);this.world.sound('throw');return true;
   }
   comboBreaker(){
@@ -215,7 +219,7 @@ export class Fighter{
   }
 
   hit(baseDamage,knockback=0,kind='hit',attacker=null,move={}){
-    const fx=this.world.effects;
+    const fx=this.world.effects;interruptFocusRecovery(this);
     if(this.world.cinematic?.active&&this.world.cinematic.attacker===this)clearCinematic(this.world);
     if(this.lens>0&&this.lensAutoDodges>0){const foe=this.foe(),oldX=this.x;this.x=clamp(foe.x-foe.face*72,15,this.world.width-this.w-15);if(Math.abs(this.x-foe.x)<45)this.x=clamp(oldX-this.face*105,15,this.world.width-this.w-15);this.visualAction=this.x<oldX?'lensDodgeLeft':'lensDodgeRight';this.visualActionTimer=18;this.inv=8;this.lensAutoDodges--;fx.burst(oldX+24,this.y+43,'#f7f7ff',18);fx.burst(this.x+24,this.y+43,'#f7f7ff',18);fx.add({t:'dodge',x:this.x+24,y:this.y+22,c:'#f7f7ff',l:20});this.world.sound(620,.06,'sine',.035);this.world.notifications?.push(`LENS AUTO-DODGE • ${this.lensAutoDodges} LEFT`,{key:`lens-dodge-${this.side}`});return 0}if(this.lens>0)this.lensWasHit=true;
     if(this.inv)return 0;
@@ -230,7 +234,7 @@ export class Fighter{
     if(defense?.perfect)this.visualPerfectTimer=14;else if(this.block)this.visualBlockTimer=10;
     if(defense?.broken)this.visualAction='guardBreak',this.visualActionTimer=Math.max(this.visualActionTimer,this.guardBreakStun||45);
     const damage=defense?result.final*defense.chipFactor:result.final,before=this.hp,minimum=defense?1:0;
-    this.hp=clamp(Math.max(minimum,this.hp-damage),0,this.maxHp||100);const actual=before-this.hp;
+    this.hp=clamp(Math.max(minimum,this.hp-damage),0,this.maxHp||100);const actual=before-this.hp;registerRecoverableDamage(this,actual,{strong:['heavy','airHeavy','launcher','ultimate','punishment'].includes(kind)});
     if(actual>0&&this.world.training.enabled&&this.side===2&&['after','counterattack'].includes(this.world.training.dummy))this.world.training.afterFirstHit=true;
     if(attacker&&!this.block&&actual>0){attacker.combo.hits=nextHit;attacker.combo.damage+=actual;attacker.combo.scale=result.scale;attacker.combo.timer=COMBO_RESET_FRAMES;attacker.combo.attacker=attacker.side;if(!this.grounded&&++this.juggles>=JUGGLE_LIMIT){this.knockdown=42;this.vy=9;knockback*=.45}}
     if(attacker&&actual>0)this.world.statistics?.recordDamage(attacker.side,actual,attacker.combo.hits,attacker.combo.damage);

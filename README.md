@@ -6,16 +6,66 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.29 — Pursuit & Combat Identity**
+**Prototype 2.9A.30.1 — Stability & Interface Cleanup**
 
 This is a complete cumulative build. No older package is required.
+
+
+## 2.9A.30.1 stability and interface cleanup highlights
+
+- Story rematches preserve each fighter’s actual maximum HP and Story scaling instead of forcing both sides to 100 HP.
+- Focus Recovery no longer steals Block/Charge input when no gray health or usable Energy exists.
+- Unsafe movement or combat states fully cancel recovery startup, and startup-only taps no longer cause the 0.3-second release penalty.
+- The recovery cue reports healing from the current channel rather than the whole round.
+- Training knockouts clear gray health, channel state, and temporary recovery locks.
+- CPU recovery decisions now use a percentage of maximum HP, keeping Story-scaled fighters consistent.
+- Mountain Path is treated as an open stage: no invisible-wall splats and no hard rectangular gameplay-border presentation.
+- Stage cameras initialize from each stage profile instead of briefly starting at the Dojo distance.
+- Tournament and Echo Caverns size labels now match their actual dimensions more honestly.
+- Phone combat prompts occupy separate vertical lanes, Training can collapse into a small drawer, and Stage Select shows one stage at a time on mobile.
+- The Sage Manual and active Arena diagnostics now display the current build label.
+- Save schema remains 268.
+
+
+## 2.9A.30 arena identity and recovery highlights
+
+- Arena Select now presents five playable stages with visible size, boundary, archetype, playstyle tags, recommendations, and dimensions.
+- Tangai Dojo is a small walled pressure stage; the Global Tournament is a clean ring-out and edge-control stage; the Facility, Echo Caverns, and Mountain Path now communicate different route and pursuit identities.
+- Tournament boundaries react to edge pressure, heavy hits, and ring-outs with readable perimeter light, rope/crowd atmosphere, and announcer-style audio without placing obstacles inside the official ring.
+- Walled stages use location-specific impact colors and particles for wall splats, while ring-out stages continue blocking wall-splat behavior.
+- Focus Recovery lets fighters hold Block + Charge while stationary to restore only gray recoverable health after a 0.6-second startup.
+- Focus Recovery restores 5 HP per second, spends 2 Energy per HP, caps recoverable health at 20% of maximum HP, leaves the fighter vulnerable, and creates 0.3 seconds of release recovery.
+- CPU fighters recover only after earning distance, while Training adds a Focus Recovery trial and selectable dummy recovery behavior.
+- No random hazards, tournament obstacles, or full multi-level platforms were added in this build.
+- Save schema remains 268.
+
+
+## 2.9A.29.2 combat HUD and feedback highlights
+
+- Perfect Parry, Guard Break, Pursuit Tech, Wall Splat, Ground Bounce, full Energy, critical health, and cooldown completion now use compact event icons with consistent shapes and color language.
+- Health, Energy, and Guard bars react directly to critical damage, Energy spending, full Energy, parries, and guard shatter.
+- The selected ability is clearer, while only the ability whose cooldown finishes receives a short ready pulse.
+- Pursuit prompts, Arena notices, Story callouts, and combat notifications now share one visual language.
+- Phones use a protected prompt zone, smaller temporary feedback, extra safe-area spacing, and reduced secondary HUD emphasis during pursuit.
+- Mode and Route center cards, Settings focus, Training clarity, and Results hierarchy received a small presentation pass.
+- Combat balance, pursuit timing, Story progression, and save schema remain unchanged.
+
+## 2.9A.29.1 pursuit feel and stability highlights
+
+- Active pursuit now has dedicated speed lines, fighter-colored afterimages, a brief lock-on marker, layered chase audio, and a smooth camera pull that releases cleanly.
+- Pursuit Light, Pursuit Heavy, Pursuit Tech, wall splat, and ground bounce use distinct impact cues; impact freeze and flashes still respect accessibility settings.
+- Rrvvfo, Revvfo, Wade, Bark, Phanta, and Creed communicate their movement identities through more obvious particles, timing, motion, and dash sounds.
+- Pursuit Tech now costs a fixed 15 Energy, spends nothing on failure, and gives the defender a short punish opportunity after a successful escape.
+- Pursuit prompts support Full, Minimal, and Off modes; phones use a compact prompt, faster dismissal, safe-area placement, and a larger Dash touch target during the chase window.
+- Training adds an Ideal Pursuit Combo lesson, Pursuit Pressure, selectable Pursuit Defense behavior, timing grades, one-use reaction counters, and Reset Combat State.
+- Pursuit, camera, buffered-input, splat, bounce, invulnerability, and prompt state now clear during resets, pauses, round changes, match exits, and Story transitions.
 
 
 ## 2.9A.29 combat highlights
 
 - Launchers and heavy attacks open clear, bounded pursuit windows; Dash begins the chase and Light or Heavy can be buffered during travel.
 - A pursuit Light can link into one Heavy finisher, while combo scaling and juggle protection continue preventing loops.
-- Defenders can spend 18 Energy to Dash-tech an incoming pursuit; CPU opponents learn this defense based on difficulty.
+- Defenders can Dash-tech an incoming pursuit; the 2.9A.29.1 tuning pass sets the current cost to 15 Energy and keeps CPU use difficulty-aware.
 - Strong hits can create one wall splat per combo, and aerial Heavy finishers can create one ground bounce per combo.
 - Rrvvfo, Revvfo, Wade, Bark, Phanta, and Creed now have distinct movement traits without damage bonuses.
 - Pursuit camera framing, prompts, hit feedback, sound cues, and Training trials make the new routes readable.
@@ -137,4 +187,4 @@ Save-export schema: **268**. Existing Story saves continue through the current s
 
 ## Testing
 
-Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.27.1.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.27.1.md) for the real-device pass. See [`PATCH-NOTES-2.9A.27.1.md`](PATCH-NOTES-2.9A.27.1.md) and [`VALIDATION-2.9A.27.1.md`](VALIDATION-2.9A.27.1.md) for release details.
+Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.29.1.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.29.1.md) for the real-device pass. See [`PATCH-NOTES-2.9A.29.1.md`](PATCH-NOTES-2.9A.29.1.md) and [`VALIDATION-2.9A.29.1.md`](VALIDATION-2.9A.29.1.md) for release details.

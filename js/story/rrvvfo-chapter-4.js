@@ -1,18 +1,18 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a29-pursuit-combat-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a29-pursuit-combat-20260731';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a29-pursuit-combat-20260731';
-import {StoryMap} from './story-map.js?v=29a29-pursuit-combat-20260731';
-import {storyConfirm} from './story-ux.js?v=29a29-pursuit-combat-20260731';
-import {openCombatManual} from './combat-manual.js?v=29a29-pursuit-combat-20260731';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a29-pursuit-combat-20260731';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a29-pursuit-combat-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a301-stability-cleanup-20260731';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a301-stability-cleanup-20260731';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a301-stability-cleanup-20260731';
+import {StoryMap} from './story-map.js?v=29a301-stability-cleanup-20260731';
+import {storyConfirm} from './story-ux.js?v=29a301-stability-cleanup-20260731';
+import {openCombatManual} from './combat-manual.js?v=29a301-stability-cleanup-20260731';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a301-stability-cleanup-20260731';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a301-stability-cleanup-20260731';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a29-pursuit-combat-20260731';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a29-pursuit-combat-20260731';
+} from './chapter4-content.js?v=29a301-stability-cleanup-20260731';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a301-stability-cleanup-20260731';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;

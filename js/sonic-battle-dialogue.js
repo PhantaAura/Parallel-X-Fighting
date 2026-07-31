@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a29-pursuit-combat-20260731';
+import {storyConfirm} from './story/story-ux.js?v=29a301-stability-cleanup-20260731';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

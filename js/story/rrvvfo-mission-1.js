@@ -1,8 +1,8 @@
-import {CONTROL_MAPS} from '../input.js?v=29a29-pursuit-combat-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a29-pursuit-combat-20260731';
-import {grantCombatManual} from './combat-manual.js?v=29a29-pursuit-combat-20260731';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a29-pursuit-combat-20260731';
-import {storyConfirm} from './story-ux.js?v=29a29-pursuit-combat-20260731';
+import {CONTROL_MAPS} from '../input.js?v=29a301-stability-cleanup-20260731';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a301-stability-cleanup-20260731';
+import {grantCombatManual} from './combat-manual.js?v=29a301-stability-cleanup-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a301-stability-cleanup-20260731';
+import {storyConfirm} from './story-ux.js?v=29a301-stability-cleanup-20260731';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
@@ -309,6 +309,7 @@ class RrvvfoMission1{
     this.root.querySelector('[data-manual-grid]').innerHTML=`
       <section><h3>MOVEMENT</h3><dl><div><dt>Move</dt><dd>${prompt('move','W A S D')}</dd></div><div><dt>Jump</dt><dd>${prompt('jump',controlLabel(a.jump))}</dd></div><div><dt>Dash</dt><dd>${prompt('dash',`${controlLabel(a.dash)} / DOUBLE-TAP`)}</dd></div></dl></section>
       <section><h3>BASIC COMBAT</h3><dl><div><dt>Light</dt><dd>${prompt('light',`${controlLabel(a.light)} / MOUSE 1`)}</dd></div><div><dt>Heavy</dt><dd>${prompt('heavy',controlLabel(a.heavy))}</dd></div><div><dt>Launcher</dt><dd>${prompt('launcher',controlLabel(a.launcher))}</dd></div><div><dt>Timed Guard</dt><dd>${prompt('block',`${controlLabel(a.block)} / MOUSE 2`)}</dd></div><div><dt>Grab</dt><dd>${prompt('grab',controlLabel(a.grab))}</dd></div></dl></section>
+      <section><h3>KINETIC COMBAT</h3><dl><div><dt>Pursuit route</dt><dd>LAUNCHER → ${prompt('dash',controlLabel(a.dash))} → LIGHT → HEAVY</dd></div><div><dt>Attack ready</dt><dd>BUFFER LIGHT OR HEAVY WHEN THE PURSUIT PROMPT PULSES</dd></div><div><dt>Pursuit Tech</dt><dd>SPEND 15 ENERGY AND DASH WHILE BEING CHASED</dd></div></dl></section>
       <section><h3>RESOURCE CONTROL</h3><dl><div><dt>Charge</dt><dd>${prompt('charge',controlLabel(a.charge))} • STAND STILL</dd></div><div><dt>Attack gain</dt><dd>CLEAN HITS RESTORE ENERGY</dd></div><div><dt>Guard recovery</dt><dd>FASTER WHILE STANDING STILL</dd></div></dl></section>
       <section><h3>HOTBAR</h3><dl><div><dt>${ability(1)}</dt><dd>FIRE BLAST</dd></div><div><dt>${ability(2)}</dt><dd>SHOTS OF AGONY • ALL ENERGY</dd></div><div><dt>${ability(3)}</dt><dd>OBJECT SWAP</dd></div><div><dt>${ability(4)}</dt><dd>LENS • 60 ENERGY / 25 HP EARLY</dd></div><div><dt>${ability(5)}</dt><dd>SOLAR WEAVE • NOT USED HERE</dd></div></dl></section>
       <section><h3>HOW THE REFRESHER WORKS</h3><p>The large instruction card shows one task at a time. An action checks off only after the game confirms that it actually happened—not merely when a button is pressed.</p></section>
@@ -316,7 +317,7 @@ class RrvvfoMission1{
   }
 
   showManual(){
-    grantCombatManual({pages:['movement','basic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
+    grantCombatManual({pages:['movement','basic-combat','kinetic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
     this.manual.hidden=false;
     this.setObjective('READ THE COMBAT MANUAL','Choose Guided, Resume, or Quick Refresher.');
     const resume=this.root.querySelector('[data-resume-tutorial]'),checkpoint=this.savedTutorialCheckpoint();

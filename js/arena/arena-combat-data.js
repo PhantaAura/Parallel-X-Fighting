@@ -9,8 +9,8 @@ const DEFAULT=set({
   launcher:{duration:.55,activeStart:.16,activeEnd:.285,range:101,width:50,height:108,damage:9.8,guardDamage:15,knockback:31,stun:.31,hitstop:10,lunge:30,launch:430,pursuitLaunch:true},
   airLight:{duration:.36,activeStart:.07,activeEnd:.18,range:94,width:48,height:88,damage:6.1,guardDamage:7,knockback:31,stun:.23,hitstop:5,lunge:18,air:true},
   airHeavy:{duration:.52,activeStart:.14,activeEnd:.29,range:118,width:60,height:102,damage:10.8,guardDamage:16,knockback:76,stun:.36,hitstop:8,lunge:24,air:true,knockdown:true,spike:285},
-  pursuitLight:{animation:'airLight',duration:.32,activeStart:.07,activeEnd:.17,range:110,width:56,height:98,damage:7.4,guardDamage:9,knockback:54,stun:.28,hitstop:7,lunge:20,air:true,pursuit:true,launch:105},
-  pursuitHeavy:{animation:'airHeavy',duration:.46,activeStart:.12,activeEnd:.26,range:122,width:64,height:112,damage:11.7,guardDamage:18,knockback:118,stun:.42,hitstop:10,lunge:24,air:true,pursuit:true,knockdown:true,spike:390,wallBounce:true}
+  pursuitLight:{animation:'airLight',duration:.32,activeStart:.07,activeEnd:.17,range:110,width:56,height:98,damage:7.4,guardDamage:9,knockback:54,stun:.28,hitstop:2,lunge:20,air:true,pursuit:true,launch:105},
+  pursuitHeavy:{animation:'airHeavy',duration:.46,activeStart:.12,activeEnd:.26,range:122,width:64,height:112,damage:11.7,guardDamage:18,knockback:118,stun:.42,hitstop:4,lunge:24,air:true,pursuit:true,knockdown:true,spike:390,wallBounce:true}
 });
 
 export const ARENA_NORMAL_PROFILES=Object.freeze({

@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a29-pursuit-combat-20260731';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a29-pursuit-combat-20260731';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a301-stability-cleanup-20260731';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a301-stability-cleanup-20260731';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a29-pursuit-combat-20260731';
-import {Fighter} from '../js/fighter.js?v=29a29-pursuit-combat-20260731';
+import {EffectSystem} from '../js/effects.js?v=29a301-stability-cleanup-20260731';
+import {Fighter} from '../js/fighter.js?v=29a301-stability-cleanup-20260731';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,18 +17,18 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a29-pursuit-combat-20260731';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a29-pursuit-combat-20260731';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a301-stability-cleanup-20260731';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a301-stability-cleanup-20260731';
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a29-pursuit-combat-20260731';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a29-pursuit-combat-20260731';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a29-pursuit-combat-20260731';
-import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a29-pursuit-combat-20260731';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a29-pursuit-combat-20260731';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,modeUnlockedForProgress,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a29-pursuit-combat-20260731';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a29-pursuit-combat-20260731';
-import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a29-pursuit-combat-20260731';
-import {getArenaStage,validateArenaStage} from '../js/arena/arena-stages.js?v=29a29-pursuit-combat-20260731';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a301-stability-cleanup-20260731';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a301-stability-cleanup-20260731';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a301-stability-cleanup-20260731';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a301-stability-cleanup-20260731';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a301-stability-cleanup-20260731';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,modeUnlockedForProgress,routeProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a301-stability-cleanup-20260731';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a301-stability-cleanup-20260731';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a301-stability-cleanup-20260731';
+import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a301-stability-cleanup-20260731';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -37,21 +37,22 @@ import {DEFAULT_QOL_SETTINGS,QOL_SETTINGS_KEY,loadQolSettings,saveQolSettings,sa
 import {NotificationSystem} from '../js/notification-system.js';
 import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringifySave,validateSaveImport} from '../js/save-manager.js';
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
-import {TRAINING_TRIALS,createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a29-pursuit-combat-20260731';
-import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a29-pursuit-combat-20260731';
+import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a301-stability-cleanup-20260731';
+import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a301-stability-cleanup-20260731';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a29-pursuit-combat-20260731';
+import {LoadingManager} from '../js/loading-manager.js?v=29a301-stability-cleanup-20260731';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a29-pursuit-combat-20260731';
-import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a29-pursuit-combat-20260731';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a29-pursuit-combat-20260731';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a301-stability-cleanup-20260731';
+import {ARENA_NORMAL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor} from '../js/arena/arena-combat-data.js?v=29a301-stability-cleanup-20260731';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a301-stability-cleanup-20260731';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a301-stability-cleanup-20260731';
 
-const RELEASE_CACHE_ID='29a29-pursuit-combat-20260731';
+const RELEASE_CACHE_ID='29a301-stability-cleanup-20260731';
 const nativeFetch=globalThis.fetch.bind(globalThis);
 function fetchFresh(input,init={}){
   let request=input;
@@ -219,7 +220,7 @@ await test('controller detection and disconnection assignment stay deterministic
 await test('InputManager honors explicit player device assignment',()=>{const pads=[makePad(),null,makePad()],input=new InputManager(()=>pads);input.setControllerStyle(1,'xbox');input.setControllerAssignment(1,2);pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=true;input.poll();pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=false;settleChordWindow(input);assert(input.consumeAction(1,'a'),'assigned Player 1 controller input was ignored')});
 await test('round and Training cleanup clear visual-only state',()=>{const setup=pair();setup.world.fighterVisuals={resetFighter:fighter=>{fighter.__visualReset=true}};setup.one.visualAction='ultimateAttack';setup.one.visualActionTimer=99;setup.one.resetRuntime();assert(setup.one.__visualReset&&!setup.one.visualAction&&!setup.one.visualActionTimer,'fighter reset retained visual state');trainingState.enabled=true;resetTrainingWorld(setup.world);assert(setup.world.projectiles.length===0&&setup.world.effects.effects.length===0,'Training cleanup retained transient visuals')});
 
-await test('Prototype 2.9A.29 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.29 — Pursuit & Combat Identity','build label is outdated');assert(SAVE_SCHEMA_VERSION===268,'save schema version is outdated')});
+await test('Prototype 2.9A.30.1 uses one centralized build label',()=>{assert(BUILD_VERSION==='Prototype 2.9A.30.1 — Stability & Interface Cleanup','build label is outdated');assert(SAVE_SCHEMA_VERSION===268,'save schema version is outdated')});
 await test('Bark and Wade are first-class sprite fighters with complete manifests',async()=>{
   assert(SPRITE_FIGHTER_IDS.includes('bark')&&SPRITE_FIGHTER_IDS.includes('wade'),'Bark or Wade is missing from the sprite fighter pipeline');
   for(const [name,url,specials] of [['Bark',BARK_MANIFEST_URL,['rockShot','rockArmor','earthWall','groundQuake','seismicCounter']],['Wade',WADE_MANIFEST_URL,['lightningBlast','lightningDash','thunderstorm','lightningBeam']]]){
@@ -511,7 +512,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a29-pursuit-combat-20260731');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a301-stability-cleanup-20260731');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
@@ -561,7 +562,7 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a29-pursuit-combat-20260731');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a301-stability-cleanup-20260731');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','reachLookout'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
@@ -992,7 +993,38 @@ await test('2.9A.29 movement identities keep fighters distinct without damage mo
 await test('2.9A.29 Arena wires buffered pursuit, defensive tech, one-use reactions, and readable prompts',async()=>{
   const [arena,manual]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(r=>r.text()),fetchFresh('../js/story/combat-manual.js').then(r=>r.text())]);
   for(const token of ['pursuitBuffered','tryPursuitEscape','comboWallSplatUsed','comboGroundBounceUsed','groundBouncePending','data-pursuit-prompt','Pursuit Pressure'])assert(arena.includes(token),`Arena pursuit pass omitted ${token}`);
-  const manualLower=manual.toLowerCase();for(const token of ['pursuit tech','wall splat','ground bounce','linked finisher'])assert(manualLower.includes(token),`Sage Manual pursuit lesson omitted ${token}`);
+  const manualLower=manual.toLowerCase();for(const token of ['pursuit tech','wall splat','ground bounce','ideal pursuit combo'])assert(manualLower.includes(token),`Sage Manual pursuit lesson omitted ${token}`);
+});
+
+
+await test('2.9A.29.1 Pursuit Tech uses a fair fixed 15-Energy threshold',()=>{
+  assert(PURSUIT_TUNING.escapeCost===15,'Pursuit Tech cost is not 15 Energy');
+  assert(pursuitTechAvailable(15,0)&&!pursuitTechAvailable(14.99,0),'exact Pursuit Tech threshold is incorrect');
+  assert(!pursuitTechAvailable(100,.01),'Pursuit Tech ignores its cooldown');
+});
+
+await test('2.9A.29.1 pursuit prompts support Full Minimal and Off without changing combat rules',()=>{
+  assert(pursuitPromptText({mode:'off',window:true})==='','Off pursuit prompts still render text');
+  assert(pursuitPromptText({mode:'minimal',window:true})==='DASH','Minimal pursuit prompt is not compact');
+  assert(pursuitPromptText({mode:'full',incoming:true,energy:15}).includes('15 ENERGY'),'Full defensive prompt omits the fixed cost');
+  assert(pursuitPromptText({mode:'full',chasing:true,attackReady:true}).includes('ATTACK READY'),'attack-ready pursuit prompt is missing');
+});
+
+await test('2.9A.29.1 pursuit feedback and cleanup are wired for mobile and Story transitions',async()=>{
+  const [arena,qol,settings,audio,main]=await Promise.all([
+    fetchFresh('../js/arena/arena-mode.js').then(r=>r.text()),fetchFresh('../js/qol-settings.js').then(r=>r.text()),fetchFresh('../js/settings-panel.js').then(r=>r.text()),fetchFresh('../js/audio-manager.js').then(r=>r.text()),fetchFresh('../js/main.js').then(r=>r.text())
+  ]);
+  for(const token of ['pursuitReadyFlash','pursuitLockOn','pursuitCameraBlend','cameraZoomScale','promptMobileLinger','pursuitPromptLinger','RESET COMBAT STATE','data-training-pursuit-defense','techReady','pursuit-active','clearPursuitState'])assert(arena.includes(token),`Pursuit feel pass omitted ${token}`);
+  for(const token of ["pursuitPrompts:'full'","['full','minimal','off']"])assert(qol.includes(token)||settings.includes(token),`Pursuit prompt setting omitted ${token}`);
+  assert(audio.includes('duckMusic')&&main.includes('pxcombatduck'),'pursuit music ducking is not connected');
+});
+
+await test('2.9A.29.1 Training sells the full pursuit route and grades timing',()=>{
+  const state=createTrainingTrialState('finisher');
+  recordTrainingTrialEvent(state,'launcherHit');recordTrainingTrialEvent(state,'pursuitStart');recordTrainingTrialEvent(state,'pursuitBuffer',{timing:.4});recordTrainingTrialEvent(state,'pursuitFollowupHit',{kind:'pursuitLight'});const result=recordTrainingTrialEvent(state,'pursuitFinisherHit');
+  assert(result.completed&&['GREAT','PERFECT'].includes(result.grade),'Ideal Pursuit Combo does not grade a successful route');
+  assert(pursuitTimingGrade(1)==='GOOD'&&pursuitTimingGrade(2)==='GREAT'&&pursuitTimingGrade(3)==='PERFECT','pursuit timing grade thresholds are incorrect');
+  assert(TRAINING_TRIALS.pressure&&TRAINING_TRIALS.finisher.label==='Ideal Pursuit Combo','new pursuit training scenarios are missing');
 });
 
 await test('2.9A.28 mode and route selectors use one-card carousels',async()=>{
@@ -1017,6 +1049,95 @@ await test('2.9A.28.1 mobile Story hubs use compact HUDs and spacious sheets',as
   assert(main.includes('initializeMobileStoryUi'),'mobile Story enhancer is not initialized');
   for(const token of ['.storyMiniMap{display:none!important}','grid-template-columns:minmax(0,1fr) 48px','place-items:end center','grid-auto-flow:column','chapter2QuestJournal'])assert(css.includes(token),`spacious mobile Story UI omitted ${token}`);
   for(const token of ['mobileObjectiveToggle','mobileObjectiveExpanded','MutationObserver','orientationchange'])assert(ui.includes(token),`mobile objective disclosure omitted ${token}`);
+});
+
+await test('2.9A.29.2 unifies combat HUD feedback without changing pursuit balance',async()=>{
+  const [arena,css,index]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(r=>r.text()),fetchFresh('../css/combat-hud-feedback-29a292.css').then(r=>r.text()),fetchFresh('../index.html').then(r=>r.text())]);
+  for(const token of ["combatEvent('perfectParry'","combatEvent('guardBreak'","combatEvent('pursuitTech'","combatEvent('wallSplat'","combatEvent('groundBounce'",'selectedAbilitySlot','justReady','hudCriticalHealth'])assert(arena.includes(token),`Combat HUD pass omitted ${token}`);
+  for(const token of ['.combatEventLayer','.guardFill.eventBreak','.arenaAbility.selected','pursuit-active .arenaHotbar'])assert(css.includes(token),`Combat feedback stylesheet omitted ${token}`);
+  assert(index.includes('combat-hud-feedback-29a292.css'),'combat HUD stylesheet is not loaded');
+  assert(PURSUIT_TUNING.escapeCost===15,'combat HUD polish changed Pursuit Tech balance');
+});
+
+
+await test('2.9A.30 Focus Recovery uses gray health, startup, and fixed energy conversion',()=>{
+  const fighter={maxHp:100,hp:60,en:100};resetFocusRecovery(fighter);registerRecoverableDamage(fighter,20);
+  assert(fighter.recoverableHp>0&&fighter.recoverableHp<=20,'recoverable-health cap failed');
+  let result=channelFocusRecovery(fighter,.59,{eligible:true});assert(!result.active&&fighter.hp===60,'recovery started before the 0.6-second startup');
+  result=channelFocusRecovery(fighter,.01,{eligible:true});assert(result.active,'recovery did not activate at 0.6 seconds');
+  const hp=fighter.hp,en=fighter.en;result=channelFocusRecovery(fighter,1,{eligible:true});
+  assert(Math.abs((fighter.hp-hp)-5)<.001,'healing rate is not 5 HP per second');
+  assert(Math.abs((en-fighter.en)-10)<.001,'energy conversion is not 2 Energy per HP');
+  assert(FOCUS_RECOVERY_RULES.maxRecoverableRatio===.20,'recoverable-health cap is not 20%');
+});
+
+await test('2.9A.30 Focus Recovery creates release recovery and clears safely',()=>{
+  const fighter={maxHp:100,hp:50,en:100};resetFocusRecovery(fighter);registerRecoverableDamage(fighter,25);channelFocusRecovery(fighter,.6,{eligible:true});
+  assert(endFocusRecovery(fighter),'ending an active recovery did not report the attempt');
+  assert(Math.abs(fighter.focusRecoveryRelease-FOCUS_RECOVERY_RULES.releaseRecovery)<.001,'release recovery is not 0.3 seconds');
+  tickFocusRecovery(fighter,FOCUS_RECOVERY_RULES.releaseRecovery);assert(fighter.focusRecoveryRelease===0,'release recovery did not clean up');
+});
+
+await test('2.9A.30 stages expose distinct playstyle profiles and clean tournament rules',()=>{
+  const stages=listArenaStages(),tournament=stages.find(stage=>stage.id==='tournament');
+  assert(tournament?.available&&tournament.boundary==='RING-OUT'&&tournament.archetype==='EDGE CONTROL','Tournament profile is not a clean ring-out identity');
+  assert(stageProfile('dojo').archetype==='PRESSURE','Dojo pressure identity is missing');
+  assert(stageProfile('echo-mountain').size==='EXTRA LARGE','Mountain pursuit identity is missing');
+  assert(stages.filter(stage=>stage.available).length>=5,'expanded Arena stage catalog is incomplete');
+});
+
+await test('2.9A.30 Arena wires stage identity, tournament atmosphere, and Focus Recovery',async()=>{
+  const [arena,manual,stages]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(r=>r.text()),fetchFresh('../js/story/combat-manual.js').then(r=>r.text()),fetchFresh('../js/arena/arena-stages.js').then(r=>r.text())]);
+  for(const token of ['data-focus-recovery-cue','data-training-recovery','FOCUS RECOVERY • VULNERABLE','registerRecoverableDamage','drawStageIdentity','crowdExcitement','stageBoundaryPulse'])assert(arena.includes(token),`Arena identity/recovery pass omitted ${token}`);
+  for(const token of ['RING-OUT','EDGE CONTROL','PRESSURE','PURSUIT'])assert(stages.includes(token),`Stage profiles omitted ${token}`);
+  const lower=manual.toLowerCase();for(const token of ['block + charge','gray portion','2 energy','20%'])assert(lower.includes(token),`Sage Manual Focus Recovery lesson omitted ${token}`);
+});
+
+
+await test('2.9A.30.1 Focus Recovery startup cancels cleanly without accidental release lag',()=>{
+  const fighter={maxHp:100,hp:60,en:100};resetFocusRecovery(fighter);registerRecoverableDamage(fighter,20);
+  channelFocusRecovery(fighter,.3,{eligible:true});assert(fighter.focusRecoveryStartup>.29,'startup did not begin');
+  assert(endFocusRecovery(fighter),'startup cancellation did not report an attempt');
+  assert(fighter.focusRecoveryRelease===0,'startup-only cancellation incorrectly created vulnerable release recovery');
+  channelFocusRecovery(fighter,.4,{eligible:true});const unsafe=channelFocusRecovery(fighter,.01,{eligible:false});
+  assert(!unsafe.active&&fighter.focusRecoveryStartup===0,'unsafe startup retained progress');
+});
+
+await test('2.9A.30.1 Focus Recovery availability preserves normal Block when healing is unavailable',()=>{
+  const noGray={maxHp:100,hp:70,en:100};resetFocusRecovery(noGray);assert(!focusRecoveryAvailability(noGray,{eligible:true}).available,'recovery was available without gray health');
+  const lowEnergy={maxHp:100,hp:70,en:0};resetFocusRecovery(lowEnergy);lowEnergy.recoverableHp=10;assert(focusRecoveryAvailability(lowEnergy,{eligible:true}).reason==='no-energy','zero-energy failure reason is unclear');
+  const ready={maxHp:100,hp:70,en:15};resetFocusRecovery(ready);ready.recoverableHp=10;assert(focusRecoveryAvailability(ready,{eligible:true}).available,'valid recovery state was rejected');
+});
+
+await test('2.9A.30.1 Focus Recovery reports the current channel instead of the round total',()=>{
+  const fighter={maxHp:100,hp:50,en:100};resetFocusRecovery(fighter);registerRecoverableDamage(fighter,25);channelFocusRecovery(fighter,.6,{eligible:true});channelFocusRecovery(fighter,.4,{eligible:true});
+  assert(fighter.focusRecoveryChannelHealed>0&&fighter.focusRecoveredTotal===fighter.focusRecoveryChannelHealed,'first channel totals are inconsistent');
+  endFocusRecovery(fighter);tickFocusRecovery(fighter,FOCUS_RECOVERY_RULES.releaseRecovery);registerRecoverableDamage(fighter,5);channelFocusRecovery(fighter,.59,{eligible:true});
+  assert(fighter.focusRecoveryChannelHealed===0,'new channel inherited the previous channel total before healing');
+});
+
+await test('2.9A.30.1 preserves Story stats, initializes stage cameras, and clears Training recovery state',async()=>{
+  const arena=await fetchFresh('../js/arena/arena-mode.js').then(response=>response.text());
+  assert(!arena.includes("restart(){this.scores=[0,0];this.round=1;this.fighters[0].maxHp=100"),'restart still erases Story max HP');
+  assert(arena.includes('this.camera=initialCameraState(this.stage,this.fighters)'), 'rounds still start from the fixed Dojo camera');
+  assert(arena.includes('fighter.hp/Math.max(1,fighter.maxHp||100)<.70'),'CPU recovery still uses a fixed 70-HP threshold');
+  assert(arena.includes("resetFocusRecovery(fighter);this.notice('TRAINING HEALTH & RECOVERY STATE RESTORED'"),'Training knockout does not clear recovery state');
+});
+
+await test('2.9A.30.1 Mountain Path is open while stage size labels match their dimensions',async()=>{
+  const [arena,stages]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(response=>response.text()),fetchFresh('../js/arena/arena-stages.js').then(response=>response.text())]);
+  assert(stageProfile('tournament').size==='MEDIUM','Tournament size label is overstated');
+  assert(stageProfile('echo-caverns').size==='LARGE','Echo Caverns size label is understated');
+  assert(stageProfile('echo-mountain').boundary==='OPEN','Mountain Path lost its open identity');
+  assert(arena.includes("nearWall:this.stageProfile?.boundary==='WALLED'&&this.isNearStageWall"),'open stages can still wall splat against invisible limits');
+  assert(arena.includes("if(this.stageProfile?.boundary!=='OPEN')"),'open-stage boundary lines are still rendered as hard walls');
+});
+
+await test('2.9A.30.1 mobile Arena UI separates prompts and uses compact Training and Stage carousels',async()=>{
+  const [arena,css,index]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(response=>response.text()),fetchFresh('../css/stability-cleanup-29a301.css').then(response=>response.text()),fetchFresh('../index.html').then(response=>response.text())]);
+  for(const token of ['data-stage-prev','data-stage-next','data-stage-position','data-training-toggle','trainingPanelBody'])assert(arena.includes(token),`mobile Arena cleanup omitted ${token}`);
+  for(const token of ['.arenaStageOption.is-current','.arenaTrainingPanel.collapsed','.focusRecoveryCue{top:max(116px','.combatEventLayer{top:max(150px'])assert(css.includes(token),`mobile cleanup stylesheet omitted ${token}`);
+  assert(index.includes('stability-cleanup-29a301.css'),'stability cleanup stylesheet is not loaded');
 });
 
 const failed=results.filter(result=>!result.pass),output=results.map(result=>`${result.pass?'PASS':'FAIL'}  ${result.name}${result.error?` — ${result.error}`:''}`).join('\n');

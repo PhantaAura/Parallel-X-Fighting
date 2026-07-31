@@ -48,11 +48,11 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
       ['Pursuit','Land Heavy or Launcher, then press Dash during PURSUIT WINDOW'],
       ['Buffered chase','Press Light or Heavy during the chase so the follow-up comes out on arrival'],
       ['Linked finisher','Pursuit Light can link into one Heavy finisher during the short follow-up window'],
-      ['Pursuit tech','The defender can spend 18 energy and Dash during the incoming chase to escape'],
+      ['Pursuit tech','The defender can spend 15 energy and Dash during the incoming chase to escape, leaving the pursuer punishable'],
       ['Arena reactions','Strong hits can cause one wall splat and aerial finishers can cause one ground bounce per combo'],
       ['Juggle limit','Six airborne hits force recovery so stunlocks cannot continue']
     ],
-    drill:'Launch the dummy, press Dash to pursue, then finish with a pursuit Heavy.'
+    drill:'Ideal route: Launcher → Dash → Light → Heavy. Watch for the ATTACK READY pulse, then repeat it without guidance.'
   },
   {
     id:'special-categories',category:'TECHNIQUES',title:'SHOT / POWER / TRICK',kicker:'THREE TACTICAL JOBS',
@@ -78,15 +78,18 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
   },
   {
     id:'resource-control',category:'FOUNDATIONS',title:'ENERGY & GUARD',kicker:'STANDING STILL IS A DECISION',
-    summary:'Attacking builds energy. Manual charging restores it faster, but only while standing still and exposed.',
+    summary:'Attacking builds energy. Manual charging restores it faster, while Focus Recovery trades energy and safety for a limited amount of gray health.',
     entries:[
       ['Charge','Hold C / CHARGE while standing still'],
+      ['Focus Recovery','Hold BLOCK + CHARGE while standing still to recover only the gray portion of lost health'],
+      ['Recovery cost','After a 0.6-second startup, every 1 HP restored spends 2 Energy and you cannot guard'],
+      ['Interrupt risk','Moving, releasing the inputs, or taking a hit ends recovery and creates a short recovery animation'],
+      ['Recoverable cap','Gray health cannot exceed 20% of maximum health, so Focus Recovery never erases an entire bad exchange'],
       ['Attack gain','Clean hits restore energy, rewarding active combat'],
-      ['Passive gain','Energy returns slowly on its own'],
       ['Guard recovery','Guard recovers faster while standing still and not blocking'],
       ['Story level','Energy Control increases charge and passive recovery during Story Mode']
     ],
-    drill:'Turn Infinite Energy off, spend energy, then safely charge back to full.'
+    drill:'Create distance, recover five gray HP with BLOCK + CHARGE, then release before the dummy reaches you.'
   },
   {
     id:'advanced-defense',category:'FOUNDATIONS',title:'PARRY, GRAB & CLASH',kicker:'DEFENSE CANNOT LAST FOREVER',
@@ -118,10 +121,14 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     entries:[
       ['Perfect Parry','Practice the opening guard window'],
       ['Pursuit Route','Launch, press Dash to chase, then choose a Light or Heavy follow-up'],
-      ['Pursuit Finisher','Launcher → Dash → Light → Heavy'],
+      ['Ideal Pursuit Combo','Launcher → Dash → Light → Heavy with highlighted timing windows and a Good / Great / Perfect rating'],
       ['Wall Splat','Drive the dummy into a stage wall with a strong hit'],
       ['Ground Bounce','Use an aerial Heavy finisher and continue after the bounce'],
-      ['Pursuit Escape','Dash during an incoming chase to tech away'],
+      ['Training counters','Wall Splat and Ground Bounce show 0/1 counters so their one-per-combo limits stay visible'],
+      ['Pursuit Defense','Choose Never, Occasionally, Every Time, or After Repeated Route for the dummy'],
+      ['Pursuit Escape','Spend 15 Energy and Dash during an incoming chase to tech away and create a punish window'],
+      ['Focus Recovery','Create distance, hold Block + Charge through the startup, and recover five gray HP without being interrupted'],
+      ['Recovery Dummy','Choose Never Recover, Recover When Safe, Recover at Low Health, or Always Attempt'],
       ['Energy Discipline','Fight with Infinite Energy disabled'],
       ['Guard Pressure','Practice grabs and guard damage against a blocking dummy']
     ],

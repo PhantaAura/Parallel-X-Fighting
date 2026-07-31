@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a29-pursuit-combat-20260731';
+import {InputManager} from './input.js?v=29a301-stability-cleanup-20260731';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

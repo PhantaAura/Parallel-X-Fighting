@@ -1,0 +1,26 @@
+{
+  "build": "Prototype 2.9A.30.1 — Stability & Interface Cleanup",
+  "cacheId": "29a301-stability-cleanup-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.30 — Arena Identity & Focus Recovery",
+  "type": "cumulative full repository build",
+  "requiresPreviousPatch": false,
+  "smokeCasesPackaged": 297,
+  "highlights": [
+    "Story restart preserves fighter maximum HP and encounter scaling",
+    "Focus Recovery input fallback, startup cancellation, and release penalties are corrected",
+    "Current-channel healing feedback replaces the misleading round-total display",
+    "Training knockouts clear gray health and all recovery state",
+    "CPU recovery thresholds scale from maximum HP",
+    "Mountain Path no longer produces invisible-wall splats",
+    "Stage cameras initialize from their own profiles",
+    "Mobile prompts use separate safe lanes, Training collapses, and Stage Select becomes one-card-at-a-time",
+    "Visible and diagnostic build labels are synchronized"
+  ],
+  "compatibility": {
+    "storyChapters": "1–4 unchanged",
+    "saveSchemaChanged": false,
+    "combatDamageChanged": false,
+    "focusRecoveryCoreRatesChanged": false
+  }
+}

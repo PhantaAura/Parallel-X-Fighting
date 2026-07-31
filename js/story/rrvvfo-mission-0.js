@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a29-pursuit-combat-20260731';
-import {clampToStage} from '../arena/arena-stages.js?v=29a29-pursuit-combat-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a29-pursuit-combat-20260731';
-import {storyConfirm} from './story-ux.js?v=29a29-pursuit-combat-20260731';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a29-pursuit-combat-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a301-stability-cleanup-20260731';
+import {clampToStage} from '../arena/arena-stages.js?v=29a301-stability-cleanup-20260731';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a301-stability-cleanup-20260731';
+import {storyConfirm} from './story-ux.js?v=29a301-stability-cleanup-20260731';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a301-stability-cleanup-20260731';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

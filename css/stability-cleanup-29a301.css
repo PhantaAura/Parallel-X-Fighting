@@ -1,0 +1,28 @@
+/* Prototype 2.9A.30.1 — Stability & Interface Cleanup */
+#arenaModeScreen .arenaStageMobileNav{display:none;align-items:center;justify-content:center;gap:12px;margin:10px 0}
+#arenaModeScreen .arenaStageMobileNav button{width:48px;height:44px;padding:0;font-size:30px;line-height:1}
+#arenaModeScreen .arenaStageMobileNav strong{min-width:64px;text-align:center;color:#dff8ff;letter-spacing:.08em}
+#arenaModeScreen .trainingPanelToggle{width:100%;min-height:34px!important;padding:6px 9px!important;border-color:#78f3ff88!important;background:#101a2be8!important;color:#e7fbff!important;font-size:9px!important;letter-spacing:.06em}
+#arenaModeScreen .trainingPanelBody{display:grid;gap:6px}
+#arenaModeScreen .arenaTrainingPanel.collapsed{width:auto!important;max-width:min(210px,45vw)!important;padding:6px!important;background:#080a12dc!important}
+#arenaModeScreen .arenaTrainingPanel.collapsed .trainingPanelBody{display:none}
+
+@media(max-width:760px),(pointer:coarse){
+  #arenaModeScreen .pursuitPrompt{top:max(82px,calc(env(safe-area-inset-top) + 72px))!important;max-width:min(58vw,340px)!important}
+  #arenaModeScreen .focusRecoveryCue{top:max(116px,calc(env(safe-area-inset-top) + 106px))!important;max-width:min(58vw,340px)!important;padding:5px 9px!important;font-size:8px!important}
+  #arenaModeScreen .combatEventLayer{top:max(150px,calc(env(safe-area-inset-top) + 140px))!important}
+  #arenaModeScreen .edgeWarning{top:max(178px,calc(env(safe-area-inset-top) + 168px))!important;max-width:58vw!important;font-size:8px!important;padding:5px 9px!important}
+  #arenaModeScreen .arenaTrainingPanel{top:max(84px,calc(env(safe-area-inset-top) + 74px))!important;left:max(8px,env(safe-area-inset-left))!important;width:min(198px,39vw)!important;max-height:55vh!important;padding:7px!important}
+  #arenaModeScreen .arenaTrainingPanel.collapsed{top:max(78px,calc(env(safe-area-inset-top) + 68px))!important;width:auto!important}
+  #arenaModeScreen .arenaStageCard{width:min(94vw,560px)!important;max-height:calc(100dvh - 24px)!important;padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))!important}
+  #arenaModeScreen .arenaStageMobileNav{display:flex}
+  #arenaModeScreen .arenaStageGrid{display:block!important;margin:10px 0!important;overflow:visible!important}
+  #arenaModeScreen .arenaStageOption{display:none!important;min-height:230px!important;width:100%!important;padding:18px!important}
+  #arenaModeScreen .arenaStageOption.is-current{display:grid!important}
+  #arenaModeScreen .arenaStageOption strong{font-size:clamp(22px,7vw,34px)!important}
+  #arenaModeScreen .arenaStageOption .stageDescription,#arenaModeScreen .arenaStageOption .stageRecommend{font-size:11px!important;line-height:1.35!important}
+}
+
+@media(max-width:680px) and (orientation:portrait){
+  #arenaModeScreen .focusRecoveryCue,#arenaModeScreen .combatEventLayer,#arenaModeScreen .edgeWarning{display:none!important}
+}

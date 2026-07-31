@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a29-pursuit-combat-20260731';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a301-stability-cleanup-20260731';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',

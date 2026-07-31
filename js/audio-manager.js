@@ -93,6 +93,12 @@ export class AudioManager{
     }catch{}
   }
 
+  duckMusic(amount=.72,duration=.48){
+    const bus=this.musicBus,context=this.context;if(!bus||!context)return false;
+    const now=context.currentTime,target=Math.max(.18,Math.min(1,Number(amount)||.72)),hold=Math.max(.08,Math.min(1.2,Number(duration)||.48));
+    try{bus.gain.cancelScheduledValues(now);bus.gain.setValueAtTime(Math.max(.0001,bus.gain.value||1),now);bus.gain.linearRampToValueAtTime(target,now+.035);bus.gain.linearRampToValueAtTime(1,now+hold);return true}catch{return false}
+  }
+
   tone(frequency=220,duration=.05,type='square',volume=.03,channel='sfx',when=0){
     try{
       const Audio=globalThis.AudioContext||globalThis.webkitAudioContext;

@@ -9,16 +9,16 @@ import {
   rrvvfoRouteStarted,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a29-pursuit-combat-20260731';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a29-pursuit-combat-20260731';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a29-pursuit-combat-20260731';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a29-pursuit-combat-20260731';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a29-pursuit-combat-20260731';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a29-pursuit-combat-20260731';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a29-pursuit-combat-20260731';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a29-pursuit-combat-20260731';
-import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a29-pursuit-combat-20260731';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a29-pursuit-combat-20260731';
+} from './lost-year-data.js?v=29a301-stability-cleanup-20260731';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a301-stability-cleanup-20260731';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a301-stability-cleanup-20260731';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a301-stability-cleanup-20260731';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a301-stability-cleanup-20260731';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a301-stability-cleanup-20260731';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a301-stability-cleanup-20260731';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a301-stability-cleanup-20260731';
+import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a301-stability-cleanup-20260731';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a301-stability-cleanup-20260731';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

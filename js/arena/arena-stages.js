@@ -918,10 +918,22 @@ const ECHO_MOUNTAIN={
   ],lamps:[]}
 };
 
+export const ARENA_STAGE_PROFILES=deepFreeze({
+  dojo:{size:'SMALL',boundary:'WALLED',archetype:'PRESSURE',tags:['WALL SPLAT','CLOSE RANGE'],recommended:'Heavy pressure, counters, and short pursuit routes.',description:'A compact dojo floor where positioning near the wooden walls matters.'},
+  tournament:{size:'MEDIUM',boundary:'RING-OUT',archetype:'EDGE CONTROL',tags:['OPEN','PURSUIT'],recommended:'Long pursuit routes, knockback control, and clean neutral play.',description:'A clean official ring with readable ropes, crowd reactions, and no cover.'},
+  'resonance-facility':{size:'LARGE',boundary:'WALLED',archetype:'ROUTE CONTROL',tags:['ANGLED LANES','PROJECTILES'],recommended:'Cut off side approaches and use the long center lane.',description:'A broad facility floor with strong metallic boundaries and long sightlines.'},
+  'echo-caverns':{size:'LARGE',boundary:'WALLED',archetype:'TIGHT ROUTES',tags:['PRESSURE','WALL SPLAT'],recommended:'Control the curved edges and force close-range exchanges.',description:'A dense cavern arena built for pressure without random hazards.'},
+  'echo-mountain':{size:'EXTRA LARGE',boundary:'OPEN',archetype:'PURSUIT',tags:['LONG CHASE','ZONING'],recommended:'Use speed, projectiles, and recovery only after earning distance.',description:'A long mountain route with room for full pursuit sequences and wide repositioning.'},
+  asrylyte:{size:'SMALL',boundary:'WALLED',archetype:'EFFECTS',tags:['COMING LATER'],recommended:'Effects-heavy pressure arena.',description:'A future Arena-mode effects stage.'}
+});
+
 export const ARENA_STAGE_CATALOG=deepFreeze([
-  {id:'dojo',name:'Tangai Dojo',status:'Playable',available:true,role:'Medium closed arena'},
-  {id:'tournament',name:'Global Tournament',status:'Playable',available:true,role:'Large long-range arena • 1500 × 900'},
-  {id:'asrylyte',name:'Asrylyte Zone',status:'Next effects checkpoint',available:false,role:'Small effects-heavy arena'}
+  {id:'dojo',name:'Tangai Dojo',status:'Playable',available:true},
+  {id:'tournament',name:'Global Tournament',status:'Playable',available:true},
+  {id:'resonance-facility',name:'Resonance Facility',status:'Playable',available:true},
+  {id:'echo-caverns',name:'Echo Caverns',status:'Playable',available:true},
+  {id:'echo-mountain',name:'Mountain Path',status:'Playable',available:true},
+  {id:'asrylyte',name:'Asrylyte Zone',status:'Next effects checkpoint',available:false}
 ]);
 
 export const ARENA_STAGES=deepFreeze({
@@ -969,11 +981,17 @@ export function getArenaStage(id='dojo'){
   return stage;
 }
 
+export function stageProfile(id='dojo'){
+  const stage=ARENA_STAGES[id]||ARENA_STAGES.dojo,profile=ARENA_STAGE_PROFILES[id]||{size:'MEDIUM',boundary:stage.boundary?'WALLED':'OPEN',archetype:'NEUTRAL',tags:['BALANCED'],recommended:'Balanced movement and positioning.',description:stage.subtitle||stage.name};
+  const width=Math.round(stage.bounds.maxX-stage.bounds.minX),depth=Math.round(stage.bounds.maxZ-stage.bounds.minZ);
+  return{...profile,dimensions:`${width} × ${depth}`,role:`${profile.size} • ${profile.boundary} • ${profile.archetype}`};
+}
+
 export function listArenaStages(){
   return ARENA_STAGE_CATALOG.map(entry=>{
     const loaded=ARENA_STAGES[entry.id];
-    const available=!!loaded&&loaded.available!==false;
-    return{...entry,available,status:available?'Playable':entry.status};
+    const available=!!loaded&&loaded.available!==false&&entry.available!==false;
+    return{...entry,...stageProfile(entry.id),available,status:available?'Playable':entry.status};
   });
 }
 

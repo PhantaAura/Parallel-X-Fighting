@@ -1,17 +1,18 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a25-feel-team-collision-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a25-feel-team-collision-20260730';
-import {StoryMap} from './story-map.js?v=29a25-feel-team-collision-20260730';
-import {storyConfirm} from './story-ux.js?v=29a25-feel-team-collision-20260730';
-import {openCombatManual} from './combat-manual.js?v=29a25-feel-team-collision-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a25-feel-team-collision-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a25-feel-team-collision-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27-chapter-hooks-pacing-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a27-chapter-hooks-pacing-20260730';
+import {StoryMap} from './story-map.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyConfirm} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
+import {openCombatManual} from './combat-manual.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a27-chapter-hooks-pacing-20260730';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a25-feel-team-collision-20260730';
+} from './chapter4-content.js?v=29a27-chapter-hooks-pacing-20260730';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -57,6 +58,9 @@ function buildUI(){
     <div class="c4Qte" data-c4-qte hidden role="dialog" aria-modal="true"><article><small data-c4-qte-kicker>SECRET BOSS</small><h2 data-c4-qte-title>PLANET-IMPACT CONTROL</h2><p data-c4-qte-text></p><div class="c4QteSequence" data-c4-qte-sequence></div><div class="c4QteMeter"><i data-c4-qte-meter></i></div><button type="button" data-c4-qte-action class="primary">BEGIN</button><small data-c4-qte-prompt></small></article></div>
     <div class="c4VibrationOverlay" data-c4-vibration-overlay hidden><div class="c4VibrationCore"></div><span>VIBRATION SENSE</span></div>
     <div class="c4WatcherScan" data-c4-watcher-scan hidden><small>HOLLOW WATCHER ANALYSIS</small><strong data-c4-watcher-state>SEARCHING FOR A PATTERN</strong><span data-c4-watcher-detail>Vary move, timing, and approach.</span><div><i data-c4-watcher-meter></i></div></div>
+    <div class="c4EnemyRole" data-c4-enemy-role hidden><small>ENEMY ROLE</small><strong data-c4-enemy-role-name>SCOUT</strong><span data-c4-enemy-role-detail>Fast approach • low durability</span></div>
+    <div class="c4TeamStatus" data-c4-team-status hidden><span data-ally="bark">BARK • READY</span><span data-ally="wade">WADE • READY</span></div>
+    <div class="c4WaveBanner" data-c4-wave-banner></div>
     <div class="c4Complete" data-c4-complete hidden><article><small>RRVVFO STORY • CHAPTER 4 COMPLETE</small><h2>SHADOW’S LOOKOUT</h2><p>Echo Village is secure. Project Hollow has Rrvvfo’s combat data. Shadow knows the symbol.</p><div data-c4-complete-secret></div><button type="button" class="primary" data-c4-continue>RETURN TO STORY</button></article></div>`;
   document.body.appendChild(root);return root;
 }
@@ -76,7 +80,7 @@ class RrvvfoChapter4{
     this.mode='boot';this.area='region';this.dialogue=null;this.aborted=false;this.completed=false;this.nearby=null;this.interactHeld=false;this.playerFlip=false;
     this.storyMenuOpen=false;this.storyMenuPaused=false;this.trackerOpen=false;this.choiceOpen=false;this.choiceCallback=null;this.toastTimer=0;this.areaTimer=0;
     this.currentFight=null;this.fightElapsed=0;this.fightLosses={};this.lastWatcherAction='';this.watcherRepeat=0;this.patternRecorded=0;this.watcherMemory={action:'',signature:'',spacing:'',approach:'',repeat:0,confidence:0,lastHitAt:0,lastInterval:0,learned:false,variety:[],recent:[]};
-    this.vibrationPulse=0;this.vibrationCooldown=0;this.vibrationCombat=false;this.windClock=0;this.supportClock=0;this.teamAllies=[];
+    this.vibrationPulse=0;this.vibrationCooldown=0;this.vibrationCombat=false;this.windClock=0;this.supportClock=0;this.teamAllies=[];this.teamCommand='focus';this.waveBannerTimer=0;this.currentEnemyRole=null;
     this.qte={active:false,type:'',step:0,sequence:[],deadline:0,meter:0,onComplete:null};this.qteInputHeld=false;
     this.root.querySelector('[data-c4-journal]').addEventListener('click',()=>this.openTracker());
     this.root.querySelector('[data-c4-map]').addEventListener('click',()=>this.map?.open());
@@ -302,7 +306,7 @@ class RrvvfoChapter4{
       {speaker:'WADE',speakerClass:'p2',text:'The cave is making my footsteps sound faster.',tail:'down'},
       {speaker:'BARK',speakerClass:'neutral',text:'That is because you keep running ahead.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Three doors. Fire, earth, and lightning. At least this place knows who showed up.',tail:'down'}
-    ],()=>{this.completeRequired('cavernsEntered');this.mode='cavern';this.battle.phase='play';this.updateObjective()})}else this.updateObjective();
+    ],()=>{this.completeRequired('cavernsEntered');this.mode='cavern';this.battle.phase='play';this.updateObjective()})}else if(this.state.ryuzankaro.started&&!this.state.ryuzankaro.ingredients.includes('rootstone')){this.showDialogue([{speaker:'BARK',speakerClass:'neutral',text:'The grunts reopened a side chamber after our first trip.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'So the cave changed while we were gone. Cool. Also bad.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'At least this isn’t the exact same walk twice.',tail:'down'}],()=>{this.mode='cavern';this.battle.phase='play';this.updateObjective()})}else this.updateObjective();
   }
 
   returnToVillageAfterParts(){
@@ -562,7 +566,7 @@ class RrvvfoChapter4{
     player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(-380,60);
     void this.battle.ensureFighterAsset(player,'rrvvfo');applyStoryProgressionToFighter(player,loadLostYearProgress());player.en=80;player.guard=100;
     this.teamAllies=config.teamBattle?[{id:'bark',name:'BARK',accent:'#ad8655',x:-520,z:180,attackClock:0},{id:'wade',name:'WADE',accent:'#4b9fe2',x:-500,z:-180,attackClock:.85}]:[];
-    this.configureFightFoe(waves[0],playerLevel);
+    this.configureFightFoe(waves[0],playerLevel);this.updateTeamCombatHud();this.showWaveBanner(1,waves.length,this.battle.fighters[1].name);
     this.battle.time=9999;this.engine.setHotbarAvailability([1,2,3,4,5],{show:true});
     const stageName=config.kind==='ryuzankaro'?'RYUZANKARO • BODILESS FORM':config.kind==='watcher'?'MOUNTAIN RECORDING PLATFORM':config.kind==='ingredient-swarm'?'PROJECT HOLLOW SWARM':'ECHO VILLAGE DEFENSE';
     this.engine.setLabels({stageName,chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO',this.battle.fighters[1].name.toUpperCase()]});
@@ -576,10 +580,13 @@ class RrvvfoChapter4{
     const fight=this.currentFight,foe=this.battle.fighters[1];
     const levelOffset=Number(wave.levelOffset??(fight.kind==='ryuzankaro'?3:fight.kind==='watcher'?2:1));
     foe.id=wave.id||fight.id;foe.name=wave.name||fight.name;
-    foe.accent=fight.kind==='ryuzankaro'?'#1e1726':fight.kind==='watcher'?'#63dce3':wave.id==='grunt-commander'?'#87507f':'#764c74';
-    foe.cpu=true;foe.visualScale=fight.kind==='watcher'?1.25:fight.kind==='ryuzankaro'?1.18:wave.id==='grunt-commander'?1.1:.96;
+    const role=chapter4EnemyRole(wave,fight.kind);this.currentEnemyRole=role;fight.enemyRole=role.id;
+    foe.accent=fight.kind==='ryuzankaro'?'#1e1726':role.color;
+    foe.cpu=true;foe.visualScale=fight.kind==='watcher'?1.25:fight.kind==='ryuzankaro'?1.18:role.id==='heavy'||role.id==='commander'?1.1:.96;
     foe.reset(380,-60);foe.asset=null;applyStoryLevelToFighter(foe,playerLevel+levelOffset);
-    foe.maxHp=Math.round(foe.maxHp*Math.max(.35,Number(wave.hpScale??fight.hpScale)||1));foe.hp=foe.maxHp;foe.en=90;foe.guard=100;
+    foe.storySpeedMultiplier=(foe.storySpeedMultiplier||1)*role.speed;foe.storyAttackMultiplier=(foe.storyAttackMultiplier||1)*role.attack;foe.storyDefenseMultiplier=(foe.storyDefenseMultiplier||1)/role.defense;
+    foe.maxHp=Math.round(foe.maxHp*Math.max(.35,Number(wave.hpScale??fight.hpScale)||1)*role.defense);foe.hp=foe.maxHp;foe.en=90;foe.guard=role.id==='heavy'?125:role.id==='commander'?112:100;
+    this.updateEnemyRoleHud();
     fight.name=foe.name;fight.id=foe.id;
     this.engine.setLabels({stageName:fight.kind==='ingredient-swarm'?'PROJECT HOLLOW SWARM':fight.kind==='village-defense'?'ECHO VILLAGE DEFENSE':fight.kind==='watcher'?'MOUNTAIN RECORDING PLATFORM':'RYUZANKARO • BODILESS FORM',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO',foe.name.toUpperCase()]});
   }
@@ -592,13 +599,13 @@ class RrvvfoChapter4{
     player.hp=Math.min(player.maxHp,player.hp+Math.round(player.maxHp*.12));player.en=Math.min(100,player.en+18);player.guard=Math.min(100,player.guard+24);player.reset(-380,60);
     this.configureFightFoe(fight.waves[fight.waveIndex],playerLevel);
     this.supportClock=0;
-    this.battle.notice(`WAVE ${fight.waveIndex+1}/${fight.waves.length} • ${fight.name.toUpperCase()}`,1.7);
+    this.battle.notice(`WAVE ${fight.waveIndex+1}/${fight.waves.length} • ${fight.name.toUpperCase()}`,1.7);this.showWaveBanner(fight.waveIndex+1,fight.waves.length,fight.name);this.updateTeamCombatHud();
     this.battle.burst(380,-60,'#8fe8ff',24,70);
   }
 
   updateFight(dt){
     if(!this.currentFight)return;
-    const fight=this.currentFight;this.fightElapsed+=dt;fight.elapsed=this.fightElapsed;
+    const fight=this.currentFight;this.fightElapsed+=dt;fight.elapsed=this.fightElapsed;if(this.waveBannerTimer>0){this.waveBannerTimer=Math.max(0,this.waveBannerTimer-dt);if(!this.waveBannerTimer)this.root.querySelector('[data-c4-wave-banner]')?.classList.remove('show')}
     if(fight.kind==='watcher'){
       const memory=this.watcherMemory;
       if(memory.lastHitAt&&performance.now()-memory.lastHitAt>2300){memory.confidence=clamp(memory.confidence-dt*.22,0,1);if(memory.confidence<.42)memory.learned=false;this.updateWatcherHud()}
@@ -612,7 +619,7 @@ class RrvvfoChapter4{
       }
       if(this.supportClock>1.9){
         this.supportClock=0;
-        const bark=Math.floor(this.fightElapsed/1.9)%2===0,ally=this.teamAllies.find(item=>item.id===(bark?'bark':'wade'));
+        const bark=this.teamCommand==='protect'||(this.teamCommand==='focus'&&Math.floor(this.fightElapsed/1.9)%2===0),ally=this.teamAllies.find(item=>item.id===(bark?'bark':'wade'));
         if(ally){ally.x+=(foe.x-ally.x)*.42;ally.z+=(foe.z-ally.z)*.42}
         if(bark){
           this.battle.burst(foe.x,foe.z,'#d3a55e',22,58);foe.hp-=Math.max(2,foe.maxHp*.028);foe.stun=Math.max(foe.stun,.15);this.battle.notice('BARK • EARTH COMBO SUPPORT',.8);
@@ -622,8 +629,15 @@ class RrvvfoChapter4{
         if(foe.hp<=0&&fight.kind!=='ryuzankaro'){foe.hp=1;queueMicrotask(()=>this.advanceFightWave())}
       }
     }
+    if(fight.teamBattle)this.updateTeamCombatHud();
     if(fight.kind==='ryuzankaro'&&this.vibrationCombat&&this.supportClock>1.15){this.supportClock=0;const player=this.battle.fighters[0];this.battle.burst(player.x+(Math.random()-.5)*220,player.z+(Math.random()-.5)*180,'#d9f9ff',10,45)}
   }
+
+  showWaveBanner(index,total,name){const node=this.root?.querySelector('[data-c4-wave-banner]');if(!node)return;node.textContent=`WAVE ${index}/${total} • ${String(name||'ENEMY').toUpperCase()}`;node.classList.add('show');this.waveBannerTimer=1.65}
+
+  updateEnemyRoleHud(){const panel=this.root?.querySelector('[data-c4-enemy-role]'),role=this.currentEnemyRole,active=this.mode==='fight'&&Boolean(role);if(!panel)return;panel.hidden=!active;if(!active)return;panel.style.setProperty('--role-color',role.color);this.root.querySelector('[data-c4-enemy-role-name]').textContent=role.label;this.root.querySelector('[data-c4-enemy-role-detail]').textContent=role.description}
+
+  updateTeamCombatHud(){const panel=this.root?.querySelector('[data-c4-team-status]'),active=this.mode==='fight'&&this.teamAllies.length>0;if(!panel)return;panel.hidden=!active;if(!active)return;for(const ally of this.teamAllies){const node=panel.querySelector(`[data-ally="${ally.id}"]`);if(node)node.textContent=`${ally.name} • ${Math.max(0,1.9-this.supportClock).toFixed(1)}s • ${this.teamCommand.toUpperCase()}`}panel.title='Press C during team battles: Focus → Protect → Interrupt'}
 
   updateWatcherHud(){
     const panel=this.root?.querySelector('[data-c4-watcher-scan]');if(!panel)return;
@@ -641,7 +655,7 @@ class RrvvfoChapter4{
       const losses=(this.fightLosses[fight.kind]||0)+1;this.fightLosses[fight.kind]=losses;
       this.showChoice({kicker:'ENCOUNTER LOST',title:`${fight.name.toUpperCase()} WINS`,text:losses>=2?'Retry with Story Assist for a small damage and defense advantage.':'Retry from the encounter checkpoint.',buttons:[{label:'RETRY',value:'retry',primary:true},...(losses>=2?[{label:'RETRY WITH STORY ASSIST',value:'assist'}]:[]),{label:'RETURN TO AREA',value:'leave'}],onChoose:value=>{
         if(value==='leave'){
-          this.currentFight=null;this.teamAllies=[];this.updateWatcherHud();this.engine.setHotbarAvailability([],{show:false});
+          this.currentFight=null;this.teamAllies=[];this.currentEnemyRole=null;this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
           if(fight.kind==='watcher')this.enterMountain({restored:true});else if(fight.returnArea==='cavern')this.enterCaverns({restored:true});else this.enterVillage({spawn:SPAWNS.village});
         }else{
           this.startFight({...fight.restartConfig});
@@ -650,14 +664,14 @@ class RrvvfoChapter4{
       }});return;
     }
     this.fightLosses[fight.kind]=0;if(!this.replayMode&&fight.xp)addStoryXp(fight.xp,{source:`${fight.name.toUpperCase()} DEFEATED`});
-    this.currentFight=null;this.teamAllies=[];this.updateWatcherHud();this.engine.setHotbarAvailability([],{show:false});
+    this.currentFight=null;this.teamAllies=[];this.currentEnemyRole=null;this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
     if(fight.kind==='ingredient-swarm'){
       this.state.ryuzankaro.swarmsCleared=unique([...this.state.ryuzankaro.swarmsCleared,fight.ingredientReward]);
       this.completeIngredientPickup(fight.ingredientReward);return;
     }
     if(fight.kind==='village-defense'){
-      this.state.villageDefenseComplete=true;this.state.ryuzankaro.available=true;this.completeRequired('villageDefended');this.enterVillage({spawn:SPAWNS.village});
-      this.showDialogue([{speaker:'BARK',speakerClass:'neutral',text:'Those grunts were not passing through. Echo Village is one of their targets.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Then we repair the lift, leave people here to guard it, and I follow the mountain signal.',tail:'down'}],()=>{this.mode='explore';this.battle.phase='play';this.updateObjective();this.toast('OPTIONAL QUEST UNLOCKED','THE OLD MAN’S POTIONS','Complete it before leaving, or continue to the mountain gate.')});return;
+      this.state.villageDefenseComplete=true;this.state.ryuzankaro.available=true;this.state.teamRestSeen=true;this.completeRequired('villageDefended');this.enterVillage({spawn:SPAWNS.village});
+      this.showDialogue([{speaker:'BARK',speakerClass:'neutral',text:'Those grunts were not passing through. Echo Village is one of their targets.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'We were fighting for days to reach you. I vote we sit down for at least one minute.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'The Sage might still be trapped under that arena.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'Then we protect this village while you follow the mountain signal. Rushing all three of us forward leaves both places exposed.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Fine. One minute. Then I’m moving.',tail:'down'}],()=>{this.mode='explore';this.battle.phase='play';this.updateObjective();this.toast('OPTIONAL QUEST UNLOCKED','THE OLD MAN’S POTIONS','Complete it before leaving, or continue to the mountain gate.')});return;
     }
     if(fight.kind==='ryuzankaro'){if(fight.finale){this.state.ryuzankaro.checkpoint='seal';this.saveState();this.startSealQte();return}return}
     if(fight.kind==='watcher'){
@@ -668,7 +682,7 @@ class RrvvfoChapter4{
 
   useVibrationSense(){if(!this.state.rewards.vibrationSense)return false;if(this.vibrationCooldown>0){this.battle.notice(`VIBRATION SENSE • ${this.vibrationCooldown.toFixed(1)}s`,.9);return false}this.vibrationPulse=2.2;this.vibrationCooldown=5.5;this.battle.burst(this.battle.fighters[0].x,this.battle.fighters[0].z,'#d9f9ff',32,120);this.battle.notice('VIBRATION SENSE • HIDDEN MOVEMENT REVEALED',1.2);return true}
 
-  drawChapterWorld(){if(!this.battle?.renderer||this.aborted)return;const r=this.battle.renderer,time=performance.now()/1000;if(this.area==='village')this.drawVillage(r,time);else if(this.area==='cavern')this.drawCaverns(r,time);else if(this.area==='mountain')this.drawMountain(r,time);else if(this.area==='sky')this.drawSky(r,time);if(this.mode==='fight'&&this.teamAllies.length)this.drawTeamAllies(r,time);if(['explore','cavern','mountain'].includes(this.mode))for(const item of this.availableInteractions())this.drawMarker(r,item,time)}
+  drawChapterWorld(){if(!this.battle?.renderer||this.aborted)return;const r=this.battle.renderer,time=performance.now()/1000;if(this.area==='village')this.drawVillage(r,time);else if(this.area==='cavern')this.drawCaverns(r,time);else if(this.area==='mountain')this.drawMountain(r,time);else if(this.area==='sky')this.drawSky(r,time);if(this.mode==='fight'&&this.currentEnemyRole){const foe=this.battle.fighters[1],pulse=1+Math.sin(time*6)*.08;r.disc({x:foe.x,y:6,z:foe.z,rx:48*pulse,rz:32*pulse,color:this.currentEnemyRole.color,alpha:.16})}if(this.mode==='fight'&&this.teamAllies.length)this.drawTeamAllies(r,time);if(['explore','cavern','mountain'].includes(this.mode))for(const item of this.availableInteractions())this.drawMarker(r,item,time)}
   drawVillage(r,time){
     // Ancient, low-tech settlement: hand-cut stone, timber, ropes, bells, water, and resonance craft.
     const homes=[[-520,210,0],[-280,360,1],[10,210,2],[300,380,3],[610,200,4],[-120,-330,5],[230,-410,6],[560,-300,7]];
@@ -765,7 +779,7 @@ class RrvvfoChapter4{
   async requestExit(){const leave=await storyConfirm({title:'EXIT CHAPTER 4?',message:'Completed Echo Region checkpoints remain saved. Active fights restart.',confirmLabel:'EXIT CHAPTER'});if(leave)this.exitToStory()}
   exitToStory(){if(this.aborted)return;this.saveState();this.cleanup();this.onExit()}
 
-  onKey(event){if(this.root.hidden)return;if(this.qte.active){const expected=this.qte.sequence[this.qte.step];const map={ArrowLeft:'LEFT',KeyA:'LEFT',ArrowRight:'RIGHT',KeyD:'RIGHT',ArrowUp:'UP',KeyW:'UP',ArrowDown:'DOWN',KeyS:'DOWN',Space:'CHARGE',KeyE:'RELEASE',Digit3:'OBJECT SWAP',Digit4:'LENS',KeyV:'VIBRATION'};let value=map[event.code]||map[event.key];if((event.code==='Enter'||event.code==='NumpadEnter')&&['LOCK','SEAL'].includes(expected))value=expected;if(value){event.preventDefault();this.advanceQte(value)}return}
+  onKey(event){if(this.root.hidden)return;if(event.code==='KeyC'&&this.mode==='fight'&&this.teamAllies.length){event.preventDefault();const commands=['focus','protect','interrupt'],index=(commands.indexOf(this.teamCommand)+1)%commands.length;this.teamCommand=commands[index];this.updateTeamCombatHud();this.battle.notice(`TEAM COMMAND • ${this.teamCommand.toUpperCase()}`,1.2);return}if(this.qte.active){const expected=this.qte.sequence[this.qte.step];const map={ArrowLeft:'LEFT',KeyA:'LEFT',ArrowRight:'RIGHT',KeyD:'RIGHT',ArrowUp:'UP',KeyW:'UP',ArrowDown:'DOWN',KeyS:'DOWN',Space:'CHARGE',KeyE:'RELEASE',Digit3:'OBJECT SWAP',Digit4:'LENS',KeyV:'VIBRATION'};let value=map[event.code]||map[event.key];if((event.code==='Enter'||event.code==='NumpadEnter')&&['LOCK','SEAL'].includes(expected))value=expected;if(value){event.preventDefault();this.advanceQte(value)}return}
     if(this.storyMenuOpen){if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();this.closeStoryMenu()}return}
     if(this.trackerOpen){if(event.key==='Escape'||event.key.toLowerCase()==='t'){event.preventDefault();event.stopImmediatePropagation();this.closeTracker()}return}
     if(this.choiceOpen)return;

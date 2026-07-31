@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a25-feel-team-collision-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a25-feel-team-collision-20260730';
-import {StoryMap} from './story-map.js?v=29a25-feel-team-collision-20260730';
-import {storyConfirm} from './story-ux.js?v=29a25-feel-team-collision-20260730';
-import {openCombatManual} from './combat-manual.js?v=29a25-feel-team-collision-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a25-feel-team-collision-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a25-feel-team-collision-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27-chapter-hooks-pacing-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a27-chapter-hooks-pacing-20260730';
+import {StoryMap} from './story-map.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyConfirm} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
+import {openCombatManual} from './combat-manual.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a27-chapter-hooks-pacing-20260730';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,7 +22,7 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a25-feel-team-collision-20260730';
+} from './chapter3-content.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -77,13 +77,10 @@ const BAG_SEARCH=Object.freeze([
 ]);
 
 const LENS_TRAIL=Object.freeze([
-  {id:'trail-arena',label:'MAIN ARENA',x:1190,z:40},
-  {id:'trail-vendor',label:'VENDOR ROW',x:-520,z:570},
-  {id:'trail-camp',label:'FIGHTER CAMP',x:-900,z:-430},
-  {id:'trail-storage',label:'STORAGE BUILDING',x:620,z:560},
-  {id:'trail-security',label:'SECURITY STATION',x:940,z:-260},
-  {id:'trail-staff',label:'STAFF CORRIDOR',x:1040,z:310},
-  {id:'trail-elevator',label:'MAINTENANCE ELEVATOR',x:1190,z:40}
+  Object.freeze({x:-240,z:-80,label:'EAST SUPPORT RESIDUE'}),
+  Object.freeze({x:180,z:-360,label:'STAFF CORRIDOR ECHO'}),
+  Object.freeze({x:520,z:-610,label:'SECURITY BLIND SPOT'}),
+  Object.freeze({x:780,z:-700,label:'HIDDEN ELEVATOR SEAM'})
 ]);
 
 const OPTIONAL_POINTS=Object.freeze({
@@ -126,6 +123,22 @@ const OPTIONAL_MULTI_POINTS=Object.freeze({
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
 function distance(a,b){return Math.hypot((a?.x||0)-(b?.x||0),(a?.z||0)-(b?.z||0))}
 function unique(values){return[...new Set(values)]}
+function chapter3CaseBoard(state){
+  const found=new Set(state?.evidence||[]),has=(...ids)=>ids.every(id=>found.has(id));
+  const cards=[
+    {kicker:'WITNESS CONTRADICTION',title:'THE MEDICAL STORY CHANGED',detail:'The worker remembers different assignments and carries different badge information.',open:has('medicalTestimony','medicalBadgeMismatch')},
+    {kicker:'TOURNAMENT DATA',title:'THE RECORDS WERE COPIED',detail:'The bracket footage and fighter records do not agree with what happened in the arena.',open:found.has('copiedRecords')},
+    {kicker:'RING HARDWARE',title:'ENERGY WAS BEING COLLECTED',detail:'Devices beneath the supports stored energy from major tournament attacks.',open:found.has('ringCollector')},
+    {kicker:'ACCESS ROUTE',title:'SOMEONE USED FALSE CREDENTIALS',detail:'A maintenance badge and the repeated medical badge point toward the east support.',open:has('falseBadge','medicalBadgeMismatch')},
+    {kicker:'SAGE’S DETECTOR',title:'THE ENERGY TRAIL CONTINUES BELOW',detail:'The detector follows energy toward the existing maintenance entrance beneath the ring.',open:found.has('energyDetector')}
+  ];
+  let theory='Question witnesses and compare physical evidence.';
+  if(found.has('ringCollector'))theory='Someone used the tournament to gather combat energy.';
+  if(has('copiedRecords','ringCollector'))theory='The altered records may be hiding who installed the collectors.';
+  if(has('falseBadge','medicalBadgeMismatch'))theory='Tournament identities and access credentials cannot be trusted.';
+  if(found.has('energyDetector'))theory='Follow the energy trail beneath the east support. Do not assume the witnesses are who they appear to be.';
+  return{cards,theory,contradiction:has('medicalTestimony','medicalBadgeMismatch')};
+}
 
 function buildUI(){
   document.getElementById(UI_ID)?.remove();
@@ -141,7 +154,7 @@ function buildUI(){
       </div>
       ${storyAttackStripMarkup({compact:true})}
       <div class="c3HudActions">
-        <button type="button" data-c3-status>QUESTS</button>
+        <button type="button" data-c3-status>EVIDENCE</button>
         <button type="button" data-c3-map>MAP</button>
         <button type="button" data-c3-menu-button>STORY MENU</button>
       </div>
@@ -159,7 +172,7 @@ function buildUI(){
     </div>
     <div class="c3QuestToast" data-c3-toast hidden><small data-c3-toast-kicker>QUEST UPDATED</small><strong data-c3-toast-title></strong><span data-c3-toast-detail></span></div>
     <aside class="c3Tracker" data-c3-tracker hidden>
-      <header><small>CHAPTER 3 • INVESTIGATION</small><h2>SOMETHING UNDER THE RING</h2></header>
+      <header><small>CHAPTER 3 • INVESTIGATION</small><h2>CASE BOARD</h2></header>
       <div class="c3TrackerRows">
         <div><span>REQUIRED STORY</span><strong data-c3-required-count>0 / 29</strong></div>
         <div><span>MANDATORY SIDE STORIES</span><strong data-c3-mandatory-count>0 / 3</strong></div>
@@ -530,9 +543,7 @@ class RrvvfoChapter3{
       const step=this.state.recordingStep;
       if(step===0)items.push({kind:'forgotten-fighter',label:'THE UNRECORDED FIGHTER',x:-900,z:-420});
       else if(step===1)items.push({kind:'public-booth',label:'CHECK PUBLIC REPLAY BOOTH',x:260,z:-690});
-      else if(step===2&&!this.state.mediaTerminals.includes('damaged-a'))items.push({kind:'media-a',label:'RESTORE DAMAGED TERMINAL',x:-80,z:-560});
-      else if(step===2&&!this.state.mediaTerminals.includes('damaged-b'))items.push({kind:'media-b',label:'RESTORE DAMAGED TERMINAL',x:430,z:-690});
-      else if(step===3)items.push({kind:'private-booth',label:'ENTER PRIVATE DATA BOOTH',x:620,z:-690});
+      else if(step===2)items.push({kind:'security-reconstruction',label:'RECONSTRUCT THE MISSING FOOTAGE',x:330,z:-650});
       else if(step===4)items.push({kind:'restore-recording',label:'RESTORE THE PUBLIC RECORDING',x:260,z:-690});
     }
     if(next==='bracketRecords')items.push({kind:'bracket',label:'RESTORE BRACKET RECORDS',x:930,z:-540});
@@ -601,9 +612,7 @@ class RrvvfoChapter3{
       'east-support-clue':()=>this.investigateEastSupportClue(),
       'forgotten-fighter':()=>this.beginForgottenFighter(),
       'public-booth':()=>this.usePublicBooth(),
-      'media-a':()=>this.restoreMediaTerminal('damaged-a'),
-      'media-b':()=>this.restoreMediaTerminal('damaged-b'),
-      'private-booth':()=>this.enterPrivateBooth(),
+      'security-reconstruction':()=>this.reconstructSecurityFootage(),
       'restore-recording':()=>this.restorePublicRecording(),
       bracket:()=>this.beginBracketPuzzle(),
       'night-route':()=>this.advanceNightRoute(item.point),
@@ -810,6 +819,30 @@ class RrvvfoChapter3{
     ],()=>{
       this.state.recordingStep=2;this.state.mediaTerminals=unique([...this.state.mediaTerminals,'public']);this.saveState();
       this.mode='hub';this.battle.phase='play';this.updateObjective();
+    });
+  }
+
+  reconstructSecurityFootage(){
+    if((this.state.recordingStep||0)!==2)return;
+    this.showTask({
+      kicker:'MAIN INVESTIGATION • SECURITY OFFICE',
+      title:'RECONSTRUCT THE MISSING FOOTAGE',
+      text:'One sequence combines the terminal evidence. Choose the reconstruction that explains the repeated public footage and the missing east-support segment.',
+      buttons:[
+        {label:'MATCH TIMESTAMP → EAST CAMERA → PRIVATE BOOTH',value:'correct',detail:'The public loop hides a copied combat-data route.'},
+        {label:'DELETE THE BROKEN FILES',value:'delete',detail:'Fast, but it destroys the evidence.'},
+        {label:'REPLAY THE PUBLIC CAMERA ONLY',value:'public',detail:'That repeats the same incomplete loop.'}
+      ],
+      onChoose:value=>{
+        if(value!=='correct'){
+          this.battle.notice('THAT DOESN’T EXPLAIN THE MISSING SEGMENT',1.5);
+          this.mode='hub';this.battle.phase='play';this.updateObjective();return;
+        }
+        this.state.mediaTerminals=unique([...this.state.mediaTerminals,'damaged-a','damaged-b','private']);
+        this.state.recordingStep=4;this.saveState();
+        this.toast('DEDUCTION COMPLETE','THE RECORDING WAS REPEATED','The public footage hides a copied combat-data route through the east support.');
+        this.restorePublicRecording();
+      }
     });
   }
 
@@ -1396,7 +1429,8 @@ class RrvvfoChapter3{
     ],()=>{
       this.state.underground.projectHollowRead=true;this.completeRequired('projectHollow');
       this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState();
-      this.toast('LORE DISCOVERED','PROJECT HOLLOW','PHASE ONE COMPLETE. Meaning unknown.');
+      this.toast('FACILITY LOCKDOWN','PROJECT HOLLOW DATA ERASED','Alarms seal the quiet investigation route. Fight toward the teleporter before the evidence disappears.');
+      this.battle.notice('LOCKDOWN • SECURITY UNITS DEPLOYED',2.2);
     });
   }
 
@@ -1635,16 +1669,22 @@ class RrvvfoChapter3{
   }
 
   refreshTracker(){
-    const mandatory=chapter3MandatorySummary(this.state),optional=chapter3OptionalSummary(this.state),evidence=chapter3EvidenceSummary(this.state);
+    const mandatory=chapter3MandatorySummary(this.state),optional=chapter3OptionalSummary(this.state),evidence=chapter3EvidenceSummary(this.state),caseBoard=chapter3CaseBoard(this.state);
     this.root.querySelector('[data-c3-required-count]').textContent=`${this.state.requiredCompleted.length} / ${CHAPTER3_REQUIRED_STEPS.length}`;
     this.root.querySelector('[data-c3-mandatory-count]').textContent=`${mandatory.filter(entry=>entry.complete).length} / ${mandatory.length}`;
     this.root.querySelector('[data-c3-evidence-count]').textContent=`${evidence.filter(entry=>entry.found).length} / ${evidence.length}`;
     this.root.querySelector('[data-c3-optional-count]').textContent=`${optional.filter(entry=>entry.complete).length} / ${optional.length}`;
     this.root.querySelector('[data-c3-area-status]').textContent=this.area==='facility'?'FACILITY':this.area==='remote'?'REMOTE REGION':'TOURNAMENT';
     this.root.querySelector('[data-c3-journal]').innerHTML=`
-      <h3>REQUIRED STORY</h3>
+      <h3>CURRENT DEDUCTION</h3>
+      <section class="c3CaseBoard">
+        <article class="currentTheory"><small>RRVVFO’S WORKING THEORY</small><strong>${caseBoard.theory}</strong><span>This is not a confirmed explanation. New evidence can still contradict it.</span></article>
+        ${caseBoard.cards.map(card=>`<article class="${card.open?'':'locked'}"><small>${card.open?card.kicker:'UNRESOLVED LEAD'}</small><strong>${card.open?card.title:'EVIDENCE INCOMPLETE'}</strong><span>${card.open?card.detail:'Keep investigating the tournament grounds.'}</span></article>`).join('')}
+        ${caseBoard.contradiction?'<article class="contradiction"><small>UNRESOLVED CONTRADICTION</small><strong>THE MEDICAL WORKER DOESN’T MATCH THE FIRST INTERVIEW.</strong><span>No evidence confirms whether this is a replacement, disguise, projection, altered memory, or something else.</span></article>':''}
+      </section>
+      <h3>MAIN INVESTIGATION THREADS</h3>
       ${mandatory.map(entry=>`<p class="${entry.complete?'done':''}"><b>${entry.complete?'✓':'•'}</b>${entry.title}</p>`).join('')}
-      <h3>EVIDENCE</h3>
+      <h3>COLLECTED EVIDENCE</h3>
       ${evidence.map(entry=>`<p class="${entry.found?'done':''}"><b>${entry.found?'✓':'?'}</b>${entry.label}</p>`).join('')}
       <h3>OPTIONAL QUESTS</h3>
       ${optional.map(entry=>`<p class="${entry.complete?'done':''}"><b>${entry.complete?'✓':entry.started?'→':'○'}</b>${entry.title}</p>`).join('')}

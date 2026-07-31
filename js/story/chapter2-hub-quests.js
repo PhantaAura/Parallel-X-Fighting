@@ -129,7 +129,7 @@ export function markQuestComplete(state,id){
 }
 
 export function requiredRumorCountForStep(step){
-  return({quarterfinal:1,'bark-pouki':2,wade:3,final:4}[step]||0);
+  return({quarterfinal:1,'bark-pouki':1,wade:2,final:3}[step]||0);
 }
 
 export function chapter2MandatoryReadyForTournament(state){

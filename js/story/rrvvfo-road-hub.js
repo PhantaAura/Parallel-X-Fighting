@@ -1,13 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a25-feel-team-collision-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a25-feel-team-collision-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a25-feel-team-collision-20260730';
-import {StoryMap} from './story-map.js?v=29a25-feel-team-collision-20260730';
-import {storyConfirm} from './story-ux.js?v=29a25-feel-team-collision-20260730';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a25-feel-team-collision-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a25-feel-team-collision-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a25-feel-team-collision-20260730';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a25-feel-team-collision-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27-chapter-hooks-pacing-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a27-chapter-hooks-pacing-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a27-chapter-hooks-pacing-20260730';
+import {StoryMap} from './story-map.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyConfirm} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a27-chapter-hooks-pacing-20260730';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -38,6 +38,13 @@ function buildUI(){
     ${storyAttackStripMarkup({compact:true})}
     <div class="roadAreaTitle" data-road-area hidden><small>THE LOST YEAR</small><strong data-road-area-name>TRAINING GROUNDS</strong></div>
     <div class="roadPrompt" data-road-prompt hidden><strong data-road-prompt-title>INTERACT</strong><span data-road-prompt-detail>PRESS INTERACT</span></div>
+    <div class="roadRouteChoice" data-road-route-choice hidden>
+      <article><small>TOURNAMENT ROAD</small><h2>CHOOSE A ROUTE</h2><p>All routes reach the tournament, but each tests something different.</p><div>
+        <button type="button" data-road-route="main">MAIN ROAD • FIRE CONTROL</button>
+        <button type="button" data-road-route="forest">FOREST SHORTCUT • EXPLORATION</button>
+        <button type="button" data-road-route="cliff">CLIFF ROUTE • RISK & REWARD</button>
+      </div></article>
+    </div>
     <div class="roadChoice" data-road-choice hidden>
       <article>
         <small>NON-STORY ENCOUNTER</small>
@@ -98,6 +105,7 @@ class RrvvfoRoadHub{
     this.prompt=this.root.querySelector('[data-road-prompt]');
     this.promptTitle=this.root.querySelector('[data-road-prompt-title]');
     this.promptDetail=this.root.querySelector('[data-road-prompt-detail]');
+    this.routeChoicePanel=this.root.querySelector('[data-road-route-choice]');
     this.choice=this.root.querySelector('[data-road-choice]');
     this.qte=this.root.querySelector('[data-road-qte]');
     this.completePanel=this.root.querySelector('[data-road-complete]');
@@ -114,6 +122,9 @@ class RrvvfoRoadHub{
     this.bridgeCrossed=false;
     this.swapRock={x:230,z:0};
     this.roadCleared=false;
+    this.routeChoice=null;
+    this.routeChoiceShown=false;
+    this.transportFixed=false;
     this.gateOpen=false;
     this.lensRevealed=false;
     this.encounterResolved=false;
@@ -157,6 +168,7 @@ class RrvvfoRoadHub{
     this.root.querySelector('[data-road-run]').addEventListener('click',()=>this.leaveRoadsideChallenge());
     this.root.querySelectorAll('[data-qte-input]').forEach(button=>button.addEventListener('click',()=>this.acceptQteInput(button.dataset.qteInput)));
     this.root.querySelector('[data-road-continue]').addEventListener('click',()=>this.exitToStory());
+    this.root.querySelectorAll('[data-road-route]').forEach(button=>button.addEventListener('click',()=>this.chooseRoadRoute(button.dataset.roadRoute)));
     this.keyHandler=event=>this.onKey(event);
     document.addEventListener('keydown',this.keyHandler,true);
   }
@@ -321,8 +333,8 @@ class RrvvfoRoadHub{
     blockers.push({id:'river',minX:-25,maxX:175,minZ:-700,maxZ:700});
     if(!this.roadCleared){
       blockers.push({id:'fallen-tree',minX:285,maxX:395,minZ:-190,maxZ:190});
-      blockers.push({id:'fallen-tree-north',minX:285,maxX:395,minZ:-660,maxZ:-190});
-      blockers.push({id:'fallen-tree-south',minX:285,maxX:395,minZ:190,maxZ:660});
+      if(this.routeChoice!=='forest')blockers.push({id:'fallen-tree-north',minX:285,maxX:395,minZ:-660,maxZ:-190});
+      if(this.routeChoice!=='cliff')blockers.push({id:'fallen-tree-south',minX:285,maxX:395,minZ:190,maxZ:660});
     }
     if(!this.gateOpen){
       blockers.push({id:'gate',minX:555,maxX:645,minZ:-175,maxZ:175});
@@ -386,6 +398,15 @@ class RrvvfoRoadHub{
       });
       return;
     }
+    if(this.step==='route-choice'&&player.x>225&&!this.routeChoiceShown){
+      this.routeChoiceShown=true;this.mode='choice';this.battle.phase='story';this.routeChoicePanel.hidden=false;
+      this.routeChoicePanel.querySelector('[data-road-route]')?.focus();return;
+    }
+    if(this.routeChoice&&this.step==='route-travel'&&player.x>430){
+      this.roadCleared=true;this.step='gate';this.battle.notice(`${this.routeChoice.toUpperCase()} ROUTE CLEARED`,1.4);
+      this.setObjective('REACH THE MULTI-TARGET GATE','The routes reconnect here. Use Shots of Agony on the four targets.');
+      saveLostYearProgress({...loadLostYearProgress(),roadRoute:this.routeChoice,lastCheckpoint:'rrvvfo-road-route'});return;
+    }
     if(this.step==='cart'&&player.x>235&&!this.manualPending){
       this.step='cart-dialogue';
       this.showAreaTitle('ROADSIDE DELAY');
@@ -404,6 +425,10 @@ class RrvvfoRoadHub{
         this.setObjective('OPEN THE MULTI-TARGET GATE','Press hotbar slot 2 to strike all four gate targets together.');
       });
       return;
+    }
+    if(this.step==='transport'&&player.x>690&&!this.transportFixed){
+      this.showAreaTitle('BROKEN TRANSPORT CROSSING');
+      this.setObjective('RECOVER THE TRANSPORT WHEEL',`${this.abilityPrompt(3,'OBJECT SWAP')} near the marked wheel across the gap.`);return;
     }
     if(this.step==='encounter'&&player.x>760&&!this.encounterResolved&&!this.manualPending){
       if(this.lostCompetitorDecision==='help'){
@@ -443,13 +468,28 @@ class RrvvfoRoadHub{
       this.finishDialogueShown=true;
       this.step='finish-dialogue';
       this.showDialogue([
-        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'Look at that—wait, don’t you look familiar? I’ve seen you on the news somewhere.',tail:'down'},
+        {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'The arena’s right there! Wait—aren’t you the guy who helped the transport?',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'Yeah, I beat Revvfo. No big deal.',tail:'down'},
         {speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'WAIT, REALLY?! HOLY—BIG DEAL!',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'This seems like a knockoff of the World Martial Arts Tournament.',tail:'down'},
         {speaker:'SIGN PAINTER',speakerClass:'neutral',text:'They’re owned by the same CEO.',tail:'down'}
       ],()=>this.commitCompletion());
     }
+  }
+
+
+  chooseRoadRoute(route){
+    if(!['main','forest','cliff'].includes(route))return;
+    this.routeChoice=route;this.routeChoicePanel.hidden=true;this.mode='hub';this.battle.phase='play';
+    if(route==='main'){
+      this.step='cart';this.setObjective('MAIN ROAD • CONTROL THE FIRE','Follow the center road and clear the fallen log without spreading flames.');
+    }else if(route==='forest'){
+      this.step='route-travel';this.setObjective('FOREST SHORTCUT • FOLLOW THE BELLS','Take the north trail through the pines and reconnect near the gate.');
+    }else{
+      this.step='route-travel';this.setObjective('CLIFF ROUTE • STAY ON THE SOUTH LEDGE','Take the dangerous southern route. Reaching the gate grants a Road Dare badge.');
+      saveLostYearProgress({...loadLostYearProgress(),unlocks:[...new Set([...(loadLostYearProgress().unlocks||[]),'roadDareBadge'])]});
+    }
+    this.battle.notice(`${route.toUpperCase()} ROUTE SELECTED`,1.5);
   }
 
 
@@ -541,8 +581,8 @@ class RrvvfoRoadHub{
       this.battle.burst(targetX,targetZ,'#ffd079',20,55);
       snapHubCamera(this.battle,player,{distance:1010});
       this.battle.notice('OBJECT SWAP • ROCK TRADED PLACES',1.5);
-      this.step='cart';
-      this.setObjective('FOLLOW THE ROAD TO THE WORKER','A supply cart is blocking the next section.');
+      this.step='route-choice';
+      this.setObjective('CHOOSE YOUR TOURNAMENT ROUTE','Main road, forest shortcut, or cliff route. Each reaches the same gate.');
       saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-bridge'});
       return true;
     }
@@ -575,11 +615,16 @@ class RrvvfoRoadHub{
         this.gateOpen=true;
         this.mode='hub';
         this.battle.phase='play';
-        this.step='encounter';
-        this.setObjective('FOLLOW THE ROAD EAST','A roaming fighter is practicing near the next clearing.');
+        this.step='transport';
+        this.setObjective('HELP THE STRANDED TOURNAMENT TRANSPORT','A wheel mechanism fell beyond the broken ledge. Use Object Swap to recover it.');
         saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-gate'});
       },700);
       return true;
+    }
+    if(slot===3&&this.step==='transport'&&player.x>650&&player.x<850){
+      this.transportFixed=true;player.visualAction='objectSwapDisappear';player.visualActionTime=.45;
+      this.battle.burst(770,-210,'#ffd079',22,62);this.battle.burst(735,40,'#ffd079',22,62);
+      this.showDialogue([{speaker:'TRANSPORT DRIVER',speakerClass:'neutral',text:'You saved the whole transport—and the tournament supplies.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Remember that when the crowd starts cheering for me.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play';this.step='encounter';this.setObjective('CONTINUE THROUGH THE PRACTICE CLEARING','The road is open. A roaming fighter is ahead.');saveLostYearProgress({...loadLostYearProgress(),transportRescued:true,lastCheckpoint:'rrvvfo-road-transport'})});return true;
     }
     if(slot===4&&this.step==='lens-ready'&&player.x>900&&player.x<1060){
       player.hp=Math.max(1,player.hp-1);

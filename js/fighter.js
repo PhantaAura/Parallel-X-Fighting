@@ -241,7 +241,7 @@ export class Fighter{
     const sparkKind=defense?.perfect?'perfectBlock':kind;fx.add({t:'hitSpark',kind:sparkKind,x:this.x+24,y:this.y+43,c:defense?.perfect?'#bdfbff':kind==='ultimate'?'#fff7ba':kind==='special'?'#7de9ff':this.c.a,l:18});fx.burst(this.x+24,this.y+43,this.c.a,kind==='ultimate'?28:14);
     this.world.sound(this.block?(defense?.perfect?'perfectBlock':'block'):kind==='heavy'||kind==='airHeavy'?'heavyHit':kind==='launcher'?'launcher':kind==='ultimate'?'ultimateImpact':'lightHit');
     const strongNormal=kind==='heavy'||kind==='airHeavy'||kind==='launcher';
-    const shake=this.block?2:kind==='ultimate'?12:strongNormal?7:kind==='special'?5:3;this.world.shake=Math.max(this.world.shake,this.world.reducedShake?shake*.35:shake);this.world.hitstop=Math.max(this.world.hitstop,defense?.perfect?5:kind==='ultimate'?9:strongNormal?5:kind==='special'?4:2);return actual;
+    const shake=this.block?2:kind==='ultimate'?12:strongNormal?7:kind==='special'?5:3;this.world.shake=Math.max(this.world.shake,this.world.reducedShake?shake*.35:shake);this.world.hitstop=Math.max(this.world.hitstop,(defense?.perfect?5:kind==='ultimate'?9:strongNormal?5:kind==='special'?4:2)*(this.world.hitstopScale??1));return actual;
   }
   draw(ctx){
     if(this.world.fighterVisuals?.draw(ctx,this))return;

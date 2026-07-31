@@ -46,7 +46,7 @@ export function freshChapter4State(){
     location:'echo-region',
     requiredCompleted:[],
     beaconNodes:[],cavernDoors:[],liftParts:[],mountainSignals:[],
-    villageDefenseComplete:false,
+    villageDefenseComplete:false,teamRestSeen:false,
     ryuzankaro:{available:false,started:false,ingredients:[],swarmsCleared:[],bossDefeated:false,skipped:false,phase:'idle',checkpoint:'none',rewardsGranted:false},
     rewards:{lensMastery:0,vibrationSense:false,objectSwapRange:0,teamBadge:false,ryuzankaroCodex:false},
     hollowWatcher:{defeated:false,patternsRecorded:0,highestConfidence:0},

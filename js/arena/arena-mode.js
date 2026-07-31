@@ -1,12 +1,14 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a25-feel-team-collision-20260730';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageWallAvoidance} from './arena-stages.js?v=29a27-chapter-hooks-pacing-20260730';
 import {drawArenaStage} from './arena-stage-renderer.js';
 import {WebGLArenaRenderer} from './webgl-renderer.js';
-import {ArenaControlManager} from './arena-controls.js?v=29a25-feel-team-collision-20260730';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a25-feel-team-collision-20260730';
-import {ROSTER} from '../roster.js?v=29a25-feel-team-collision-20260730';
-import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a25-feel-team-collision-20260730';
-import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a25-feel-team-collision-20260730';
+import {ArenaControlManager} from './arena-controls.js?v=29a27-chapter-hooks-pacing-20260730';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor} from './arena-combat-data.js?v=29a27-chapter-hooks-pacing-20260730';
+import {ROSTER} from '../roster.js?v=29a27-chapter-hooks-pacing-20260730';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a27-chapter-hooks-pacing-20260730';
+import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a27-chapter-hooks-pacing-20260730';
+import {loadQolSettings} from '../qol-settings.js?v=29a27-chapter-hooks-pacing-20260730';
+import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const ID='arenaModeScreen';
 const W=960;
@@ -50,6 +52,20 @@ function movementProfile(fighter){
   return{...base,walkSpeed:base.walkSpeed*scale,runSpeed:base.runSpeed*scale,airSpeed:base.airSpeed*scale,accel:base.accel*scale,runAccel:base.runAccel*scale,airAccel:base.airAccel*scale,dashSpeed:base.dashSpeed*scale,pursuitSpeed:base.pursuitSpeed*scale};
 }
 function approach(current,target,amount){return current<target?Math.min(target,current+amount):Math.max(target,current-amount)}
+
+function combatFeedbackPreferences(){
+  const settings=loadQolSettings();
+  const freeze=settings.accessibility?.impactFreeze||'full',shake=settings.accessibility?.cameraShake||'full';
+  return{hitstopScale:freeze==='off'?0:freeze==='reduced'?0.55:1,shakeScale:shake==='off'?0:shake==='reduced'?0.38:1};
+}
+function motionIdentity(id){
+  return({
+    rrvvfo:{trail:'#ff6a31',secondary:'#ffd079',width:1.12,count:2,label:'FIRE'},
+    revvfo:{trail:'#7c42c8',secondary:'#e26bff',width:1,count:3,label:'ASTRYLTE'},
+    wade:{trail:'#72e7ff',secondary:'#ffffff',width:.72,count:4,label:'LIGHTNING'},
+    bark:{trail:'#c99a58',secondary:'#ead09a',width:1.35,count:1,label:'EARTH'}
+  })[id]||{trail:null,secondary:null,width:1,count:1,label:'ENERGY'};
+}
 
 const ATTACKS=ARENA_NORMAL_PROFILES.default;
 
@@ -159,7 +175,7 @@ function installUI(){
 <canvas data-fighter-layer width="${W}" height="${H}" aria-hidden="true"></canvas>
 
 <div class="arenaStageSelect hidden" data-arena-stage-select role="dialog" aria-modal="true" aria-label="Arena select"><div class="arenaStageCard">
-  <header><small>PROTOTYPE 2.9A.22</small><h2>SELECT ARENA</h2><p>Choose a stage. Kinetic movement, pursuit attacks, and Shot / Power / Trick techniques use the same rules everywhere.</p></header>
+  <header><small>PROTOTYPE 2.9A.27</small><h2>SELECT ARENA</h2><p>Choose a stage. Kinetic movement, pursuit attacks, and Shot / Power / Trick techniques use the same rules everywhere.</p></header>
   <div class="arenaStageGrid" data-arena-stage-grid></div>
   <button class="arenaStageBack" data-stage-back>BACK TO MAIN MENU</button>
 </div></div>
@@ -170,7 +186,7 @@ function installUI(){
   <div class="clock"><b data-time>90</b><small data-round>ROUND 1</small></div>
   <div class="side r"><div class="name"><span>REVVFO</span><span data-s2>0</span></div><div class="track"><div class="fill" data-h2></div></div><div class="resourceLine"><span data-e2-text>45</span><span>ENERGY</span></div><div class="resourceTrack"><div class="energyFill" data-e2></div></div><div class="resourceLine"><span data-g2-text>100</span><span>GUARD</span></div><div class="resourceTrack"><div class="guardFill" data-g2></div></div><div class="resourceLine"><span data-m2-text>0</span><span>MOMENTUM</span></div><div class="resourceTrack"><div class="momentumFill" data-m2></div></div></div>
 </div>
-<div class="badge"><strong>PROTOTYPE 2.9A.22 • KINETIC COMBAT</strong><span data-stage-name>TANGAI DOJO</span><br>REUSABLE ARENA PIPELINE • DATA-DRIVEN STAGE</div><div class="banner hidden" data-banner></div>
+<div class="badge"><strong>PROTOTYPE 2.9A.27 • KINETIC COMBAT</strong><span data-stage-name>TANGAI DOJO</span><br>REUSABLE ARENA PIPELINE • DATA-DRIVEN STAGE</div><div class="banner hidden" data-banner></div>
 <div class="result hidden" data-result><small>ARENA BATTLE</small><h2 data-title>MATCH COMPLETE</h2><p data-text></p><div class="actions"><button class="primary" data-rematch>REMATCH</button><button data-change-arena>CHANGE ARENA</button><button data-return>MAIN MENU</button></div></div>
 <div class="arenaNotice" data-arena-notice></div><div class="edgeWarning" data-edge-warning>EDGE PRESSURE • ESCAPE OR COUNTER</div>
 <div class="arenaHotbar" data-arena-hotbar><div class="arenaSlots">${ARENA_ABILITIES.map((ability,index)=>`<button class="arenaAbility ${ability.ultimate?'ultimate':''}" data-arena-slot="${index+1}" aria-label="Slot ${index+1}: ${ability.label}, ${SPECIAL_CATEGORIES[ability.category].label} category"><span class="arenaCooldown"></span><span class="arenaNumber">${index+1}</span><span class="arenaCategory">${SPECIAL_CATEGORIES[ability.category].label}</span><span class="arenaIcon">${ability.icon}</span><span class="arenaAbilityName">${ability.label}</span><span class="arenaCost">${ability.cost} ENERGY${ability.hp?` • ${ability.hp} HP`:''}</span><span class="arenaState" data-arena-state>READY</span></button>`).join('')}</div></div>
@@ -193,13 +209,13 @@ function installUI(){
 <div class="arenaTouchUtilities"><button data-arena-touch-pause aria-label="Pause">Ⅱ</button><button data-arena-touch-settings aria-label="Control settings">⚙</button></div>
 <div class="rotateHint"><div><strong>ROTATE TO LANDSCAPE</strong><span>Arena controls are designed for two-thumb play.</span></div></div>
 <div class="arenaControlSettings hidden" data-arena-control-settings role="dialog" aria-modal="true" aria-label="Arena control settings"><div class="arenaControlCard">
-  <header><div><small>PROTOTYPE 2.9A.22</small><h2>CONTROL LAYOUTS</h2><p>Desktop and mobile settings save separately from combat balance.</p></div><button data-arena-controls-close aria-label="Close">×</button></header>
+  <header><div><small>PROTOTYPE 2.9A.27</small><h2>CONTROL LAYOUTS</h2><p>Desktop and mobile settings save separately from combat balance.</p></div><button data-arena-controls-close aria-label="Close">×</button></header>
   <div class="arenaControlGrid">
     <fieldset><legend>PC</legend><label>Keyboard profile<select data-control-pc-layout><option value="shared">Chapter 1–3 Controls — used in every mode</option></select></label><label>Left mouse click<select data-control-mouse-attack><option value="light">Light Attack</option><option value="heavy">Heavy Attack</option></select></label><p><strong>Movement:</strong> WASD<br><strong>Jump:</strong> Space<br><strong>Light / Heavy / Launcher:</strong> J / K / I<br><strong>Dash:</strong> Shift<br><strong>Block:</strong> L or Mouse 2<br><strong>Charge:</strong> C<br><strong>Grab:</strong> U<br><strong>Abilities:</strong> 1–5</p></fieldset>
     <fieldset><legend>MOBILE</legend><label>Touch controls<select data-control-touch-mode><option value="auto">Auto detect</option><option value="on">Always on</option><option value="off">Off</option></select></label><label>Button size<select data-control-mobile-layout><option value="compact">Compact</option><option value="standard">Standard</option><option value="large">Large Buttons</option></select></label><label>Handedness<select data-control-handedness><option value="right">Joystick left / attacks right</option><option value="left">Joystick right / attacks left</option></select></label><label>Opacity<input data-control-opacity type="range" min=".45" max="1" step=".05"></label><label><input data-control-labels type="checkbox"> Show action labels</label></fieldset>
   </div><div class="arenaControlActions"><button data-arena-controls-reset>RESTORE DEFAULTS</button><button class="primary" data-arena-controls-close>DONE</button></div>
 </div></div>
-<div class="arenaTrainingPanel hidden" data-arena-training-panel><strong>ARENA TRAINING</strong><label>DRILL <select data-training-drill><option value="free">Free Practice</option><option value="parry">Perfect Parry</option><option value="charge">Charge Safely</option><option value="combo">Launch → Pursuit Route</option></select></label><label>DUMMY <select data-training-dummy><option value="stand">Stand</option><option value="block">Block</option><option value="cpu">CPU</option></select></label><button data-training-reset>RESET</button><button data-training-moves>MOVE LIST</button><button data-training-advanced>ADVANCED 2D LAB</button></div>
+<div class="arenaTrainingPanel hidden" data-arena-training-panel><strong>ARENA TRAINING</strong><label>TRIAL <select data-training-drill><option value="free">Free Practice</option><option value="parry">Perfect-Parry Trial</option><option value="charge">Energy Discipline</option><option value="combo">Launch → Pursuit Trial</option><option value="guard">Guard-Break Punish</option><option value="variation">Unpredictable Route</option></select></label><label>DUMMY <select data-training-dummy><option value="stand">Stand</option><option value="block">Always Block</option><option value="perfect">Perfect-Block Attempts</option><option value="counter">Counter After Hit</option><option value="tech">Air-Tech Practice</option><option value="random">Random Defense</option><option value="cpu">Full CPU</option></select></label><button data-training-reset>RESET</button><button data-training-moves>MOVE LIST</button><button data-training-advanced>ADVANCED 2D LAB</button><div class="arenaTrialCard" data-training-trial-card><small data-training-trial-label>FREE PRACTICE</small><strong data-training-trial-goal>Practice any route.</strong><span data-training-trial-message>No pass condition.</span><div><i data-training-trial-meter></i></div></div></div>
 <div class="bottom"><div class="help" data-arena-help></div><div class="desktopUtility"><button class="controlButton" data-arena-open-controls>⚙ CONTROLS</button><button data-restart>RESTART</button><button data-exit>EXIT</button></div></div>`;
   document.body.appendChild(root);
   return root;
@@ -281,7 +297,7 @@ class ArenaBattle{
     this.root=installUI();this.canvas=this.root.querySelector('[data-world-layer]');this.fighterCanvas=this.root.querySelector('[data-fighter-layer]');this.fighterContext=this.fighterCanvas.getContext('2d',{alpha:true});this.renderer=new WebGLArenaRenderer(this.canvas);this.audio=new CombatAudio();this.stage=getArenaStage(stageId);
     this.active=false;this.paused=false;this.accumulator=0;this.last=0;this.raf=0;this.hitstop=0;this.cameraShake=0;this.flashTime=0;
     const [spawn1,spawn2]=this.stage.spawnPoints;this.fighters=[new ArenaFighter('rrvvfo','Rrvvfo',spawn1.x,spawn1.z,false,'#ff493d','down'),new ArenaFighter('revvfo','Revvfo',spawn2.x,spawn2.z,true,'#a855f7','down')];
-    this.trainingMode=false;this.localMode=false;this.matchMode='cpu';this.trainingDummy='stand';this.trainingDrill='free';this.camera={x:0,z:0,distance:850,eye:[520,420,650],target:[0,35,0]};this.particles=[];this.projectiles=[];this.agonyClones=[];this.thunderZones=[];this.quakes=[];this.earthWalls=[];this.breakables=[];this.noticeTime=0;this.koTarget=KO_TARGET;this.scores=[0,0];this.round=1;this.time=Infinity;this.phase='intro';this.phaseTime=1.55;this.lastLoser=-1;this.ringOutEnabled=false;this.onRingOut=null;this.difficulty=this.readDifficulty();this.lensMastery=this.readLensMastery();
+    this.trainingMode=false;this.localMode=false;this.matchMode='cpu';this.trainingDummy='stand';this.trainingDrill='free';this.trainingTrial=createTrainingTrialState('free');this.feedback=combatFeedbackPreferences();this.camera={x:0,z:0,distance:850,eye:[520,420,650],target:[0,35,0]};this.particles=[];this.projectiles=[];this.agonyClones=[];this.thunderZones=[];this.quakes=[];this.earthWalls=[];this.breakables=[];this.noticeTime=0;this.koTarget=KO_TARGET;this.scores=[0,0];this.round=1;this.time=Infinity;this.phase='intro';this.phaseTime=1.55;this.lastLoser=-1;this.ringOutEnabled=false;this.onRingOut=null;this.difficulty=this.readDifficulty();this.lensMastery=this.readLensMastery();
     this.controlSettingsPaused=false;this.controls=new ArenaControlManager(this.root,{onPause:()=>this.togglePause(),onExit:()=>this.exit(),onAbility:(slot,side=1)=>this.castAbility(slot,side),onSettings:()=>this.notice('CONTROL LAYOUT SAVED'),onOpenSettings:()=>{if(!this.paused){this.controlSettingsPaused=true;this.togglePause()}},onCloseSettings:()=>{if(this.controlSettingsPaused){this.controlSettingsPaused=false;this.togglePause()}}});
     this.root.querySelector('[data-exit]').onclick=()=>this.exit();this.root.querySelector('[data-return]').onclick=()=>this.exit();this.root.querySelector('[data-restart]').onclick=async()=>{if(this.beforeRestart&&await this.beforeRestart()===false)return;this.restart()};this.root.querySelector('[data-rematch]').onclick=async()=>{if(this.beforeRestart&&await this.beforeRestart()===false)return;this.restart()};this.root.querySelector('[data-change-arena]').onclick=()=>this.showStageSelect();this.root.querySelector('[data-stage-back]').onclick=()=>this.exit();this.renderStageSelect();this.root.querySelectorAll('[data-arena-slot]').forEach(button=>button.addEventListener('click',()=>this.castAbility(Number(button.dataset.arenaSlot))));this.root.querySelector('[data-training-reset]')?.addEventListener('click',()=>this.restart());this.root.querySelector('[data-training-dummy]')?.addEventListener('change',event=>{this.trainingDummy=event.target.value;this.notice(`DUMMY • ${this.trainingDummy.toUpperCase()}`)});this.root.querySelector('[data-training-drill]')?.addEventListener('change',event=>{this.trainingDrill=event.target.value;this.applyTrainingDrill()});this.root.querySelector('[data-training-moves]')?.addEventListener('click',()=>this.notice('M1/J LIGHT • K HEAVY • I LAUNCHER • DASH AFTER LAUNCH TO PURSUE • U GRAB • C CHARGE • R BREAKER • Q COUNTER • M2/L BLOCK • 1–5 ABILITIES',3));this.root.querySelector('[data-training-advanced]')?.addEventListener('click',()=>{this.exit();window.__openClassicTraining?.()});
   }
@@ -377,14 +393,18 @@ class ArenaBattle{
   }
 
   start(){
-    if(this.active)return;this.root.querySelector('[data-arena-stage-select]').classList.add('hidden');this.active=true;this.root.querySelector('[data-stage-name]').textContent=this.stage.name.toUpperCase();this.canvas.setAttribute('aria-label',`${this.stage.name} WebGL perspective arena`);this.audio.enable();this.root.classList.remove('hidden','paused');['startScreen','mainMenuScreen','menuScreen','gameScreen'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));this.controls.start();this.root.classList.toggle('arenaTrainingMode',this.trainingMode);this.root.querySelector('[data-arena-training-panel]')?.classList.toggle('hidden',!this.trainingMode);this.restart();this.last=performance.now();this.raf=requestAnimationFrame(timestamp=>this.loop(timestamp));
+    if(this.active)return;this.feedback=combatFeedbackPreferences();this.root.querySelector('[data-arena-stage-select]').classList.add('hidden');this.active=true;this.root.querySelector('[data-stage-name]').textContent=this.stage.name.toUpperCase();this.canvas.setAttribute('aria-label',`${this.stage.name} WebGL perspective arena`);this.audio.enable();this.root.classList.remove('hidden','paused');['startScreen','mainMenuScreen','menuScreen','gameScreen'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));this.controls.start();this.root.classList.toggle('arenaTrainingMode',this.trainingMode);this.root.querySelector('[data-arena-training-panel]')?.classList.toggle('hidden',!this.trainingMode);this.restart();this.last=performance.now();this.raf=requestAnimationFrame(timestamp=>this.loop(timestamp));
     this.fighters.forEach(fighter=>{void this.ensureFighterAsset(fighter,fighter.id)});
   }
 
   exit(){this.stopMatch();this.root.querySelector('[data-arena-stage-select]').classList.add('hidden');this.root.classList.add('hidden');document.getElementById('mainMenuScreen')?.classList.remove('hidden')}
   togglePause(){this.paused=!this.paused;this.root.classList.toggle('paused',this.paused);this.controls.releaseAll()}
-  restart(){this.scores=[0,0];this.round=1;this.fighters[0].maxHp=100;this.fighters[1].maxHp=100;this.root.querySelector('[data-result]').classList.add('hidden');this.newRound();if(this.trainingMode){this.phase='play';this.hideBanner();this.notice('ARENA TRAINING • PRACTICE FREELY',1.4)}}
-  applyTrainingDrill(){const foe=this.fighters[1],player=this.fighters[0];this.restart();if(this.trainingDrill==='parry'){this.trainingDummy='cpu';this.notice('DRILL • PERFECT-PARRY THREE ATTACKS',2)}else if(this.trainingDrill==='charge'){this.trainingDummy='stand';player.en=0;this.notice('DRILL • REACH 100 ENERGY WITHOUT MOVING',2)}else if(this.trainingDrill==='combo'){this.trainingDummy='stand';this.notice('DRILL • LAUNCHER OR HEAVY → DASH PURSUIT → LIGHT OR HEAVY',2)}else this.notice('FREE PRACTICE',1)}
+  restart(){this.scores=[0,0];this.round=1;this.fighters[0].maxHp=100;this.fighters[1].maxHp=100;this.root.querySelector('[data-result]').classList.add('hidden');this.newRound();if(this.trainingMode){this.phase='play';this.hideBanner();resetTrainingTrial(this.trainingTrial,this.trainingDrill);this.updateTrainingTrialPanel();this.notice('ARENA TRAINING • PRACTICE FREELY',1.4)}}
+  applyTrainingDrill(){const foe=this.fighters[1],player=this.fighters[0];this.restart();resetTrainingTrial(this.trainingTrial,this.trainingDrill);if(this.trainingDrill==='parry'){this.trainingDummy='cpu';this.notice('TRIAL • PERFECT-PARRY THREE ATTACKS',2)}else if(this.trainingDrill==='charge'){this.trainingDummy='stand';player.en=0;this.notice('TRIAL • REACH 100 ENERGY WITHOUT MOVING',2)}else if(this.trainingDrill==='combo'){this.trainingDummy='stand';this.notice('TRIAL • LAUNCH → PURSUIT → FOLLOW-UP',2)}else if(this.trainingDrill==='guard'){this.trainingDummy='block';foe.guard=36;this.notice('TRIAL • BREAK GUARD → LAND GRAB',2)}else if(this.trainingDrill==='variation'){this.trainingDummy='random';this.notice('TRIAL • CONNECT FIVE DIFFERENT ACTIONS',2)}else this.notice('FREE PRACTICE',1);const select=this.root.querySelector('[data-training-dummy]');if(select)select.value=this.trainingDummy;this.updateTrainingTrialPanel()}
+  recordTrainingEvent(event,detail={}){if(!this.trainingMode)return;const result=recordTrainingTrialEvent(this.trainingTrial,event,detail);if(!result.changed)return;this.updateTrainingTrialPanel();if(result.completed){this.audio.play('perfect');this.impactFlash('#fff2a3',.18);this.notice('TRAINING TRIAL COMPLETE!',2.2)}}
+  updateTrainingTrial(dt=0){if(!this.trainingMode)return;const player=this.fighters[0];if(this.trainingDrill==='charge')this.recordTrainingEvent('chargeUpdate',{energy:player.en,moving:player.moving||Math.hypot(player.moveVX||0,player.moveVZ||0)>8});this.updateTrainingTrialPanel()}
+  updateTrainingTrialPanel(){const card=this.root.querySelector('[data-training-trial-card]');if(!card)return;const view=trainingTrialView(this.trainingTrial);card.classList.toggle('complete',view.complete);this.root.querySelector('[data-training-trial-label]').textContent=view.complete?'TRIAL COMPLETE':view.label.toUpperCase();this.root.querySelector('[data-training-trial-goal]').textContent=view.goal;this.root.querySelector('[data-training-trial-message]').textContent=view.message;this.root.querySelector('[data-training-trial-meter]').style.width=`${view.percent}%`}
+
   newRound(){const [spawn1,spawn2]=this.stage.spawnPoints;this.time=Infinity;this.phase='intro';this.phaseTime=1.25;this.hitstop=0;this.cameraShake=0;this.fighters[0].reset(spawn1.x,spawn1.z);this.fighters[1].reset(spawn2.x,spawn2.z);this.camera={x:0,z:0,distance:850,eye:[520,420,650],target:[0,35,0]};this.particles=[];this.clearCombatObjects();this.noticeTime=0;this.notice('');this.banner(`BATTLE ${this.round} • FIRST TO ${this.koTarget} ${this.koTarget===1?'KO':'KOs'}`);this.hud()}
   banner(text){const banner=this.root.querySelector('[data-banner]');banner.textContent=text;banner.classList.remove('hidden')}
   hideBanner(){this.root.querySelector('[data-banner]').classList.add('hidden')}
@@ -412,7 +432,14 @@ class ArenaBattle{
   }
 
   cpu(fighter,foe,dt){
-    if(this.trainingMode&&this.trainingDummy!=='cpu')return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:this.trainingDummy==='block',charge:false,grab:false,breaker:false,counter:false,special:false};
+    if(this.trainingMode&&this.trainingDummy!=='cpu'){
+      const tick=Math.floor(performance.now()/16.67),afterHit=fighter.stun>0||fighter.comboTimer>0;
+      if(this.trainingDummy==='perfect')return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:tick%110<12,charge:false,grab:false,breaker:false,counter:false,special:false};
+      if(this.trainingDummy==='counter')return{x:0,z:0,jump:false,light:afterHit&&tick%70<2,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,breaker:false,counter:afterHit&&tick%90<2,special:false};
+      if(this.trainingDummy==='tech')return{x:0,z:0,jump:!fighter.grounded&&tick%18<2,light:false,heavy:false,launcher:false,dash:!fighter.grounded&&tick%44<2,block:false,charge:false,grab:false,breaker:afterHit&&tick%80<2,counter:false,special:false};
+      if(this.trainingDummy==='random'){const phase=tick%180;return{x:phase<45?.45:phase<90?-.45:0,z:phase>=90&&phase<135?.4:0,jump:phase===138,light:phase===156,heavy:false,launcher:false,dash:phase===92,block:phase<34,charge:false,grab:phase===70,breaker:afterHit&&phase===120,counter:false,special:false}}
+      return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:this.trainingDummy==='block',charge:false,grab:false,breaker:false,counter:false,special:false};
+    }
     const settings=difficultyProfile(this.difficulty);
     fighter.aiThink-=dt;fighter.aiReaction-=dt;
     if(fighter.aiReaction<=0){
@@ -500,7 +527,7 @@ class ArenaBattle{
     this.stepFighter(this.fighters[0],this.fighters[1],playerCommand,dt);
     this.stepFighter(this.fighters[1],this.fighters[0],opponentCommand,dt);
     if(opponentCommand.special&&!this.localMode)this.castCharacterAbility(this.fighters[1],this.fighters[0],this.fighters[1].aiQueuedAbility);
-    this.updateSpecials(dt);this.separateFighters();this.resolveMeleeClash();this.resolveAttackHit(this.fighters[0],this.fighters[1]);this.resolveAttackHit(this.fighters[1],this.fighters[0]);if(this.trainingMode){for(const fighter of this.fighters){if(fighter.hp<=0){fighter.hp=100;fighter.stun=0;fighter.knockdown=0;fighter.inv=.5;this.notice('TRAINING HEALTH RESTORED',.7)}}}for(const fighter of this.fighters){if(this.isRingOut(fighter)){if(this.onRingOut)this.onRingOut(fighter);else fighter.hp=0;break}}if(!this.trainingMode&&this.fighters.some(fighter=>fighter.hp<=0))this.finishRound();this.hud();
+    this.updateSpecials(dt);this.separateFighters();this.resolveMeleeClash();this.resolveAttackHit(this.fighters[0],this.fighters[1]);this.resolveAttackHit(this.fighters[1],this.fighters[0]);this.updateTrainingTrial(dt);if(this.trainingMode){for(const fighter of this.fighters){if(fighter.hp<=0){fighter.hp=100;fighter.stun=0;fighter.knockdown=0;fighter.inv=.5;this.notice('TRAINING HEALTH RESTORED',.7)}}}for(const fighter of this.fighters){if(this.isRingOut(fighter)){if(this.onRingOut)this.onRingOut(fighter);else fighter.hp=0;break}}if(!this.trainingMode&&this.fighters.some(fighter=>fighter.hp<=0))this.finishRound();this.hud();
   }
 
   respawnAfterKo(index){
@@ -515,7 +542,7 @@ class ArenaBattle{
     const strong=state=>['heavy','airHeavy','launcher'].includes(state.def.kind)&&state.elapsed>=state.def.activeStart&&state.elapsed<=state.def.activeEnd;
     if(!strong(sa)||!strong(sb))return false;
     if(Math.hypot(a.x-b.x,a.z-b.z)>118||Math.abs((a.y||0)-(b.y||0))>85)return false;
-    sa.hit=sb.hit=true;a.attackState=b.attackState=null;const aim=aimVector(a,b);a.kvx=-aim.x*78;a.kvz=-aim.z*78;b.kvx=aim.x*78;b.kvz=aim.z*78;a.stun=b.stun=.24;this.hitstop=Math.max(this.hitstop,8*STEP);this.cameraShake=Math.max(this.cameraShake,9);this.burst((a.x+b.x)/2,(a.z+b.z)/2,'#fff2a1',28,72);this.notice('HEAVY CLASH!');return true;
+    sa.hit=sb.hit=true;a.attackState=b.attackState=null;const aim=aimVector(a,b);a.kvx=-aim.x*78;a.kvz=-aim.z*78;b.kvx=aim.x*78;b.kvz=aim.z*78;a.stun=b.stun=.24;this.hitstop=Math.max(this.hitstop,8*STEP*this.feedback.hitstopScale);this.cameraShake=Math.max(this.cameraShake,9*this.feedback.shakeScale);this.burst((a.x+b.x)/2,(a.z+b.z)/2,'#fff2a1',28,72);this.notice('HEAVY CLASH!');return true;
   }
 
 
@@ -639,7 +666,7 @@ class ArenaBattle{
       const assist=Math.min(18,Math.max(0,Math.hypot(foe.x-fighter.x,foe.z-fighter.z)-55)*.12);fighter.x+=aim.x*assist;fighter.z+=aim.z*assist;
     }
     fighter.attackState={def,elapsed:0,hit:false,locked:false,aimX:aim.x,aimZ:aim.z,lungeRemaining:def.lunge,magnetRemaining:fighter.comboTimer>0?28:0,buffer:null};if(def.kind==='launcher')fighter.combatHabits.launchers=Math.min(5,(fighter.combatHabits.launchers||0)+1);
-    fighter.block=false;fighter.animationClock=0;fighter.visualAction='';fighter.visualActionTime=0;if(kind.startsWith('light'))fighter.lightChain=Number(kind.slice(-1));return true;
+    fighter.block=false;fighter.animationClock=0;fighter.visualAction='';fighter.visualActionTime=0;if(kind.startsWith('light'))fighter.lightChain=Number(kind.slice(-1));if(!fighter.cpu)this.trainingTrial.pendingAction=kind;return true;
   }
 
   updateAttack(fighter,foe,command,dt){
@@ -670,7 +697,7 @@ class ArenaBattle{
   startPursuit(fighter,foe){
     if(fighter.pursuitUsed||fighter.pursuitWindow<=0||fighter.stun||fighter.abilityState)return false;
     fighter.pursuitUsed=true;fighter.pursuitWindow=0;fighter.pursuitTime=.28;fighter.pursuitTarget=foe;fighter.attackState=null;fighter.block=false;fighter.inv=Math.max(fighter.inv,.16);
-    fighter.grounded=false;fighter.vy=Math.max(fighter.vy,110);fighter.visualAction='dash';fighter.visualActionTime=.3;this.audio.play('dash');this.notice('PURSUIT! • CHASE THE LAUNCH',.8);return true;
+    fighter.grounded=false;fighter.vy=Math.max(fighter.vy,110);fighter.visualAction='dash';fighter.visualActionTime=.3;if(!fighter.cpu)this.recordTrainingEvent('pursuitStart');this.audio.play('dash');this.notice('PURSUIT! • CHASE THE LAUNCH',.8);return true;
   }
 
   updatePursuit(fighter,foe,dt){
@@ -693,7 +720,7 @@ class ArenaBattle{
       {d:Math.abs(fighter.z-b.minZ),x:0,z:-1},{d:Math.abs(b.maxZ-fighter.z),x:0,z:1}
     ].sort((a,b)=>a.d-b.d),edge=distances[0];
     fighter.ringOutFall=1.05;fighter.ringOutComplete=false;fighter.ringOutVX=edge.x*360+(attacker?fighter.kvx*.25:0);fighter.ringOutVZ=edge.z*360+(attacker?fighter.kvz*.25:0);fighter.y=Math.max(12,fighter.y);fighter.vy=235;fighter.grounded=false;fighter.inv=99;fighter.block=false;fighter.stun=0;fighter.knockdown=0;fighter.attackState=null;fighter.visualAction='fall';fighter.visualActionTime=1.1;
-    this.cameraShake=Math.max(this.cameraShake,12);this.burst(fighter.x,fighter.z,'#ffe7a8',34,60);this.notice('RING OUT! • EDGE PRESSURE BROKE THEIR FOOTING',1.4);return true;
+    this.cameraShake=Math.max(this.cameraShake,12*this.feedback.shakeScale);this.burst(fighter.x,fighter.z,'#ffe7a8',34,60);this.notice('RING OUT! • EDGE PRESSURE BROKE THEIR FOOTING',1.4);return true;
   }
 
   recordEdgePressure(attacker,target,{kind,knockback}={}){
@@ -748,9 +775,9 @@ class ArenaBattle{
     const guarded=target.block&&target.grounded&&blockFacesAttacker(target,attacker),perfect=guarded&&target.blockAge<=PERFECT_BLOCK_WINDOW,aim=aimVector(attacker,target);
     if(guarded){
       const category=abilityCategory(kind),categoryScale=category==='power'?1.18:category==='shot'?.9:1;
-      const spent=(perfect?guardDamage*.18:guardDamage)*categoryScale;target.guard=Math.max(0,target.guard-spent);target.guardDelay=1.25;target.stun=perfect?.04:.115;target.kvx=aim.x*knockback*(perfect?.08:.35);target.kvz=aim.z*knockback*(perfect?.08:.35);this.hitstop=Math.max(this.hitstop,(perfect?7:3)*STEP);this.cameraShake=Math.max(this.cameraShake,perfect?4:2);this.burst(target.x,target.z,perfect?'#fff4a3':'#9de7ff',perfect?18:9,58);this.audio.play(perfect?'perfect':'block');if(perfect)document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'perfectParry',target:target.name,attacker:attacker.name}}));
+      const spent=(perfect?guardDamage*.18:guardDamage)*categoryScale;target.guard=Math.max(0,target.guard-spent);target.guardDelay=1.25;target.stun=perfect?.04:.115;target.kvx=aim.x*knockback*(perfect?.08:.35);target.kvz=aim.z*knockback*(perfect?.08:.35);this.hitstop=Math.max(this.hitstop,(perfect?7:3)*STEP*this.feedback.hitstopScale);this.cameraShake=Math.max(this.cameraShake,(perfect?4:2)*this.feedback.shakeScale);if(perfect&&!target.cpu)this.recordTrainingEvent('perfectParry');this.burst(target.x,target.z,perfect?'#fff4a3':'#9de7ff',perfect?18:9,58);this.audio.play(perfect?'perfect':'block');if(perfect)document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'perfectParry',target:target.name,attacker:attacker.name}}));
       if(perfect){attacker.stun=Math.max(attacker.stun,.24);target.en=clamp(target.en+8,0,100);target.momentum=clamp(target.momentum+15,0,100);this.notice('PERFECT PARRY • MOMENTUM +15');this.root.classList.remove('perfectParryPulse');void this.root.offsetWidth;this.root.classList.add('perfectParryPulse');setTimeout(()=>this.root?.classList.remove('perfectParryPulse'),360);globalThis.document?.dispatchEvent?.(new CustomEvent('pxperfectparry',{detail:{side:target.side,fighterId:target.id,cpu:target.cpu,engine:'arena'}}))}
-      if(target.guard<=0){target.guard=28;target.guardBreak=.88;target.stun=.88;target.block=false;target.blockLockout=1;target.hp=Math.max(0,target.hp-2);this.hitstop=Math.max(this.hitstop,10*STEP);this.cameraShake=Math.max(this.cameraShake,10);this.burst(target.x,target.z,'#ffdc75',28,60);this.audio.play('guardBreak');document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'guardBreak',target:target.name,attacker:attacker.name}}));this.notice('GUARD BREAK!')}
+      if(target.guard<=0){target.guard=28;target.guardBreak=.88;target.stun=.88;target.block=false;target.blockLockout=1;target.hp=Math.max(0,target.hp-2);this.hitstop=Math.max(this.hitstop,10*STEP*this.feedback.hitstopScale);this.cameraShake=Math.max(this.cameraShake,10*this.feedback.shakeScale);if(attacker&&!attacker.cpu)this.recordTrainingEvent('guardBreak');this.burst(target.x,target.z,'#ffdc75',28,60);this.audio.play('guardBreak');document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'guardBreak',target:target.name,attacker:attacker.name}}));this.notice('GUARD BREAK!')}
       return true;
     }
 
@@ -787,7 +814,13 @@ class ArenaBattle{
     }
     target.en=clamp(target.en+2,0,100);target.momentum=clamp(target.momentum+Math.min(5,finalDamage*.22),0,100);
     if(target.lens>0)target.lensWasHit=true;
-    this.hitstop=Math.max(this.hitstop,hitstop*STEP);this.cameraShake=Math.max(this.cameraShake,kind==='heavy'||kind==='airHeavy'||kind==='pursuitHeavy'?9:kind==='launcher'?10:5);this.impactFlash(color,['heavy','launcher','pursuitHeavy'].includes(kind)?.18:.09);this.burst(target.x,target.z,color,['heavy','launcher','pursuitHeavy'].includes(kind)?24:17,58+target.y);this.audio.play(kind==='heavy'||kind==='airHeavy'||kind==='pursuitHeavy'?'heavy':kind==='launcher'?'launcher':'light');if(['heavy','airHeavy','pursuitHeavy','launcher'].includes(kind))document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'heavyImpact',target:target.name,attacker:attacker.name}}));return true;
+    if(attacker&&!attacker.cpu){
+      const action=this.trainingTrial?.pendingAction||kind;this.recordTrainingEvent('connectedAction',{action});
+      if(kind==='launcher')this.recordTrainingEvent('launcherHit');
+      if(['pursuitLight','pursuitHeavy'].includes(kind))this.recordTrainingEvent('pursuitFollowupHit');
+      if(kind==='grab')this.recordTrainingEvent('grabHit');
+    }
+    this.hitstop=Math.max(this.hitstop,hitstop*STEP*this.feedback.hitstopScale);this.cameraShake=Math.max(this.cameraShake,(kind==='heavy'||kind==='airHeavy'||kind==='pursuitHeavy'?9:kind==='launcher'?10:5)*this.feedback.shakeScale);this.impactFlash(color,['heavy','launcher','pursuitHeavy'].includes(kind)?.18:.09);this.burst(target.x,target.z,color,['heavy','launcher','pursuitHeavy'].includes(kind)?24:17,58+target.y);this.audio.play(kind==='heavy'||kind==='airHeavy'||kind==='pursuitHeavy'?'heavy':kind==='launcher'?'launcher':'light');if(['heavy','airHeavy','pursuitHeavy','launcher'].includes(kind))document.dispatchEvent(new CustomEvent('pxarenafeedback',{detail:{type:'heavyImpact',target:target.name,attacker:attacker.name}}));return true;
   }
   impactFlash(color,opacity){const element=this.root.querySelector('[data-impact-flash]');element.style.background=color;element.style.opacity=String(opacity);this.flashTime=.07}
   notice(message,duration=1.15){const element=this.root.querySelector('[data-arena-notice]');element.textContent=message;element.classList.toggle('show',!!message);this.noticeTime=message?duration:0}
@@ -822,7 +855,7 @@ class ArenaBattle{
     fighter.attackState=null;fighter.charging=false;fighter.en=ability.id==='shotsOfAgony'?0:fighter.en-energyCost;fighter.cooldowns[ability.id]=ability.id==='shotsOfAgony'?0:ability.cooldown;
     const aim=aimVector(fighter,foe);fighter.aimX=aim.x;fighter.aimZ=aim.z;
     const visual={fireBlast:'fireBlastFire',shotsOfAgony:'shotsSummon',objectSwap:'objectSwapDisappear',lensOfTruth:'lensActivate',ultimate:'ultimateAttack'}[ability.id]||'chargeEnergy';
-    fighter.visualAction=visual;fighter.visualActionTime=timing.startup+timing.recovery;fighter.abilityState={ability,elapsed:0,startup:timing.startup,recovery:timing.recovery,executed:false,finisher,lensCosts};
+    fighter.visualAction=visual;fighter.visualActionTime=timing.startup+timing.recovery;if(!fighter.cpu)this.trainingTrial.pendingAction=ability.id;fighter.abilityState={ability,elapsed:0,startup:timing.startup,recovery:timing.recovery,executed:false,finisher,lensCosts};
     this.notice(`${SPECIAL_CATEGORIES[ability.category].label} • ${ability.label.toUpperCase()}${finisher?' • FINISHER READY':''}`,Math.max(.7,timing.startup+.3));this.hud();return true;
   }
 
@@ -870,7 +903,7 @@ class ArenaBattle{
     // Spend on startup, not on impact. Interrupting a major technique is therefore
     // a real punish instead of a free reset.
     fighter.en-=spec.cost;fighter.cooldowns[spec.key]=spec.cooldown;fighter.aiQueuedAbility=null;
-    fighter.characterAbilityState={ability,elapsed:0,startup:spec.startup,recovery:spec.recovery,executed:false,reserved:true};
+    if(!fighter.cpu)this.trainingTrial.pendingAction=ability;fighter.characterAbilityState={ability,elapsed:0,startup:spec.startup,recovery:spec.recovery,executed:false,reserved:true};
     fighter.visualAction=ability==='seismicCounter'?'counterStance':'chargeEnergy';fighter.visualActionTime=spec.startup+spec.recovery;fighter.block=false;
     this.notice(`${SPECIAL_CATEGORIES[abilityCategory(ability)].label} • ${String(ability).replace(/([A-Z])/g,' $1').toUpperCase()}`,.65);return true;
   }
@@ -895,7 +928,7 @@ class ArenaBattle{
       return false;
     }
     if(fighter.id==='bark'){
-      if(ability==='groundQuake'&&spend(30,'groundQuake',4.6)){fighter.visualAction='groundQuake';fighter.visualActionTime=.82;this.quakes.push({owner:fighter,x:fighter.x,z:fighter.z,radius:12,maxRadius:420,life:.82,hit:new Set(),color:'#c99a58'});this.cameraShake=Math.max(this.cameraShake,9);this.notice('BARK • POWER • GROUND QUAKE');return true}
+      if(ability==='groundQuake'&&spend(30,'groundQuake',4.6)){fighter.visualAction='groundQuake';fighter.visualActionTime=.82;this.quakes.push({owner:fighter,x:fighter.x,z:fighter.z,radius:12,maxRadius:420,life:.82,hit:new Set(),color:'#c99a58'});this.cameraShake=Math.max(this.cameraShake,9*this.feedback.shakeScale);this.notice('BARK • POWER • GROUND QUAKE');return true}
       if(ability==='rockArmor'&&spend(24,'rockArmor',7)){fighter.armorDurability=100;fighter.visualAction='rockArmor';fighter.visualActionTime=.7;this.burst(fighter.x,fighter.z,'#c8a06a',30,65);this.notice('BARK • TRICK • ROCK ARMOR');return true}
       if(ability==='earthWall'&&spend(24,'earthWall',4.8)){const point=clampToStage(this.stage,fighter.x+face.x*105,fighter.z+face.z*105);this.earthWalls.push({owner:fighter,x:point.x,z:point.z,rotation:Math.atan2(face.x,face.z),radius:62,hp:55,life:7,color:'#8c683f'});fighter.visualAction='earthWall';fighter.visualActionTime=.65;this.notice('BARK • TRICK • EARTH WALL');return true}
       if(ability==='seismicCounter'&&spend(20,'seismicCounter',3.4)){fighter.counterWindow=.72;fighter.counterKind='seismic';fighter.visualAction='counterStance';fighter.visualActionTime=.72;this.notice('BARK • TRICK • SEISMIC COUNTER');return true}
@@ -912,7 +945,7 @@ class ArenaBattle{
 
   updateSpecials(dt){
     for(const clone of this.agonyClones){clone.life-=dt;clone.fireAt-=dt;if(!clone.fired&&clone.fireAt<=0){clone.fired=true;clone.owner.cooldowns.shotsOfAgony=7;this.spawnProjectile(clone.owner,{speed:455,damage:7.5,radius:18,height:75,life:1.7,color:clone.color||'#6ebcff',volley:true,clashPower:.8,label:'SHOT OF AGONY',origin:{x:clone.x,z:clone.z,y:62}})}}this.agonyClones=this.agonyClones.filter(clone=>clone.life>0);
-    for(const zone of this.thunderZones){zone.life-=dt;zone.warning-=dt;if(!zone.struck&&zone.warning<=0){zone.struck=true;const target=zone.target;if(target.grounded&&Math.hypot(target.x-zone.x,target.z-zone.z)<=zone.radius)this.applyDamage(zone.owner,target,9,{guardDamage:10,knockback:35,color:zone.color,hitstop:5,stun:.34,kind:'projectile'});this.burst(zone.x,zone.z,zone.color,22,90);this.cameraShake=Math.max(this.cameraShake,4)}}this.thunderZones=this.thunderZones.filter(zone=>zone.life>0);
+    for(const zone of this.thunderZones){zone.life-=dt;zone.warning-=dt;if(!zone.struck&&zone.warning<=0){zone.struck=true;const target=zone.target;if(target.grounded&&Math.hypot(target.x-zone.x,target.z-zone.z)<=zone.radius)this.applyDamage(zone.owner,target,9,{guardDamage:10,knockback:35,color:zone.color,hitstop:5,stun:.34,kind:'projectile'});this.burst(zone.x,zone.z,zone.color,22,90);this.cameraShake=Math.max(this.cameraShake,4*this.feedback.shakeScale)}}this.thunderZones=this.thunderZones.filter(zone=>zone.life>0);
     for(const quake of this.quakes){quake.life-=dt;quake.radius=Math.min(quake.maxRadius,quake.radius+quake.maxRadius*dt/Math.max(.01,quake.life+.15));for(const target of this.fighters){if(target===quake.owner||quake.hit.has(target)||!target.grounded)continue;const distance=Math.hypot(target.x-quake.x,target.z-quake.z);if(distance<=quake.radius&&distance>=Math.max(0,quake.radius-52)){quake.hit.add(target);this.applyDamage(quake.owner,target,7,{guardDamage:12,knockback:28,color:quake.color,hitstop:6,stun:.72,knockdown:true,kind:'projectile'})}}}this.quakes=this.quakes.filter(quake=>quake.life>0);
     for(const wall of this.earthWalls)wall.life-=dt;this.earthWalls=this.earthWalls.filter(wall=>wall.life>0&&wall.hp>0);
     for(const projectile of this.projectiles){
@@ -961,8 +994,8 @@ class ArenaBattle{
     for(const [index,fighter] of this.fighters.entries()){
       const healthPercent=clamp((fighter.hp/(fighter.maxHp||100))*100,0,100);
       this.root.querySelector(`[data-h${index+1}]`).style.width=`${healthPercent}%`;
-      this.root.querySelector(`[data-e${index+1}]`).style.width=`${fighter.en}%`;
-      const guard=this.root.querySelector(`[data-g${index+1}]`);guard.style.width=`${fighter.guard}%`;guard.classList.toggle('low',fighter.guard<30);
+      const energy=this.root.querySelector(`[data-e${index+1}]`);energy.style.width=`${fighter.en}%`;energy.classList.toggle('ready',fighter.en>=100);energy.classList.toggle('nearReady',fighter.en>=80&&fighter.en<100);
+      const guard=this.root.querySelector(`[data-g${index+1}]`);guard.style.width=`${fighter.guard}%`;guard.classList.toggle('low',fighter.guard<30);guard.classList.toggle('critical',fighter.guard<15);
       const momentum=this.root.querySelector(`[data-m${index+1}]`);if(momentum){momentum.style.width=`${fighter.momentum}%`;momentum.classList.toggle('ready',fighter.momentum>=100)}
       this.root.querySelector(index?'[data-e2-text]':'[data-energy-text]').textContent=Math.floor(fighter.en);
       this.root.querySelector(`[data-g${index+1}-text]`).textContent=Math.floor(fighter.guard);
@@ -1004,7 +1037,7 @@ class ArenaBattle{
     const[player,foe]=this.fighters;
     if(player&&foe&&this.phase==='play'){const distance=Math.hypot(foe.x-player.x,foe.z-player.z);if(distance<330)r.segment({x:player.x,y:6,z:player.z},{x:foe.x,y:6,z:foe.z},{width:2,height:1,color:'#d8efff',alpha:clamp((330-distance)/330*.14,0,.14),lit:false})}
     for(const fighter of this.fighters){
-      if(fighter.moving){const speed=clamp(fighter.speedRatio||0,0,1.35),length=24+speed*66,count=speed>.82?3:1;for(let index=0;index<count;index++){const side=(index-(count-1)/2)*10;r.segment({x:fighter.x-fighter.moveZ*side,y:7+fighter.y*.05,z:fighter.z+fighter.moveX*side},{x:fighter.x-fighter.moveX*length-fighter.moveZ*side,y:7+fighter.y*.05,z:fighter.z-fighter.moveZ*length+fighter.moveX*side},{width:4+speed*6,height:2,color:fighter.accent,alpha:.18+speed*.27,lit:false})}}
+      if(fighter.moving){const speed=clamp(fighter.speedRatio||0,0,1.35),identity=motionIdentity(fighter.id),length=24+speed*72,count=speed>.82?identity.count:1;for(let index=0;index<count;index++){const side=(index-(count-1)/2)*(fighter.id==='wade'?7:10),color=index%2&&identity.secondary?identity.secondary:identity.trail||fighter.accent;r.segment({x:fighter.x-fighter.moveZ*side,y:7+fighter.y*.05,z:fighter.z+fighter.moveX*side},{x:fighter.x-fighter.moveX*length-fighter.moveZ*side,y:7+fighter.y*.05,z:fighter.z-fighter.moveZ*length+fighter.moveX*side},{width:(4+speed*6)*identity.width,height:fighter.id==='bark'?3:2,color,alpha:.18+speed*.3,lit:false})}if(fighter.id==='rrvvfo'&&speed>.72)r.billboard({x:fighter.x-fighter.moveX*34,y:20+fighter.y,z:fighter.z-fighter.moveZ*34,size:22,color:'#ff9b42',alpha:.28});if(fighter.id==='bark'&&speed>.65)r.disc({x:fighter.x-fighter.moveX*20,y:6,z:fighter.z-fighter.moveZ*20,rx:24,rz:15,color:'#b88a55',alpha:.16});if(fighter.id==='wade'&&speed>.92)r.billboard({x:fighter.x-fighter.moveX*48,y:64+fighter.y,z:fighter.z-fighter.moveZ*48,size:72,color:'#8fefff',alpha:.12})}
       if(fighter.pursuitTime>0)r.segment({x:fighter.x,y:54+fighter.y,z:fighter.z},{x:fighter.pursuitTarget?.x||fighter.x,y:54+(fighter.pursuitTarget?.y||0),z:fighter.pursuitTarget?.z||fighter.z},{width:12,height:6,color:fighter.accent,alpha:.42,lit:false});
       if(fighter.attackState){const state=fighter.attackState,def=state.def,active=state.elapsed>=def.activeStart&&state.elapsed<=def.activeEnd,pulse=active?1:clamp(1-Math.abs(state.elapsed-def.activeStart)/.15,0,.5),start={x:fighter.x,y:68+fighter.y,z:fighter.z},end={x:fighter.x+state.aimX*(def.range*.78),y:68+fighter.y,z:fighter.z+state.aimZ*(def.range*.78)};r.segment(start,end,{width:8+18*pulse,height:6,color:fighter.accent,alpha:.25+.55*pulse,lit:false});if(active)r.disc({x:end.x,y:8,z:end.z,rx:def.width*.42,rz:def.width*.26,color:fighter.accent,alpha:.08})}
       if(fighter.block)r.billboard({x:fighter.x,y:52+fighter.y,z:fighter.z,size:118,color:fighter.blockAge<=PERFECT_BLOCK_WINDOW?'#fff2a3':'#8cecff',alpha:fighter.blockAge<=PERFECT_BLOCK_WINDOW?.28:.18});
@@ -1088,5 +1121,5 @@ export function startArenaTraining(){try{if(!instance)instance=new ArenaBattle('
 
 export function startConfiguredArenaBattle(config={}){try{if(!instance)instance=new ArenaBattle(config.stageId||'dojo');instance.configureMatch(config);instance.start();return instance}catch(error){console.error('[Arena Configured Battle]',error);alert(`Arena Battle could not start: ${error.message}`);return null}}
 
-export function startArenaBattle(stageId=null){try{if(!instance)instance=new ArenaBattle(stageId||'dojo');instance.configureMatch({mode:'cpu',fighters:['rrvvfo','revvfo'],stageId:stageId||'dojo',difficulty:instance.readDifficulty(),koTarget:KO_TARGET});if(stageId)instance.start();else instance.showStageSelect()}catch(error){console.error('[Arena 2.9A.22]',error);alert(`Arena Battle could not start: ${error.message}`)}}
+export function startArenaBattle(stageId=null){try{if(!instance)instance=new ArenaBattle(stageId||'dojo');instance.configureMatch({mode:'cpu',fighters:['rrvvfo','revvfo'],stageId:stageId||'dojo',difficulty:instance.readDifficulty(),koTarget:KO_TARGET});if(stageId)instance.start();else instance.showStageSelect()}catch(error){console.error('[Arena 2.9A.27]',error);alert(`Arena Battle could not start: ${error.message}`)}}
 export{ArenaBattle,ArenaFighter,ATTACKS,animationName,frameFor};

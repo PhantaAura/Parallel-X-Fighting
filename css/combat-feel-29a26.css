@@ -1,0 +1,45 @@
+/* Prototype 2.9A.26 — combat feel, training trials, evidence board, swarm readability */
+#arenaModeScreen .energyFill.nearReady{filter:brightness(1.25);box-shadow:0 0 8px currentColor}
+#arenaModeScreen .energyFill.ready{animation:pxEnergyReady .52s ease-in-out infinite alternate;filter:brightness(1.55);box-shadow:0 0 13px #8ff5ff}
+#arenaModeScreen .guardFill.critical{animation:pxGuardCritical .38s steps(2,end) infinite;box-shadow:0 0 12px #ff4b5f}
+@keyframes pxEnergyReady{to{filter:brightness(1.9);box-shadow:0 0 18px #d8fbff}}
+@keyframes pxGuardCritical{50%{filter:brightness(1.9);opacity:.68}}
+
+#arenaModeScreen .arenaTrainingPanel{max-width:min(94vw,1060px);align-items:flex-start;flex-wrap:wrap}
+#arenaModeScreen .arenaTrialCard{flex:1 1 320px;min-width:260px;padding:8px 10px;border:1px solid #79dff0;background:#06151dcc;box-shadow:0 4px 16px #0008}
+#arenaModeScreen .arenaTrialCard small,#arenaModeScreen .arenaTrialCard strong,#arenaModeScreen .arenaTrialCard span{display:block}
+#arenaModeScreen .arenaTrialCard small{color:#79dff0;font-size:9px;letter-spacing:.1em;font-weight:1000}
+#arenaModeScreen .arenaTrialCard strong{margin-top:2px;font-size:12px}
+#arenaModeScreen .arenaTrialCard span{margin-top:2px;color:#d4ecf5;font-size:10px}
+#arenaModeScreen .arenaTrialCard>div{height:5px;margin-top:6px;background:#071019;border:1px solid #ffffff50;overflow:hidden}
+#arenaModeScreen .arenaTrialCard i{display:block;height:100%;width:0;background:linear-gradient(90deg,#46c9e6,#fff18a);transition:width .15s}
+#arenaModeScreen .arenaTrialCard.complete{border-color:#fff18a;background:#18210acc}
+#arenaModeScreen .arenaTrialCard.complete small{color:#fff18a}
+
+.c3CaseBoard{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 12px}
+.c3CaseBoard article{padding:9px;border:2px solid #111;background:#f4f0df;color:#151515;box-shadow:4px 4px 0 #111}
+.c3CaseBoard article.locked{filter:grayscale(1);opacity:.6}
+.c3CaseBoard small,.c3CaseBoard strong,.c3CaseBoard span{display:block}
+.c3CaseBoard small{color:#a51f2a;font-size:8px;font-weight:1000;letter-spacing:.08em}
+.c3CaseBoard strong{margin:3px 0;font-size:12px;line-height:1.05}
+.c3CaseBoard span{font-size:9px;line-height:1.3}
+.c3CaseBoard .contradiction{grid-column:1/-1;border-color:#7d2031;background:#28101a;color:#fff}
+.c3CaseBoard .contradiction small{color:#ff788d}
+.c3CaseBoard .currentTheory{grid-column:1/-1;border-color:#195d72;background:#e7f7fb}
+@media(max-width:760px){.c3CaseBoard{grid-template-columns:1fr}}
+
+.c4EnemyRole{position:fixed;right:max(12px,var(--safe-right));top:126px;z-index:1290;width:min(260px,34vw);padding:9px 11px;border:2px solid var(--role-color,#8fe8ff);background:#07101ee8;color:#fff;box-shadow:5px 5px 0 #0009;pointer-events:none}
+.c4EnemyRole[hidden]{display:none}
+.c4EnemyRole small,.c4EnemyRole strong,.c4EnemyRole span{display:block}
+.c4EnemyRole small{font-size:8px;letter-spacing:.12em;color:var(--role-color,#8fe8ff);font-weight:1000}
+.c4EnemyRole strong{font-size:15px;margin:2px 0}
+.c4EnemyRole span{font-size:9px;line-height:1.25;color:#d9e8ef}
+.c4TeamStatus{position:fixed;left:max(12px,var(--safe-left));bottom:max(92px,calc(var(--safe-bottom) + 82px));z-index:1290;display:flex;gap:6px;pointer-events:none}
+.c4TeamStatus[hidden]{display:none}
+.c4TeamStatus span{padding:5px 8px;border:1px solid #ffffff66;background:#07101edc;color:#fff;font-size:9px;font-weight:1000;letter-spacing:.06em;box-shadow:3px 3px 0 #0008}
+.c4TeamStatus span[data-ally=bark]{border-color:#d3a55e}.c4TeamStatus span[data-ally=wade]{border-color:#67d4ff}
+.c4WaveBanner{position:fixed;left:50%;top:24%;z-index:1291;transform:translate(-50%,-50%);padding:8px 14px;border:3px solid #fff;background:#0b1022e8;color:#fff;font-size:clamp(16px,2.4vw,28px);font-weight:1000;font-style:italic;letter-spacing:.08em;box-shadow:7px 7px 0 #0008;pointer-events:none;opacity:0;transition:opacity .15s,transform .15s}
+.c4WaveBanner.show{opacity:1;transform:translate(-50%,-50%) scale(1.03)}
+@media(max-width:760px){.c4EnemyRole{top:90px;width:44vw}.c4TeamStatus{bottom:116px}}
+
+body.reducedMotion #arenaModeScreen .energyFill.ready,body.reducedMotion #arenaModeScreen .guardFill.critical{animation:none}

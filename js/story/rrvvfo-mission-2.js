@@ -1,13 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a25-feel-team-collision-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a25-feel-team-collision-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a25-feel-team-collision-20260730';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a25-feel-team-collision-20260730';
-import {storyConfirm} from './story-ux.js?v=29a25-feel-team-collision-20260730';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a25-feel-team-collision-20260730';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a25-feel-team-collision-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a25-feel-team-collision-20260730';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a25-feel-team-collision-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27-chapter-hooks-pacing-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a27-chapter-hooks-pacing-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a27-chapter-hooks-pacing-20260730';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyConfirm} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a27-chapter-hooks-pacing-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a27-chapter-hooks-pacing-20260730';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -1634,6 +1634,12 @@ class RrvvfoMission2{
   updateFight(dt){
     if(!this.currentFight)return;
     this.currentFight.elapsed+=dt;
+    if(this.currentFight.id==='daniel'&&!this.currentFight.ringShifted&&this.currentFight.elapsed>9){
+      this.currentFight.ringShifted=true;
+      this.battle.cameraShake=Math.max(this.battle.cameraShake||0,8);
+      this.battle.notice('RING SUPPORT SHIFTS • EDGE DANGER INCREASED',2);
+      this.setObjective('QUARTERFINAL • ADAPT TO THE MOVING RING','The east edge buckled for a moment. Keep the fight centered while the floor settles.');
+    }
     const player=this.battle.fighters[0];
     if(this.currentFight.final){
       this.finalElapsed+=dt;
@@ -1789,6 +1795,13 @@ class RrvvfoMission2{
     }
   }
 
+  grantObservedPloukeClue(id,source){
+    const rumor=this.state.hubQuests.mandatory.ploukeRumors;
+    if(!rumor.clues.includes(id))rumor.clues.push(id);
+    if(rumor.clues.length>=4)rumor.complete=true;
+    this.saveChapterState();this.toast?.('MATCH ANALYSIS',source,`${rumor.clues.length} / 4 Plouke patterns understood.`);
+  }
+
   afterTournamentFight(fight){
     if(fight.id==='hamual'){
       this.showDialogue([
@@ -1869,7 +1882,7 @@ class RrvvfoMission2{
 
   finishHaileyPrelim(){
     if(this.mode!=='spectator'||this.currentFight?.id!=='hailey-plouke-prelim')return;
-    this.mode='story';this.battle.phase='story';this.state.prelimComplete=true;this.state.tournamentStep='round-1';this.saveChapterState();
+    this.mode='story';this.battle.phase='story';this.state.prelimComplete=true;this.state.tournamentStep='round-1';this.grantObservedPloukeClue('positioning','Watched Plouke control the ring edge');this.saveChapterState();
     this.showDialogue([
       {speaker:'HAILEY',speakerClass:'neutral',text:'Stop staring and defend yourself!',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'This guy reminds me of the Sage. I hope they never meet.',tail:'down'},
@@ -1881,6 +1894,7 @@ class RrvvfoMission2{
   finishPoukiExhibition(){
     if(this.mode!=='spectator')return;
     this.mode='story';this.battle.phase='story';
+    this.grantObservedPloukeClue('timing','Bark explained how changing rhythm creates openings');
     this.showDialogue([
       {speaker:'ANNOUNCER',speakerClass:'rival',text:'Pouki wins! Bark held the center, survived the guard break, and nearly landed one final counter!',tail:'down'},
       {speaker:'BARK',speakerClass:'neutral',text:'He changed rhythm every time I settled. My last counter was the first opening he gave me.',tail:'down'},

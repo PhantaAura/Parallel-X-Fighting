@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a25-feel-team-collision-20260730';
-import {clampToStage} from '../arena/arena-stages.js?v=29a25-feel-team-collision-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
-import {storyConfirm} from './story-ux.js?v=29a25-feel-team-collision-20260730';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a25-feel-team-collision-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27-chapter-hooks-pacing-20260730';
+import {clampToStage} from '../arena/arena-stages.js?v=29a27-chapter-hooks-pacing-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyConfirm} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -82,6 +82,7 @@ class RrvvfoMission0{
     this.fullText='';
     this.normalDodges=0;
     this.mastery=1;
+    this.openingSparSeconds=0;
     this.castSerial=0;
     this.handledCast=-1;
     this.activeVolleyCount=0;
@@ -202,8 +203,7 @@ class RrvvfoMission0{
           }
           this.sageDodge(attacker,target,false);
           this.normalDodges++;
-          if(this.normalDodges<3)this.setObjective(`TEST THE SAGE'S DODGE • ${this.normalDodges} / 3`,`Direct attempts required: ${this.normalDodges} / 3. The Sage predicts each normal attack.`);
-          if(this.normalDodges>=3&&this.mastery===1)this.unlockShotsTraining();
+          if(this.normalDodges>=1&&this.mastery===1)this.unlockShotsTraining();
           return false;
         }
         if(attacker.id==='sage'&&target.id==='rrvvfo'){
@@ -294,12 +294,10 @@ class RrvvfoMission0{
   showOpeningDialogue(){
     this.previewClones(0);
     this.engine.showDialogue([
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Eh, focus your energy into your hands or something. I’m getting bored. I have places to be.',tail:'down',onShow:()=>this.previewClones(0)},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Maybe this would be easier if you actually taught me stuff. I can already imagine what places a perv like you has to go.',tail:'down',onShow:()=>this.previewClones(0)},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'HEY! I told you to stop calling me that!',tail:'down',onShow:()=>this.previewClones(1)},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Took you long enough. Now get four out. Let’s see if you still have any fighting spirit in you.',tail:'down',onShow:()=>this.previewClones(4)},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'This is my max capacity.',tail:'down',onShow:()=>this.previewClones(4)},
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Eh, now you’ve done something. Summon them again and make each one attack me with a specific action.',tail:'down',onShow:()=>this.previewClones(0)}
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Enough standing around. Move. If I can tag you before you land one clean attack, you’re starting over.',tail:'down',onShow:()=>this.previewClones(1)},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Finally. A lesson that isn’t just you vaguely pointing at my hands.',tail:'down',onShow:()=>this.previewClones(0)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Land one direct hit. Then make an energy copy attack from somewhere I can’t predict.',tail:'down',onShow:()=>this.previewClones(1)},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'One copy? I can do four.',tail:'down',onShow:()=>this.previewClones(4)}
     ],{onComplete:()=>{this.previewClones(0);this.beginFight()}});
   }
 
@@ -349,8 +347,9 @@ class RrvvfoMission0{
     this.battle.fighters[0].en=100;
     this.battle.fighters[1].hp=100;
     this.normalDodges=0;
-    this.setObjective(`TEST THE SAGE'S DODGE • 0 / 3`,'Use normal attacks three times. The counter updates after every predicted dodge.');
-    this.battle.notice('THE SAGE IS READING EVERY DIRECT ATTACK',1.8);
+    this.openingSparSeconds=0;
+    this.setObjective('ACTIVE SPAR • LAND ONE DIRECT ATTACK','Move immediately. The Sage is attacking instead of waiting for button demonstrations.');
+    this.battle.notice('ACTIVE SPAR • MOVE, DEFEND, THEN ATTACK',1.8);
   }
 
   unlockShotsTraining(){
@@ -362,7 +361,7 @@ class RrvvfoMission0{
     const battle=this.battle,player=battle.fighters[0],sage=battle.fighters[1];
     if(slot!==2){battle.notice('THIS CHAPTER SECTION TRAINS SHOTS OF AGONY');return false}
     if(battle.phase!=='play'||battle.paused){battle.notice(battle.paused?'MISSION PAUSED':'WAIT FOR THE SPAR');return false}
-    if(this.normalDodges<3){battle.notice(`DIRECT ATTEMPTS REQUIRED • ${this.normalDodges} / 3`);return false}
+    if(this.normalDodges<1){battle.notice('MAKE THE SAGE PREDICT ONE DIRECT ATTACK FIRST');return false}
     if(player.stun||player.guardBreak||!player.grounded||player.attackState){battle.notice('ABILITY UNAVAILABLE');return false}
     if(battle.volleyActive(player)){battle.notice('SHOTS VOLLEY ACTIVE');return false}
     if(player.cooldowns.shotsOfAgony>0){battle.notice(`FOCUS • ${player.cooldowns.shotsOfAgony.toFixed(1)}s`);return false}
@@ -396,10 +395,10 @@ class RrvvfoMission0{
 
   advanceMastery(){
     if(this.completed||this.mastery>=4)return;
-    this.mastery++;
+    this.mastery=4;
     this.updateShotsLabel();
     this.battle.fighters[0].cooldowns.shotsOfAgony=.35;
-    const lines={2:['USE SHOTS TRAINING ×2','One angle was easy to escape. Coordinate two copies.'],3:['USE SHOTS TRAINING ×3','Two angles are still predictable. Force the Sage to split his attention.'],4:['SURROUND THE SAGE • ×4','Four directions. Catch him outside the prediction dodge.']};
+    const lines={4:['SURROUND THE SAGE • ×4','The first copy proved the idea. Skip the repetition and attack from all four directions.']};
     const [title,detail]=lines[this.mastery];
     this.setObjective(title,detail);
     this.battle.notice(this.mastery===4?'THE SAGE: “NOW SURROUND ME.”':`MASTERY INCREASED • ${this.mastery} CLONES`,1.6);

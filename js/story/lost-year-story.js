@@ -9,16 +9,16 @@ import {
   rrvvfoRouteStarted,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a25-feel-team-collision-20260730';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a25-feel-team-collision-20260730';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a25-feel-team-collision-20260730';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a25-feel-team-collision-20260730';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a25-feel-team-collision-20260730';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a25-feel-team-collision-20260730';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a25-feel-team-collision-20260730';
-import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a25-feel-team-collision-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a25-feel-team-collision-20260730';
+} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a27-chapter-hooks-pacing-20260730';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a27-chapter-hooks-pacing-20260730';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a27-chapter-hooks-pacing-20260730';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a27-chapter-hooks-pacing-20260730';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a27-chapter-hooks-pacing-20260730';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a27-chapter-hooks-pacing-20260730';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a27-chapter-hooks-pacing-20260730';
+import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -54,6 +54,16 @@ function buildScreen(){
 function hideGameScreens(){['startScreen','mainMenuScreen','menuScreen','gameScreen','arenaModeScreen'].forEach(id=>document.getElementById(id)?.classList.add('hidden'))}
 function hideLegacyMobileOverlays(){['touchChoice','touchTutorial','touchSettingsModal','touchMoveList','hotbarCustomizeModal','orientationPrompt','fullscreenPrompt'].forEach(id=>document.getElementById(id)?.classList.add('hidden'))}
 function storyCheckpointLabel(id='rrvvfo-00'){return String(id).replace(/^rrvvfo-\d+-?/,'').replace(/^rrvvfo-/,'').replaceAll('-',' ').trim().toUpperCase()||'CHAPTER START'}
+function chapterMenuComplete(chapter,progress){
+  if(rrvvfoChapterComplete(chapter,progress))return true;
+  if(chapter?.number===4)return Boolean(progress?.chapter4State?.chapterComplete);
+  return false;
+}
+function chapterHasStarted(chapter,progress){
+  const checkpoint=String(progress?.lastCheckpoint||'');
+  if(chapter?.number===4)return checkpoint.startsWith('rrvvfo-04')||Boolean(Object.keys(progress?.chapter4State||{}).length);
+  return false;
+}
 
 class LostYearStoryScreen{
   constructor(){
@@ -75,7 +85,7 @@ class LostYearStoryScreen{
   open(){
     hideGameScreens();hideLegacyMobileOverlays();this.root.hidden=false;this.releaseLandscapeLock?.();
     this.releaseLandscapeLock=requireLandscapeForStory({message:'Story Mode uses a horizontal layout for exploration, dialogue, combat, and RPG menus.'});
-    this.showRoutes({focus:true});
+    this.showRoutes({focus:true});document.dispatchEvent(new CustomEvent('pxstorymenuopen'));
   }
   close(){
     this.releaseLandscapeLock?.();this.releaseLandscapeLock=null;this.root.hidden=true;
@@ -119,9 +129,9 @@ class LostYearStoryScreen{
   }
 
   showRouteHome({focus=false}={}){
-    this.progress=loadLostYearProgress();this.routeView.hidden=true;this.routePanel.hidden=true;this.routeHome.hidden=false;
+    this.progress=loadLostYearProgress();this.routeView.hidden=true;this.routePanel.hidden=true;this.routeHome.hidden=false;document.dispatchEvent(new CustomEvent('pxstorymenuopen'));
     if(this.progress.completedMissions.includes('rrvvfo-01')&&!combatManualOwned())grantCombatManual({pages:['movement','basic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
-    const next=rrvvfoNextMission(this.progress),manualReady=combatManualOwned(),c1=rrvvfoChapterComplete(RRVVFO_CHAPTERS[0],this.progress),c2=rrvvfoChapterComplete(RRVVFO_CHAPTERS[1],this.progress),c3=rrvvfoChapterComplete(RRVVFO_CHAPTERS[2],this.progress),c4=rrvvfoChapterComplete(RRVVFO_CHAPTERS[3],this.progress);
+    const next=rrvvfoNextMission(this.progress),manualReady=combatManualOwned(),c1=chapterMenuComplete(RRVVFO_CHAPTERS[0],this.progress),c2=chapterMenuComplete(RRVVFO_CHAPTERS[1],this.progress),c3=chapterMenuComplete(RRVVFO_CHAPTERS[2],this.progress),c4=chapterMenuComplete(RRVVFO_CHAPTERS[3],this.progress);
     const progressPercent=routeProgress(LOST_YEAR_ROUTES[0],this.progress),completedFullChapters=completedRrvvfoChapterCount(this.progress);
     const primary=next?next==='rrvvfo-04'?'BEGIN CHAPTER 4':next==='rrvvfo-03'?'BEGIN CHAPTER 3':'CONTINUE STORY':'RELEASED STORY COMPLETE';
     this.routeHome.innerHTML=`
@@ -143,9 +153,13 @@ class LostYearStoryScreen{
         </div>
         <div class="chapterRail"><header><small>CHAPTER SELECT</small><h2>RELEASED STORY</h2></header>
           ${RRVVFO_CHAPTERS.map(chapter=>{
-            const complete=rrvvfoChapterComplete(chapter,this.progress),unlocked=chapter.number===1||(chapter.number===2&&c1)||(chapter.number===3&&c2)||(chapter.number===4&&c3);
-            const status=complete?'CHAPTER COMPLETE':unlocked?'PLAYABLE':'LOCKED';
-            return `<div class="chapterRow ${complete?'isComplete':''}"><button type="button" class="chapterCard" data-chapter-number="${chapter.number}" ${unlocked?'':'disabled'}><span class="chapterNumber">${chapter.number}</span><span><small>${status}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span></button>${complete?`<button type="button" class="chapterReplay" data-replay-chapter="${chapter.number}"><strong>REPLAY</strong><span>Start from the beginning.</span></button>`:''}</div>`;
+            const complete=chapterMenuComplete(chapter,this.progress),unlocked=chapter.number===1||(chapter.number===2&&c1)||(chapter.number===3&&c2)||(chapter.number===4&&c3);
+            const started=chapterHasStarted(chapter,this.progress);
+            const status=complete?'CHAPTER COMPLETE':started?'IN PROGRESS':unlocked?'PLAYABLE':'LOCKED';
+            const replayAvailable=complete||(chapter.number===4&&unlocked&&started);
+            const replayLabel=complete?'REPLAY':'RESTART';
+            const replayDetail=complete?'Start from the beginning.':'Restart Chapter 4 safely.';
+            return `<div class="chapterRow ${complete?'isComplete':''} ${started&&!complete?'isInProgress':''}"><button type="button" class="chapterCard" data-chapter-number="${chapter.number}" ${unlocked?'':'disabled'}><span class="chapterNumber">${chapter.number}</span><span><small>${status}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span></button>${replayAvailable?`<button type="button" class="chapterReplay" data-replay-chapter="${chapter.number}"><strong>${replayLabel}</strong><span>${replayDetail}</span></button>`:''}</div>`;
           }).join('')}
           ${Array.from({length:Math.max(0,RRVVFO_PLANNED_CHAPTER_COUNT-RRVVFO_CHAPTERS.length)},(_,index)=>{
             const number=RRVVFO_CHAPTERS.length+index+1;

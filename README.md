@@ -6,49 +6,41 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.25 — Feel, Team Combat & Collision Repair**
+**Prototype 2.9A.27 — Chapter Hooks & Pacing Overhaul**
 
 This is a complete cumulative build. No older package is required.
 
-## 2.9A.25 highlights
+## 2.9A.27 highlights
 
-- Chapter 2 and Chapter 3 results now score their actual optional-quest state.
-- Chapter clear presentation is merged into one results flow with per-run time, fights, XP, optional progress, and newly earned rewards.
-- The secret playtest code only works from the Story route menu, not during movement or combat.
-- Unsupported settings are removed from the visible menu; Voice Volume is clearly reserved for future voice acting.
-- Hub camera collision now accounts for boxes, cylinders, cones, roofs, and paused/modal UI; Gameplay includes Reset Hub Camera.
-- Hub-world player collision blocks major walls, buildings, trees, pillars, and explicit Echo Village structures while preserving safe spawns.
-- Chapter 3 replaces repeated support and bag-search laps with consolidated evidence sweeps.
-- Chapter 4 Beacon and elemental-door teamwork now uses role-specific input challenges.
-- Echo Village defense is a three-wave team battle with visible Bark and Wade support.
-- Rootstone and Triad Seed can trigger optional three-wave Project Hollow swarms, and the potion building opens a Rootstone cavern shortcut.
-- Hollow Watcher now learns move, timing, spacing, approach, and alternating two-move habits.
-- Optional permanent stats use diminishing returns so completionists and main-route players stay closer in strength.
-- Procedural music now includes six phrase variations, quiet sections, ambient breaks, and rotating melodic starts.
+- Chapter 1 begins with an active Sage spar instead of repeated stationary button demonstrations.
+- Shots of Agony training now proves the one-copy idea, then jumps to the four-copy finish instead of repeating every count.
+- Tournament Road offers Main Road, Forest Shortcut, and Cliff Route choices that reconnect before the tournament.
+- A stranded tournament transport creates a memorable Object Swap set piece before arrival.
+- Chapter 2 gives Plouke information through watched matches and requires fewer rumor errands between rounds.
+- A temporary ring-support shift adds a tournament set piece that foreshadows Chapter 3.
+- Chapter 3 replaces the damaged-terminal loop with one security-footage reconstruction and shortens the Lens trail.
+- The Project Hollow discovery now triggers a stronger facility-lockdown payoff.
+- Chapter 4 adds a post-defense team rest scene, switchable Bark/Wade commands, and changed cavern-return dialogue.
 
-## 2.9A.24 highlights
+## Previous foundation
 
-- One shared Story fight-transition system now handles Chapters 1–4.
-- Exploration overlays close before fights and return after combat.
-- A pre-fight Story save snapshot is preserved for bug recovery.
-- Dialogue uses existing fighter atlases for portraits, expressions, speaker focus, Auto, History, and text-speed controls. No new hand-drawn portraits are required.
-- Objectives use one update presentation, play a UI cue, and save the latest objective.
-- The Story route screen displays the current auto-save checkpoint.
-- Chapter clears now produce ranked results with completion time, optional progress, recent unlocks, and total eight-chapter route progress.
-- Combat feedback now includes Perfect Parry, Guard Break, Heavy Impact, and low-health cues.
-- Procedural chapter music crossfades and includes distinct ambience accents for the dojo, road, tournament, mystery, facility, Echo Village, caverns, mountain, and Hollow systems.
-- The hidden playtest menu opens on the Story screen with **↑ ↑ ↓ ↓ ← → ← → B A** using keyboard or a standard controller.
-- The playtest menu can inspect save flags, copy/download a bug report, restart from the current saved checkpoint, reset the current chapter, jump to released chapters, and launch isolated combat tests.
-- Prototype 2.9A.23.1 sprite recovery and 2.9A.23.2 combat UI cleanup remain included.
+- Chapter 2 and Chapter 3 results score their actual optional-quest state.
+- Chapter completion uses one results flow with per-run statistics.
+- The secret playtest code only works from the Story route menu.
+- Hub free camera uses click-and-drag, includes Reset Camera, and stops behind menus.
+- Hub collision blocks major walls, buildings, trees, columns, cavern structures, and Echo Village architecture.
+- Chapter 3 uses consolidated evidence sweeps instead of repeated plaza laps.
+- Chapter 4 includes role-specific team mechanics, three-ninja wave battles, optional swarms, a smarter Hollow Watcher, and reward soft caps.
+- The Strange Man investigation, Echo Region route, Ryuzankaro branch, Vibration Sense, and floating-lookout Object Swap ending remain intact.
 
 ## Story progression
 
-Rrvvfo’s route is planned for **eight chapters**. Four are currently playable, so completing Chapter 4 reports **4/8 — 50%**.
+Rrvvfo's route is planned for **eight chapters**. Four are currently playable, so completing Chapter 4 reports **4/8 — 50%**.
 
 - **Chapter 1:** Shots of Agony training, Sage Manual, combat refresher, and wooded Tournament Road
 - **Chapter 2:** martial-arts festival hub, preparation activities, tournament bracket, and Plouke
-- **Chapter 3:** after-hours investigation, Resonance Facility, Project Hollow, and teleporter escape
-- **Chapter 4:** Echo Village, Bark and Wade team missions, optional Ryuzankaro secret boss, solo mountain route, Hollow Watcher, and the pebble Object Swap into Shadow’s floating lookout
+- **Chapter 3:** after-hours investigation, Strange Man warning, Resonance Facility, Project Hollow, and teleporter escape
+- **Chapter 4:** Echo Village, Bark and Wade team missions, optional Ryuzankaro secret boss, solo mountain route, Hollow Watcher, and the pebble Object Swap into Shadow's floating lookout
 - **Chapters 5–8:** planned but intentionally undescribed until their official story plans exist
 
 ## Playable modes
@@ -81,7 +73,7 @@ Rrvvfo’s route is planned for **eight chapters**. Four are currently playable,
 - Lens shortcut: **Z**
 - Vibration Sense after unlocking: **V** or ability slot 4 while exploring Chapter 4
 - Sage Manual: **M**
-- Objective tracker: **T**
+- Objective tracker / evidence board: **T**
 - Pause/Story menu: **Escape**
 - Hub camera: click-and-drag with a mouse/trackpad or controller right stick; can be disabled under Settings → Gameplay
 
@@ -93,16 +85,12 @@ On the Story route screen, enter:
 ↑ ↑ ↓ ↓ ← → ← → B A
 ```
 
-On a standard controller, use the D-pad followed by the controller’s B and A buttons. Chapter jumps and isolated combat tests are intentionally blocked while an active chapter is running, preventing the debug menu from corrupting a live Story session.
+The menu can inspect flags, export bug reports, restart from checkpoints, reset chapters, jump to released chapters, and launch isolated combat tests.
 
 ## Save compatibility
 
-Save-export schema: **266**. Existing Story saves continue through the current state normalizers.
+Save-export schema: **268**. Existing Story saves continue through the current state normalizers.
 
 ## Testing
 
-Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.25.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.25.md) for the real-device pass. See [`PATCH-NOTES-2.9A.25.md`](PATCH-NOTES-2.9A.25.md) and [`VALIDATION-2.9A.25.md`](VALIDATION-2.9A.25.md) for release details.
-
-
-## 2.9A.24.1 Chapter 3 addition
-The Strange Man now interrupts Rrvvfo’s investigation after the witness chain, leaves behind a persistent key-item hat, produces contradictory Lens predictions, and points the existing story back to the east support and underground facility.
+Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.27.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.27.md) for the real-device pass. See [`PATCH-NOTES-2.9A.27.md`](PATCH-NOTES-2.9A.27.md) and [`VALIDATION-2.9A.27.md`](VALIDATION-2.9A.27.md) for release details.

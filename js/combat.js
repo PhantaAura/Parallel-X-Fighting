@@ -44,7 +44,7 @@ export class Projectile{
     const target=this.owner===world.fighters[0]?world.fighters[1]:world.fighters[0];
     if(target&&overlaps({x:this.x-this.size,y:this.y-this.size,w:this.size*2,h:this.size*2},target.box())){
       target.hit(this.damage,this.owner.face*5,'special',this.owner,{hitstun:20});
-      this.dead=true;world.effects.burst(this.x,this.y,this.color,16);world.shake=Math.max(world.shake,6);world.hitstop=4;
+      this.dead=true;world.effects.burst(this.x,this.y,this.color,16);world.shake=Math.max(world.shake,6);world.hitstop=4*(world.hitstopScale??1);
     }
     if(this.life<1||this.x<-60||this.x>world.width+60||this.y<-80||this.y>world.height+80)this.dead=true;
   }

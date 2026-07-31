@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a25-feel-team-collision-20260730';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',

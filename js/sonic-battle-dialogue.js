@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a25-feel-team-collision-20260730';
+import {storyConfirm} from './story/story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

@@ -1,4 +1,4 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a25-feel-team-collision-20260730';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a27-chapter-hooks-pacing-20260730';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
@@ -8,7 +8,7 @@ import {
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a25-feel-team-collision-20260730';
+} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -139,10 +139,19 @@ class StoryPolishController{
     document.addEventListener('pxstorychaptercomplete',event=>this.onChapterComplete(event.detail||{}));
     document.addEventListener('pxarenafeedback',event=>this.onCombatFeedback(event.detail||{}));
     document.addEventListener('pxstorystepstart',event=>this.onStoryStepStart(event.detail||{}));
+    document.addEventListener('pxstorymenuopen',()=>this.onStoryMenuOpen());
     this.observer=new MutationObserver(()=>{clearTimeout(this.objectiveTimer);this.objectiveTimer=setTimeout(this.scanObjectives,80)});
     this.observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['hidden','class']});
     this.controllerFrame=requestAnimationFrame(this.pollController);
     return this;
+  }
+
+  onStoryMenuOpen(){
+    clearTimeout(this.objectiveTimer);clearTimeout(this.transitionTimer);clearTimeout(this.combatCalloutTimer);
+    this.lastObjective='';
+    if(this.objective){this.objective.classList.remove('show');this.objective.hidden=true}
+    if(this.transition){this.transition.classList.remove('show');this.transition.hidden=true}
+    if(this.combatCallout){this.combatCallout.classList.remove('show');this.combatCallout.hidden=true}
   }
 
   onStoryStepStart({chapter=0,stepId=''}){
@@ -339,7 +348,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a25-feel-team-collision-20260730`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a27-chapter-hooks-pacing-20260730`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'remote-highlands':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }

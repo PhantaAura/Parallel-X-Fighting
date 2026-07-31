@@ -1,0 +1,7 @@
+
+/* 2.9A.27 — chapter hooks and pacing */
+.roadRouteChoice{position:fixed;inset:0;z-index:1850;display:grid;place-items:center;padding:24px;background:#02060bc9;pointer-events:auto}
+.roadRouteChoice[hidden]{display:none}.roadRouteChoice article{width:min(760px,100%);padding:26px;border:2px solid #ffffff38;border-radius:18px;background:linear-gradient(145deg,#17291e,#09110d);box-shadow:0 28px 90px #000d;text-align:center;color:#fff}
+.roadRouteChoice small{color:#9ee8a8;font-weight:1000;letter-spacing:.15em}.roadRouteChoice h2{margin:8px 0;font-size:34px}.roadRouteChoice p{color:#d7e7da}.roadRouteChoice article>div{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}.roadRouteChoice button{min-height:66px;border:2px solid #ffffff35;border-radius:12px;background:#ffffff0c;color:#fff;font-weight:1000;cursor:pointer}.roadRouteChoice button:hover,.roadRouteChoice button:focus-visible{border-color:#9ee8a8;background:#9ee8a81c;transform:translateY(-2px)}
+.c4TeamStatus{gap:8px;flex-wrap:wrap}.c4TeamStatus::after{content:'C • CHANGE TEAM COMMAND';display:block;width:100%;color:#a9d8ff;font-size:10px;font-weight:1000;letter-spacing:.1em;text-align:center}
+@media(max-width:760px){.roadRouteChoice article>div{grid-template-columns:1fr}.roadRouteChoice h2{font-size:27px}}

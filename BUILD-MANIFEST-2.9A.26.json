@@ -1,0 +1,18 @@
+{
+  "name": "Parallels X Prototype 2.9A.26 Complete Cumulative Build",
+  "version": "2.9A.26",
+  "build_label": "Prototype 2.9A.26 \u2014 Combat Feel, Training & Evidence Pass",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cache_id": "29a27-chapter-hooks-pacing-20260730",
+  "save_schema": 267,
+  "foundation": "Prototype 2.9A.25.1 Chapter Select Layout & Replay",
+  "focus": [
+    "Add adjustable impact freeze and clearer energy/guard state feedback",
+    "Give the four standard fighters distinct motion and impact identities",
+    "Expand Arena Training with defensive dummy behavior and focused technique trials",
+    "Present Chapter 3 clues through a structured evidence board",
+    "Give Chapter 4 team and swarm enemies readable combat roles, wave banners, and ally status",
+    "Preserve Chapters 1\u20134 story, saves, collision, results, and replay behavior"
+  ]
+}

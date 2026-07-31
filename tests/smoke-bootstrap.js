@@ -1,6 +1,6 @@
-const RELEASE_CACHE_ID='29a31-core-feel-character-fantasy-20260731';
-const EXPECTED_BUILD='Prototype 2.9A.31 — Core Feel & Character Fantasy';
-const TOTAL_TESTS=298;
+const RELEASE_CACHE_ID='29a311-smoke-syntax-recovery-20260731';
+const EXPECTED_BUILD='Prototype 2.9A.31.1 — Smoke Syntax Recovery';
+const TOTAL_TESTS=301;
 const IMPORT_TIMEOUT_MS=30000;
 const STALL_TIMEOUT_MS=35000;
 

@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X: Clash of Souls \u2014 Prototype 2.9A.31",
-  "version": "Prototype 2.9A.31 \u2014 Core Feel & Character Fantasy",
+  "name": "Parallels X: Clash of Souls \u2014 Prototype 2.9A.31.1",
+  "version": "Prototype 2.9A.31.1 \u2014 Smoke Syntax Recovery",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -51,7 +51,7 @@
     "2.9A.30.1 Stability & Interface Cleanup: preserves Story scaling on restart, repairs Focus Recovery input and cleanup, fixes open-stage boundaries and camera initialization, and declutters mobile Stage Select, Training, and prompt lanes",
     "2.9A.30.2 Smoke Runner Recovery: streaming progress, per-test and request timeouts, startup diagnostics, stalled-run watchdog, mixed-build warning, retry controls, and copyable complete results"
   ],
-  "cache_tag": "29a31-core-feel-character-fantasy-20260731",
+  "cache_tag": "29a311-smoke-syntax-recovery-20260731",
   "save_schema": 268,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo\u2019s atlas across Chapter 2\u20134 fight transitions and rejects stale asynchronous sprite loads",
@@ -76,11 +76,12 @@
     "2.9A.30 Arena Identity & Focus Recovery: distinct stage archetypes, clean tournament edge-control atmosphere, stage-aware wall feedback, gray-health Focus Recovery, CPU recovery decisions, and Training support",
     "2.9A.30.1 Stability & Interface Cleanup: preserves Story scaling on restart, repairs Focus Recovery input and cleanup, fixes open-stage boundaries and camera initialization, and declutters mobile Stage Select, Training, and prompt lanes",
     "2.9A.30.2 Smoke Runner Recovery: prevents the browser test page from remaining on Running forever and makes stalled imports, requests, and individual tests visible and recoverable",
-    "2.9A.31 Core Feel & Character Fantasy: late action buffering, fighter-specific movement and impact rhythm, identity Training guide, and instant/random rematches"
+    "2.9A.31 Core Feel & Character Fantasy: late action buffering, fighter-specific movement and impact rhythm, identity Training guide, and instant/random rematches",
+    "2.9A.31.1 Smoke Syntax Recovery: repairs the fatal smoke-module quoting error and synchronizes the 301-test runner total"
   ],
-  "currentBuild": "Prototype 2.9A.31 \u2014 Core Feel & Character Fantasy",
-  "cacheId": "29a31-core-feel-character-fantasy-20260731",
+  "currentBuild": "Prototype 2.9A.31.1 \u2014 Smoke Syntax Recovery",
+  "cacheId": "29a311-smoke-syntax-recovery-20260731",
   "saveSchema": 268,
-  "latestBuild": "Prototype 2.9A.31 \u2014 Core Feel & Character Fantasy",
-  "latestCacheId": "29a31-core-feel-character-fantasy-20260731"
+  "latestBuild": "Prototype 2.9A.31.1 \u2014 Smoke Syntax Recovery",
+  "latestCacheId": "29a311-smoke-syntax-recovery-20260731"
 }

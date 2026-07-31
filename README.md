@@ -6,7 +6,7 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.31 — Core Feel & Character Fantasy**
+**Prototype 2.9A.31.1 — Smoke Syntax Recovery**
 
 This is a complete cumulative build. No older package is required.
 
@@ -28,7 +28,7 @@ This is a complete cumulative build. No older package is required.
 - Startup import failures, unhandled errors, and stalled progress display an explicit diagnostic instead of leaving `Running…` forever.
 - Mixed GitHub Pages/Safari build files trigger a cache/build warning.
 - Retry Failed Tests, Run Again, and Copy Results controls are available after completion or failure.
-- The suite now packages 298 browser smoke cases.
+- The suite now packages 301 browser smoke cases.
 - Save schema remains 268.
 
 

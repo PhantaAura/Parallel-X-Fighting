@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a31-core-feel-character-fantasy-20260731';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a311-smoke-syntax-recovery-20260731';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',

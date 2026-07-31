@@ -1,13 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a31-core-feel-character-fantasy-20260731';
-import {sharedInput} from '../input-runtime.js?v=29a31-core-feel-character-fantasy-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a31-core-feel-character-fantasy-20260731';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a31-core-feel-character-fantasy-20260731';
-import {StoryMap} from './story-map.js?v=29a31-core-feel-character-fantasy-20260731';
-import {storyConfirm} from './story-ux.js?v=29a31-core-feel-character-fantasy-20260731';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a31-core-feel-character-fantasy-20260731';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a31-core-feel-character-fantasy-20260731';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a31-core-feel-character-fantasy-20260731';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a31-core-feel-character-fantasy-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a311-smoke-syntax-recovery-20260731';
+import {sharedInput} from '../input-runtime.js?v=29a311-smoke-syntax-recovery-20260731';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a311-smoke-syntax-recovery-20260731';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a311-smoke-syntax-recovery-20260731';
+import {StoryMap} from './story-map.js?v=29a311-smoke-syntax-recovery-20260731';
+import {storyConfirm} from './story-ux.js?v=29a311-smoke-syntax-recovery-20260731';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a311-smoke-syntax-recovery-20260731';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a311-smoke-syntax-recovery-20260731';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a311-smoke-syntax-recovery-20260731';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a311-smoke-syntax-recovery-20260731';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';

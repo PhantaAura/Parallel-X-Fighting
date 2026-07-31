@@ -1,0 +1,14 @@
+{
+  "build": "Prototype 2.9A.31.1 — Smoke Syntax Recovery",
+  "cacheId": "29a311-smoke-syntax-recovery-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.31 — Core Feel & Character Fantasy",
+  "focus": [
+    "repair fatal smoke-test module syntax",
+    "correct the declared smoke-test total from 298 to 301",
+    "force a fresh GitHub Pages and Safari cache identity",
+    "add module-grammar syntax validation for future packages"
+  ],
+  "gameplayChanges": false,
+  "smokeCasesPackaged": 301
+}

@@ -1,16 +1,16 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a31-core-feel-character-fantasy-20260731';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a311-smoke-syntax-recovery-20260731';
 import {drawArenaStage} from './arena-stage-renderer.js';
 import {WebGLArenaRenderer} from './webgl-renderer.js';
-import {ArenaControlManager} from './arena-controls.js?v=29a31-core-feel-character-fantasy-20260731';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor,fighterFeelFor} from './arena-combat-data.js?v=29a31-core-feel-character-fantasy-20260731';
-import {PLAYABLE_ROSTER_IDS,ROSTER} from '../roster.js?v=29a31-core-feel-character-fantasy-20260731';
-import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a31-core-feel-character-fantasy-20260731';
-import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a31-core-feel-character-fantasy-20260731';
-import {loadQolSettings} from '../qol-settings.js?v=29a31-core-feel-character-fantasy-20260731';
-import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a31-core-feel-character-fantasy-20260731';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a31-core-feel-character-fantasy-20260731';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a31-core-feel-character-fantasy-20260731';
+import {ArenaControlManager} from './arena-controls.js?v=29a311-smoke-syntax-recovery-20260731';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor,fighterFeelFor} from './arena-combat-data.js?v=29a311-smoke-syntax-recovery-20260731';
+import {PLAYABLE_ROSTER_IDS,ROSTER} from '../roster.js?v=29a311-smoke-syntax-recovery-20260731';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a311-smoke-syntax-recovery-20260731';
+import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a311-smoke-syntax-recovery-20260731';
+import {loadQolSettings} from '../qol-settings.js?v=29a311-smoke-syntax-recovery-20260731';
+import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a311-smoke-syntax-recovery-20260731';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a311-smoke-syntax-recovery-20260731';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a311-smoke-syntax-recovery-20260731';
 
 const ID='arenaModeScreen';
 const W=960;

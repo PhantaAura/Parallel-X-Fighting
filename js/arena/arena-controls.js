@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a31-core-feel-character-fantasy-20260731';
-import {sharedInput} from '../input-runtime.js?v=29a31-core-feel-character-fantasy-20260731';
+import {CONTROL_MAPS} from '../input.js?v=29a311-smoke-syntax-recovery-20260731';
+import {sharedInput} from '../input-runtime.js?v=29a311-smoke-syntax-recovery-20260731';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

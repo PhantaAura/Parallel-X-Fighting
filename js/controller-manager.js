@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a31-core-feel-character-fantasy-20260731';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a311-smoke-syntax-recovery-20260731';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

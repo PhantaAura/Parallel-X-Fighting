@@ -6,7 +6,7 @@ Passed release checks:
 - 8 JSON/webmanifest files parse successfully.
 - 215 relative JavaScript module imports resolve after cache-query normalization.
 - 17 local `index.html` references resolve.
-- Active pages and tests use one release cache ID: `29a28-mode-route-carousel-20260730`.
+- Active pages and tests use one release cache ID: `29a28p1-mobile-hub-space-20260730`.
 - 10 CSS files have balanced rule braces.
 - Five browser/app icon sizes match their declarations.
 - Five fighter animation manifests resolve to valid runtime atlases.

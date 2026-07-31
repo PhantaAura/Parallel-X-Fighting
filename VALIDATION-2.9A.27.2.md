@@ -6,7 +6,7 @@ Passed static and targeted checks:
 - 11 JSON/web-manifest files parsed successfully.
 - 215 relative JavaScript module paths resolved.
 - 18 local `index.html` references resolved.
-- `index.html` uses one release cache ID: `29a28-mode-route-carousel-20260730`.
+- `index.html` uses one release cache ID: `29a28p1-mobile-hub-space-20260730`.
 - 21 targeted checks passed for the user-reported smoke failures, roadside defeat recovery, combat-safe Road HUD, map objective coverage, marker legend, favicon declarations, Chapter 4 gating, and Chapter 3 reconstruction.
 - 277 browser smoke cases are packaged.
 

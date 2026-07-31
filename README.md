@@ -6,10 +6,19 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.28 — Mode & Route Carousel Overhaul**
+**Prototype 2.9A.28.1 — Spacious Mobile Story UI**
 
 This is a complete cumulative build. No older package is required.
 
+
+## 2.9A.28.1 mobile comfort hotfix
+
+- Mobile Story hubs now show one compact objective card and one Story Menu button instead of several full-size controls across the screen.
+- Objective details are collapsed by default and can be expanded with the small information button.
+- The always-visible minimap is removed on phones; the dedicated Map button still opens the complete map.
+- Chapter 1–4 Story menus open as spacious, scrollable mobile sheets with important actions near the top.
+- Technique categories scroll horizontally, journals use one readable column, and touchscreen-only menus hide redundant keyboard/controller legends.
+- Case boards, mission journals, and the full map use the safe mobile viewport rather than narrow desktop panels.
 
 ## 2.9A.28 highlights
 

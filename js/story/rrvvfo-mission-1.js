@@ -1,8 +1,8 @@
-import {CONTROL_MAPS} from '../input.js?v=29a28-mode-route-carousel-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a28-mode-route-carousel-20260730';
-import {grantCombatManual} from './combat-manual.js?v=29a28-mode-route-carousel-20260730';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a28-mode-route-carousel-20260730';
-import {storyConfirm} from './story-ux.js?v=29a28-mode-route-carousel-20260730';
+import {CONTROL_MAPS} from '../input.js?v=29a28p1-mobile-hub-space-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a28p1-mobile-hub-space-20260730';
+import {grantCombatManual} from './combat-manual.js?v=29a28p1-mobile-hub-space-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a28p1-mobile-hub-space-20260730';
+import {storyConfirm} from './story-ux.js?v=29a28p1-mobile-hub-space-20260730';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';

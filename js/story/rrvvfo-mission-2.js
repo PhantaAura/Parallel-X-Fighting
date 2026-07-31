@@ -1,13 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a28-mode-route-carousel-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a28-mode-route-carousel-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a28-mode-route-carousel-20260730';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a28-mode-route-carousel-20260730';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a28-mode-route-carousel-20260730';
-import {storyConfirm} from './story-ux.js?v=29a28-mode-route-carousel-20260730';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a28-mode-route-carousel-20260730';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a28-mode-route-carousel-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a28-mode-route-carousel-20260730';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a28-mode-route-carousel-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a28p1-mobile-hub-space-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a28p1-mobile-hub-space-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a28p1-mobile-hub-space-20260730';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a28p1-mobile-hub-space-20260730';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a28p1-mobile-hub-space-20260730';
+import {storyConfirm} from './story-ux.js?v=29a28p1-mobile-hub-space-20260730';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a28p1-mobile-hub-space-20260730';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a28p1-mobile-hub-space-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a28p1-mobile-hub-space-20260730';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a28p1-mobile-hub-space-20260730';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';

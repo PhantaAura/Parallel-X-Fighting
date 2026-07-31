@@ -1,0 +1,353 @@
+/* Prototype 2.9A.28.1 — spacious mobile Story hubs and in-game menus */
+.mobileObjectiveToggle{display:none}
+
+@media (pointer:coarse) and (max-width:1100px){
+  :root{
+    --story-mobile-edge:max(8px,env(safe-area-inset-left));
+    --story-mobile-top:max(8px,env(safe-area-inset-top));
+    --story-mobile-bottom:max(10px,env(safe-area-inset-bottom));
+  }
+
+  /* Exploration uses one objective card, one menu button, and an optional full map. */
+  .storyMiniMap{display:none!important}
+  .storyExplorationMapButton{
+    left:max(8px,env(safe-area-inset-left))!important;
+    top:calc(max(8px,env(safe-area-inset-top)) + 62px)!important;
+    width:44px!important;
+    height:44px!important;
+    border-width:3px!important;
+    box-shadow:3px 3px 0 #080808!important;
+    font-size:10px!important;
+  }
+  .storyObjectiveCompass{
+    top:calc(max(8px,env(safe-area-inset-top)) + 62px)!important;
+    max-width:54vw!important;
+    padding:5px 8px!important;
+    border-width:2px!important;
+    box-shadow:3px 3px 0 #080808!important;
+    font-size:10px!important;
+  }
+  .storyObjectiveCompass i{width:22px!important;height:22px!important}
+
+  #rrvvfoRoadHubUI .roadHud,
+  #rrvvfoMission2UI .chapter2Hud,
+  #rrvvfoChapter3PreviewUI .c3Hud,
+  #rrvvfoChapter4UI .c4Hud{
+    left:max(8px,env(safe-area-inset-left))!important;
+    right:max(8px,env(safe-area-inset-right))!important;
+    top:max(8px,env(safe-area-inset-top))!important;
+    inset-block-end:auto!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 48px!important;
+    gap:7px!important;
+    align-items:start!important;
+  }
+
+  #rrvvfoRoadHubUI .roadObjective,
+  #rrvvfoMission2UI .chapter2Objective,
+  #rrvvfoChapter3PreviewUI .c3Objective,
+  #rrvvfoChapter4UI .c4Objective{
+    position:relative!important;
+    width:auto!important;
+    max-width:none!important;
+    min-height:50px!important;
+    padding:8px 43px 8px 10px!important;
+    border-width:3px!important;
+    border-left-width:6px!important;
+    box-shadow:3px 3px 0 #080808!important;
+    overflow:hidden!important;
+  }
+  #rrvvfoChapter4UI .c4Objective{box-shadow:0 5px 14px #0009!important}
+
+  #rrvvfoRoadHubUI .roadObjective small,
+  #rrvvfoMission2UI .chapter2Objective small,
+  #rrvvfoChapter3PreviewUI .c3Objective small,
+  #rrvvfoChapter4UI .c4Objective small,
+  #rrvvfoRoadHubUI .roadObjective span,
+  #rrvvfoMission2UI .chapter2Objective span,
+  #rrvvfoChapter3PreviewUI .c3Objective span,
+  #rrvvfoChapter4UI .c4Objective span{display:none!important}
+
+  #rrvvfoRoadHubUI .roadObjective strong,
+  #rrvvfoMission2UI .chapter2Objective strong,
+  #rrvvfoChapter3PreviewUI .c3Objective strong,
+  #rrvvfoChapter4UI .c4Objective strong{
+    display:-webkit-box!important;
+    margin:0!important;
+    overflow:hidden!important;
+    -webkit-box-orient:vertical!important;
+    -webkit-line-clamp:2!important;
+    font-size:14px!important;
+    line-height:1.12!important;
+  }
+
+  .mobileObjectiveToggle{
+    display:grid!important;
+    place-items:center!important;
+    position:absolute!important;
+    right:5px!important;
+    top:5px!important;
+    width:32px!important;
+    height:32px!important;
+    min-width:0!important;
+    padding:0!important;
+    border:2px solid currentColor!important;
+    border-radius:50%!important;
+    background:#ffd557!important;
+    color:#080808!important;
+    box-shadow:none!important;
+    font-size:0!important;
+    line-height:1!important;
+    pointer-events:auto!important;
+  }
+  .mobileObjectiveToggle::after{content:'i';font:1000 16px/1 Arial,sans-serif}
+  .mobileObjectiveExpanded{padding-bottom:10px!important}
+  .mobileObjectiveExpanded small{display:block!important;margin-bottom:4px!important;font-size:8px!important}
+  .mobileObjectiveExpanded span{display:block!important;margin-top:5px!important;font-size:10px!important;line-height:1.25!important}
+  .mobileObjectiveExpanded strong{-webkit-line-clamp:unset!important}
+  .mobileObjectiveExpanded .mobileObjectiveToggle::after{content:'×';font-size:19px}
+
+  #rrvvfoRoadHubUI .roadHudActions,
+  #rrvvfoMission2UI .chapter2Stats,
+  #rrvvfoChapter3PreviewUI .c3HudActions,
+  #rrvvfoChapter4UI .c4HudActions{
+    grid-column:2!important;
+    display:block!important;
+    width:48px!important;
+    pointer-events:auto!important;
+  }
+  #rrvvfoRoadHubUI .roadHudActions button:not([data-road-menu]),
+  #rrvvfoChapter3PreviewUI .c3HudActions button:not([data-c3-menu-button]),
+  #rrvvfoChapter4UI .c4HudActions button:not([data-c4-menu-button]){display:none!important}
+  #rrvvfoMission2UI .chapter2Stats>span{display:none!important}
+
+  #rrvvfoRoadHubUI [data-road-menu],
+  #rrvvfoMission2UI .chapter2MenuButton,
+  #rrvvfoChapter3PreviewUI [data-c3-menu-button],
+  #rrvvfoChapter4UI [data-c4-menu-button]{
+    display:grid!important;
+    place-items:center!important;
+    width:48px!important;
+    height:48px!important;
+    min-width:48px!important;
+    padding:0!important;
+    border-width:3px!important;
+    box-shadow:3px 3px 0 #080808!important;
+    font-size:0!important;
+  }
+  #rrvvfoRoadHubUI [data-road-menu]::after,
+  #rrvvfoMission2UI .chapter2MenuButton::after,
+  #rrvvfoChapter3PreviewUI [data-c3-menu-button]::after,
+  #rrvvfoChapter4UI [data-c4-menu-button]::after{content:'☰';font-size:21px;line-height:1}
+
+  #rrvvfoMission2UI .chapter2Hud>.storyAttackSigns,
+  #rrvvfoChapter3PreviewUI .c3Hud>.storyAttackSigns,
+  #rrvvfoChapter4UI .c4Hud>.storyAttackSigns,
+  #rrvvfoRoadHubUI>.storyAttackSigns{display:none!important}
+
+  /* Interaction prompts stay narrow and clear of the action controls. */
+  #rrvvfoRoadHubUI .roadPrompt,
+  #rrvvfoMission2UI .chapter2Prompt,
+  #rrvvfoChapter3PreviewUI .c3Prompt,
+  #rrvvfoChapter4UI .c4Prompt{
+    min-width:0!important;
+    width:auto!important;
+    max-width:54vw!important;
+    bottom:calc(max(10px,env(safe-area-inset-bottom)) + 70px)!important;
+    padding:6px 10px!important;
+    border-width:3px!important;
+    box-shadow:3px 3px 0 #080808!important;
+  }
+  #rrvvfoRoadHubUI .roadPrompt strong,
+  #rrvvfoMission2UI .chapter2Prompt strong,
+  #rrvvfoChapter3PreviewUI .c3Prompt strong,
+  #rrvvfoChapter4UI .c4Prompt strong{font-size:11px!important}
+  #rrvvfoRoadHubUI .roadPrompt span,
+  #rrvvfoMission2UI .chapter2Prompt span,
+  #rrvvfoChapter3PreviewUI .c3Prompt span,
+  #rrvvfoChapter4UI .c4Prompt span{font-size:8px!important}
+
+  /* Story menus become roomy mobile sheets rather than desktop cards squeezed into the view. */
+  #rrvvfoRoadHubUI .roadPause,
+  #rrvvfoRoadHubUI .roadDefeat,
+  #rrvvfoMission2UI .chapter2StoryMenu,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu,
+  #rrvvfoChapter4UI .c4StoryMenu{
+    position:fixed!important;
+    inset:0!important;
+    z-index:5200!important;
+    display:grid!important;
+    place-items:end center!important;
+    padding:0!important;
+    background:rgba(2,7,18,.9)!important;
+    pointer-events:auto!important;
+  }
+  #rrvvfoRoadHubUI .roadPause[hidden],
+  #rrvvfoRoadHubUI .roadDefeat[hidden],
+  #rrvvfoMission2UI .chapter2StoryMenu[hidden],
+  #rrvvfoChapter3PreviewUI .c3StoryMenu[hidden],
+  #rrvvfoChapter4UI .c4StoryMenu[hidden]{display:none!important}
+
+  #rrvvfoRoadHubUI .roadPause>article,
+  #rrvvfoRoadHubUI .roadDefeat>article,
+  #rrvvfoMission2UI .chapter2StoryMenu>article,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu>article,
+  #rrvvfoChapter4UI .c4StoryMenu>article{
+    position:relative!important;
+    display:grid!important;
+    width:100%!important;
+    max-width:none!important;
+    height:auto!important;
+    max-height:calc(100dvh - max(8px,env(safe-area-inset-top)))!important;
+    margin:0!important;
+    padding:20px max(18px,env(safe-area-inset-right)) calc(18px + env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))!important;
+    overflow:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    border-width:3px 0 0!important;
+    border-radius:22px 22px 0 0!important;
+    box-shadow:0 -14px 50px #000d!important;
+    text-align:left!important;
+  }
+  #rrvvfoRoadHubUI .roadPause>article::before,
+  #rrvvfoRoadHubUI .roadDefeat>article::before,
+  #rrvvfoMission2UI .chapter2StoryMenu>article::before,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu>article::before,
+  #rrvvfoChapter4UI .c4StoryMenu>article::before{
+    content:'';
+    position:sticky;
+    top:0;
+    justify-self:center;
+    width:46px;
+    height:5px;
+    margin:-10px 0 10px;
+    border-radius:999px;
+    background:#7f8da5;
+    z-index:8;
+  }
+
+  #rrvvfoMission2UI .chapter2StoryMenu>article,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu>article,
+  #rrvvfoChapter4UI .c4StoryMenu>article{grid-auto-rows:max-content;gap:12px!important}
+
+  #rrvvfoMission2UI .chapter2StoryMenu header,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu header,
+  #rrvvfoChapter4UI .c4StoryMenu header{
+    position:sticky!important;
+    top:-20px!important;
+    z-index:7!important;
+    margin:0 -4px!important;
+    padding:8px 4px 10px!important;
+    background:inherit!important;
+  }
+  #rrvvfoMission2UI .chapter2StoryMenu h2,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu h2,
+  #rrvvfoChapter4UI .c4StoryMenu h2{font-size:30px!important;line-height:.95!important}
+
+  #rrvvfoMission2UI .chapter2MenuActions,
+  #rrvvfoChapter3PreviewUI .chapter2MenuActions,
+  #rrvvfoChapter4UI .chapter2MenuActions{
+    order:2!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:9px!important;
+    margin:0!important;
+  }
+  #rrvvfoMission2UI .chapter2MenuActions button,
+  #rrvvfoChapter3PreviewUI .chapter2MenuActions button,
+  #rrvvfoChapter4UI .chapter2MenuActions button{
+    min-height:48px!important;
+    padding:8px!important;
+    font-size:10px!important;
+  }
+  #rrvvfoMission2UI .chapter2StoryMenu header,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu header,
+  #rrvvfoChapter4UI .c4StoryMenu header{order:1!important}
+  #rrvvfoMission2UI .storyRpgObjectiveCard,
+  #rrvvfoChapter3PreviewUI .storyRpgObjectiveCard,
+  #rrvvfoChapter4UI .storyRpgObjectiveCard{order:3!important;margin:0!important}
+  #rrvvfoMission2UI .storyRpgMenuProgress,
+  #rrvvfoChapter3PreviewUI .storyRpgStats,
+  #rrvvfoChapter4UI .storyRpgStats{order:4!important}
+  #rrvvfoMission2UI .chapter2QuestJournal{order:5!important;grid-template-columns:1fr!important;margin:0!important}
+  #rrvvfoMission2UI .storyAttackSigns,
+  #rrvvfoChapter3PreviewUI .storyAttackSigns,
+  #rrvvfoChapter4UI .storyAttackSigns{
+    order:6!important;
+    display:grid!important;
+    grid-auto-flow:column!important;
+    grid-template-columns:none!important;
+    grid-auto-columns:minmax(160px,72vw)!important;
+    gap:8px!important;
+    margin:0!important;
+    padding:2px 2px 8px!important;
+    overflow-x:auto!important;
+    scroll-snap-type:x proximity!important;
+  }
+  #rrvvfoMission2UI .storyAttackSigns>span,
+  #rrvvfoChapter3PreviewUI .storyAttackSigns>span,
+  #rrvvfoChapter4UI .storyAttackSigns>span{scroll-snap-align:start}
+  #rrvvfoMission2UI .storyControlLegend,
+  #rrvvfoChapter3PreviewUI .storyControlLegend,
+  #rrvvfoChapter4UI .storyControlLegend,
+  #rrvvfoRoadHubUI .storyControlLegend{display:none!important}
+
+  #rrvvfoMission2UI .storyRpgMenuProgress{grid-template-columns:1fr!important}
+  .storyRpgStats{padding:10px!important}
+  .storyStatGrid{grid-template-columns:repeat(5,minmax(58px,1fr))!important;overflow-x:auto!important;padding-bottom:4px!important}
+  .storyStatGrid span{min-width:58px!important}
+
+  #rrvvfoRoadHubUI .roadPause>article>div,
+  #rrvvfoRoadHubUI .roadDefeat>article>div{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  #rrvvfoRoadHubUI .roadPause button,
+  #rrvvfoRoadHubUI .roadDefeat button{min-height:48px!important;font-size:10px!important}
+
+  /* Journals and trackers use the whole display and scroll independently. */
+  #rrvvfoMission2UI .chapter2Tracker,
+  #rrvvfoChapter3PreviewUI .c3Tracker,
+  #rrvvfoChapter4UI .c4Tracker{
+    position:fixed!important;
+    inset:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))!important;
+    z-index:5150!important;
+    width:auto!important;
+    max-width:none!important;
+    max-height:none!important;
+    padding:16px!important;
+    overflow:auto!important;
+    overscroll-behavior:contain!important;
+    border-width:3px!important;
+    box-shadow:0 14px 50px #000d!important;
+  }
+  #rrvvfoMission2UI .chapter2Tracker header,
+  #rrvvfoChapter3PreviewUI .c3Tracker header,
+  #rrvvfoChapter4UI .c4Tracker header{position:sticky!important;top:-16px!important;z-index:5!important;background:inherit!important;padding-top:8px!important}
+  #rrvvfoChapter3PreviewUI .c3TrackerRows,
+  #rrvvfoChapter4UI .c4TrackerRows{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #rrvvfoChapter3PreviewUI .c3Journal,
+  #rrvvfoChapter4UI .c4Tracker section{grid-template-columns:1fr!important}
+
+  .storyMapOverlay{padding:0!important;place-items:end center!important}
+  .storyMapOverlay article{
+    width:100%!important;
+    max-width:none!important;
+    max-height:calc(100dvh - max(8px,env(safe-area-inset-top)))!important;
+    padding:16px max(14px,env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))!important;
+    border-width:3px 0 0!important;
+    border-radius:20px 20px 0 0!important;
+    box-shadow:0 -12px 44px #000d!important;
+  }
+  .storyMapOverlay canvas{max-height:62dvh!important;border-width:3px!important}
+}
+
+@media (pointer:coarse) and (max-width:1100px) and (orientation:landscape){
+  #rrvvfoRoadHubUI .roadPause>article,
+  #rrvvfoRoadHubUI .roadDefeat>article,
+  #rrvvfoMission2UI .chapter2StoryMenu>article,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu>article,
+  #rrvvfoChapter4UI .c4StoryMenu>article{max-height:96dvh!important;padding-top:14px!important}
+  #rrvvfoMission2UI .chapter2StoryMenu h2,
+  #rrvvfoChapter3PreviewUI .c3StoryMenu h2,
+  #rrvvfoChapter4UI .c4StoryMenu h2{font-size:25px!important}
+  #rrvvfoMission2UI .chapter2QuestJournal>section{padding:8px!important}
+  .storyMapOverlay canvas{max-height:70dvh!important}
+}

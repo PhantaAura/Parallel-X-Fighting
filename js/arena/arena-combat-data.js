@@ -69,6 +69,20 @@ export function arenaAttackFor(fighterId,kind){
   return profile?.[kind]||ARENA_NORMAL_PROFILES.default[kind]||null;
 }
 
+
+
+export const FIGHTER_FEEL_PROFILES=Object.freeze({
+  rrvvfo:Object.freeze({label:'IMPROVISED PRESSURE',inputBuffer:.135,dashCancel:.040,dashRecovery:.050,hitstopScale:1.00,shakeScale:1.00,impactCue:'ember'}),
+  revvfo:Object.freeze({label:'RELENTLESS WARP',inputBuffer:.125,dashCancel:.034,dashRecovery:.045,hitstopScale:1.05,shakeScale:1.04,impactCue:'warp'}),
+  wade:Object.freeze({label:'LIGHTNING RUSHDOWN',inputBuffer:.155,dashCancel:.024,dashRecovery:.025,hitstopScale:.90,shakeScale:.86,impactCue:'lightning'}),
+  bark:Object.freeze({label:'ARMORED FORCE',inputBuffer:.115,dashCancel:.070,dashRecovery:.085,hitstopScale:1.22,shakeScale:1.20,impactCue:'earth'}),
+  phanta:Object.freeze({label:'PHANTOM MISDIRECTION',inputBuffer:.140,dashCancel:.032,dashRecovery:.040,hitstopScale:.98,shakeScale:.94,impactCue:'phantom'}),
+  creed:Object.freeze({label:'PRECISION EVASION',inputBuffer:.145,dashCancel:.028,dashRecovery:.035,hitstopScale:.96,shakeScale:.92,impactCue:'shift'}),
+  default:Object.freeze({label:'BALANCED FIGHTER',inputBuffer:.120,dashCancel:.050,dashRecovery:.060,hitstopScale:1,shakeScale:1,impactCue:'neutral'})
+});
+
+export function fighterFeelFor(id){return FIGHTER_FEEL_PROFILES[id]||FIGHTER_FEEL_PROFILES.default}
+
 export const SPECIAL_CATEGORIES=Object.freeze({
   shot:Object.freeze({id:'shot',label:'SHOT',description:'Fast ranged pressure. Sidestep or close the gap.'}),
   power:Object.freeze({id:'power',label:'POWER',description:'High commitment and guard damage. Punish the recovery.'}),

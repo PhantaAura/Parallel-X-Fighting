@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a301-stability-cleanup-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a301-stability-cleanup-20260731';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a301-stability-cleanup-20260731';
-import {StoryMap} from './story-map.js?v=29a301-stability-cleanup-20260731';
-import {storyConfirm} from './story-ux.js?v=29a301-stability-cleanup-20260731';
-import {openCombatManual} from './combat-manual.js?v=29a301-stability-cleanup-20260731';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a301-stability-cleanup-20260731';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a301-stability-cleanup-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a31-core-feel-character-fantasy-20260731';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a31-core-feel-character-fantasy-20260731';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a31-core-feel-character-fantasy-20260731';
+import {StoryMap} from './story-map.js?v=29a31-core-feel-character-fantasy-20260731';
+import {storyConfirm} from './story-ux.js?v=29a31-core-feel-character-fantasy-20260731';
+import {openCombatManual} from './combat-manual.js?v=29a31-core-feel-character-fantasy-20260731';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a31-core-feel-character-fantasy-20260731';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a31-core-feel-character-fantasy-20260731';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,7 +22,7 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a301-stability-cleanup-20260731';
+} from './chapter3-content.js?v=29a31-core-feel-character-fantasy-20260731';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;

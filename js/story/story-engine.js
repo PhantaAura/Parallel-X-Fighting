@@ -1,10 +1,10 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a301-stability-cleanup-20260731';
-import {sharedInput} from '../input-runtime.js?v=29a301-stability-cleanup-20260731';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a301-stability-cleanup-20260731';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a301-stability-cleanup-20260731';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a31-core-feel-character-fantasy-20260731';
+import {sharedInput} from '../input-runtime.js?v=29a31-core-feel-character-fantasy-20260731';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a31-core-feel-character-fantasy-20260731';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a31-core-feel-character-fantasy-20260731';
 
 export const STORY_ENGINE_VERSION='2.9A.24';
-export const STORY_ENGINE_CACHE='29a301-stability-cleanup-20260731';
+export const STORY_ENGINE_CACHE='29a31-core-feel-character-fantasy-20260731';
 
 const EMPTY_COMMAND=Object.freeze({x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,breaker:false,counter:false,interact:false,special:false});
 const STORY_MODES=Object.freeze(['dialogue','exploration','tutorial','combat','cinematic','complete','story']);
@@ -51,6 +51,7 @@ function snapshotRuntime(battle){
 export function createStoryBattle({stageId='dojo',opponent=null}={}){
   resetArenaBattleInstance();
   const battle=new ArenaBattle(stageId);
+  battle.allowRandomRematch=false;
   snapshotRuntime(battle);
   if(opponent)configureOpponent(battle.fighters[1],opponent);
   return battle;

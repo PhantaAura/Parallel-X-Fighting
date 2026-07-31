@@ -6,9 +6,30 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.30.1 — Stability & Interface Cleanup**
+**Prototype 2.9A.31 — Core Feel & Character Fantasy**
 
 This is a complete cumulative build. No older package is required.
+
+
+## 2.9A.31 core feel and character fantasy highlights
+
+- Late basic-attack inputs are buffered through the final recovery frames instead of disappearing.
+- Wade, Bark, Rrvvfo, and Revvfo now have visibly different dash-cancel rhythm and impact weight.
+- Normal hit audio gains fighter-specific layers without changing move damage.
+- Hurt, landing, and victory presentation now use fighter identity accents.
+- Arena results add Instant Rematch and Random Rematch.
+- Arena Training adds a Fighter Identity comparison guide.
+
+## 2.9A.30.2 smoke runner recovery highlights
+
+- The browser smoke page reports every PASS or FAIL immediately instead of waiting until the entire suite finishes.
+- Current-test, last-completed-test, elapsed-time, progress, and pass/fail counters remain visible during the run.
+- Asset requests time out instead of hanging indefinitely, while individual tests continue after a bounded timeout.
+- Startup import failures, unhandled errors, and stalled progress display an explicit diagnostic instead of leaving `Running…` forever.
+- Mixed GitHub Pages/Safari build files trigger a cache/build warning.
+- Retry Failed Tests, Run Again, and Copy Results controls are available after completion or failure.
+- The suite now packages 298 browser smoke cases.
+- Save schema remains 268.
 
 
 ## 2.9A.30.1 stability and interface cleanup highlights

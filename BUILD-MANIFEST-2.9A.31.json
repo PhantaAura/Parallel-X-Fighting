@@ -1,0 +1,16 @@
+{
+  "build": "Prototype 2.9A.31 \u2014 Core Feel & Character Fantasy",
+  "cacheId": "29a31-core-feel-character-fantasy-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.30.2 \u2014 Smoke Runner Recovery",
+  "focus": [
+    "late basic-action buffering",
+    "fighter-specific dash-cancel rhythm",
+    "fighter-specific impact audio and feedback",
+    "hurt landing and victory identity accents",
+    "Training identity comparison",
+    "instant and random rematches",
+    "Story-safe rematch gating"
+  ],
+  "noGameplayDamageChanges": true
+}

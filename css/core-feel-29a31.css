@@ -1,0 +1,17 @@
+/* Prototype 2.9A.31 — Core Feel & Character Fantasy */
+#arenaModeScreen .identityGuide{position:absolute;z-index:18;left:50%;top:50%;transform:translate(-50%,-50%);width:min(860px,calc(100vw - 40px));max-height:min(82vh,620px);overflow:auto;padding:18px;border:4px solid #0a0a0d;border-radius:18px;background:linear-gradient(155deg,rgba(17,21,34,.98),rgba(35,23,52,.98));box-shadow:0 22px 70px #000b;color:#fff}
+#arenaModeScreen .identityGuide.hidden{display:none}
+#arenaModeScreen .identityGuide header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:2px solid #ffffff25;padding-bottom:12px}
+#arenaModeScreen .identityGuide h2{margin:2px 0;font-size:clamp(25px,4vw,42px);letter-spacing:.08em}
+#arenaModeScreen .identityGuide p{margin:3px 0;color:#cbd8ef}
+#arenaModeScreen .identityGuide header button{width:44px;height:44px;border-radius:50%;font-size:26px;font-weight:900}
+#arenaModeScreen .identityCards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+#arenaModeScreen .identityCards article{padding:14px;border:3px solid #ffffff20;border-radius:13px;background:#07101ccc;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
+#arenaModeScreen .identityCards article.current{transform:scale(1.025);border-color:#ffd66d;box-shadow:0 0 0 2px #ffd66d33,0 0 26px #ffd66d25}
+#arenaModeScreen .identityCards strong{display:block;font-size:20px;letter-spacing:.08em}
+#arenaModeScreen .identityCards span{display:block;margin:4px 0 7px;color:#ffd66d;font-weight:900;font-size:11px;letter-spacing:.12em}
+#arenaModeScreen .identityGuide footer{padding:11px;border-radius:10px;background:#ffffff0d;color:#dfe9fb;font-weight:800;text-align:center}
+#arenaModeScreen .result .actions [data-random-rematch]{border-color:#7de9ff;background:#102637;color:#e9fbff}
+#arenaModeScreen .result .actions [data-rematch]{box-shadow:0 0 22px #ffd66d35}
+#arenaModeScreen .identityPulse .arenaFighterCard{filter:saturate(1.08)}
+@media(max-width:760px){#arenaModeScreen .identityGuide{width:calc(100vw - 18px);padding:12px;max-height:88vh}#arenaModeScreen .identityCards{grid-template-columns:1fr!important}#arenaModeScreen .identityGuide footer{font-size:11px}#arenaModeScreen .result .actions{grid-template-columns:1fr 1fr!important}#arenaModeScreen .result .actions button{min-height:48px}}

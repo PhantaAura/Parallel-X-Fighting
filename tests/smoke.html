@@ -1,5 +1,48 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><link rel="icon" href="../assets/site-icon-512.png" type="image/png"><title>Prototype 2.9A.30.1 Stability & Interface Cleanup Tests</title><style>body{background:#0b0d16;color:#edf2ff;font:16px system-ui;padding:24px}.pass{color:#7dffbc}.fail{color:#ff806f}pre{white-space:pre-wrap}</style></head>
-<body><h1>Prototype 2.9A.30.1 Stability & Interface Cleanup Tests</h1><p>Release cache: <code>29a301-stability-cleanup-20260731</code></p><pre id="results">Running…</pre><script type="module" src="smoke.js?v=29a301-stability-cleanup-20260731"></script></body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <link rel="icon" href="../assets/site-icon-512.png?v=29a31-core-feel-character-fantasy-20260731" type="image/png">
+  <title>Prototype 2.9A.31 Core Feel & Character Fantasy Tests</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b0d16;--panel:#151a2a;--line:#2c3551;--text:#edf2ff;--muted:#aab6d3;--pass:#7dffbc;--fail:#ff806f;--warn:#ffd36a;--accent:#7db2ff}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#18203a 0,#0b0d16 48%);color:var(--text);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:max(20px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+    main{max-width:1050px;margin:auto}.eyebrow{margin:0;color:var(--accent);font-weight:800;letter-spacing:.12em;text-transform:uppercase}.muted{color:var(--muted)}code{color:#d7e4ff}.panel{background:rgba(21,26,42,.94);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 14px 36px #0007}
+    .statusGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 20px}.statusGrid p{margin:0}.wide{grid-column:1/-1}progress{width:100%;height:14px;accent-color:var(--accent)}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}button{border:1px solid #49618e;background:#253253;color:var(--text);border-radius:10px;padding:10px 14px;font:inherit;font-weight:750;cursor:pointer}button:hover,button:focus-visible{background:#31436e;outline:2px solid var(--accent);outline-offset:2px}button:disabled{opacity:.45;cursor:not-allowed}
+    #mixedBuildWarning{display:none;color:#221700;background:var(--warn);border-radius:10px;padding:10px 12px;font-weight:750}.passText{color:var(--pass)}.failText{color:var(--fail)}.warnText{color:var(--warn)}
+    pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#070911;border:1px solid #252d44;border-radius:12px;padding:16px;min-height:220px;max-height:68vh;overflow:auto;margin:0;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace}.fatal{border-color:var(--fail);color:#ffd8d3}
+    @media(max-width:620px){body{font-size:14px}.statusGrid{grid-template-columns:1fr}.wide{grid-column:auto}.actions button{flex:1 1 42%}pre{max-height:58vh}}
+  </style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Parallels X diagnostics</p>
+  <h1>Prototype 2.9A.31 — Core Feel & Character Fantasy</h1>
+  <p class="muted">Release cache: <code id="releaseCache">29a31-core-feel-character-fantasy-20260731</code></p>
+  <section class="panel" aria-live="polite">
+    <div id="mixedBuildWarning"></div>
+    <div class="statusGrid">
+      <p><strong>Status:</strong> <span id="runStatus">Loading test modules…</span></p>
+      <p><strong>Elapsed:</strong> <span id="elapsedTime">0.0s</span></p>
+      <p class="wide"><strong>Current:</strong> <span id="currentTest">Waiting for module startup</span></p>
+      <p class="wide"><strong>Last completed:</strong> <span id="lastCompleted">None</span></p>
+      <p><strong>Progress:</strong> <span id="progressText">0 / 298</span></p>
+      <p><strong>Passed / failed:</strong> <span id="counts">0 / 0</span></p>
+      <div class="wide"><progress id="smokeProgress" max="298" value="0"></progress></div>
+    </div>
+    <div class="actions">
+      <button id="retryFailed" type="button" disabled>Retry Failed Tests</button>
+      <button id="runAgain" type="button" disabled>Run Again</button>
+      <button id="copyResults" type="button" disabled>Copy Results</button>
+    </div>
+  </section>
+  <pre id="results">STARTUP  Loading smoke-test modules…</pre>
+</main>
+<script type="module" src="smoke-bootstrap.js?v=29a31-core-feel-character-fantasy-20260731"></script>
+</body>
 </html>

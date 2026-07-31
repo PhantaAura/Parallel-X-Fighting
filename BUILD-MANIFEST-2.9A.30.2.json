@@ -1,0 +1,24 @@
+{
+  "build": "Prototype 2.9A.30.2 — Smoke Runner Recovery",
+  "cacheId": "29a302-smoke-runner-recovery-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.30.1 — Stability & Interface Cleanup",
+  "type": "cumulative full repository build",
+  "requiresPreviousPatch": false,
+  "smokeCasesPackaged": 298,
+  "highlights": [
+    "Streaming per-test PASS/FAIL output and numeric progress",
+    "Thirty-second bounded individual-test timeout and twelve-second file-request timeout",
+    "Explicit startup/import and unhandled-error diagnostics",
+    "Thirty-five-second no-progress watchdog with current and last-completed test details",
+    "Retry Failed Tests, Run Again, and Copy Results controls",
+    "Mixed active-build/cache detection for GitHub Pages and Safari",
+    "No gameplay, combat-balance, Story, or save-schema changes"
+  ],
+  "compatibility": {
+    "storyChapters": "1–4 unchanged",
+    "saveSchemaChanged": false,
+    "gameplayChanged": false,
+    "smokeRunnerOnly": true
+  }
+}

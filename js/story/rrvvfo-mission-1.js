@@ -1,8 +1,8 @@
-import {CONTROL_MAPS} from '../input.js?v=29a301-stability-cleanup-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a301-stability-cleanup-20260731';
-import {grantCombatManual} from './combat-manual.js?v=29a301-stability-cleanup-20260731';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a301-stability-cleanup-20260731';
-import {storyConfirm} from './story-ux.js?v=29a301-stability-cleanup-20260731';
+import {CONTROL_MAPS} from '../input.js?v=29a31-core-feel-character-fantasy-20260731';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a31-core-feel-character-fantasy-20260731';
+import {grantCombatManual} from './combat-manual.js?v=29a31-core-feel-character-fantasy-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a31-core-feel-character-fantasy-20260731';
+import {storyConfirm} from './story-ux.js?v=29a31-core-feel-character-fantasy-20260731';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';

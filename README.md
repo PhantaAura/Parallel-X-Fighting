@@ -6,9 +6,24 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.27 — Chapter Hooks & Pacing Overhaul**
+**Prototype 2.9A.27.2 — Roadside Fight & Map Recovery**
 
 This is a complete cumulative build. No older package is required.
+
+## 2.9A.27.2 hotfix
+
+- Roadside-fight losses now open a visible recovery menu instead of appearing frozen.
+- The road hub HUD, menu buttons, objective strip, and map hide during combat.
+- Tournament Road map objectives now cover route choice, branch travel, transport rescue, roadside challenge, checkpoint, and arrival.
+- Map markers use a clear legend and distinct shapes for goals, places, routes, and optional content.
+- The full uploaded smoke-test report was synchronized with the current pacing and Chapter 4 systems.
+
+## 2.9A.27.1 hotfix
+
+- Chapter 4 Replay and Restart now always begin from a clean Echo Region state.
+- Older saves that record Chapter 4 completion only in `chapter4State.chapterComplete` are recognized correctly.
+- Replay preserves the player’s original completed/in-progress Chapter 4 save and checkpoint.
+- Chapter 4 completion now hides the map, exploration HUD, prompts, and stale objective toast.
 
 ## 2.9A.27 highlights
 
@@ -93,4 +108,4 @@ Save-export schema: **268**. Existing Story saves continue through the current s
 
 ## Testing
 
-Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.27.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.27.md) for the real-device pass. See [`PATCH-NOTES-2.9A.27.md`](PATCH-NOTES-2.9A.27.md) and [`VALIDATION-2.9A.27.md`](VALIDATION-2.9A.27.md) for release details.
+Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.27.1.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.27.1.md) for the real-device pass. See [`PATCH-NOTES-2.9A.27.1.md`](PATCH-NOTES-2.9A.27.1.md) and [`VALIDATION-2.9A.27.1.md`](VALIDATION-2.9A.27.1.md) for release details.

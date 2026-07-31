@@ -600,6 +600,19 @@
 #rrvvfoRoadHubUI .roadRewards{display:grid;gap:8px;margin:18px 0;text-align:left}
 #rrvvfoRoadHubUI .roadRewards span{padding:10px 12px;border:3px solid #080808;background:#eef7ff;font-weight:1000}
 
+#rrvvfoRoadHubUI.roadFightActive .roadHud,
+#rrvvfoRoadHubUI.roadFightActive>.storyAttackSigns,
+#rrvvfoRoadHubUI.roadFightActive .roadPrompt,
+#rrvvfoRoadHubUI.roadFightActive .roadAreaTitle{display:none!important}
+#rrvvfoRoadHubUI .roadDefeat{position:absolute;inset:0;z-index:12;display:grid;place-items:center;padding:18px;background:rgba(0,20,54,.9);pointer-events:auto}
+#rrvvfoRoadHubUI .roadDefeat[hidden]{display:none!important}
+#rrvvfoRoadHubUI .roadDefeat article{width:min(700px,94vw);padding:24px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:12px 12px 0 #080808;text-align:center}
+#rrvvfoRoadHubUI .roadDefeat h2{margin:4px 0 10px;font-size:clamp(30px,6vw,58px);line-height:.95;font-style:italic}
+#rrvvfoRoadHubUI .roadDefeat p{font-weight:850;line-height:1.45}
+#rrvvfoRoadHubUI .roadDefeat article>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}
+#rrvvfoRoadHubUI .roadDefeat button{min-height:58px}
+#rrvvfoRoadHubUI .roadDefeat button.primary{background:#ffd557}
+
 @media(max-width:760px){
   #rrvvfoRoadHubUI .roadHud{display:grid}
   #rrvvfoRoadHubUI .roadHudActions{justify-content:flex-end}
@@ -617,6 +630,7 @@
   #rrvvfoRoadHubUI .roadComplete article{padding:18px;box-shadow:7px 7px 0 #080808}
   #rrvvfoRoadHubUI .roadChoice article>div{grid-template-columns:1fr}
   #rrvvfoRoadHubUI .qteButtons{grid-template-columns:1fr 1fr 1fr}
+  #rrvvfoRoadHubUI .roadDefeat article>div{grid-template-columns:1fr}
 }
 
 /* ===== END story-hub-27b.css ===== */
@@ -1913,6 +1927,10 @@
 .storyMiniMap[hidden]{display:none!important}
 .storyMiniMap canvas{display:block;width:100%;aspect-ratio:1;border:3px solid #080808;background:#dff1ff}
 .storyMiniMap strong,.storyMiniMap span{display:block;margin-top:5px}
+.storyMapLegend{display:grid!important;grid-template-columns:1fr 1fr;gap:3px 6px;margin-top:7px;padding-top:6px;border-top:2px solid #080808;font-size:8px;line-height:1.2}
+.storyMapLegend span{display:flex!important;align-items:center;gap:4px;margin:0!important;white-space:nowrap}
+.storyMapLegend i{display:inline-grid;place-items:center;width:13px;height:13px;font-style:normal;font-size:10px;line-height:1}
+.storyMapLegend [data-map-symbol="player"]{color:#d9232f}.storyMapLegend [data-map-symbol="objective"]{color:#d9a629}.storyMapLegend [data-map-symbol="landmark"]{color:#5b86ad}.storyMapLegend [data-map-symbol="optional"]{color:#8a63ce}
 .storyMapOverlay{position:fixed;inset:0;z-index:4800;display:grid;place-items:center;padding:18px;background:rgba(0,18,48,.93)}
 .storyMapOverlay[hidden]{display:none!important}
 .storyMapOverlay article{width:min(920px,96vw);padding:16px;border:6px solid #080808;background:#fff;color:#080808;box-shadow:12px 12px 0 #080808}

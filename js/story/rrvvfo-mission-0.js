@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27-chapter-hooks-pacing-20260730';
-import {clampToStage} from '../arena/arena-stages.js?v=29a27-chapter-hooks-pacing-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
-import {storyConfirm} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27p2-roadside-map-smoke-20260730';
+import {clampToStage} from '../arena/arena-stages.js?v=29a27p2-roadside-map-smoke-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27p2-roadside-map-smoke-20260730';
+import {storyConfirm} from './story-ux.js?v=29a27p2-roadside-map-smoke-20260730';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a27p2-roadside-map-smoke-20260730';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -297,6 +297,7 @@ class RrvvfoMission0{
       {speaker:'THE SAGE',speakerClass:'neutral',text:'Enough standing around. Move. If I can tag you before you land one clean attack, you’re starting over.',tail:'down',onShow:()=>this.previewClones(1)},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Finally. A lesson that isn’t just you vaguely pointing at my hands.',tail:'down',onShow:()=>this.previewClones(0)},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'Land one direct hit. Then make an energy copy attack from somewhere I can’t predict.',tail:'down',onShow:()=>this.previewClones(1)},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Eh, focus your energy into your hands or something. I’m getting bored. I have places to be.',tail:'down',onShow:()=>this.previewClones(1)},
       {speaker:'RRVVFO',speakerClass:'p1',text:'One copy? I can do four.',tail:'down',onShow:()=>this.previewClones(4)}
     ],{onComplete:()=>{this.previewClones(0);this.beginFight()}});
   }

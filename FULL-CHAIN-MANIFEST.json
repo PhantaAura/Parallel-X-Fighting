@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X Prototype 2.9A.27 Complete Cumulative Build",
-  "version": "2.9A.27",
+  "name": "Parallels X Prototype 2.9A.27.2 Complete Cumulative Build",
+  "version": "2.9A.27.2",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -39,9 +39,11 @@
     "2.9A.25 Feel, Team Combat & Collision Repair: corrected chapter results, merged clear screens, menu-only debug code, honest settings, camera reset and modal safety, hub collision, Chapter 3 evidence sweeps, three-ninja wave battles, optional swarms, smarter Hollow Watcher adaptation, reward soft caps, and longer music variation",
     "2.9A.25.1 Chapter Select Layout & Replay: full-width route menu, Chapter 4 Replay/Restart action, and stale objective-toast cleanup",
     "2.9A.26 Combat Feel, Training & Evidence Pass: adjustable hitstop, resource-state readability, fighter motion identities, defensive dummy settings, technique trials, Chapter 3 case board, and Chapter 4 enemy-role/wave readability",
-    "2.9A.27 Chapter Hooks & Pacing Overhaul: active Chapter 1 spar, three Tournament Road routes, transport rescue, observed tournament clues, consolidated Chapter 3 reconstruction, facility lockdown, and Chapter 4 team pacing"
+    "2.9A.27 Chapter Hooks & Pacing Overhaul: active Chapter 1 spar, three Tournament Road routes, transport rescue, observed tournament clues, consolidated Chapter 3 reconstruction, facility lockdown, and Chapter 4 team pacing",
+    "2.9A.27.1 Chapter 4 Replay Recovery: clean temporary replay state, legacy completion recognition, checkpoint preservation, and completion-HUD cleanup",
+    "2.9A.27.2 Roadside Fight & Map Recovery: visible loss recovery, combat-safe Tournament Road HUD, complete route-map objectives, marker legend, and smoke-test synchronization"
   ],
-  "cache_tag": "29a27-chapter-hooks-pacing-20260730",
+  "cache_tag": "29a27p2-roadside-map-smoke-20260730",
   "save_schema": 268,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo\u2019s atlas across Chapter 2\u20134 fight transitions and rejects stale asynchronous sprite loads",
@@ -55,6 +57,11 @@
     "2.9A.25 Feel, Team Combat & Collision Repair: upgrades whole-route game feel, Chapter 3 investigation pacing, Chapter 4 teamwork, hub solidity, adaptive boss behavior, balance, and procedural audio variation",
     "2.9A.25.1 Chapter Select Layout & Replay: full-width route menu, Chapter 4 Replay/Restart action, and stale objective-toast cleanup",
     "2.9A.26 Combat Feel, Training & Evidence Pass: strengthens combat feedback, teaching tools, investigation presentation, and multi-enemy readability without rewriting Chapters 1\u20134",
-    "2.9A.27 Chapter Hooks & Pacing Overhaul: makes existing chapters longer through meaningful events, choice, combat, and deduction rather than repeated errands"
-  ]
+    "2.9A.27 Chapter Hooks & Pacing Overhaul: makes existing chapters longer through meaningful events, choice, combat, and deduction rather than repeated errands",
+    "2.9A.27.1 Chapter 4 Replay Recovery: fixes Replay opening immediately on Shadow\u2019s Lookout and preserves the original Chapter 4 save",
+    "2.9A.27.2 Roadside Fight & Map Recovery: fixes the optional roadside fight freeze, combat HUD overlap, unclear road map points, and stale full-suite assertions"
+  ],
+  "currentBuild": "Prototype 2.9A.27.2 \u2014 Roadside Fight & Map Recovery",
+  "cacheId": "29a27p2-roadside-map-smoke-20260730",
+  "saveSchema": 268
 }

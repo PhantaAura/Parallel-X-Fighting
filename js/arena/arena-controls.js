@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a27-chapter-hooks-pacing-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a27-chapter-hooks-pacing-20260730';
+import {CONTROL_MAPS} from '../input.js?v=29a27p2-roadside-map-smoke-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a27p2-roadside-map-smoke-20260730';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

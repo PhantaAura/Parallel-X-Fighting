@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a27-chapter-hooks-pacing-20260730';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a27-chapter-hooks-pacing-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a27p2-roadside-map-smoke-20260730';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a27p2-roadside-map-smoke-20260730';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast / Shots of Agony'},

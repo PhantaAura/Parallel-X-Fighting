@@ -1,13 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27-chapter-hooks-pacing-20260730';
-import {sharedInput} from '../input-runtime.js?v=29a27-chapter-hooks-pacing-20260730';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a27-chapter-hooks-pacing-20260730';
-import {StoryMap} from './story-map.js?v=29a27-chapter-hooks-pacing-20260730';
-import {storyConfirm} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a27-chapter-hooks-pacing-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a27-chapter-hooks-pacing-20260730';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a27-chapter-hooks-pacing-20260730';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a27p2-roadside-map-smoke-20260730';
+import {sharedInput} from '../input-runtime.js?v=29a27p2-roadside-map-smoke-20260730';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a27p2-roadside-map-smoke-20260730';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a27p2-roadside-map-smoke-20260730';
+import {StoryMap} from './story-map.js?v=29a27p2-roadside-map-smoke-20260730';
+import {storyConfirm} from './story-ux.js?v=29a27p2-roadside-map-smoke-20260730';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a27p2-roadside-map-smoke-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a27p2-roadside-map-smoke-20260730';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a27p2-roadside-map-smoke-20260730';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a27p2-roadside-map-smoke-20260730';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -192,12 +192,7 @@ class RrvvfoRoadHub{
       bounds:{minX:-1550,maxX:1450,minZ:-720,maxZ:720},
       getPlayer:()=>this.battle?.fighters?.[0]||null,
       getObjective:()=>{const point=this.objectivePoint();return point?{...point,label:this.objective?.textContent||'CURRENT OBJECTIVE'}:null},
-      getPoints:()=>[
-        {x:-1160,z:-240,label:'TRAINING GROUNDS',color:'#d9232f'},
-        {x:80,z:0,label:'BROKEN RIVER',color:'#5ba9dc'},
-        {x:590,z:0,label:'TARGET GATE',color:'#6b58be'},
-        {x:1320,z:0,label:'TOURNAMENT',color:'#d9a629'}
-      ]
+      getPoints:()=>this.mapPoints()
     });
     this.battle.phase='story';
     this.battle.time=9999;
@@ -730,6 +725,22 @@ class RrvvfoRoadHub{
     }
   }
 
+  setRoadFightUi(active){
+    const enabled=Boolean(active);
+    this.root.classList.toggle('roadFightActive',enabled);
+    this.battle?.root?.classList.toggle('storyRoadFight',enabled);
+    if(enabled){
+      this.map?.close();
+      this.map?.setVisible(false);
+      this.prompt.hidden=true;
+      this.area.hidden=true;
+      this.engine?.setGameplayState('combat',{phase:'play',hideBanner:true});
+    }else if(!this.aborted){
+      this.map?.setVisible(this.mode==='hub');
+      if(this.mode==='hub')this.engine?.setGameplayState('exploration',{phase:'play',hideBanner:true});
+    }
+  }
+
   startRoadFight(){
     this.choice.hidden=true;
     this.qte.hidden=true;
@@ -744,9 +755,8 @@ class RrvvfoRoadHub{
     const player=this.battle.fighters[0];
     const foe=this.battle.fighters[1];
     this.mode='fight';
-    this.map?.setVisible(false);
     this.fighterVisible=true;
-    this.battle.root.classList.add('storyRoadFight');
+    this.setRoadFightUi(true);
     this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;clearTimeout(this.roadKoTimer);
     player.reset(790,70);applyStoryProgressionToFighter(player,loadLostYearProgress());
     player.en=45;
@@ -784,8 +794,12 @@ class RrvvfoRoadHub{
 
   showRoadDefeatOptions(){
     if(this.aborted)return;
-    this.mode='choice';this.battle.phase='story';this.battle.root.classList.remove('storyRoadFight');
-    this.defeatPanel.hidden=false;this.defeatPanel.querySelector('[data-road-rematch]')?.focus();
+    this.mode='defeat-choice';this.battle.phase='story';this.roadKoLocked=false;
+    this.battle.hideBanner();
+    this.setRoadFightUi(true);
+    this.engine?.setGameplayState('cinematic',{phase:'story',hideBanner:true});
+    this.defeatPanel.hidden=false;
+    requestAnimationFrame(()=>this.defeatPanel.querySelector('[data-road-rematch]')?.focus());
   }
 
   openPauseMenu(){
@@ -800,15 +814,16 @@ class RrvvfoRoadHub{
   }
 
   restartRoadFight(){
-    if(this.aborted)return;this.mode='fight';this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;
-    this.battle.koTarget=1;this.battle.scores=[0,0];this.battle.round=1;this.battle.newRound();this.battle.time=Infinity;
-    this.setObjective('OPTIONAL ROAD FIGHT • FIRST TO 1 KO','Score one KO before the roadside fighter does.');
+    if(this.aborted)return;
+    this.defeatPanel.hidden=true;
+    this.mode='fight-intro';
+    this.startRoadFight();
     this.battle.notice('MATCH RESTARTED',1.2);
   }
 
   finishRoadFight(won){
     if(this.mode!=='fight'||this.aborted)return;
-    this.battle.root.classList.remove('storyRoadFight');
+    this.setRoadFightUi(false);
     saveLostYearProgress({...loadLostYearProgress(),spectatorPassWon:true});
     this.resolveEncounter(won?'won':'escaped');
   }
@@ -816,7 +831,8 @@ class RrvvfoRoadHub{
   resolveEncounter(result){
     this.encounterResolved=true;
     this.mode='hub';
-    this.map?.setVisible(true);
+    this.defeatPanel.hidden=true;
+    this.setRoadFightUi(false);
     this.battle.phase='play';
     this.fighterVisible=false;
     this.hideSecondFighter();
@@ -949,6 +965,22 @@ class RrvvfoRoadHub{
     }
   }
 
+  mapPoints(){
+    const points=[
+      {x:-1160,z:-240,label:'TRAINING GROUNDS',color:'#d9232f',kind:'landmark'},
+      {x:80,z:0,label:'BROKEN RIVER',color:'#5ba9dc',kind:'landmark'},
+      {x:590,z:0,label:'TARGET GATE',color:'#6b58be',kind:'landmark'},
+      {x:1320,z:0,label:'TOURNAMENT',color:'#d9a629',kind:'landmark'}
+    ];
+    if(this.routeChoice==='forest')points.push({x:390,z:-390,label:'FOREST SHORTCUT',color:'#3f9f78',kind:'route'});
+    if(this.routeChoice==='cliff')points.push({x:390,z:390,label:'CLIFF ROUTE',color:'#c56c45',kind:'route'});
+    if(this.routeChoice==='main')points.push({x:340,z:0,label:'MAIN ROAD',color:'#3f9f78',kind:'route'});
+    if(!this.transportFixed)points.push({x:720,z:150,label:'STRANDED TRANSPORT',color:'#d8843e',kind:'optional'});
+    if(this.lostCompetitorDecision===null)points.push({x:730,z:-285,label:'LOST COMPETITOR',color:'#8a63ce',kind:'optional'});
+    if(this.lostCompetitorDecision==='help'&&!this.encounterResolved)points.push({x:805,z:40,label:'ROADSIDE CHALLENGER',color:'#8a63ce',kind:'optional'});
+    return points;
+  }
+
   objectivePoint(){
     const remainingWarmup=this.warmupMarkers.find(marker=>!marker.done);
     if(this.step==='warmup'&&remainingWarmup)return{x:remainingWarmup.x,z:remainingWarmup.z};
@@ -956,11 +988,14 @@ class RrvvfoRoadHub{
       'leave-training':{x:-780,z:40},
       bridge:{x:-95,z:20},
       'bridge-ready':{x:-75,z:20},
+      'route-choice':{x:250,z:0},
+      'route-travel':{x:430,z:this.routeChoice==='forest'?-390:this.routeChoice==='cliff'?390:0},
       cart:{x:250,z:0},
       'cart-dialogue':{x:260,z:0},
       'cart-ready':{x:270,z:0},
       gate:{x:430,z:0},
       'gate-ready':{x:500,z:0},
+      transport:{x:720,z:150},
       encounter:{x:780,z:0},
       'encounter-ready':{x:800,z:0},
       checkpoint:{x:915,z:0},
@@ -1045,7 +1080,7 @@ class RrvvfoRoadHub{
 
   cleanup(){
     if(this.aborted)return;
-    this.aborted=true;clearTimeout(this.roadKoTimer);this.map?.destroy();this.map=null;
+    this.setRoadFightUi(false);this.aborted=true;clearTimeout(this.roadKoTimer);this.map?.destroy();this.map=null;
     document.removeEventListener('keydown',this.keyHandler,true);
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
     this.dialogue?.overlay?.remove();

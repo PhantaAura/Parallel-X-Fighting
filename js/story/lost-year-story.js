@@ -9,16 +9,16 @@ import {
   rrvvfoRouteStarted,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a27-chapter-hooks-pacing-20260730';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a27-chapter-hooks-pacing-20260730';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a27-chapter-hooks-pacing-20260730';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a27-chapter-hooks-pacing-20260730';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a27-chapter-hooks-pacing-20260730';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a27-chapter-hooks-pacing-20260730';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a27-chapter-hooks-pacing-20260730';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a27-chapter-hooks-pacing-20260730';
-import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a27-chapter-hooks-pacing-20260730';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a27-chapter-hooks-pacing-20260730';
+} from './lost-year-data.js?v=29a27p2-roadside-map-smoke-20260730';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a27p2-roadside-map-smoke-20260730';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a27p2-roadside-map-smoke-20260730';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a27p2-roadside-map-smoke-20260730';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a27p2-roadside-map-smoke-20260730';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a27p2-roadside-map-smoke-20260730';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a27p2-roadside-map-smoke-20260730';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a27p2-roadside-map-smoke-20260730';
+import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a27p2-roadside-map-smoke-20260730';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a27p2-roadside-map-smoke-20260730';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -205,7 +205,8 @@ class LostYearStoryScreen{
       }
       this.root.hidden=false;this.showRouteHome({focus:true});
       }});
-      this.progress=saveLostYearProgress({...loadLostYearProgress(),routeStarted:true,lastCheckpoint:stepId,selectedRoute:'rrvvfo'});
+      const liveProgress=loadLostYearProgress();
+      this.progress=saveLostYearProgress({...liveProgress,routeStarted:true,lastCheckpoint:starterOptions.replay?(progressBeforeStart.lastCheckpoint||liveProgress.lastCheckpoint):stepId,selectedRoute:'rrvvfo'});
     }catch(error){
       saveLostYearProgress(progressBeforeStart);
       console.error('[Story] Chapter failed to start',error);this.root.hidden=true;

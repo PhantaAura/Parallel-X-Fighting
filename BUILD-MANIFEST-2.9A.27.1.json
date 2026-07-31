@@ -1,0 +1,19 @@
+{
+  "build": "Prototype 2.9A.27.1 — Chapter 4 Replay Recovery",
+  "cacheId": "29a27p2-roadside-map-smoke-20260730",
+  "saveSchema": 268,
+  "changedFiles": [
+    "BUILD-MANIFEST-2.9A.27.1.json",
+    "FRIEND-PLAYTEST-CHECKLIST-2.9A.27.1.md",
+    "FULL-CHAIN-MANIFEST.json",
+    "PATCH-NOTES-2.9A.27.1.md",
+    "README.md",
+    "VALIDATION-2.9A.27.1.md",
+    "index.html",
+    "js/build-info.js",
+    "js/story/lost-year-story.js",
+    "js/story/rrvvfo-chapter-4.js",
+    "tests/smoke.html",
+    "tests/smoke.js"
+  ]
+}

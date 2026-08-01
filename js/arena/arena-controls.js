@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a391-chapter4-ending-continuity-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CONTROL_MAPS} from '../input.js?v=29a40-core-fun-overhaul-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a40-core-fun-overhaul-20260801';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

@@ -1,0 +1,24 @@
+{
+  "build": "Prototype 2.9A.40 — Core Fun Overhaul",
+  "cache": "29a40-core-fun-overhaul-20260801",
+  "saveSchema": 268,
+  "requiresPreviousPatch": false,
+  "cumulative": true,
+  "majorSystems": [
+    "Flow Cancel combat expression",
+    "Rrvvfo Build Lab — 4 techniques + 2 passives",
+    "Six enemy archetypes",
+    "Eight optional Adventure Mission hooks",
+    "Chapter-specific gameplay identities",
+    "Chapter 4 3v3 and 3v2 Story squad encounters",
+    "2.9A.39.2 Chapter 4 ending hardening"
+  ],
+  "validation": {
+    "smokeTests": 397,
+    "javascriptModules": 94,
+    "relativeImports": 269,
+    "htmlIds": 259,
+    "duplicateHtmlIds": 0,
+    "jsonAndManifestFilesAfterVerification": 50
+  }
+}

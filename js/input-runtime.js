@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a391-chapter4-ending-continuity-20260801';
+import {InputManager} from './input.js?v=29a40-core-fun-overhaul-20260801';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

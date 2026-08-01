@@ -1,0 +1,389 @@
+Initial run complete — all tests passed
+Progress: 385 / 385
+Passed / failed: 385 / 0
+
+PASS  loads the complete roster
+PASS  casual select and Random use only the four playable fighters
+PASS  preserves mirror-match restriction
+PASS  combines keyboard with an idle controller
+PASS  official Chapter controls keep one meaning everywhere
+PASS  unified WASD depth controls work on keyboard and controller
+PASS  Chapter mouse controls are shared by every combat runtime
+PASS  keeps quick keyboard taps between frames
+PASS  maps three-hit light chains for Nintendo Xbox and PlayStation
+PASS  light-to-heavy finishers preserve the existing combo rules
+PASS  Up plus Heavy maps to Launcher in every controller style
+PASS  throws require simultaneous Light and Heavy
+PASS  sequential Light then Heavy never becomes a throw
+PASS  launcher routes translate on keyboard controller and touch
+PASS  damage scaling is identical across controller styles
+PASS  hit-stop input remains buffered until a legal follow-up can begin
+PASS  custom remapping changes prompts and buttons without changing rules
+PASS  Training combo prompts match active input styles
+PASS  Training input history records only real semantic inputs
+PASS  simplified touch can automate only the three-light continuation
+PASS  detects iPhone iPad Android and touch capability
+PASS  applies safe-area and dynamic viewport metrics for cutouts
+PASS  touch layout tracks browser resize and orientation changes
+PASS  virtual joystick filters drift and supports diagonal movement
+PASS  virtual D-Pad supports diagonals and rejects opposites
+PASS  touch Up plus Heavy produces Launcher without Heavy
+PASS  multi-touch preserves movement and Block while attacking
+PASS  touch throw requires overlapping attack touches and dedicated Throw is identical
+PASS  touch clash methods have equivalent capped maximum strength
+PASS  touch movement choice and custom layouts persist locally
+PASS  all touch presets and every editable control are available
+PASS  touch tutorial teaches the full selected control system
+PASS  iOS and Android prevent gameplay scrolling while Android Back pauses
+PASS  haptics modes are optional and rate limited
+PASS  applies three-hit light combo and scaling
+PASS  terminates Wade ground chain at the wall
+PASS  cancels interrupted attack startup
+PASS  launches into an air attack
+PASS  reports actual post-defense damage
+PASS  combo total equals health actually removed
+PASS  fully resets Training state delayed work and buffered inputs
+PASS  cleans all state when exiting Training
+PASS  canceled delayed attacks cannot leak rounds
+PASS  keeps non-CPU dummy modes stationary and passive
+PASS  Bark counter punishes nearby melee only
+PASS  Bark counter does not punish projectiles
+PASS  synchronizes Training settings
+PASS  Lens starts at a truthful 60 Energy and 25 HP cost
+PASS  Shots of Agony creates exactly four clones and consumes full energy
+PASS  Shots active volley blocks reuse and suppresses regeneration
+PASS  Shots fires four projectiles together then starts five-second cooldown
+PASS  Shots cooldown lasts the full 300 simulation frames
+PASS  Shots total damage stays between 25 and 30
+PASS  Phanta defense is balanced and survives every individual move
+PASS  every roster AI can select core offense, movement, and defense
+PASS  all roster AI profiles are character-specific without damage modifiers
+PASS  CPU Rrvvfo obeys Shots availability restrictions
+PASS  compatible heavy attacks trigger a melee clash
+PASS  incompatible attacks do not trigger a cinematic clash
+PASS  beam collisions start a beam clash
+PASS  clash state clears after completion
+PASS  clash state clears when a round ends
+PASS  clash state clears during Training reset
+PASS  CPU clash input respects difficulty
+PASS  clash damage cannot one-shot a full-health fighter
+PASS  blocking reduces guard and applies controlled chip
+PASS  guard regenerates only when allowed
+PASS  guard break activates at zero guard
+PASS  guard-break loops are prevented
+PASS  perfect block only works during its timing window
+PASS  throws beat blocking at close range
+PASS  throws fail outside close range
+PASS  throw protection prevents immediate repeated throws
+PASS  combo breaker costs 60 energy and cannot be spammed
+PASS  chip damage cannot reduce health below one
+PASS  defensive AI can retreat throw break combos and scale perfect blocks
+PASS  every fighter has a valid bounded cinematic ultimate
+PASS  ultimate energy cost and cooldown are enforced
+PASS  missing an ultimate creates punishable recovery
+PASS  no cinematic ultimate one-shots a full-health normal fighter
+PASS  camera restores after every cinematic
+PASS  camera restores after cinematic interruption
+PASS  camera restores after round cleanup and Training reset
+PASS  audio hooks exist for every major combat event
+PASS  Rrvvfo and Revvfo ranged specials can beam clash
+PASS  Revvfo keeps ranged beam aerial beam and close teleport visual actions
+PASS  Rrvvfo and Phanta ultimates can clash
+PASS  Wade versus Bark preserves speed and armor identities
+PASS  Bark perfect block remains separate from deliberate counter
+PASS  Creed can evade a cinematic ultimate with timed dash invulnerability
+PASS  controller attack buttons contribute independently to clashes
+PASS  Training clash reset clears active and armed states
+PASS  Rrvvfo atlas manifest loads with normalized anchors
+PASS  Rrvvfo sprite paths are GitHub Pages relative
+PASS  Revvfo atlas manifest loads with normalized anchors and original moveset animations
+PASS  Rrvvfo Hood Up has complete matching animation coverage
+PASS  Revvfo sprite paths remain GitHub Pages relative
+PASS  idle and run sprite animations loop
+PASS  non-looping attack animation completes and returns control
+PASS  animation priority lets hurt interrupt movement but not idle interrupt attack
+PASS  Rrvvfo light chain chooses light1 light2 light3 in order
+PASS  heavy launcher and air attacks map to dedicated animations
+PASS  block perfect-block and guard-break animations are distinct
+PASS  Fire Blast manifest provides a hand projectile origin
+PASS  Shots of Agony keeps four separate clone visuals and synchronized fire
+PASS  Lens visuals preserve mastered cost and dodge state
+PASS  Object Swap selects disappearance and reappearance without changing movement rules
+PASS  showcase sprites default On and old saves migrate to the stable pipeline
+PASS  explicit Rrvvfo sprite On preference persists
+PASS  Bark and Wade matches preload their first-class sprite atlases
+PASS  genuine missing manifests report fallback status
+PASS  Player 1 Player 2 and Training appearances persist separately
+PASS  Hood Down remains the default appearance
+PASS  Hood Up is labeled as a completed cosmetic appearance
+PASS  production mode exposes both completed Rrvvfo appearances
+PASS  developer mode may expose Hood Up
+PASS  appearance is stored on each Fighter instance
+PASS  Rrvvfo appearance never alters gameplay data
+PASS  controller completion systems remain integrated
+PASS  controller styles assignments and custom preferences persist
+PASS  controller detection and disconnection assignment stay deterministic
+PASS  InputManager honors explicit player device assignment
+PASS  round and Training cleanup clear visual-only state
+PASS  Prototype 2.9A.36 uses one centralized build label
+PASS  Bark and Wade are first-class sprite fighters with complete manifests
+PASS  all five cleaned fighter atlases have valid manifests and reachable images
+PASS  Sage uses the supplied full production sheet instead of twelve reused poses
+PASS  Classic fighter sprites are readable and off-model turnaround cells stay inactive
+PASS  main menu exposes every implemented mode and honest Coming Later state
+PASS  battle modes unlock progressively after Chapters 1, 2, and 3
+PASS  Story progress counts four released chapters against the planned eight chapters
+PASS  hub camera snaps after teleports and keeps Rrvvfo centered during exploration
+PASS  hub camera lifts or pulls forward when solid scenery blocks Rrvvfo
+PASS  hub camera keeps the chosen exploration angle and recenters only when disabled or fighting
+PASS  mouse and trackpad camera look starts only from a left-button canvas drag
+PASS  Chapter hubs have distinct scenery while the tournament fight arena stays separate
+PASS  Story startup failure does not create false Continue progress
+PASS  Chapter 2 hub animation timing advances in simulation updates only
+PASS  Tangai Dojo has a detailed but compact 3D stage layout
+PASS  main menu mode descriptions include player and availability data
+PASS  post-match options include every requested destination
+PASS  match statistics track actual damage and both player summaries
+PASS  pause is the single simulation gate for combat AI timers and cooldowns
+PASS  pause menu contains universal and Training-only actions
+PASS  adaptive move list follows keyboard Nintendo Xbox PlayStation touch and custom prompts
+PASS  Rrvvfo move list states costs restrictions and cosmetic appearance
+PASS  QOL settings sanitize and persist audio HUD accessibility video and hub-camera values
+PASS  visual accessibility settings cannot alter combat damage or timing
+PASS  combat notifications honor mode importance and repeat cooldown
+PASS  versioned save export and valid import preserve all known data
+PASS  invalid save import is rejected without changing the current save
+PASS  save reset groups keep progress separate from settings and Training presets
+PASS  Training presets save and load isolated Training configuration
+PASS  Training position resource and cleanup shortcuts reset transient state
+PASS  saved controller dead zones filter drift without clearing keyboard
+PASS  first-time hints use active prompts and can be dismissed or reset
+PASS  HUD model reports Rrvvfo cooldowns active volley Lens and breaker state
+PASS  audio manager preserves separate volume and mute settings
+PASS  loading manager exposes progress retry return and safe no-root fallback
+PASS  main page contains first-time start polished menu recovery and confirmation shells
+PASS  touch layout lock defaults on and survives saved settings
+PASS  video particle caps reduce visuals without changing effect semantics
+PASS  mobile presentation defaults ask once and persist portrait fullscreen choices
+PASS  portrait recommendation respects touch orientation and Don’t Show Again
+PASS  rotating into portrait pauses through the prompt hook and preserves the active manager
+PASS  responsive layout preserves a 16:9 logical combat canvas
+PASS  19.5:9 touch layout reserves a landscape action-control zone
+PASS  tablet layout remains safe-area aware
+PASS  ultrawide layout uses side presentation without range advantage
+PASS  desktop hotbar reserves presentation space without changing gameplay bounds
+PASS  narrow fallback keeps HUD and stage inside the available display
+PASS  Rrvvfo hotbar uses the exact five requested default slots
+PASS  every roster fighter receives a data-driven ability hotbar
+PASS  Rrvvfo hotbar advertises authoritative costs and restrictions
+PASS  Shots hotbar reports ACTIVE and its five-second cooldown
+PASS  Lens hotbar reports duration HP cost and unsafe payment warning
+PASS  Object Swap hotbar rejects a missing legal destination
+PASS  ultimate hotbar reflects resource and cinematic legality
+PASS  ability slot order saves independently for each fighter
+PASS  hotbar reordering changes display order only and restores defaults
+PASS  hotbar prompts adapt to keyboard touch Nintendo Xbox PlayStation and custom mappings
+PASS  holding a hotbar slot opens information without activating it
+PASS  unavailable hotbar warnings are throttled and never spend resources
+PASS  desktop number-slot actions remain additive to Grab and selected-ability bindings
+PASS  shared hotbar selection cycles and activates the highlighted ability
+PASS  hotbar Fire Blast routes to the exact move even at close range
+PASS  hotbar Shots preserves four clones simultaneous fire cost and active lock
+PASS  hotbar Lens preserves the fair 60 Energy 25 HP cost
+PASS  hotbar actions remain buffered through brief hit-stop
+PASS  touch movement and Block remain held while a hotbar action is buffered
+PASS  default landscape controls do not overlap the bottom hotbar
+PASS  phone touch controls remain separated inside portrait and landscape safe bounds
+PASS  new mobile hotbar presets preserve joystick D-Pad left-handed and tablet choices
+PASS  legacy default touch positions migrate away from the action hotbar
+PASS  Training Reset stays outside the mobile stage HUD
+PASS  fullscreen is requested only through the explicit interaction method
+PASS  unsupported fullscreen falls back without failing the match
+PASS  fullscreen exit is explicit and Pause exposes it conditionally
+PASS  main page includes landscape fullscreen and hotbar presentation shells
+PASS  menu confirm and cancel follow Nintendo Xbox and PlayStation layouts
+PASS  controller settings track configured devices separately per player
+PASS  controller assignment panel and separate controls panel are present
+PASS  touch-capable menus advertise tap before the first gameplay touch
+PASS  Classic settings rail explains swiping and uses comfortable touch targets
+PASS  portrait phone main menu separates its header choices preview and touch hint
+PASS  hotbar exposes an information-close callback for pause recovery
+PASS  fighter select clearly labels showcase and unfinished roster states
+PASS  public Sage Manual grants onboarding guides without forcing story discoveries
+PASS  main menu renders one selected mode at a time with carousel navigation and honest locks
+PASS  loading manager reports task-derived progress and fighter identity
+PASS  active page uses one release cache ID and presentation assets
+PASS  finished Arena fighters have distinct data-driven normal attacks
+PASS  Shot Power and Trick categories organize Rrvvfo techniques
+PASS  Kinetic Arena balance has pursuit scaling fair defense and visible ring-outs
+PASS  the Sage Manual explains pursuit categories and Momentum counterplay
+PASS  Chapter 1 tutorial grab is close-range assisted and confirmed by a connected grab hit
+PASS  Story menu exposes only Rrvvfo and chains Chapters 1–4 without route-menu swaps
+PASS  Chapter 1 uses clear attempt counts, saved checkpoints, and the correct Lens charge target
+PASS  Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permanent tournament Run refusal
+PASS  Chapter 3 contains the complete investigation, facility, and Remote Region route
+PASS  Chapter 3 stages are valid and the reused tournament hub has a true after-hours treatment
+PASS  Chapter 3 data preserves the required structure and migrates duplicate save data safely
+PASS  Chapter 4 data preserves the revised village-first structure and optional secret boss
+PASS  Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending
+PASS  Chapter 4 stages and favicon assets are valid
+PASS  Chapter 2 living hub keeps only the five story-fit questlines mandatory
+PASS  Chapter 2 quest saves migrate safely and rumor gates advance between rounds
+PASS  permanent Chapter 2 side-quest stats affect Story calculations
+PASS  Chapter 2 tournament returns to the hub and exposes mandatory and optional activities
+PASS  Chapter 4 reaches the floating lookout with a pebble Object Swap sequence
+PASS  Chapter 4 new ending uses the exact one-line Shadow arrival and reserves exposition for Chapter 5
+PASS  Chapter 4 gives control back on the floating lookout before Shadow entrance
+PASS  Chapter 4 ending completion display is Chapter 4 Complete then Chapter 5 Setup
+PASS  Chapter 4 required ending evidence uses shadowArrival and migrates only fully completed old endings
+PASS  Chapter 4 lookout checkpoint cannot bypass the mandatory Object Swap
+PASS  Chapter 4 completion reliability accepts the new ending and preserves old completed saves
+PASS  2.9A.39.2 lookout landing gets dedicated camera framing before free control settles
+PASS  2.9A.39.2 lookout checkpoint is grounded at sanctuary height and clamped to the platform
+PASS  2.9A.39.2 lookout entrance guidance is subtle and delayed until the landing beat ends
+PASS  2.9A.39.2 floating lookout has visible height wind and entrance ambience
+PASS  2.9A.39.2 collapse holds a readable quiet beat before the completion fade
+PASS  2.9A.39.2 keeps Ryuzankaro branches converged and the mandatory summit swap intact
+PASS  Prototype 2.9A.22 preserves the approved Chapter 1 and Chapter 2 dialogue sources
+PASS  runtime fighter atlases use compressed WebP files
+PASS  Chapter 1 road skips the repeated mandatory movement marker lesson
+PASS  Chapter 2 mandatory preparation includes active card and repair challenges
+PASS  the uploaded Parallels X icon is wired for browser tabs and installed apps
+PASS  Prototype 2.9A.22 preserves the distinct Chapter 1 and Chapter 2 visual silhouettes
+PASS  Story chapters use one shared runtime controller without method monkey-patching
+PASS  Prototype 2.9A.24 preserves the eight-chapter route without inventing Chapters 5–8
+PASS  Echo Village has a low-tech resonance identity and invasive Hollow contrast
+PASS  Chapter 4 secret-boss checkpoints migrate and one-time rewards cannot duplicate
+PASS  Hollow Watcher adaptation is readable, breakable, and never full immunity
+PASS  Chapter 4 QTEs support keyboard, controller, touch abilities, and safe retries
+PASS  Echo Region uses separate procedural identities for village, cavern, mountain, and Hollow combat
+PASS  Story fights preserve and recover Rrvvfo sprite assets across Chapters 2–4
+PASS  Story combat hides exploration HUD, maps, and menus without hiding combat-specific panels
+PASS  All-chapter polish is initialized from the main runtime
+PASS  Secret playtest menu uses the exact keyboard and controller code
+PASS  Playtest menu exposes recovery chapter jumps combat tests and bug reports
+PASS  Story fight transitions are centralized and preserve a pre-fight save snapshot
+PASS  Dialogue presentation uses atlas portraits expressions and camera focus
+PASS  Unified objectives autosave and route home shows the recovery checkpoint
+PASS  Chapter completion creates a ranked Story results screen
+PASS  Combat feedback adds perfect-parry guard-break heavy-impact and low-health cues
+PASS  Procedural chapter audio crossfades and adds distinct ambience accents
+PASS  Chapter 3 Strange Man sequence preserves order, flags, and facility migration
+PASS  Chapter 3 Strange Man dialogue, hat, Lens contradictions, and east-support clue are packaged
+PASS  2.9A.25 chapter results use real optional quest state and one merged clear screen
+PASS  2.9A.25 secret code is menu-only and settings only expose connected features
+PASS  2.9A.25 hub collision blocks structures and keeps Echo Village spawns clear
+PASS  2.9A.25 Chapter 3 consolidates evidence instead of forcing repeated plaza laps
+PASS  2.9A.25 Chapter 4 makes teamwork playable with QTE roles, waves, allies, and optional swarms
+PASS  2.9A.25 Hollow Watcher learns full combat routes instead of one repeated button
+PASS  2.9A.25 optional stat rewards use diminishing returns
+PASS  2.9A.25 procedural music includes quiet and ambient phrase variation
+PASS  2.9A.25.1 Chapter Select uses full width and exposes Chapter 4 replay or restart
+PASS  2.9A.29 training trials teach pursuit finishers, wall splats, ground bounces, and escapes
+PASS  2.9A.26 Arena Training exposes defensive dummy modes and live trial feedback
+PASS  2.9A.26 impact freeze is adjustable without removing camera-shake accessibility
+PASS  2.9A.26 Chapter 3 journal presents deductions, contradictions, and evidence as a case board
+PASS  2.9A.26 Chapter 4 enemy roles change stats and expose readable wave/team HUD
+PASS  2.9A.26 character motion identity and full-energy/critical-guard cues are wired
+PASS  2.9A.27 Chapter 1 starts with active combat and offers three road routes plus transport rescue
+PASS  2.9A.27 Chapter 2 observation reduces rumor errands without removing tournament matches
+PASS  2.9A.27 Chapter 3 consolidates footage reconstruction and keeps the facility payoff
+PASS  2.9A.27 Chapter 4 adds team rest, ally commands, and changed cavern return
+PASS  2.9A.27.2 roadside defeat recovery and map guidance are explicit
+PASS  Chapter 4 replay always starts from a fresh temporary state
+PASS  2.9A.36.1 Chapter 4 replay hides stale completion choice and QTE overlays
+PASS  2.9A.36.3 Chapter 4 hidden state overrides every desktop overlay display rule
+PASS  2.9A.36.3 Chapter 4 menu close repairs stale visible-menu state
+PASS  2.9A.36.3 Chapter 4 completion closes menus before changing mode
+PASS  2.9A.29 pursuit rules are bounded and prevent repeated wall or ground loops
+PASS  2.9A.29 movement identities keep fighters distinct without damage modifiers
+PASS  2.9A.29 Arena wires buffered pursuit, defensive tech, one-use reactions, and readable prompts
+PASS  2.9A.29.1 Pursuit Tech uses a fair fixed 15-Energy threshold
+PASS  2.9A.29.1 pursuit prompts support Full Minimal and Off without changing combat rules
+PASS  2.9A.29.1 pursuit feedback and cleanup are wired for mobile and Story transitions
+PASS  2.9A.29.1 Training sells the full pursuit route and grades timing
+PASS  2.9A.28 mode and route selectors use one-card carousels
+PASS  2.9A.28.1 mobile Story hubs use compact HUDs and spacious sheets
+PASS  2.9A.29.2 unifies combat HUD feedback without changing pursuit balance
+PASS  2.9A.30 Focus Recovery uses gray health, startup, and fixed energy conversion
+PASS  2.9A.30 Focus Recovery creates release recovery and clears safely
+PASS  2.9A.30 stages expose distinct playstyle profiles and clean tournament rules
+PASS  2.9A.30 Arena wires stage identity, tournament atmosphere, and Focus Recovery
+PASS  2.9A.30.1 Focus Recovery startup cancels cleanly without accidental release lag
+PASS  2.9A.30.1 Focus Recovery availability preserves normal Block when healing is unavailable
+PASS  2.9A.30.1 Focus Recovery reports the current channel instead of the round total
+PASS  2.9A.30.1 preserves Story stats, initializes stage cameras, and clears Training recovery state
+PASS  2.9A.30.1 Mountain Path is open while stage size labels match their dimensions
+PASS  2.9A.30.1 mobile Arena UI separates prompts and uses compact Training and Stage carousels
+PASS  2.9A.30.2 smoke runner exposes progress, timeouts, recovery controls, and mixed-build detection
+PASS  2.9A.31 fighter feel profiles make finished fighters meaningfully distinct
+PASS  2.9A.31 Arena packages late input buffering, identity guide, and instant rematches
+PASS  2.9A.31 active page loads the character-feel presentation stylesheet
+PASS  2.9A.31.3 save export reset and schema validation cover the complete current save set
+PASS  2.9A.31.3 Story save failure returns the verified previous state without false progress
+PASS  2.9A.31.3 every public stage surface uses the same five playable Arena stages
+PASS  2.9A.31.3 ring-out and Story recovery rules are data-driven and functional
+PASS  2.9A.31.3 asset-less enemies keep individual accents and skip missing sprite requests
+PASS  2.9A.31.3 Chapter 4 playtesting can enter a clean temporary Echo Village hub
+PASS  2.9A.31.3 portrait combat retains compact critical cues without Training overlap
+PASS  2.9A.31.3 a timed-out smoke test stops before contaminating later tests
+PASS  2.9A.32 active page loads the shared Hub Charm presentation layer
+PASS  2.9A.32 Story Charm supports arrivals banter progression and future fighter reveals
+PASS  2.9A.32 Story saves emit precise progression deltas without changing export schema
+PASS  2.9A.32 milestone banter and arrival reactions cover the current four-chapter route
+PASS  2.9A.32 Chapter 2 adds a playful photo activity instead of another fetch quest
+PASS  2.9A.32 Chapter 2 ambient NPC reactions change with major tournament progress
+PASS  2.9A.32 Echo Chime Jam is persistent and Chapter 4 state normalizes it safely
+PASS  2.9A.32 Echo Village visuals react to beacon lift defense and party activity progress
+PASS  2.9A.33 non-tournament stages use deliberate route-shaping geometry
+PASS  2.9A.33 stage geometry blocks fighters and projectiles without changing Story hubs
+PASS  2.9A.33 Hollow Watcher teaches a three-phase readable boss dance
+PASS  2.9A.33 Quick Battle launches the last safe matchup as first to one
+PASS  2.9A.33 active page loads boss and stage personality presentation
+PASS  2.9A.34 signature profiles preserve four distinct decision identities
+PASS  2.9A.34 Arena wires Object Swap, pressure, near-miss, and armor punish moments
+PASS  2.9A.34 final KOs use a stronger fighter-colored finish without changing KO rules
+PASS  2.9A.34 Training includes one short identity trial for each finished fighter
+PASS  2.9A.34 active page loads signature-combat presentation and synchronized cache
+PASS  2.9A.35 pacing state normalizes safely and keeps quest waves bounded
+PASS  2.9A.35 Chapter 2 orientation requires place familiarity and people, not a timer
+PASS  2.9A.35 Chapter 3 makes players compare the closed arena with another district
+PASS  2.9A.35 Chapter 4 orientation is based on understanding two village landmarks
+PASS  2.9A.35 phase transitions support quiet aftermaths without lowering unlock waves
+PASS  2.9A.35 Chapter 2 reveals the festival and optional quests in story waves
+PASS  2.9A.35 Chapter 3 delays the first lead and stages optional investigations
+PASS  2.9A.35 Chapter 4 introduces Echo Village before the party mission begins
+PASS  2.9A.35 Chapter 1 stays light while still tracking an RPG journey arc
+PASS  2.9A.36 quest-variety state normalizes every released chapter safely
+PASS  2.9A.36 Chapter 1 runaway cart is a mandatory playable road beat
+PASS  2.9A.36 Chapter 2 exhibition gates registration and grades performance
+PASS  2.9A.36 Chapter 3 reconstruction keeps confirmed evidence and teaches order
+PASS  2.9A.36 Chapter 4 party field route requires all three characters
+PASS  2.9A.36 older Chapter 4 saves beyond the caverns never move backward
+PASS  2.9A.36 active build packages playful exploration without changing save schema
+PASS  2.9A.36.2 detects impossible Chapter 4 completion without damaging Chapters 1–3
+PASS  2.9A.36.2 route menu offers a saveable Chapter 4 recovery instead of trapping the player in Replay
+PASS  2.9A.36.2 Chapter 4 clearly labels temporary Replay runs
+PASS  2.9A.37 Story reliability distinguishes first play, replay, and invalid completion
+PASS  2.9A.37 save path strips false Chapter 4 completion before persistence
+PASS  2.9A.37 Story runtime reports saveable and temporary run modes explicitly
+PASS  2.9A.37 secret playtest menu exposes Story save health and chapter states
+PASS  2.9A.37 chapter results include RPG afterglow instead of rushing the next objective
+PASS  2.9A.37 active build packages reliability and RPG flow without changing save schema
+PASS  2.9A.38 mastery records start clean and expose fifteen optional challenges
+PASS  2.9A.38 battle mastery records real-time Sonic Battle mechanics
+PASS  Combat Rank Patch finished matches use the full S A B C D E ladder plus persistent mastery points
+PASS  Combat Rank Patch exposes all six rank thresholds
+PASS  Combat Rank Patch gives rough and losing fights meaningful D and E results
+PASS  Combat Rank Patch ranks Story fights from Chapter 1 through Chapter 4
+PASS  Combat Rank Patch displays S A B C D E on Arena and Story result presentation
+PASS  2.9A.38 challenge medals reward mastery once instead of encouraging grinding
+PASS  2.9A.38 mastery milestones unlock RPG-style titles and rewards
+PASS  2.9A.38 Adventure Records renders fighter ranks challenge status and rewards
+PASS  2.9A.38 mastery records are included in safe save export and import
+PASS  2.9A.38 active build integrates mastery results Training rewards and Extras records
+PASS  2.9A.39 chapter length profiles keep Chapter 4 longest without padding
+PASS  2.9A.39 meaningful RPG beats cover travel tournament mystery and Echo Region
+PASS  2.9A.39 high fight ranks celebrate skill without interrupting every result
+PASS  2.9A.39 Chapter 4 adds optional party recovery without adding a mandatory gate
+PASS  2.9A.39.1 active build preserves RPG polish with the new Chapter 4 ending

@@ -1,15 +1,16 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a391-chapter4-ending-continuity-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a391-chapter4-ending-continuity-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
-import {StoryMap} from './story-map.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a391-chapter4-ending-continuity-20260801';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a391-chapter4-ending-continuity-20260801';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
-import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a40-core-fun-overhaul-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a40-core-fun-overhaul-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a40-core-fun-overhaul-20260801';
+import {StoryMap} from './story-map.js?v=29a40-core-fun-overhaul-20260801';
+import {storyConfirm} from './story-ux.js?v=29a40-core-fun-overhaul-20260801';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a40-core-fun-overhaul-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a40-core-fun-overhaul-20260801';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a40-core-fun-overhaul-20260801';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -142,6 +143,11 @@ class RrvvfoRoadHub{
       {x:-1260,z:250,label:'MOVE FLAG',requirement:'move',done:false},
       {x:-980,z:330,label:'JUMP FLAG',requirement:'jump',done:false},
       {x:-875,z:-240,label:'DASH FLAG',requirement:'dash',done:false}
+    ];
+    this.cliffJumpMarkers=[
+      {x:300,z:330,label:'CLIFF STEP 1',done:false},
+      {x:355,z:400,label:'CLIFF STEP 2',done:false},
+      {x:412,z:350,label:'CLIFF STEP 3',done:false}
     ];
     this.lastCommand={};this.runAttempts=0;
     this.qteSequence=[];
@@ -360,6 +366,7 @@ class RrvvfoRoadHub{
     }
 
     this.updateWarmup(player);
+    this.updateRouteGimmick(player);
     this.updateStoryTriggers(player);
     this.updatePrompt(player);
   }
@@ -378,6 +385,25 @@ class RrvvfoRoadHub{
       this.mode='hub';
       this.battle.phase='play';
       this.setObjective('LEAVE THE TRAINING GROUNDS','Follow the tan road east toward the tournament banners.');
+    }
+  }
+
+  routeGimmickReady(){
+    if(this.routeChoice!=='cliff')return true;
+    return this.cliffJumpMarkers.every(marker=>marker.done);
+  }
+
+  updateRouteGimmick(player){
+    if(this.step!=='route-travel'||this.routeChoice!=='cliff')return;
+    for(const marker of this.cliffJumpMarkers){
+      if(marker.done||distance(player,marker)>72)continue;
+      const airborne=player.y>8||Math.abs(player.vy||0)>35;
+      if(airborne){marker.done=true;const done=this.cliffJumpMarkers.filter(item=>item.done).length;this.battle.burst(marker.x,marker.z,'#ffcc72',12,36);this.battle.notice(`${marker.label} • ${done}/3`,.8)}
+      else if(!this.noticeCooldown){this.noticeCooldown=.75;this.battle.notice('CLIFF GAP • JUMP ACROSS',.7)}
+    }
+    if(player.x>430&&!this.routeGimmickReady()){
+      player.x=410;player.moveVX=0;
+      if(!this.noticeCooldown){this.noticeCooldown=1.1;const left=this.cliffJumpMarkers.filter(marker=>!marker.done).length;this.battle.notice(`HIGH ROAD • ${left} JUMP${left===1?'':'S'} LEFT`,.9)}
     }
   }
 
@@ -402,8 +428,8 @@ class RrvvfoRoadHub{
       this.routeChoiceShown=true;this.mode='choice';this.battle.phase='story';this.routeChoicePanel.hidden=false;
       this.routeChoicePanel.querySelector('[data-road-route]')?.focus();return;
     }
-    if(this.routeChoice&&this.step==='route-travel'&&player.x>430){
-      this.roadCleared=true;this.step='gate';this.battle.notice(`${this.routeChoice.toUpperCase()} ROUTE CLEARED`,1.4);
+    if(this.routeChoice&&this.step==='route-travel'&&player.x>430&&this.routeGimmickReady()){
+      this.roadCleared=true;this.step='gate';this.battle.notice(`${this.routeChoice.toUpperCase()} ROUTE CLEARED`,1.4);if(this.routeChoice==='cliff')completeAdventureMission('c1-high-road',{rank:'A',reward:'TITLE • ROAD RUNNER'});
       this.setObjective('REACH THE MULTI-TARGET GATE','The routes reconnect here. Use Shots of Agony on the four targets.');
       saveLostYearProgress({...loadLostYearProgress(),roadRoute:this.routeChoice,lastCheckpoint:'rrvvfo-road-route'});return;
     }
@@ -480,7 +506,7 @@ class RrvvfoRoadHub{
 
   chooseRoadRoute(route){
     if(!['main','forest','cliff'].includes(route))return;
-    this.routeChoice=route;this.routeChoicePanel.hidden=true;this.mode='hub';this.battle.phase='play';
+    this.routeChoice=route;this.routeChoicePanel.hidden=true;this.mode='hub';this.battle.phase='play';if(route==='cliff'){this.cliffJumpMarkers.forEach(marker=>{marker.done=false});discoverAdventureMission('c1-high-road')}
     if(route==='main'){
       this.step='cart';this.setObjective('MAIN ROAD • CONTROL THE FIRE','Follow the center road and clear the fallen log without spreading flames.');
     }else if(route==='forest'){
@@ -633,6 +659,7 @@ class RrvvfoRoadHub{
       return true;
     }
     if(slot===3&&this.step==='transport'&&player.x>650&&player.x<850){
+      discoverAdventureMission('c1-swap-cache');completeAdventureMission('c1-swap-cache',{rank:'A',reward:'OBJECT SWAP TOKEN'});
       this.transportFixed=true;player.visualAction='objectSwapDisappear';player.visualActionTime=.45;
       this.battle.burst(770,-210,'#ffd079',22,62);this.battle.burst(735,40,'#ffd079',22,62);
       this.showDialogue([{speaker:'TRANSPORT DRIVER',speakerClass:'neutral',text:'You saved the whole transport—and the tournament supplies.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Remember that when the crowd starts cheering for me.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play';this.step='runaway-cart';saveLostYearProgress({...loadLostYearProgress(),transportRescued:true,chapter1Variety:this.variety,lastCheckpoint:'rrvvfo-road-transport'});this.beginRunawayCartRescue()});return true;
@@ -980,6 +1007,10 @@ class RrvvfoRoadHub{
       for(const z of [-120,-45,35,115])r.box({x:350,y:45,z,sx:78,sy:28,sz:36,color:'#436d36',rotationY:.3});
       r.box({x:420,y:28,z:180,sx:120,sy:55,sz:78,color:'#8d6a42',rotationY:-.12});
       for(const z of [-525,-350,350,525])drawThicket(340,z);
+    }
+
+    if(this.routeChoice==='cliff'&&this.step==='route-travel'){
+      for(const marker of this.cliffJumpMarkers){const pulse=1+Math.sin(time*5+marker.x)*.06;r.box({x:marker.x,y:18,z:marker.z,sx:54,sy:18,sz:58,color:marker.done?'#59604e':'#8b6842',rotationY:.18});r.disc({x:marker.x,y:6,z:marker.z,rx:34*pulse,rz:24*pulse,color:marker.done?'#88d9a0':'#ffcc72',alpha:marker.done?.10:.25});if(!marker.done)r.billboard({x:marker.x,y:82,z:marker.z,size:18,color:'#ffe3a3',alpha:.72})}
     }
 
     if(!this.gateOpen)for(const z of [-520,-350,350,520])drawThicket(600,z);

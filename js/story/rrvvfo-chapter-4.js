@@ -1,26 +1,32 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a391-chapter4-ending-continuity-20260801';
-import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a391-chapter4-ending-continuity-20260801';
-import {StoryMap} from './story-map.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a391-chapter4-ending-continuity-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a40-core-fun-overhaul-20260801';
+import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
+import {StoryMap} from './story-map.js?v=29a40-core-fun-overhaul-20260801';
+import {storyConfirm} from './story-ux.js?v=29a40-core-fun-overhaul-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a40-core-fun-overhaul-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a40-core-fun-overhaul-20260801';
+import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a40-core-fun-overhaul-20260801';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a391-chapter4-ending-continuity-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a391-chapter4-ending-continuity-20260801';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
+} from './chapter4-content.js?v=29a40-core-fun-overhaul-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a40-core-fun-overhaul-20260801';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
+import {completeAdventureMission,discoverAdventureMission,enemyArchetype} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
 const EMPTY_COMMAND=Object.freeze({x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,breaker:false,counter:false,interact:false,special:false});
 const SPAWNS=Object.freeze({region:{x:-1363,z:100},village:{x:-820,z:60},beacon:{x:-680,z:300},cavern:{x:-980,z:0},villageReturn:{x:777,z:450},mountain:{x:-1240,z:0},lookout:{x:1120,z:-330}});
-const LOOKOUT_ENTRANCE=Object.freeze({x:1120,z:-205,label:'SHADOW’S ENTRANCE',yBase:500});
+const LOOKOUT_HEIGHT=500;
+const LOOKOUT_LANDING_SECONDS=2.4;
+const LOOKOUT_FADE_DELAY_MS=520;
+const LOOKOUT_COMPLETION_DELAY_MS=1850;
+const LOOKOUT_BOUNDS=Object.freeze({minX:920,maxX:1320,minZ:-505,maxZ:-155});
+const LOOKOUT_ENTRANCE=Object.freeze({x:1120,z:-205,label:'SHADOW’S ENTRANCE',yBase:LOOKOUT_HEIGHT});
 const VILLAGE_POINTS=Object.freeze({
   gate:{x:-760,z:30,label:'ECHO VILLAGE'},teleporter:{x:-620,z:-430,label:'DAMAGED TELEPORTER'},beacon:{x:-350,z:540,label:'ECHO BEACON'},
   cavern:{x:1030,z:470,label:'ECHO CAVERNS'},oldMan:{x:260,z:610,label:'ABANDONED POTION BUILDING'},
@@ -74,7 +80,7 @@ function buildUI(){
     <div class="c4VibrationOverlay" data-c4-vibration-overlay hidden><div class="c4VibrationCore"></div><span>VIBRATION SENSE</span></div>
     <div class="c4WatcherScan" data-c4-watcher-scan hidden><small>HOLLOW WATCHER ANALYSIS</small><strong data-c4-watcher-state>SEARCHING FOR A PATTERN</strong><span data-c4-watcher-detail>Vary move, timing, and approach.</span><div><i data-c4-watcher-meter></i></div></div>
     <div class="c4EnemyRole" data-c4-enemy-role hidden><small>ENEMY ROLE</small><strong data-c4-enemy-role-name>SCOUT</strong><span data-c4-enemy-role-detail>Fast approach • low durability</span></div>
-    <div class="c4TeamStatus" data-c4-team-status hidden><span data-ally="bark">BARK • READY</span><span data-ally="wade">WADE • READY</span></div>
+    <div class="c4TeamStatus" data-c4-team-status hidden><strong data-c4-squad-label>TEAM BATTLE</strong><span data-ally="bark">BARK • READY</span><span data-ally="wade">WADE • READY</span><small data-c4-squad-enemies>ENEMIES • 0</small></div>
     <div class="c4WaveBanner" data-c4-wave-banner></div>
     <div data-c4-ending-fade hidden style="position:absolute;inset:0;z-index:9998;background:#000;opacity:0;transition:opacity .85s ease;pointer-events:none"></div>
     <div class="c4Complete" data-c4-complete hidden><article><small>CHAPTER 4 COMPLETE</small><h2>CHAPTER 5 SETUP</h2><p>Rrvvfo reached Shadow’s Lookout. Chapter 5 begins when he wakes inside.</p><div data-c4-complete-secret></div><button type="button" class="primary" data-c4-continue>RETURN TO STORY</button></article></div>`;
@@ -103,7 +109,7 @@ class RrvvfoChapter4{
     this.mode='boot';this.area='region';this.dialogue=null;this.pacing=this.state.pacing;this.aftermathSeconds=0;this.aborted=false;this.completed=false;this.nearby=null;this.interactHeld=false;this.playerFlip=false;
     this.storyMenuOpen=false;this.storyMenuPaused=false;this.trackerOpen=false;this.choiceOpen=false;this.choiceCallback=null;this.toastTimer=0;this.areaTimer=0;
     this.currentFight=null;this.fightElapsed=0;this.fightLosses={};this.lastWatcherAction='';this.watcherRepeat=0;this.patternRecorded=0;this.watcherPhase=1;this.watcherMemory={action:'',signature:'',patternName:'',spacing:'',approach:'',repeat:0,confidence:0,lastHitAt:0,lastInterval:0,learned:false,exposedUntil:0,variety:[],recent:[]};
-    this.vibrationPulse=0;this.vibrationCooldown=0;this.vibrationCombat=false;this.windClock=0;this.supportClock=0;this.teamAllies=[];this.teamCommand='focus';this.waveBannerTimer=0;this.currentEnemyRole=null;
+    this.vibrationPulse=0;this.vibrationCooldown=0;this.vibrationCombat=false;this.windClock=0;this.supportClock=0;this.lookoutLandingSeconds=0;this.lookoutPromptCueShown=false;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.squadAttackClock=0;this.teamCommand='focus';this.waveBannerTimer=0;this.currentEnemyRole=null;
     this.qte={active:false,type:'',step:0,sequence:[],deadline:0,meter:0,onComplete:null};this.qteInputHeld=false;
     this.root.querySelector('[data-c4-journal]').addEventListener('click',()=>this.openTracker());
     this.root.querySelector('[data-c4-map]').addEventListener('click',()=>this.map?.open());
@@ -217,6 +223,15 @@ class RrvvfoChapter4{
           const phase=this.currentFight.phase||1,aggression=phase===1?1:phase===2?1.3:1.45;
           return{x:dx/d*aggression,z:dz/d*aggression,jump:t%3.7<.08,light:t%(1.25/aggression)<.12,heavy:t%(2.8/aggression)<.11,launcher:t%(4.8/aggression)<.09,dash:d>170||t%1.5<.14,block:t%3.3<.28,charge:false,grab:d<80&&t%3.9<.1,counter:t%3.1<.09,special:t%(3.4/aggression)<.12};
         }
+        if(this.currentFight.squadMode){
+          const archetype=String(fighter.aiArchetype||'rushdown');
+          if(archetype==='ranged')return{x:-dx/d*.55,z:-dz/d*.55,jump:false,light:false,heavy:t%2.8<.1,launcher:false,dash:d<190,block:t%3.1<.25,charge:false,grab:false,counter:false,special:t%1.45<.12};
+          if(archetype==='guard')return{x:dx/d*.42,z:dz/d*.42,jump:false,light:t%1.6<.11,heavy:t%3.1<.12,launcher:false,dash:false,block:t%1.45<.62,charge:false,grab:d<92&&t%2.4<.12,counter:t%2.8<.1,special:false};
+          if(archetype==='heavy')return{x:dx/d*.48,z:dz/d*.48,jump:false,light:t%1.9<.1,heavy:t%2.35<.15,launcher:t%4.4<.08,dash:false,block:t%3.4<.28,charge:false,grab:d<95&&t%2.9<.12,counter:false,special:false};
+          if(archetype==='trickster')return{x:dx/d*.34,z:dz/d*.62,jump:t%3.2<.08,light:t%1.2<.12,heavy:false,launcher:t%4.2<.08,dash:t%1.35<.18,block:t%2.8<.25,charge:false,grab:false,counter:t%2.7<.1,special:t%2.4<.1};
+          if(archetype==='support')return{x:-dx/d*.22,z:dz/d*.22,jump:false,light:t%1.8<.1,heavy:false,launcher:false,dash:d<160,block:t%2.1<.45,charge:t%3.5<.2,grab:false,counter:false,special:t%2.2<.12};
+          return{x:dx/d*.92,z:dz/d*.92,jump:false,light:t%.9<.13,heavy:t%2.4<.1,launcher:t%4.6<.08,dash:d>210,block:t%3.4<.2,charge:false,grab:d<80&&t%3.2<.1,counter:false,special:false};
+        }
         return next(fighter,foe,dt);
       },
       castAbility:(next,slot)=>{
@@ -263,11 +278,12 @@ class RrvvfoChapter4{
         if(!connected||this.mode!=='fight'||!this.currentFight)return connected;
         const player=battle.fighters[0],foe=battle.fighters[1];
         if(this.currentFight.kind==='ryuzankaro'&&target===foe){this.checkRyuzankaroPhase()}
-        if(target===foe&&foe.hp<=0){foe.hp=1;queueMicrotask(()=>this.advanceFightWave())}
+        if(this.currentFight?.squadMode&&target===foe){const active=this.squadEnemies[this.squadTargetIndex];if(active)active.hp=Math.max(0,foe.hp)}
+        if(target===foe&&foe.hp<=0){foe.hp=1;queueMicrotask(()=>this.currentFight?.squadMode?this.advanceSquadEnemy():this.advanceFightWave())}
         else if(target===player&&player.hp<=0){player.hp=1;queueMicrotask(()=>this.finishFight(false))}
         return connected;
       },
-      updateCamera:()=>updateHubCamera(battle,{frameFight:this.mode==='fight',allowLook:['explore','cavern','mountain'].includes(this.mode),hubDistance:this.area==='cavern'?980:this.area==='mountain'?1080:this.area==='lookout'?820:1140,fightBaseDistance:920,fightMaxDistance:1190}),
+      updateCamera:()=>updateHubCamera(battle,{frameFight:this.mode==='fight'||this.lookoutLandingSeconds>0,allowLook:['explore','cavern','mountain'].includes(this.mode),hubDistance:this.area==='cavern'?980:this.area==='mountain'?1080:this.area==='lookout'?(this.lookoutLandingSeconds>0?660:820):1140,fightBaseDistance:920,fightMaxDistance:1190}),
       flipFor:(next,fighter)=>{
         if(['explore','cavern','mountain'].includes(this.mode)&&fighter===battle.fighters[0]){
           const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);if(speed>.05){const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z),ahead=battle.renderer.project(fighter.x+(fighter.moveX||fighter.aimX||1)*120,80+fighter.y,fighter.z+(fighter.moveZ||fighter.aimZ||0)*120);this.playerFlip=ahead.x<self.x}return this.playerFlip;
@@ -376,7 +392,7 @@ class RrvvfoChapter4{
       {speaker:'WADE',speakerClass:'p2',text:'They dropped the parts. That counts as answering.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'No, it counts as being bad at stealing.',tail:'down'},
       {speaker:'ECHO VILLAGER',speakerClass:'rival',text:'THE MACHINES ARE MOVING. THEY’RE ATTACKING THE VILLAGE!',tail:'down'}
-    ],()=>this.startFight({kind:'village-defense',id:'grunt-commander',name:'Project Hollow Commander',hpScale:1.25,xp:260,stage:'echo-village',teamBattle:true,waves:[{id:'hollow-grunt',name:'Hollow Scout',hpScale:.72},{id:'hollow-grunt',name:'Hollow Striker',hpScale:.88},{id:'grunt-commander',name:'Project Hollow Commander',hpScale:1.25}]}));
+    ],()=>this.startFight({kind:'village-defense',id:'grunt-commander',name:'Project Hollow Commander',hpScale:1.25,xp:260,stage:'echo-village',teamBattle:true,squadMode:'3v3',waves:[{id:'hollow-grunt',name:'Hollow Scout',hpScale:.72,archetype:'rushdown'},{id:'hollow-grunt',name:'Hollow Striker',hpScale:.88,archetype:'guard'},{id:'grunt-commander',name:'Project Hollow Commander',hpScale:1.25,archetype:'support'}]}));
   }
 
   enterMountain({restored=false}={}){
@@ -389,8 +405,16 @@ class RrvvfoChapter4{
   updateExploration(dt){
     const player=this.battle.fighters[0];
     if(this.area==='lookout'){
-      // The lookout itself is walkable, but nothing physically connects it to the mountain below.
-      player.y=500;player.vy=0;player.x=clamp(player.x,920,1320);player.z=clamp(player.z,-505,-155);
+      // The lookout is a real elevated walkable surface. Keep the fighter firmly grounded
+      // at sanctuary height so a restored checkpoint cannot drift, fall, or feel floaty.
+      player.y=LOOKOUT_HEIGHT;player.vy=0;player.grounded=true;player.kvy=0;
+      player.x=clamp(player.x,LOOKOUT_BOUNDS.minX,LOOKOUT_BOUNDS.maxX);
+      player.z=clamp(player.z,LOOKOUT_BOUNDS.minZ,LOOKOUT_BOUNDS.maxZ);
+      if(this.lookoutLandingSeconds>0)this.lookoutLandingSeconds=Math.max(0,this.lookoutLandingSeconds-dt);
+      if(!this.lookoutPromptCueShown&&this.lookoutLandingSeconds===0&&chapter4NextRequired(this.state)==='shadowArrival'){
+        this.lookoutPromptCueShown=true;
+        this.battle.notice('SHADOW’S ENTRANCE • AHEAD',1.15);
+      }
     }
     if(this.aftermathSeconds>0){const before=this.aftermathSeconds;this.aftermathSeconds=Math.max(0,this.aftermathSeconds-dt);if(before>0&&this.aftermathSeconds===0){this.updateObjective();this.battle.notice('THE VILLAGE HAS SETTLED',1.2)}}
     if(this.area==='village'||this.area==='mountain'){
@@ -447,7 +471,7 @@ class RrvvfoChapter4{
     else if(kind==='door')this.openElementDoor(id);
     else if(kind==='part')this.collectLiftPart(id);
     else if(kind==='cavern-exit'){if(this.state.liftParts.length===CHAPTER4_LIFT_PARTS.length&&!this.state.requiredCompleted.includes('liftPartsRecovered')){this.completeRequired('liftPartsRecovered');this.returnToVillageAfterParts()}else this.enterVillage({spawn:SPAWNS.villageReturn})}
-    else if(kind==='defense')this.startFight({kind:'village-defense',id:'grunt-commander',name:'Project Hollow Commander',hpScale:1.25,xp:260,stage:'echo-village',teamBattle:true,waves:[{id:'hollow-grunt',name:'Hollow Scout',hpScale:.72},{id:'hollow-grunt',name:'Hollow Striker',hpScale:.88},{id:'grunt-commander',name:'Project Hollow Commander',hpScale:1.25}]});
+    else if(kind==='defense')this.startFight({kind:'village-defense',id:'grunt-commander',name:'Project Hollow Commander',hpScale:1.25,xp:260,stage:'echo-village',teamBattle:true,squadMode:'3v3',waves:[{id:'hollow-grunt',name:'Hollow Scout',hpScale:.72,archetype:'rushdown'},{id:'hollow-grunt',name:'Hollow Striker',hpScale:.88,archetype:'guard'},{id:'grunt-commander',name:'Project Hollow Commander',hpScale:1.25,archetype:'support'}]});
     else if(kind==='old-man')this.startOldManQuest();
     else if(kind==='echo-chimes')this.playEchoChimes();
     else if(kind==='team-rest')this.restWithTeam();
@@ -593,7 +617,7 @@ class RrvvfoChapter4{
     this.showDialogue(lines,()=>{
       const swarmIds=['rootstone','triadSeed'];
       if(swarmIds.includes(id)&&!this.state.ryuzankaro.swarmsCleared.includes(id)){
-        this.startFight({kind:'ingredient-swarm',id:'hollow-grunt',name:'Project Hollow Swarm',hpScale:.72,xp:120,stage:this.area==='cavern'?'echo-caverns':'echo-village',teamBattle:true,ingredientReward:id,waves:[{id:'hollow-grunt',name:'Hollow Scout',hpScale:.62},{id:'hollow-grunt',name:'Hollow Raider',hpScale:.72},{id:'grunt-commander',name:'Hollow Pack Leader',hpScale:.86}]});
+        this.startFight({kind:'ingredient-swarm',id:'hollow-grunt',name:'Project Hollow Swarm',hpScale:.72,xp:120,stage:this.area==='cavern'?'echo-caverns':'echo-village',teamBattle:true,squadMode:'3v2',ingredientReward:id,waves:[{id:'hollow-grunt',name:'Hollow Raider',hpScale:.72,archetype:'trickster'},{id:'grunt-commander',name:'Hollow Pack Leader',hpScale:.92,archetype:'heavy'}]});
       }else this.completeIngredientPickup(id);
     });
   }
@@ -677,13 +701,15 @@ class RrvvfoChapter4{
     this.toast('OBJECT SWAP COMPLETE','APPROACH SHADOW’S ENTRANCE','The lookout is floating free above the mountain. The pebble created the only route onto it.');
   }
 
-  enterLookout({restored=false}={}){
+  enterLookout({restored=false}={}){if(!restored){discoverAdventureMission('c4-solo-summit');completeAdventureMission('c4-solo-summit',{rank:'A',reward:'ARCHIVE • MOUNTAIN WIND'})}
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'mystery'}));
+    document.dispatchEvent(new CustomEvent('pxcombatduck',{detail:{amount:.82,duration:1.25}}));
     this.area='lookout';this.state.location='shadow-lookout';this.switchStage('echo-mountain');this.mode='mountain';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();
     this.engine.setLabels({stageName:'SHADOW’S LOOKOUT',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});
-    this.preparePlayer({x:930,z:-330});const player=this.battle.fighters[0];player.y=500;player.vy=0;
+    this.preparePlayer({x:930,z:-330});const player=this.battle.fighters[0];player.y=LOOKOUT_HEIGHT;player.vy=0;player.grounded=true;player.kvy=0;
+    resetHubCameraLook(this.battle);this.lookoutLandingSeconds=restored?.85:LOOKOUT_LANDING_SECONDS;this.lookoutPromptCueShown=false;
     this.engine.setHotbarAvailability([],{show:false});this.showAreaTitle('SHADOW’S LOOKOUT','FLOATING SANCTUARY • NO GROUND CONNECTION');this.rebuildMap();this.saveState();this.updateObjective();
-    if(restored)this.battle.notice('CHECKPOINT RESTORED • SHADOW’S LOOKOUT',1.1);
+    this.battle.notice(restored?'CHECKPOINT RESTORED • SHADOW’S LOOKOUT':'NO BRIDGE • NO SUPPORT • YOU MADE IT',restored?1.1:1.45);
   }
 
   startShadowArrival(){
@@ -693,19 +719,25 @@ class RrvvfoChapter4{
 
   finishShadowArrival(){
     // Keep the arrival in memory until the fade commits the chapter. If the browser closes
-    // during the fade, the saved entrance checkpoint replays this one-line scene instead of
-    // skipping it or leaving Chapter 4 stuck between flags.
+    // during the ending beat, the saved entrance checkpoint replays this one-line scene instead
+    // of skipping it or leaving Chapter 4 stuck between flags.
     markChapter4Required(this.state,'shadowArrival');
     this.refreshTracker();
     this.state.location='shadow-lookout';
     const player=this.battle.fighters[0];
-    if(player){player.block=false;player.charging=false;player.stun=Math.max(Number(player.stun)||0,1.2);player.knockdown=Math.max(Number(player.knockdown)||0,1.2);player.grounded=true;player.vy=0}
+    if(player){
+      player.block=false;player.charging=false;player.stun=Math.max(Number(player.stun)||0,2.1);
+      player.knockdown=Math.max(Number(player.knockdown)||0,2.1);player.grounded=true;player.y=LOOKOUT_HEIGHT;player.vy=0;player.kvy=0;
+    }
+    this.battle.cameraShake=Math.max(Number(this.battle.cameraShake)||0,2.2);
+    document.dispatchEvent(new CustomEvent('pxcombatduck',{detail:{amount:.42,duration:1.7}}));
     const fade=this.root.querySelector('[data-c4-ending-fade]');
     this.mode='story';this.battle.phase='story';
-    if(!fade){this.commitCompletion();return}
+    if(!fade){setTimeout(()=>{if(!this.aborted)this.commitCompletion()},LOOKOUT_FADE_DELAY_MS);return}
     fade.hidden=false;fade.style.opacity='0';
-    requestAnimationFrame(()=>{if(!this.aborted)fade.style.opacity='1'});
-    setTimeout(()=>{if(this.aborted)return;fade.hidden=true;fade.style.opacity='0';this.commitCompletion()},900);
+    // Give the collapse a quiet readable beat before black takes the frame.
+    setTimeout(()=>{if(!this.aborted)fade.style.opacity='1'},LOOKOUT_FADE_DELAY_MS);
+    setTimeout(()=>{if(this.aborted)return;fade.hidden=true;fade.style.opacity='0';this.commitCompletion()},LOOKOUT_COMPLETION_DELAY_MS);
   }
 
   startFight(config){
@@ -722,26 +754,27 @@ class RrvvfoChapter4{
     const player=this.battle.fighters[0];
     player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(-380,60);
     void this.battle.ensureFighterAsset(player,'rrvvfo');applyStoryProgressionToFighter(player,loadLostYearProgress());player.en=80;player.guard=100;
-    this.teamAllies=config.teamBattle?[{id:'bark',name:'BARK',accent:'#ad8655',x:-520,z:180,attackClock:0},{id:'wade',name:'WADE',accent:'#4b9fe2',x:-500,z:-180,attackClock:.85}]:[];
-    this.configureFightFoe(waves[0],playerLevel);this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:this.battle.fighters[1].id,stageId:this.battle.stage.id,mode:'story'});this.updateTeamCombatHud();this.showWaveBanner(1,waves.length,this.battle.fighters[1].name);
+    this.teamAllies=config.teamBattle?[{id:'bark',name:'BARK',accent:'#ad8655',x:-520,z:180,attackClock:0,hp:120,maxHp:120,down:false,role:'ANCHOR'},{id:'wade',name:'WADE',accent:'#4b9fe2',x:-500,z:-180,attackClock:.55,hp:96,maxHp:96,down:false,role:'INTERCEPTOR'}]:[];
+    if(player.storyBuildPassives?.includes('hotStart'))player.en=Math.min(100,player.en+12);
+    this.configureFightFoe(waves[0],playerLevel);if(config.squadMode)this.setupSquadFight(waves);else{this.squadEnemies=[];this.squadTargetIndex=0}this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:this.battle.fighters[1].id,stageId:this.battle.stage.id,mode:'story'});this.updateTeamCombatHud();this.showWaveBanner(1,waves.length,this.battle.fighters[1].name);
     this.battle.time=9999;this.engine.setHotbarAvailability([1,2,3,4,5],{show:true});
     const stageName=config.kind==='ryuzankaro'?'RYUZANKARO • BODILESS FORM':config.kind==='watcher'?'MOUNTAIN RECORDING PLATFORM':config.kind==='ingredient-swarm'?'PROJECT HOLLOW SWARM':'ECHO VILLAGE DEFENSE';
     this.engine.setLabels({stageName,chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO',this.battle.fighters[1].name.toUpperCase()]});
-    this.setObjective(config.kind==='watcher'?'DEFEAT THE HOLLOW WATCHER':config.kind==='ryuzankaro'?'SURVIVE RYUZANKARO':config.kind==='ingredient-swarm'?'CLEAR THE PROJECT HOLLOW SWARM':'DEFEND ECHO VILLAGE',config.kind==='watcher'?'It records move, timing, spacing, and approach. Break the entire pattern.':config.kind==='ryuzankaro'?'Fight beside Bark and Wade, then follow the sealing plan.':`Fight as a three-ninja team. Clear ${waves.length} enemy waves.`);
+    this.setObjective(config.kind==='watcher'?'DEFEAT THE HOLLOW WATCHER':config.kind==='ryuzankaro'?'SURVIVE RYUZANKARO':config.kind==='ingredient-swarm'?'CLEAR THE PROJECT HOLLOW SWARM':'DEFEND ECHO VILLAGE',config.kind==='watcher'?'It records move, timing, spacing, and approach. Break the entire pattern.':config.kind==='ryuzankaro'?'Fight beside Bark and Wade, then follow the sealing plan.':config.squadMode?`${config.squadMode.toUpperCase()} • Bark anchors space, Wade intercepts threats, and Rrvvfo chooses the target.`:`Fight as a three-ninja team. Clear ${waves.length} enemy waves.`);
     this.updateWatcherHud();
     const intro=config.kind==='watcher'?'BOSS • HOLLOW WATCHER':config.kind==='ryuzankaro'?'SECRET BOSS • RYUZANKARO':config.kind==='ingredient-swarm'?'OPTIONAL TEAM BATTLE • ENEMY SWARM':'TEAM BATTLE • VILLAGE DEFENSE';
-    this.battle.notice(`${intro}${waves.length>1?` • WAVE 1/${waves.length}`:''}`,2);
+    this.battle.notice(`${intro}${config.squadMode?` • ${config.squadMode.toUpperCase()}`:waves.length>1?` • WAVE 1/${waves.length}`:''}`,2);
   }
 
   configureFightFoe(wave,playerLevel){
     const fight=this.currentFight,foe=this.battle.fighters[1];
     const levelOffset=Number(wave.levelOffset??(fight.kind==='ryuzankaro'?3:fight.kind==='watcher'?2:1));
     foe.id=wave.id||fight.id;foe.name=wave.name||fight.name;
-    const role=chapter4EnemyRole(wave,fight.kind);this.currentEnemyRole=role;fight.enemyRole=role.id;
-    foe.accent=fight.kind==='ryuzankaro'?'#1e1726':role.color;
+    const role=chapter4EnemyRole(wave,fight.kind),archetype=wave.archetype?enemyArchetype(wave.archetype):{id:role.id,label:role.label,description:role.description,color:role.color,speed:1,attack:1,defense:1,rangeBias:0};this.currentEnemyRole={...role,label:archetype.label||role.label,description:archetype.description||role.description,color:archetype.color||role.color};fight.enemyRole=role.id;
+    foe.aiArchetype=archetype.id;foe.accent=fight.kind==='ryuzankaro'?'#1e1726':(archetype.color||role.color);
     foe.cpu=true;foe.visualScale=fight.kind==='watcher'?1.25:fight.kind==='ryuzankaro'?1.18:role.id==='heavy'||role.id==='commander'?1.1:.96;
     foe.reset(380,-60);foe.asset=null;applyStoryLevelToFighter(foe,playerLevel+levelOffset);
-    foe.storySpeedMultiplier=(foe.storySpeedMultiplier||1)*role.speed;foe.storyAttackMultiplier=(foe.storyAttackMultiplier||1)*role.attack;foe.storyDefenseMultiplier=(foe.storyDefenseMultiplier||1)/role.defense;
+    foe.storySpeedMultiplier=(foe.storySpeedMultiplier||1)*role.speed*archetype.speed;foe.storyAttackMultiplier=(foe.storyAttackMultiplier||1)*role.attack*archetype.attack;foe.storyDefenseMultiplier=(foe.storyDefenseMultiplier||1)/(role.defense*archetype.defense);
     foe.maxHp=Math.round(foe.maxHp*Math.max(.35,Number(wave.hpScale??fight.hpScale)||1)*role.defense);foe.hp=foe.maxHp;foe.en=90;foe.guard=role.id==='heavy'?125:role.id==='commander'?112:100;
     this.updateEnemyRoleHud();
     fight.name=foe.name;fight.id=foe.id;
@@ -770,33 +803,92 @@ class RrvvfoChapter4{
       this.updateWatcherHud();
     }
     if(fight.teamBattle&&this.teamAllies.length){
-      const foe=this.battle.fighters[1],player=this.battle.fighters[0];
-      for(const ally of this.teamAllies){
-        ally.attackClock+=dt;
-        const side=ally.id==='bark'?1:-1,targetX=player.x-90,targetZ=player.z+side*135;
-        ally.x+=(targetX-ally.x)*Math.min(1,dt*3.2);ally.z+=(targetZ-ally.z)*Math.min(1,dt*3.2);
-      }
-      if(this.supportClock>1.9){
-        this.supportClock=0;
-        const bark=this.teamCommand==='protect'||(this.teamCommand==='focus'&&Math.floor(this.fightElapsed/1.9)%2===0),ally=this.teamAllies.find(item=>item.id===(bark?'bark':'wade'));
-        if(ally){ally.x+=(foe.x-ally.x)*.42;ally.z+=(foe.z-ally.z)*.42}
-        if(bark){
-          this.battle.burst(foe.x,foe.z,'#d3a55e',22,58);foe.hp-=Math.max(2,foe.maxHp*.028);foe.stun=Math.max(foe.stun,.15);this.battle.notice('BARK • EARTH COMBO SUPPORT',.8);
-        }else{
-          this.battle.burst(foe.x,foe.z,'#67d4ff',22,62);foe.hp-=Math.max(2,foe.maxHp*.022);foe.stun=Math.max(foe.stun,.32);this.battle.notice('WADE • LIGHTNING INTERCEPT',.8);
+      if(fight.squadMode)this.updateSquadFight(dt);
+      else{
+        const foe=this.battle.fighters[1],player=this.battle.fighters[0];
+        for(const ally of this.teamAllies){
+          ally.attackClock+=dt;
+          const side=ally.id==='bark'?1:-1,targetX=player.x-90,targetZ=player.z+side*135;
+          ally.x+=(targetX-ally.x)*Math.min(1,dt*3.2);ally.z+=(targetZ-ally.z)*Math.min(1,dt*3.2);
         }
-        if(foe.hp<=0&&fight.kind!=='ryuzankaro'){foe.hp=1;queueMicrotask(()=>this.advanceFightWave())}
+        if(this.supportClock>1.9){
+          this.supportClock=0;
+          const bark=this.teamCommand==='protect'||(this.teamCommand==='focus'&&Math.floor(this.fightElapsed/1.9)%2===0),ally=this.teamAllies.find(item=>item.id===(bark?'bark':'wade'));
+          if(ally){ally.x+=(foe.x-ally.x)*.42;ally.z+=(foe.z-ally.z)*.42}
+          if(bark){this.battle.burst(foe.x,foe.z,'#d3a55e',22,58);foe.hp-=Math.max(2,foe.maxHp*.028);foe.stun=Math.max(foe.stun,.15);this.battle.notice('BARK • EARTH COMBO SUPPORT',.8)}
+          else{this.battle.burst(foe.x,foe.z,'#67d4ff',22,62);foe.hp-=Math.max(2,foe.maxHp*.022);foe.stun=Math.max(foe.stun,.32);this.battle.notice('WADE • LIGHTNING INTERCEPT',.8)}
+          if(foe.hp<=0&&fight.kind!=='ryuzankaro'){foe.hp=1;queueMicrotask(()=>this.advanceFightWave())}
+        }
       }
     }
     if(fight.teamBattle)this.updateTeamCombatHud();
     if(fight.kind==='ryuzankaro'&&this.vibrationCombat&&this.supportClock>1.15){this.supportClock=0;const player=this.battle.fighters[0];this.battle.burst(player.x+(Math.random()-.5)*220,player.z+(Math.random()-.5)*180,'#d9f9ff',10,45)}
   }
 
+  setupSquadFight(waves){
+    const fight=this.currentFight,foe=this.battle.fighters[1];if(!fight)return;
+    const positions=[{x:foe.x,z:foe.z},{x:245,z:210},{x:245,z:-220}];
+    const firstScale=Math.max(.2,Number(waves[0]?.hpScale)||1);
+    this.squadEnemies=waves.map((wave,index)=>{
+      const arch=enemyArchetype(wave.archetype||'rushdown'),ratio=Math.max(.35,(Number(wave.hpScale)||1)/firstScale),maxHp=index===0?foe.maxHp:Math.round(foe.maxHp*ratio*Math.sqrt(arch.defense));
+      return{index,wave:{...wave},id:wave.id||fight.id,name:wave.name||fight.name,archetype:arch.id,color:arch.color,x:positions[index]?.x??(260-index*70),z:positions[index]?.z??0,hp:maxHp,maxHp,down:false,attackClock:.35+index*.42};
+    });
+    this.squadTargetIndex=0;fight.squadEnemies=this.squadEnemies;fight.activeEnemyIndex=0;discoverAdventureMission('c4-squad-control');this.showWaveBanner(1,waves.length,`${fight.squadMode.toUpperCase()} • ALL ENEMIES ACTIVE`);this.updateTeamCombatHud();
+  }
+
+  squadAliveEnemies(){return this.squadEnemies.filter(enemy=>!enemy.down&&enemy.hp>0)}
+
+  cycleSquadTarget(){
+    const fight=this.currentFight;if(!fight?.squadMode||this.squadEnemies.length<2)return false;
+    const foe=this.battle.fighters[1],current=this.squadEnemies[this.squadTargetIndex];if(current&&!current.down){current.hp=Math.max(1,foe.hp);current.x=foe.x;current.z=foe.z}
+    for(let step=1;step<=this.squadEnemies.length;step++){
+      const index=(this.squadTargetIndex+step)%this.squadEnemies.length,target=this.squadEnemies[index];if(target.down||target.hp<=0)continue;
+      this.squadTargetIndex=index;fight.activeEnemyIndex=index;const level=Math.max(1,Number(loadLostYearProgress().storyLevel)||1);this.configureFightFoe(target.wave,level);foe.hp=Math.min(foe.maxHp,target.hp);foe.x=target.x;foe.z=target.z;this.battle.notice(`TARGET • ${target.name.toUpperCase()} • ${enemyArchetype(target.archetype).label}`,1.15);this.updateTeamCombatHud();return true;
+    }
+    return false;
+  }
+
+  advanceSquadEnemy(){
+    const fight=this.currentFight;if(!fight?.squadMode||this.mode!=='fight')return;
+    const defeated=this.squadEnemies[this.squadTargetIndex];if(defeated){defeated.hp=0;defeated.down=true;this.battle.burst(this.battle.fighters[1].x,this.battle.fighters[1].z,defeated.color||'#8fe8ff',26,70)}
+    const living=this.squadAliveEnemies();if(!living.length){this.finishFight(true);return}
+    const next=living[0],index=this.squadEnemies.indexOf(next);this.squadTargetIndex=index;fight.activeEnemyIndex=index;const level=Math.max(1,Number(loadLostYearProgress().storyLevel)||1);this.configureFightFoe(next.wave,level);const foe=this.battle.fighters[1];foe.hp=Math.min(foe.maxHp,next.hp);foe.x=next.x;foe.z=next.z;this.battle.notice(`ENEMY DOWN • ${living.length} REMAIN • TARGET ${next.name.toUpperCase()}`,1.45);this.updateTeamCombatHud();
+  }
+
+  updateSquadFight(dt){
+    const fight=this.currentFight,player=this.battle.fighters[0],foe=this.battle.fighters[1];if(!fight?.squadMode)return;
+    const active=this.squadEnemies[this.squadTargetIndex];if(active){active.hp=Math.max(0,foe.hp);active.x=foe.x;active.z=foe.z}
+    // Bark anchors dangerous bodies; Wade hunts ranged/support targets. Both can be knocked out.
+    for(const ally of this.teamAllies){
+      if(ally.down||ally.hp<=0){ally.down=true;continue}
+      ally.attackClock+=dt;
+      const candidates=this.squadAliveEnemies().filter(enemy=>enemy.index!==this.squadTargetIndex);
+      const priority=ally.id==='bark'?['heavy','guard','support']:['ranged','support','trickster','rushdown'];
+      const target=candidates.sort((a,b)=>priority.indexOf(a.archetype)-priority.indexOf(b.archetype))[0]||active;
+      if(!target)continue;
+      const follow=this.teamCommand==='protect'?player:this.teamCommand==='interrupt'?target:null;
+      const targetX=follow?.x??(player.x+(ally.id==='bark'?-100:-70)),targetZ=follow?.z??(player.z+(ally.id==='bark'?145:-145));
+      ally.x+=(targetX-ally.x)*Math.min(1,dt*(ally.id==='wade'?4.8:3.0));ally.z+=(targetZ-ally.z)*Math.min(1,dt*(ally.id==='wade'?4.8:3.0));
+      const interval=ally.id==='wade'?1.05:1.55;if(ally.attackClock>=interval&&target){ally.attackClock=0;const damage=ally.id==='wade'?6:9;target.hp=Math.max(0,target.hp-damage);this.battle.burst(target.x,target.z,ally.accent,ally.id==='wade'?16:20,58);if(target.index===this.squadTargetIndex){foe.hp=Math.max(1,target.hp);foe.stun=Math.max(foe.stun,ally.id==='wade'?.18:.12)}if(target.hp<=0&&!target.down){target.down=true;if(target.index===this.squadTargetIndex){foe.hp=1;queueMicrotask(()=>this.advanceSquadEnemy())}else this.battle.notice(`${ally.name} • ${target.name.toUpperCase()} DOWN`,.85)}}
+    }
+    // Non-target enemy bodies stay active: they pressure Rrvvfo or his teammates instead of waiting in waves.
+    for(const enemy of this.squadEnemies){
+      if(enemy.down||enemy.hp<=0||enemy.index===this.squadTargetIndex)continue;enemy.attackClock+=dt;
+      const arch=enemyArchetype(enemy.archetype),livingAllies=this.teamAllies.filter(ally=>!ally.down&&ally.hp>0);const preferPlayer=this.teamCommand==='protect'||!livingAllies.length||((enemy.index+Math.floor(this.fightElapsed*2))%3===0);const target=preferPlayer?player:livingAllies[enemy.index%livingAllies.length];
+      const dx=(target.x||0)-enemy.x,dz=(target.z||0)-enemy.z,d=Math.max(1,Math.hypot(dx,dz)),desired=arch.rangeBias>.7?240:arch.id==='heavy'?72:105,move=(d-desired)*dt*arch.speed*.7;enemy.x+=dx/d*move;enemy.z+=dz/d*move;
+      const interval=arch.id==='rushdown'?1.15:arch.id==='heavy'?1.9:arch.id==='support'?2.1:1.45;if(enemy.attackClock<interval||d>Math.max(desired+80,190))continue;enemy.attackClock=0;
+      const damage=Math.max(2,Math.round((arch.id==='heavy'?9:arch.id==='rushdown'?6:5)*arch.attack));this.battle.burst(target.x,target.z,arch.color,13,54);
+      if(target===player){player.hp=Math.max(0,player.hp-damage);player.stun=Math.max(player.stun,.08);if(player.hp<=0){player.hp=1;queueMicrotask(()=>this.finishFight(false));return}}
+      else{target.hp=Math.max(0,target.hp-damage);if(target.hp<=0&&!target.down){target.down=true;this.battle.notice(`${target.name} IS DOWN • SQUAD PRESSURE INCREASED`,1.1)}}
+      if(arch.id==='support'){const heal=this.squadAliveEnemies().filter(item=>item!==enemy).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0];if(heal){heal.hp=Math.min(heal.maxHp,heal.hp+4);if(heal.index===this.squadTargetIndex)foe.hp=Math.min(foe.maxHp,foe.hp+4);this.battle.burst(heal.x,heal.z,'#87e6a0',10,42)}}
+    }
+  }
+
   showWaveBanner(index,total,name){const node=this.root?.querySelector('[data-c4-wave-banner]');if(!node)return;node.textContent=`WAVE ${index}/${total} • ${String(name||'ENEMY').toUpperCase()}`;node.classList.add('show');this.waveBannerTimer=1.65}
 
   updateEnemyRoleHud(){const panel=this.root?.querySelector('[data-c4-enemy-role]'),role=this.currentEnemyRole,active=this.mode==='fight'&&Boolean(role);if(!panel)return;panel.hidden=!active;if(!active)return;panel.style.setProperty('--role-color',role.color);this.root.querySelector('[data-c4-enemy-role-name]').textContent=role.label;this.root.querySelector('[data-c4-enemy-role-detail]').textContent=role.description}
 
-  updateTeamCombatHud(){const panel=this.root?.querySelector('[data-c4-team-status]'),active=this.mode==='fight'&&this.teamAllies.length>0;if(!panel)return;panel.hidden=!active;if(!active)return;for(const ally of this.teamAllies){const node=panel.querySelector(`[data-ally="${ally.id}"]`);if(node)node.textContent=`${ally.name} • ${Math.max(0,1.9-this.supportClock).toFixed(1)}s • ${this.teamCommand.toUpperCase()}`}panel.title='Press C during team battles: Focus → Protect → Interrupt'}
+  updateTeamCombatHud(){const panel=this.root?.querySelector('[data-c4-team-status]'),active=this.mode==='fight'&&this.teamAllies.length>0;if(!panel)return;panel.hidden=!active;if(!active)return;for(const ally of this.teamAllies){const node=panel.querySelector(`[data-ally="${ally.id}"]`);if(node)node.textContent=this.currentFight?.squadMode?`${ally.name} • ${ally.down?'DOWN':`${Math.ceil(ally.hp)}/${ally.maxHp} HP`} • ${ally.role}`:`${ally.name} • ${Math.max(0,1.9-this.supportClock).toFixed(1)}s • ${this.teamCommand.toUpperCase()}`}const label=panel.querySelector('[data-c4-squad-label]');if(label)label.textContent=this.currentFight?.squadMode?`${this.currentFight.squadMode.toUpperCase()} • ${this.teamCommand.toUpperCase()}`:'TEAM SUPPORT';const enemies=panel.querySelector('[data-c4-squad-enemies]');if(enemies)enemies.textContent=this.currentFight?.squadMode?`ENEMIES • ${this.squadAliveEnemies().length} STANDING • TAB CYCLES TARGET`:'C • CHANGE TEAM COMMAND';panel.title=this.currentFight?.squadMode?'C changes team command • Tab cycles living enemies':'Press C during team battles: Focus → Protect → Interrupt'}
 
   updateWatcherHud(){
     const panel=this.root?.querySelector('[data-c4-watcher-scan]');if(!panel)return;
@@ -817,7 +909,7 @@ class RrvvfoChapter4{
       const losses=(this.fightLosses[fight.kind]||0)+1;this.fightLosses[fight.kind]=losses;
       this.showChoice({kicker:'ENCOUNTER LOST',title:`${fight.name.toUpperCase()} WINS`,text:losses>=2?'Retry with Story Assist for a small damage and defense advantage.':'Retry from the encounter checkpoint.',buttons:[{label:'RETRY',value:'retry',primary:true},...(losses>=2?[{label:'RETRY WITH STORY ASSIST',value:'assist'}]:[]),{label:'RETURN TO AREA',value:'leave'}],onChoose:value=>{
         if(value==='leave'){
-          this.currentFight=null;this.teamAllies=[];this.currentEnemyRole=null;this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
+          this.currentFight=null;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.currentEnemyRole=null;this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
           if(fight.kind==='watcher')this.enterMountain({restored:true});else if(fight.returnArea==='cavern')this.enterCaverns({restored:true});else this.enterVillage({spawn:SPAWNS.village});
         }else{
           this.startFight({...fight.restartConfig});
@@ -826,7 +918,8 @@ class RrvvfoChapter4{
       }});return;
     }
     this.fightLosses[fight.kind]=0;if(!this.replayMode&&fight.xp)addStoryXp(fight.xp,{source:`${fight.name.toUpperCase()} DEFEATED`});
-    this.currentFight=null;this.teamAllies=[];this.currentEnemyRole=null;this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
+    fight.squadPerfect=Boolean(fight.squadMode&&this.teamAllies.length&&this.teamAllies.every(ally=>!ally.down&&ally.hp>0));if(fight.kind==='village-defense'&&fight.squadPerfect&&!this.replayMode)completeAdventureMission('c4-squad-control',{rank:'A',reward:'TITLE • TEAM CAPTAIN'});
+    this.currentFight=null;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.currentEnemyRole=null;this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
     if(fight.kind==='ingredient-swarm'){
       this.state.ryuzankaro.swarmsCleared=unique([...this.state.ryuzankaro.swarmsCleared,fight.ingredientReward]);
       this.completeIngredientPickup(fight.ingredientReward);return;
@@ -844,7 +937,7 @@ class RrvvfoChapter4{
 
   useVibrationSense(){if(!this.state.rewards.vibrationSense)return false;if(this.vibrationCooldown>0){this.battle.notice(`VIBRATION SENSE • ${this.vibrationCooldown.toFixed(1)}s`,.9);return false}this.vibrationPulse=2.2;this.vibrationCooldown=5.5;this.battle.burst(this.battle.fighters[0].x,this.battle.fighters[0].z,'#d9f9ff',32,120);this.battle.notice('VIBRATION SENSE • HIDDEN MOVEMENT REVEALED',1.2);return true}
 
-  drawChapterWorld(){if(!this.battle?.renderer||this.aborted)return;const r=this.battle.renderer,time=performance.now()/1000;if(this.area==='village')this.drawVillage(r,time);else if(this.area==='cavern')this.drawCaverns(r,time);else if(this.area==='mountain'||this.area==='lookout')this.drawMountain(r,time);else if(this.area==='sky')this.drawSky(r,time);if(this.mode==='fight'&&this.currentEnemyRole){const foe=this.battle.fighters[1],pulse=1+Math.sin(time*6)*.08;r.disc({x:foe.x,y:6,z:foe.z,rx:48*pulse,rz:32*pulse,color:this.currentEnemyRole.color,alpha:.16});if(this.currentFight?.kind==='watcher'){const memory=this.watcherMemory,exposed=performance.now()<memory.exposedUntil,color=exposed?'#fff0a8':memory.learned?'#63dce3':this.watcherPhase===3?'#ff9f80':'#8fe8ff';r.disc({x:foe.x,y:8,z:foe.z,rx:(72+this.watcherPhase*8)*pulse,rz:(48+this.watcherPhase*5)*pulse,color,alpha:exposed?.34:memory.learned?.28:.12});for(let i=0;i<this.watcherPhase;i++){const a=time*(.8+i*.2)+i*2.1;r.billboard({x:foe.x+Math.cos(a)*(66+i*12),y:78+i*20,z:foe.z+Math.sin(a)*(46+i*8),size:18+i*3,color,alpha:.45})}}}if(this.mode==='fight'&&this.teamAllies.length)this.drawTeamAllies(r,time);if(['explore','cavern','mountain'].includes(this.mode))for(const item of this.availableInteractions())this.drawMarker(r,item,time)}
+  drawChapterWorld(){if(!this.battle?.renderer||this.aborted)return;const r=this.battle.renderer,time=performance.now()/1000;if(this.area==='village')this.drawVillage(r,time);else if(this.area==='cavern')this.drawCaverns(r,time);else if(this.area==='mountain'||this.area==='lookout')this.drawMountain(r,time);else if(this.area==='sky')this.drawSky(r,time);if(this.mode==='fight'&&this.currentEnemyRole){const foe=this.battle.fighters[1],pulse=1+Math.sin(time*6)*.08;r.disc({x:foe.x,y:6,z:foe.z,rx:48*pulse,rz:32*pulse,color:this.currentEnemyRole.color,alpha:.16});if(this.currentFight?.kind==='watcher'){const memory=this.watcherMemory,exposed=performance.now()<memory.exposedUntil,color=exposed?'#fff0a8':memory.learned?'#63dce3':this.watcherPhase===3?'#ff9f80':'#8fe8ff';r.disc({x:foe.x,y:8,z:foe.z,rx:(72+this.watcherPhase*8)*pulse,rz:(48+this.watcherPhase*5)*pulse,color,alpha:exposed?.34:memory.learned?.28:.12});for(let i=0;i<this.watcherPhase;i++){const a=time*(.8+i*.2)+i*2.1;r.billboard({x:foe.x+Math.cos(a)*(66+i*12),y:78+i*20,z:foe.z+Math.sin(a)*(46+i*8),size:18+i*3,color,alpha:.45})}}}if(this.mode==='fight'&&this.teamAllies.length){this.drawTeamAllies(r,time);if(this.currentFight?.squadMode)this.drawSquadEnemies(r,time)}if(['explore','cavern','mountain'].includes(this.mode))for(const item of this.availableInteractions())this.drawMarker(r,item,time)}
   drawVillage(r,time){
     const pacingColor=this.pacing.phase==='aftermath'?'#8fe8ff':this.pacing.phase==='crisis'?'#ff745d':'#d9bd72';r.billboard({x:-350,y:310,z:540,size:24+Math.sin(time*2)*2,color:pacingColor,alpha:.24});
     // Ancient, low-tech settlement: hand-cut stone, timber, ropes, bells, water, and resonance craft.
@@ -895,14 +988,17 @@ class RrvvfoChapter4{
   }
   drawTeamAllies(r,time){
     for(const ally of this.teamAllies){
-      const bob=Math.sin(time*7+(ally.id==='bark'?0:1.8))*3;
-      r.disc({x:ally.x,y:5,z:ally.z,rx:34,rz:24,color:ally.accent,alpha:.18});
-      r.cylinder({x:ally.x,y:58+bob,z:ally.z,rx:18,sy:92,color:ally.accent});
-      r.cylinder({x:ally.x,y:121+bob,z:ally.z,rx:15,sy:28,color:ally.id==='wade'?'#e6c393':'#8a6752'});
-      r.segment({x:ally.x-12,y:28+bob,z:ally.z},{x:ally.x-18,y:3,z:ally.z+8},{width:7,height:7,color:'#252834'});
-      r.segment({x:ally.x+12,y:28+bob,z:ally.z},{x:ally.x+18,y:3,z:ally.z-8},{width:7,height:7,color:'#252834'});
-      r.billboard({x:ally.x,y:168+bob,z:ally.z,size:18,color:ally.accent,alpha:.72});
+      const down=ally.down||ally.hp<=0,bob=down?0:Math.sin(time*7+(ally.id==='bark'?0:1.8))*3,bodyY=down?22:58+bob,bodyHeight=down?34:92;
+      r.disc({x:ally.x,y:5,z:ally.z,rx:34,rz:24,color:ally.accent,alpha:down?.08:.18});
+      r.cylinder({x:ally.x,y:bodyY,z:ally.z,rx:18,sy:bodyHeight,color:ally.accent,alpha:down?.52:1});
+      r.cylinder({x:ally.x+(down?24:0),y:down?25:121+bob,z:ally.z,rx:15,sy:28,color:ally.id==='wade'?'#e6c393':'#8a6752',alpha:down?.55:1});
+      if(!down){r.segment({x:ally.x-12,y:28+bob,z:ally.z},{x:ally.x-18,y:3,z:ally.z+8},{width:7,height:7,color:'#252834'});r.segment({x:ally.x+12,y:28+bob,z:ally.z},{x:ally.x+18,y:3,z:ally.z-8},{width:7,height:7,color:'#252834'})}
+      r.billboard({x:ally.x,y:down?72:168+bob,z:ally.z,size:18,color:down?'#8a8f99':ally.accent,alpha:down?.42:.72});
     }
+  }
+
+  drawSquadEnemies(r,time){
+    for(const enemy of this.squadEnemies){if(enemy.index===this.squadTargetIndex||enemy.down||enemy.hp<=0)continue;const arch=enemyArchetype(enemy.archetype),pulse=1+Math.sin(time*5+enemy.index)*.06;r.disc({x:enemy.x,y:5,z:enemy.z,rx:36*pulse,rz:25*pulse,color:arch.color,alpha:.20});r.cylinder({x:enemy.x,y:60,z:enemy.z,rx:20,sy:98,color:'#303845'});r.cylinder({x:enemy.x,y:125,z:enemy.z,rx:15,sy:28,color:'#727987'});r.billboard({x:enemy.x,y:170,z:enemy.z,size:19,color:arch.color,alpha:.82});const ratio=Math.max(0,enemy.hp/enemy.maxHp);r.segment({x:enemy.x-38,y:188,z:enemy.z},{x:enemy.x-38+76*ratio,y:188,z:enemy.z},{width:5,height:5,color:arch.color,alpha:.9})}
   }
 
   drawCompanion(r,x,z,color,label,seated=false){r.cylinder({x,y:seated?34:58,z,rx:17,sy:seated?58:92,color});r.cylinder({x,y:seated?77:120,z,rx:15,sy:26,color:'#8a6752'});r.billboard({x,y:seated?112:158,z,size:22,color:'#fff',alpha:.18})}
@@ -917,12 +1013,24 @@ class RrvvfoChapter4{
     r.box({x:1120,y:545,z:-330,sx:245,sy:130,sz:220,color:'#5b6d7c'});
     r.gableRoof({x:1120,y:635,z:-330,sx:330,sy:70,sz:300,color:'#b8dff0',alpha:.72});
     for(let i=0;i<5;i++){const a=i/5*Math.PI*2;r.billboard({x:1120+Math.cos(a)*260,y:430+Math.sin(time*1.4+i)*18,z:-330+Math.sin(a)*205,size:120,color:'#eef8ff',alpha:.10})}
+    if(this.area==='lookout'){
+      // Height and wind remain visible after landing so the sanctuary never reads as a flat room.
+      for(let i=0;i<7;i++){
+        const drift=((time*(28+i*3)+i*190)%1500)-750;
+        r.billboard({x:1120+drift,y:335+(i%3)*24,z:-330+((i%4)-1.5)*170,size:150+(i%2)*55,color:'#f2fbff',alpha:.055});
+      }
+      for(let i=0;i<4;i++){
+        const z=-470+i*92,offset=Math.sin(time*2.1+i)*18;
+        r.segment({x:935+offset,y:530+i*6,z},{x:1015+offset,y:538+i*6,z:z+18},{width:3,height:3,color:'#dff7ff',alpha:.22});
+      }
+      r.disc({x:1120,y:LOOKOUT_HEIGHT+3,z:-330,rx:205,rz:165,color:'#d9f5ff',alpha:.045+Math.sin(time*1.7)*.012});
+    }
     if(this.area==='lookout'&&!this.state.requiredCompleted.includes('shadowArrival')){
       // Shadow is visible at the entrance but remains silent; Chapter 5 owns the conversation.
       r.disc({x:LOOKOUT_ENTRANCE.x,y:507,z:LOOKOUT_ENTRANCE.z,rx:30,rz:22,color:'#8067a8',alpha:.20});
       r.cylinder({x:LOOKOUT_ENTRANCE.x,y:560,z:LOOKOUT_ENTRANCE.z,rx:17,sy:92,color:'#302b3d'});
       r.cylinder({x:LOOKOUT_ENTRANCE.x,y:620,z:LOOKOUT_ENTRANCE.z,rx:15,sy:28,color:'#8b6e64'});
-      r.billboard({x:LOOKOUT_ENTRANCE.x,y:660,z:LOOKOUT_ENTRANCE.z,size:22,color:'#c9a7ff',alpha:.56});
+      r.billboard({x:LOOKOUT_ENTRANCE.x,y:660,z:LOOKOUT_ENTRANCE.z,size:22+Math.sin(time*2.2)*2,color:'#c9a7ff',alpha:.56});r.disc({x:LOOKOUT_ENTRANCE.x,y:LOOKOUT_HEIGHT+4,z:LOOKOUT_ENTRANCE.z,rx:46,rz:30,color:'#c9a7ff',alpha:.10+Math.sin(time*2)*.025});
     }
     if(this.vibrationPulse>0)for(const point of CHAPTER4_MOUNTAIN_SIGNALS)r.disc({x:point.x,y:12,z:point.z,rx:80+(2.2-this.vibrationPulse)*120,rz:60+(2.2-this.vibrationPulse)*90,color:'#d9f9ff',alpha:.16})}
   drawSky(r,time){for(let i=0;i<12;i++){const x=((time*(36+i%3*6)+i*210)%1800)-900,z=-620+(i%4)*410;r.billboard({x,y:130+(i%3)*75,z,size:160,color:'#f1fbff',alpha:.10})}r.billboard({x:0,y:-90,z:0,size:420,color:'#6d9fc9',alpha:.12});if(this.vibrationCombat){const foe=this.battle.fighters[1];r.disc({x:foe.x,y:8,z:foe.z,rx:90+Math.sin(time*8)*20,rz:70+Math.sin(time*8)*16,color:'#d9f9ff',alpha:.24});r.billboard({x:foe.x,y:160,z:foe.z,size:34,color:'#ffffff',alpha:.48})}}
@@ -966,7 +1074,7 @@ class RrvvfoChapter4{
   async requestExit(){const leave=await storyConfirm({title:'EXIT CHAPTER 4?',message:'Completed Echo Region checkpoints remain saved. Active fights restart.',confirmLabel:'EXIT CHAPTER'});if(leave)this.exitToStory()}
   exitToStory(){if(this.aborted)return;this.saveState();this.cleanup();this.onExit()}
 
-  onKey(event){if(this.root.hidden)return;if(event.code==='KeyC'&&this.mode==='fight'&&this.teamAllies.length){event.preventDefault();const commands=['focus','protect','interrupt'],index=(commands.indexOf(this.teamCommand)+1)%commands.length;this.teamCommand=commands[index];this.updateTeamCombatHud();this.battle.notice(`TEAM COMMAND • ${this.teamCommand.toUpperCase()}`,1.2);return}if(this.qte.active){const expected=this.qte.sequence[this.qte.step];const map={ArrowLeft:'LEFT',KeyA:'LEFT',ArrowRight:'RIGHT',KeyD:'RIGHT',ArrowUp:'UP',KeyW:'UP',ArrowDown:'DOWN',KeyS:'DOWN',Space:'CHARGE',KeyE:'RELEASE',Digit3:'OBJECT SWAP',Digit4:'LENS',KeyV:'VIBRATION'};let value=map[event.code]||map[event.key];if((event.code==='Enter'||event.code==='NumpadEnter')&&['LOCK','SEAL'].includes(expected))value=expected;if(value){event.preventDefault();this.advanceQte(value)}return}
+  onKey(event){if(this.root.hidden)return;if(event.code==='Tab'&&this.mode==='fight'&&this.currentFight?.squadMode){event.preventDefault();this.cycleSquadTarget();return}if(event.code==='KeyC'&&this.mode==='fight'&&this.teamAllies.length){event.preventDefault();const commands=['focus','protect','interrupt'],index=(commands.indexOf(this.teamCommand)+1)%commands.length;this.teamCommand=commands[index];this.updateTeamCombatHud();this.battle.notice(`TEAM COMMAND • ${this.teamCommand.toUpperCase()}`,1.2);return}if(this.qte.active){const expected=this.qte.sequence[this.qte.step];const map={ArrowLeft:'LEFT',KeyA:'LEFT',ArrowRight:'RIGHT',KeyD:'RIGHT',ArrowUp:'UP',KeyW:'UP',ArrowDown:'DOWN',KeyS:'DOWN',Space:'CHARGE',KeyE:'RELEASE',Digit3:'OBJECT SWAP',Digit4:'LENS',KeyV:'VIBRATION'};let value=map[event.code]||map[event.key];if((event.code==='Enter'||event.code==='NumpadEnter')&&['LOCK','SEAL'].includes(expected))value=expected;if(value){event.preventDefault();this.advanceQte(value)}return}
     if(this.storyMenuOpen){if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();this.closeStoryMenu()}return}
     if(this.trackerOpen){if(event.key==='Escape'||event.key.toLowerCase()==='t'){event.preventDefault();event.stopImmediatePropagation();this.closeTracker()}return}
     if(this.choiceOpen)return;

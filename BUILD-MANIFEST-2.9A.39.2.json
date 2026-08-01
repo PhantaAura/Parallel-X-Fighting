@@ -1,0 +1,25 @@
+{
+  "build": "Prototype 2.9A.39.2 \u2014 Chapter 4 Ending Experience Hardening",
+  "cache": "29a392-chapter4-ending-hardening-20260801",
+  "save_schema": 268,
+  "browser_smoke": {
+    "passed": 385,
+    "total": 385,
+    "failed": 0
+  },
+  "static": {
+    "js_modules": 93,
+    "relative_imports": 260,
+    "json_manifests": 46,
+    "html_ids": 259,
+    "duplicate_html_ids": 0
+  },
+  "focus": [
+    "lookout landing camera",
+    "elevated platform grounding",
+    "subtle entrance cue",
+    "height/wind ambience",
+    "collapse fade timing",
+    "ending save/replay regression"
+  ]
+}

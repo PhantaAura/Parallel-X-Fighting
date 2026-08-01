@@ -1,0 +1,23 @@
+{
+  "build": "Prototype 2.9A.40 — Core Fun Overhaul",
+  "cache": "29a40-core-fun-overhaul-20260801",
+  "saveSchema": 268,
+  "checks": {
+    "browserSmoke": "397/397 PASS",
+    "javascriptParse": "94/94 PASS",
+    "relativeImports": "269/269 RESOLVED",
+    "jsonManifestParse": "50/50 PASS",
+    "htmlIds": "259 UNIQUE / 0 DUPLICATES"
+  },
+  "chapterIdentities": {
+    "1": "Movement Adventure",
+    "2": "Tournament Marathon",
+    "3": "Investigation & Infiltration",
+    "4": "Party Journey"
+  },
+  "notes": [
+    "Chapter 4 squad encounters use one fully simulated Arena opponent plus simultaneously active squad AI proxies for off-target enemies and allies.",
+    "Scripted Story traversal/tutorial states retain canonical ability ordering so saved combat builds cannot remove required Story techniques.",
+    "Save schema remains 268."
+  ]
+}

@@ -1,4 +1,5 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
+import {applyRrvvfoBuildToFighter,currentRrvvfoBuild} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
 
 export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,250,450,700,1000,1360,1780,2260,2810]);
 export const STORY_RECOMMENDED_LEVELS=Object.freeze({1:1,2:2,3:4,4:5,5:6,6:7,7:8,8:9});
@@ -100,6 +101,7 @@ export function applyStoryProgressionToFighter(fighter,progress=loadLostYearProg
   fighter.vibrationSense=Boolean(progress?.chapter4State?.rewards?.vibrationSense);
   fighter.maxHp=stats.hp;
   fighter.hp=restoreHealth?stats.hp:Math.max(1,Math.round(stats.hp*ratio));
+  if(fighter.id==='rrvvfo')applyRrvvfoBuildToFighter(fighter,currentRrvvfoBuild());
   return fighter;
 }
 

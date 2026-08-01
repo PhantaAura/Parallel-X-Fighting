@@ -1,6 +1,6 @@
 # Parallels X: Clash of Souls
 
-> **Combat Rank Patch integrated:** Every completed fight receives an **S / A / B / C / D / E** grade. Prototype 2.9A.39 includes that mini patch in the cumulative build.
+> **Combat Rank Patch integrated:** Every completed fight receives an **S / A / B / C / D / E** grade. Prototype 2.9A.40 includes that mini patch in the cumulative build.
 
 **A 2.5D arena fighter and RPG built around kinetic movement, pursuit combos, parries, character techniques, exploration, side quests, and continuous Story progression.**
 
@@ -8,9 +8,32 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.39.1 — Chapter 4 Ending Continuity Patch**
+**Prototype 2.9A.40 — Core Fun Overhaul**
 
 This is a complete cumulative build. No older package is required.
+
+## 2.9A.40 Core Fun Overhaul
+
+- Gives every released chapter a gameplay identity, not only a different story/map: Chapter 1 movement adventure, Chapter 2 tournament marathon, Chapter 3 investigation/infiltration, Chapter 4 party journey.
+- Adds **Flow Cancel**: after a connected melee hit, spend 8 Energy during a short window to dash-cancel recovery and choose a new route.
+- Adds **RRVVFO BUILD LAB** in Extras with three focused presets. Each equips four techniques and two passives; Story and Arena share the saved choice.
+- Adds six tactical enemy archetypes: Rushdown, Guard, Ranged, Heavy, Trickster, and Support.
+- Adds eight short optional **Adventure Mission** goals (two per released chapter) with persistent one-time rewards and ranks. They are hooks inside existing chapter play, not mandatory map-marker chores.
+- Chapter 4 village defense becomes a **3v3 squad encounter** and an optional Project Hollow swarm becomes **3v2**. Bark and Wade have HP, roles, target priorities, team commands, and can be knocked down; off-target enemies remain active through squad AI while the selected enemy receives full Arena-fighter simulation.
+- Preserves Chapter 4's solo-mountain contrast: after the team portion, Rrvvfo still continues alone to the Hollow Watcher and floating lookout.
+- Includes all 2.9A.39.2 lookout hardening: landing camera, elevated-platform grounding, subtle entrance guidance, wind/height ambience, and deliberate collapse/fade timing.
+- Save schema remains **268** and the smoke suite contains **397** checks.
+
+## 2.9A.39.2 Chapter 4 ending experience hardening
+
+- Keeps the 2.9A.39.1 ending writing unchanged while improving the final playable approach.
+- Object Swap landing now gets a brief dedicated camera frame before normal free-look returns.
+- Shadow’s floating lookout is firmly grounded at its sanctuary height and clamped to the platform bounds on fresh and restored checkpoints.
+- Adds subtle wind/cloud/height feedback and a restrained entrance cue without adding a giant objective arrow.
+- Rrvvfo’s collapse now holds for a readable quiet beat before the fade commits Chapter 4 completion.
+- Both Ryuzankaro routes still converge, and the mandatory pebble → CHARGE → RELEASE → LOCK → OBJECT SWAP sequence is untouched.
+- Includes a dedicated ending regression checklist for fresh, replay, partial, migrated, Ryuzankaro-complete, and Ryuzankaro-skipped saves.
+- Save schema remains **268** and the smoke suite contains **385** checks.
 
 ## 2.9A.39.1 Chapter 4 ending continuity highlights
 

@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a391-chapter4-ending-continuity-20260801';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a40-core-fun-overhaul-20260801';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',
@@ -6,6 +6,8 @@ export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxLensMasteryV1',
   'pxCombatManualV1',
   'pxMasteryRecordsV1',
+  'pxRrvvfoBuildV1',
+  'pxAdventureProgressV1',
   'pxArenaControlsV1',
   'pxDialoguePrefsV1',
   'pxControllerSettingsV1',

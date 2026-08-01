@@ -1,15 +1,16 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a391-chapter4-ending-continuity-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a391-chapter4-ending-continuity-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a391-chapter4-ending-continuity-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a391-chapter4-ending-continuity-20260801';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a391-chapter4-ending-continuity-20260801';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a40-core-fun-overhaul-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a40-core-fun-overhaul-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a40-core-fun-overhaul-20260801';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
+import {storyConfirm} from './story-ux.js?v=29a40-core-fun-overhaul-20260801';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a40-core-fun-overhaul-20260801';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a40-core-fun-overhaul-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a40-core-fun-overhaul-20260801';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a40-core-fun-overhaul-20260801';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
+import {completeAdventureMission,discoverAdventureMission,enemyArchetype} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -245,7 +246,7 @@ class RrvvfoMission2{
     this.qtePurpose='run';
     this.pendingSupport=null;
     this.gruntCooldown={};
-    this.fightLosses={};
+    this.fightLosses={};this.adventureWinStreak=0;
     this.storyAssistFights=new Set();
     this.trackerOpen=false;
     this.trackerPausedBattle=false;
@@ -375,6 +376,13 @@ class RrvvfoMission2{
         if(this.mode==='fight'&&this.currentFight?.kind==='dummy'){
           const quest=this.state.hubQuests.optional.dummy;
           if(quest.pursuit&&!quest.grab)return{x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:true,charge:false,grab:false,special:false};
+        }
+        if(this.mode==='fight'&&this.currentFight?.archetype){
+          const t=this.currentFight.elapsed||0,dx=foe.x-fighter.x,dz=foe.z-fighter.z,d=Math.max(1,Math.hypot(dx,dz)),arch=this.currentFight.archetype;
+          if(arch==='heavy')return{x:dx/d*.42,z:dz/d*.42,jump:false,light:t%1.7<.1,heavy:t%2.15<.13,launcher:t%4.4<.08,dash:false,block:t%3.4<.28,charge:false,grab:d<100&&t%2.8<.11,counter:false,special:false};
+          if(arch==='guard')return{x:dx/d*.36,z:dz/d*.36,jump:false,light:t%1.5<.1,heavy:t%3.0<.1,launcher:false,dash:false,block:t%1.45<.62,charge:false,grab:d<95&&t%2.5<.12,counter:t%3.0<.1,special:false};
+          if(arch==='trickster')return{x:dx/d*.22,z:dz/d*.65,jump:t%3.6<.07,light:t%1.15<.12,heavy:t%3.0<.09,launcher:t%4.2<.08,dash:t%1.3<.18,block:t%2.8<.22,charge:false,grab:false,counter:t%2.7<.1,special:t%2.3<.1};
+          if(arch==='ranged')return{x:-dx/d*.42,z:-dz/d*.42,jump:false,light:t%1.8<.1,heavy:false,launcher:false,dash:d<180,block:t%3.0<.28,charge:false,grab:false,counter:false,special:t%1.3<.14};
         }
         return next(fighter,foe,dt);
       },
@@ -1126,7 +1134,7 @@ class RrvvfoMission2{
       kicker:'OPTIONAL SIDE FIGHT',title:'SPAR WITH BARK?',
       text:'The ring is repaired. Bark wants one clean first-to-one spar before the tournament.',
       buttons:[{label:'SPAR',value:'fight',primary:true},{label:'NOT NOW',value:'leave'}],
-      onChoose:value=>value==='fight'?this.startFight({id:'bark',name:'Bark',hp:78,xp:85,kind:'bark-spar',story:false,intro:'OPTIONAL SPAR • BARK'}):this.resumeHub()
+      onChoose:value=>value==='fight'?this.startFight({id:'bark',name:'Bark',hp:78,xp:85,kind:'bark-spar',story:false,archetype:'guard',intro:'OPTIONAL SPAR • BARK'}):this.resumeHub()
     });
   }
 
@@ -1653,7 +1661,7 @@ class RrvvfoMission2{
       foe.id=config.id;foe.name=config.name;foe.accent=this.opponentAccent(config.id);foe.cpu=true;foe.visualScale=Number(config.visualScale)||1;foe.reset(370,-78);foe.asset=null;
       applyStoryLevelToFighter(foe,enemyLevel,{bossHpBonus});
       foe.bodyCenter*=foe.visualScale;foe.collisionRadius*=Math.min(1.45,foe.visualScale);
-      foe.maxHp=opponentMaxHp;foe.hp=opponentMaxHp;foe.en=config.final?80:45;foe.guard=100;
+      foe.maxHp=opponentMaxHp;foe.hp=opponentMaxHp;foe.en=config.final?80:45;foe.guard=100;const archetype=enemyArchetype(config.archetype||'rushdown');foe.aiArchetype=archetype.id;foe.storySpeedMultiplier*=archetype.speed;foe.storyAttackMultiplier*=archetype.attack;foe.storyDefenseMultiplier/=archetype.defense;
       if(assisted){foe.storyAttackMultiplier*=.92;foe.storySpeedMultiplier*=.96}
       this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:foe.id,stageId:this.battle.stage.id,mode:'story'});
       this.battle.koTarget=this.currentFight.koTarget;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';this.battle.time=Infinity;this.battle.hideBanner();
@@ -1667,6 +1675,7 @@ class RrvvfoMission2{
       this.root.classList.add('isFight');
       this.battle.root.querySelector('[data-stage-name]').textContent=`LOCAL TOURNAMENT • ${config.name.toUpperCase()}`;
       this.setArenaNames('RRVVFO',config.name.toUpperCase());
+      if(config.archetype){const arch=enemyArchetype(config.archetype);this.battle.notice(`${arch.label} • ${arch.description}`,1.8)}
       this.root.querySelector('[data-tournament-run]').hidden=false;
       const assistText=assisted?' • STORY ASSIST ACTIVE':'';
       this.setObjective(
@@ -1769,10 +1778,11 @@ class RrvvfoMission2{
   finishCurrentFight(won){
     if(this.mode!=='fight'||!this.currentFight||this.currentFight.final)return;
     const fight=this.currentFight;
-    this.battle.finalizeBattleRank({won,scoreFor:fight.playerKOs,scoreAgainst:fight.foeKOs,label:fight.official?'TOURNAMENT FIGHT RANK':'FIGHT RANK',showToast:true});
+    const rankResult=this.battle.finalizeBattleRank({won,scoreFor:fight.playerKOs,scoreAgainst:fight.foeKOs,label:fight.official?'TOURNAMENT FIGHT RANK':'FIGHT RANK',showToast:true});if((fight.official||fight.kind==='tournament')&&won&&['S','A'].includes(rankResult?.rank)){discoverAdventureMission('c2-ring-master');completeAdventureMission('c2-ring-master',{rank:rankResult.rank,reward:'VICTORY EFFECT • GOLD RING'})}
     this.mode='story';this.battle.phase='story';
     this.root.querySelector('[data-tournament-run]').hidden=true;
     if(!won){
+      if(fight.official||fight.kind==='tournament')this.adventureWinStreak=0;
       const losses=(this.fightLosses[fight.id]||0)+1;
       this.fightLosses[fight.id]=losses;
       const buttons=[{label:'RETRY NORMALLY',value:'retry',primary:true}];
@@ -1795,6 +1805,7 @@ class RrvvfoMission2{
     }
 
     this.fightLosses[fight.id]=0;
+    if(fight.official||fight.kind==='tournament'){this.adventureWinStreak++;if(this.adventureWinStreak>=3)completeAdventureMission('c2-three-in-a-row',{rank:'A',reward:'TITLE • CROWD FAVORITE'})}
     this.grantXp(fight.xp||0,`${fight.name.toUpperCase()} DEFEATED`,()=>{
       if(fight.kind==='practice'){
         this.state.firstBrawlComplete=true;this.saveChapterState();
@@ -1869,6 +1880,7 @@ class RrvvfoMission2{
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'First preliminary: Hailey versus Plouke!',tail:'down'}
       ],()=>{this.state.ceremonyComplete=true;this.saveChapterState();this.startHaileyPrelim()}));
     }else if(step==='round-1'){
+      discoverAdventureMission('c2-three-in-a-row');
       discoverCombatManualPage('tournament-rules',{
         reactionLines:[
           'Ring-outs are dangerous. They could push me off, so I shouldn’t camp near the edge.'
@@ -1880,14 +1892,14 @@ class RrvvfoMission2{
           {speaker:'RRVVFO',speakerClass:'p1',text:'He looks like he’d eat me for breakfast.',tail:'down'},
           {speaker:'HAMUAL',speakerClass:'rival',text:'Don’t confuse size with slowness. I won this bracket before you entered one.',tail:'down'},
           {speaker:'RRVVFO',speakerClass:'p1',text:'You couldn’t win even if you were ten times bigger.',tail:'down'}
-        ],()=>this.startFight({id:'hamual',name:'Hamual',xp:110,kind:'tournament',story,intro:'ROUND ONE • POWER TEST',visualScale:1.48,hpScale:1.18}))
+        ],()=>this.startFight({id:'hamual',name:'Hamual',xp:110,kind:'tournament',story,archetype:'heavy',intro:'ROUND ONE • POWER TEST',visualScale:1.48,hpScale:1.18}))
       });
     }else if(step==='quarterfinal'){
       this.showDialogue([
         {speaker:'DANIEL',speakerClass:'neutral',text:'You expected another giant. That’s useful.',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'You look a little casual for a tournament.',tail:'down'},
         {speaker:'DANIEL',speakerClass:'neutral',text:'Watch my feet, not my clothes.',tail:'down'}
-      ],()=>this.startFight({id:'daniel',name:'Daniel',xp:125,kind:'tournament',story,intro:'QUARTERFINAL • SKILL TEST',hpScale:1.04}));
+      ],()=>this.startFight({id:'daniel',name:'Daniel',xp:125,kind:'tournament',story,archetype:'trickster',intro:'QUARTERFINAL • SKILL TEST',hpScale:1.04}));
     }else if(step==='bark-pouki'){
       this.startPoukiExhibition();
     }else if(step==='wade'){
@@ -1895,7 +1907,7 @@ class RrvvfoMission2{
         {speaker:'WADE',speakerClass:'neutral',text:'Guess the bracket really wanted this.',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'You may be fast, but you’re slow in the brain.',tail:'down'},
         {speaker:'WADE',speakerClass:'neutral',text:'I’m fast, not slow.',tail:'down'}
-      ],()=>this.startFight({id:'wade',name:'Wade',hp:90,xp:140,kind:'tournament',story,intro:'SEMIFINAL • RRVVFO VS WADE'}));
+      ],()=>this.startFight({id:'wade',name:'Wade',hp:90,xp:140,kind:'tournament',story,archetype:'rushdown',intro:'SEMIFINAL • RRVVFO VS WADE'}));
     }else if(step==='final'){
       this.startFinalPreparation();
     }
@@ -2035,7 +2047,7 @@ class RrvvfoMission2{
       {speaker:'RRVVFO',speakerClass:'p1',text:'I can win this with my hands tied up.',tail:'down'},
       {speaker:'PLOUKE',speakerClass:'rival',text:'That confidence is exactly why you’re tired.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Keep talking. It’ll make losing more embarrassing.',tail:'down'}
-    ],()=>this.startFight({id:'plouke',name:'Plouke',hp:100,xp:0,kind:'final',story:true,final:true,intro:'FINAL • RRVVFO VS PLOUKE'}));
+    ],()=>this.startFight({id:'plouke',name:'Plouke',hp:100,xp:0,kind:'final',story:true,final:true,archetype:'ranged',intro:'FINAL • RRVVFO VS PLOUKE'}));
   }
 
   beginFinalFatigue(){

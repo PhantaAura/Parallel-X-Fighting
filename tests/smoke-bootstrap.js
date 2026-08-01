@@ -1,6 +1,6 @@
-const RELEASE_CACHE_ID='29a391-chapter4-ending-continuity-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.39.1 — Chapter 4 Ending Continuity Patch';
-const TOTAL_TESTS=379;
+const RELEASE_CACHE_ID='29a40-core-fun-overhaul-20260801';
+const EXPECTED_BUILD='Prototype 2.9A.40 — Core Fun Overhaul';
+const TOTAL_TESTS=397;
 const IMPORT_TIMEOUT_MS=600000;
 const STALL_TIMEOUT_MS=35000;
 

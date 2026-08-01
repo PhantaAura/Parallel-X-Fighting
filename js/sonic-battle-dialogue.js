@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyConfirm} from './story/story-ux.js?v=29a40-core-fun-overhaul-20260801';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a391-chapter4-ending-continuity-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a391-chapter4-ending-continuity-20260801';
-import {StoryMap} from './story-map.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a391-chapter4-ending-continuity-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a40-core-fun-overhaul-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
+import {StoryMap} from './story-map.js?v=29a40-core-fun-overhaul-20260801';
+import {storyConfirm} from './story-ux.js?v=29a40-core-fun-overhaul-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a40-core-fun-overhaul-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a40-core-fun-overhaul-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a40-core-fun-overhaul-20260801';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,9 +22,10 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a391-chapter4-ending-continuity-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
+} from './chapter3-content.js?v=29a40-core-fun-overhaul-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -854,7 +855,7 @@ class RrvvfoChapter3{
 
   reconstructSecurityFootage(){
     if((this.state.recordingStep||0)!==2)return;
-    const variety=this.state.variety;
+    const variety=this.state.variety;discoverAdventureMission('c3-no-false-leads');
     if(variety.reconstructionComplete){this.restorePublicRecording();return}
     const index=variety.incidentSequence.length;
     const expected=nextIncidentStep(variety);
@@ -878,7 +879,7 @@ class RrvvfoChapter3{
         if(!result.complete){this.mode='hub';this.battle.phase='play';setTimeout(()=>{if(!this.aborted)this.reconstructSecurityFootage()},180);return}
         variety.persistentChanges=[...new Set([...(variety.persistentChanges||[]),'security-reconstruction-visible'])];
         this.state.mediaTerminals=unique([...this.state.mediaTerminals,'damaged-a','damaged-b','private']);
-        this.state.recordingStep=4;this.saveState();
+        this.state.recordingStep=4;this.saveState();if((variety.incidentMistakes||0)===0)completeAdventureMission('c3-no-false-leads',{rank:'S',reward:'TITLE • CASE CLOSED'});
         this.toast('DEDUCTION COMPLETE','THE INCIDENT HAS AN ORDER','The security terminal now displays the full five-event reconstruction.');
         this.restorePublicRecording();
       }
@@ -1231,6 +1232,7 @@ class RrvvfoChapter3{
   }
 
   enterFacility({restored=false}={}){
+    if(!restored){discoverAdventureMission('c3-clean-entry');if((this.state.evidence||[]).length>=CHAPTER3_EVIDENCE.length)completeAdventureMission('c3-clean-entry',{rank:'A',reward:'ARCHIVE • EAST SUPPORT'})}
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'facility'}));
     this.area='facility';this.state.location='facility';
     if(!this.state.requiredCompleted.includes('facilityEntered'))this.completeRequired('facilityEntered');

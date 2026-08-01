@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X: Clash of Souls — Prototype 2.9A.39.1",
-  "version": "Prototype 2.9A.39.1 — Chapter 4 Ending Continuity Patch",
+  "name": "Parallels X: Clash of Souls — Prototype 2.9A.40",
+  "version": "Prototype 2.9A.40 — Core Fun Overhaul",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -64,9 +64,11 @@
     "2.9A.36.3 Chapter 4 Menu State Recovery: makes Chapter 4 menus, journals, close buttons, and overlays obey authoritative hidden state",
     "2.9A.37 First-Play Story Reliability & RPG Flow: explicit saveable/temporary run modes, save-health diagnostics, false-completion prevention, and chapter afterglow pacing",
     "2.9A.38 Combat Mastery & RPG Rewards: C/B/A/S battle mastery, persistent Adventure Records, optional technique challenges, fighter identity mastery, and one-time no-grind rewards",
-    "2.9A.39.1 Chapter 4 Ending Continuity Patch: converged Shadow’s Lookout ending, mandatory summit pebble Object Swap preserved, Chapter 5 exposition deferred, and save-safe entrance checkpointing"
+    "2.9A.39.1 Chapter 4 Ending Continuity Patch: converged Shadow’s Lookout ending, mandatory summit pebble Object Swap preserved, Chapter 5 exposition deferred, and save-safe entrance checkpointing",
+    "2.9A.39.2 Chapter 4 Ending Experience Hardening: lookout landing camera, grounded elevated-platform recovery, subtle entrance guidance, wind/height ambience, deliberate collapse/fade timing, and dedicated ending regression coverage",
+    "2.9A.40 Core Fun Overhaul: chapter-specific gameplay identities, Flow Cancel combat expression, Rrvvfo builds, six enemy archetypes, Adventure Missions, and Chapter 4 3v3/3v2 squad encounters"
   ],
-  "cache_tag": "29a391-chapter4-ending-continuity-20260801",
+  "cache_tag": "29a40-core-fun-overhaul-20260801",
   "save_schema": 268,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo’s atlas across Chapter 2–4 fight transitions and rejects stale asynchronous sprite loads",
@@ -107,11 +109,13 @@
     "2.9A.38 Combat Mastery & RPG Rewards: C/B/A/S battle mastery, persistent Adventure Records, optional technique challenges, fighter identity mastery, and one-time no-grind rewards",
     "Combat Rank Patch: every completed fight now grades on the full S/A/B/C/D/E ladder in Arena and Story",
     "2.9A.39 Chapters 1–4 Full Experience Polish: formalized 35–50 / 70–100 / 55–80 / 90–120 minute pacing targets, richer checkpoint reactions, S/A Story-rank acknowledgements, optional Echo Village party recovery, and pacing diagnostics",
-    "2.9A.39.1 Chapter 4 Ending Continuity Patch: converged Shadow’s Lookout ending, mandatory summit pebble Object Swap preserved, Chapter 5 exposition deferred, and save-safe entrance checkpointing"
+    "2.9A.39.1 Chapter 4 Ending Continuity Patch: converged Shadow’s Lookout ending, mandatory summit pebble Object Swap preserved, Chapter 5 exposition deferred, and save-safe entrance checkpointing",
+    "2.9A.39.2 Chapter 4 Ending Experience Hardening: improves the final floating-lookout approach and collapse presentation without changing dialogue, route convergence, or the mandatory Object Swap.",
+    "2.9A.40 Core Fun Overhaul: shifts the first four chapters toward replayable action-RPG loops with distinct gameplay gimmicks, build choice, tactical enemies, optional missions, expressive combat, and team battles."
   ],
-  "currentBuild": "Prototype 2.9A.39.1 — Chapter 4 Ending Continuity Patch",
-  "cacheId": "29a391-chapter4-ending-continuity-20260801",
+  "currentBuild": "Prototype 2.9A.40 — Core Fun Overhaul",
+  "cacheId": "29a40-core-fun-overhaul-20260801",
   "saveSchema": 268,
-  "latestBuild": "Prototype 2.9A.39.1 — Chapter 4 Ending Continuity Patch",
-  "latestCacheId": "29a391-chapter4-ending-continuity-20260801"
+  "latestBuild": "Prototype 2.9A.40 — Core Fun Overhaul",
+  "latestCacheId": "29a40-core-fun-overhaul-20260801"
 }

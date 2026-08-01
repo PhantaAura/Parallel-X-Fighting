@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
 export const CHAPTER4_STATE_VERSION=5;
 

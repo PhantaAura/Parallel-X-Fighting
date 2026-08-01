@@ -1,6 +1,7 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a391-chapter4-ending-continuity-20260801';
-import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a391-chapter4-ending-continuity-20260801';
-import {storyExperienceProfile} from './story-experience.js?v=29a391-chapter4-ending-continuity-20260801';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a40-core-fun-overhaul-20260801';
+import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a40-core-fun-overhaul-20260801';
+import {storyExperienceProfile} from './story-experience.js?v=29a40-core-fun-overhaul-20260801';
+import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
@@ -11,7 +12,7 @@ import {
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
+} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -102,7 +103,7 @@ function setHidden(element,hidden){if(element)element.hidden=Boolean(hidden)}
 
 class StoryPolishController{
   constructor(){
-    this.root=null;this.transition=null;this.objective=null;this.results=null;this.playtest=null;this.combatCallout=null;
+    this.root=null;this.transition=null;this.objective=null;this.results=null;this.playtest=null;this.combatCallout=null;this.gimmick=null;
     this.objectiveTimer=0;this.transitionTimer=0;this.lastObjective='';this.codeBuffer=[];this.controllerFrame=0;this.controllerButtons=[];
     this.observer=null;this.initialized=false;this.currentMode='';this.currentChapter=0;this.nativeContinue=null;this.nativeCompletionOverlay=null;this.recoveredPreFight=false;this.currentReplay=false;this.currentPlaytest=false;this.currentStepId='';
     this.onKey=this.onKey.bind(this);this.pollController=this.pollController.bind(this);this.scanObjectives=this.scanObjectives.bind(this);
@@ -113,6 +114,9 @@ class StoryPolishController{
     this.root=document.createElement('div');
     this.root.id='storyPolishLayer';
     this.root.innerHTML=`
+      <aside class="storyGimmickCard" data-story-gimmick hidden aria-live="polite">
+        <small data-gimmick-kicker>CHAPTER GAMEPLAY</small><strong data-gimmick-title></strong><span data-gimmick-detail></span>
+      </aside>
       <section class="storySceneTransition" data-story-transition hidden aria-live="polite">
         <div><small data-story-transition-kicker>STORY BATTLE</small><h2 data-story-transition-title>FIGHT</h2><p data-story-transition-detail></p></div>
       </section>
@@ -143,6 +147,7 @@ class StoryPolishController{
         </article>
       </section>`;
     document.body.appendChild(this.root);
+    this.gimmick=this.root.querySelector('[data-story-gimmick]');
     this.transition=this.root.querySelector('[data-story-transition]');
     this.objective=this.root.querySelector('[data-story-objective-toast]');
     this.combatCallout=this.root.querySelector('[data-story-combat-callout]');
@@ -181,6 +186,7 @@ class StoryPolishController{
     if(this.objective){this.objective.classList.remove('show');this.objective.hidden=true}
     if(this.transition){this.transition.classList.remove('show');this.transition.hidden=true}
     if(this.combatCallout){this.combatCallout.classList.remove('show');this.combatCallout.hidden=true}
+    if(this.gimmick){this.gimmick.classList.remove('show');this.gimmick.hidden=true}
   }
 
   onStoryStepStart({chapter=0,stepId='',replay=false,playtest=false}={}){
@@ -195,6 +201,14 @@ class StoryPolishController{
       }
     }catch{}
     document.body.dataset.storyChapter=String(this.currentChapter||'');
+    if(this.currentChapter>=1&&this.currentChapter<=4&&this.gimmick){
+      const identity=chapterGameplayIdentity(this.currentChapter),build=currentRrvvfoBuild();
+      this.gimmick.querySelector('[data-gimmick-kicker]').textContent=`CHAPTER ${this.currentChapter} GAMEPLAY • ${build.label} BUILD`;
+      this.gimmick.querySelector('[data-gimmick-title]').textContent=identity.label;
+      this.gimmick.querySelector('[data-gimmick-detail]').textContent=`${identity.primary} • ${identity.secondary.join(' • ')}`;
+      this.gimmick.hidden=false;requestAnimationFrame(()=>this.gimmick?.classList.add('show'));
+      clearTimeout(this.gimmickTimer);this.gimmickTimer=setTimeout(()=>{this.gimmick?.classList.remove('show');setTimeout(()=>{if(this.gimmick)this.gimmick.hidden=true},180)},4300);
+    }
   }
 
   onModeChange({from='',to='',chapter='',opponent=''}){
@@ -404,7 +418,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a391-chapter4-ending-continuity-20260801`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a40-core-fun-overhaul-20260801`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'echo-mountain':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }

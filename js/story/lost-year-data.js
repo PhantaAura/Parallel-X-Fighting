@@ -1,4 +1,4 @@
-import {inspectStoryReliability} from './story-reliability.js?v=29a391-chapter4-ending-continuity-20260801';
+import {inspectStoryReliability} from './story-reliability.js?v=29a40-core-fun-overhaul-20260801';
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;

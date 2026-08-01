@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a40-core-fun-overhaul-20260801';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 

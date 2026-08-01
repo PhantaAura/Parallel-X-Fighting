@@ -86,6 +86,6 @@ harness.beginRun({label:'Loading test modules…',total:TOTAL_TESTS});
 try{
   let timer;
   const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(`Smoke module startup exceeded ${IMPORT_TIMEOUT_MS/1000} seconds`)),IMPORT_TIMEOUT_MS)});
-  await Promise.race([import(`./smoke.js?v=${RELEASE_CACHE_ID}`),timeout]);
+  await Promise.race([import(`./smoke.js?v=${RELEASE_CACHE_ID}&hotfix=29a35-build-label-hotfix-1`),timeout]);
   clearTimeout(timer);
 }catch(error){fatal(error,'Module startup failed')}

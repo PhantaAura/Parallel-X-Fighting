@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a35-build-label-hotfix-1';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',

@@ -1,14 +1,15 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {StoryMap} from './story-map.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {storyConfirm} from './story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {StoryMap} from './story-map.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {storyConfirm} from './story-ux.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a36-playful-exploration-quest-variety-20260801';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -115,6 +116,7 @@ class RrvvfoRoadHub{
     this.mode='opening';
     this.step='warmup';
     this.pacing=normalizeRpgPacingState('road',loadLostYearProgress().chapter1RoadPacing);
+    this.variety=normalizeQuestVarietyState('chapter1',loadLostYearProgress().chapter1Variety);
     this.completed=false;
     this.aborted=false;
     this.dialogue=null;
@@ -146,6 +148,7 @@ class RrvvfoRoadHub{
     this.qteIndex=0;
     this.qteDeadline=0;
     this.qteGamepadState={};
+    this.qtePurpose='escape';this.qteDuration=4500;this.qteRetryCount=0;
     this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;this.roadKoTimer=0;
     this.npcs=[
       {x:-900,z:300,baseX:-900,baseZ:300,color:'#4b8ee8',phase:0,label:'DOJO STUDENT'},
@@ -632,7 +635,7 @@ class RrvvfoRoadHub{
     if(slot===3&&this.step==='transport'&&player.x>650&&player.x<850){
       this.transportFixed=true;player.visualAction='objectSwapDisappear';player.visualActionTime=.45;
       this.battle.burst(770,-210,'#ffd079',22,62);this.battle.burst(735,40,'#ffd079',22,62);
-      this.showDialogue([{speaker:'TRANSPORT DRIVER',speakerClass:'neutral',text:'You saved the whole transport—and the tournament supplies.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Remember that when the crowd starts cheering for me.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play';this.step='encounter';this.setObjective('CONTINUE THROUGH THE PRACTICE CLEARING','The road is open. A roaming fighter is ahead.');saveLostYearProgress({...loadLostYearProgress(),transportRescued:true,lastCheckpoint:'rrvvfo-road-transport'})});return true;
+      this.showDialogue([{speaker:'TRANSPORT DRIVER',speakerClass:'neutral',text:'You saved the whole transport—and the tournament supplies.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Remember that when the crowd starts cheering for me.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play';this.step='runaway-cart';saveLostYearProgress({...loadLostYearProgress(),transportRescued:true,chapter1Variety:this.variety,lastCheckpoint:'rrvvfo-road-transport'});this.beginRunawayCartRescue()});return true;
     }
     if(slot===4&&this.step==='lens-ready'&&player.x>900&&player.x<1060){
       player.hp=Math.max(1,player.hp-1);
@@ -674,13 +677,40 @@ class RrvvfoRoadHub{
     ],()=>this.resolveEncounter('left'));
   }
 
+  beginRunawayCartRescue(){
+    const cart=this.variety.runawayCart;
+    if(cart.complete){this.step='encounter';this.setObjective('CONTINUE THROUGH THE PRACTICE CLEARING','The supply cart is safe. A roaming fighter is ahead.');return}
+    this.showDialogue([
+      {speaker:'TRANSPORT DRIVER',speakerClass:'neutral',text:'WAIT—THE SUPPLY CART BRAKE!',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I just fixed one moving problem.',tail:'down'},
+      {speaker:'ROAD WORKER',speakerClass:'neutral',text:'Catch it before the hill! Clear the road, then swap the wheel block into place!',tail:'down'}
+    ],()=>this.startRunawayCartQte());
+  }
+
+  startRunawayCartQte(){
+    const cart=this.variety.runawayCart;cart.started=true;cart.attempts=Math.max(0,cart.attempts||0)+1;this.qtePurpose='runaway-cart';this.qteDuration=6200;
+    this.mode='qte';this.battle.phase='story';this.qteSequence=['KeyD','Space','KeyA','KeyD'];this.qteIndex=0;this.qteDeadline=performance.now()+this.qteDuration;this.qteGamepadState={};
+    this.root.querySelector('[data-qte-title]').textContent='INTERCEPT THE RUNAWAY CART';this.qte.hidden=false;this.renderQte();
+    saveLostYearProgress({...loadLostYearProgress(),chapter1Variety:this.variety,lastCheckpoint:'rrvvfo-road-runaway-cart'});
+  }
+
+  finishRunawayCartQte(success){
+    const cart=this.variety.runawayCart;
+    if(!success&&cart.attempts<2){this.battle.notice('CART PASSED THE FIRST BLOCK • RETRY FROM THE SAFE TURN',1.5);setTimeout(()=>{if(!this.aborted)this.startRunawayCartQte()},650);return}
+    cart.complete=true;cart.rank=runawayCartRank(cart);this.variety.persistentChanges=[...new Set([...(this.variety.persistentChanges||[]),'tournament-supply-cart-saved'])];
+    this.mode='hub';this.battle.phase='play';this.step='encounter';this.battle.burst(900,80,'#ffd16a',34,90);
+    saveLostYearProgress({...loadLostYearProgress(),chapter1Variety:this.variety,runawayCartSaved:true,lastCheckpoint:'rrvvfo-road-cart-saved'});
+    document.dispatchEvent(new CustomEvent('pxstorycelebration',{detail:{type:'activity',tone:'stat',kicker:'ROAD ACTIVITY COMPLETE',title:cart.rank,detail:'The tournament supply cart will appear safely parked at the festival.',items:['CHASE','JUMP','OBJECT SWAP'],onceKey:'activity:runaway-cart'}}));
+    this.showDialogue([{speaker:'ROAD WORKER',speakerClass:'neutral',text:'The supplies are safe!',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Tell the tournament I expect a good seat for the cart.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play';this.setObjective('CONTINUE THROUGH THE PRACTICE CLEARING','The cart is safe. A roaming fighter is ahead.')});
+  }
+
   startRunQte(){
-    this.choice.hidden=true;
+    this.choice.hidden=true;this.qtePurpose='escape';this.qteDuration=4500;
     this.mode='qte';
     this.battle.phase='story';
     this.qteSequence=['KeyA','Space','KeyD'];
     this.qteIndex=0;
-    this.qteDeadline=performance.now()+4500;
+    this.qteDeadline=performance.now()+this.qteDuration;
     this.qte.hidden=false;
     this.renderQte();
   }
@@ -701,7 +731,7 @@ class RrvvfoRoadHub{
   }
 
   updateQte(){
-    const remaining=clamp((this.qteDeadline-performance.now())/4500,0,1);
+    const remaining=clamp((this.qteDeadline-performance.now())/Math.max(1,this.qteDuration||4500),0,1);
     this.root.querySelector('[data-qte-timer]').style.width=`${remaining*100}%`;
     if(remaining<=0){this.finishRunQte(false);return}
     const pads=navigator.getGamepads?.()||[],assignment=sharedInput.getControllerAssignment(1);
@@ -722,6 +752,7 @@ class RrvvfoRoadHub{
     if(this.mode!=='qte')return;
     this.qte.hidden=true;
     this.qteGamepadState={};
+    if(this.qtePurpose==='runaway-cart'){this.finishRunawayCartQte(success);return}
     if(success){
       this.showDialogue([
         {speaker:'RRVVFO',speakerClass:'p1',text:'I am not running away. I am refusing to waste time.',tail:'down'},
@@ -908,6 +939,7 @@ class RrvvfoRoadHub{
       r.billboard({x:birdX,y:145+Math.sin(time*4+i)*18,z:birdZ,size:13,color:'#f2f4ff',alpha:.8});
     }
     const cartX=-620+((time*42)%1900);r.box({x:cartX,y:22,z:520,sx:72,sy:38,sz:52,color:'#9a6b3f'});r.disc({x:cartX-28,y:5,z:546,rx:13,rz:8,color:'#26211e',alpha:1});r.disc({x:cartX+28,y:5,z:546,rx:13,rz:8,color:'#26211e',alpha:1});
+    if(this.variety.runawayCart.complete){const x=1080,z=420;r.box({x,y:26,z,sx:118,sy:46,sz:72,color:'#b27a42'});for(const dx of [-42,42])r.disc({x:x+dx,y:6,z:z+34,rx:16,rz:10,color:'#29231f',alpha:1});r.box({x,y:68,z,sx:94,sy:30,sz:56,color:'#d6b06a'});r.billboard({x,y:120,z,size:22,color:'#ffd86b',alpha:.55})}
 
     for(const marker of this.warmupMarkers){
       if(marker.done)continue;

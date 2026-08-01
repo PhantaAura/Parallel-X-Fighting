@@ -6,9 +6,20 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.35 — Living Hubs & RPG Pacing**
+**Prototype 2.9A.36 — Playful Exploration & Quest Variety**
 
 This is a complete cumulative build. No older package is required.
+
+
+## 2.9A.36 playful exploration and quest variety highlights
+
+- Chapter 1 adds a mandatory Runaway Tournament Cart rescue built around chase movement, jumping, and an Object Swap finish.
+- Chapter 2 adds a ranked Festival Technique Exhibition and keeps tournament registration locked until the meaningful preparation activities are complete.
+- Chapter 3 replaces its one-answer reconstruction with a five-event evidence sequence that preserves confirmed progress after mistakes.
+- Chapter 4 adds a three-character Party Field Route using Bark, Wade, and Rrvvfo before Echo Caverns open.
+- Completed activities leave visible results in their hubs instead of disappearing as checklist entries.
+- Older tournament and cavern saves migrate forward safely, and save schema remains 268.
+- The browser smoke suite packages 343 cases.
 
 
 ## 2.9A.35 living hubs and RPG pacing highlights

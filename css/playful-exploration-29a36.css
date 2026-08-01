@@ -1,0 +1,23 @@
+/* Prototype 2.9A.36 — Playful Exploration & Quest Variety */
+#rrvvfoRoadHubUI .roadQte article,
+#rrvvfoMission2UI .chapter2Qte article,
+#rrvvfoChapter4UI .c4Qte article{
+  box-shadow:0 18px 52px rgba(0,0,0,.55),0 0 0 2px rgba(255,216,92,.2) inset;
+}
+#rrvvfoRoadHubUI .qteSequence span.current,
+#rrvvfoMission2UI .chapter2Qte [data-c2-qte-sequence] span.current,
+#rrvvfoChapter4UI .c4QteSequence b:not(.done){
+  transform:translateY(-2px) scale(1.06);
+}
+#rrvvfoMission2UI[data-rpg-phase="development"] .chapter2Objective,
+#rrvvfoChapter4UI[data-rpg-phase="development"] .c4Objective{
+  border-color:rgba(255,216,92,.54);
+}
+#rrvvfoMission2UI .chapter2QuestJournal article[data-quest-variety="true"]{
+  background:linear-gradient(135deg,rgba(255,216,92,.14),rgba(99,201,255,.08));
+}
+@media (prefers-reduced-motion:reduce){
+  #rrvvfoRoadHubUI .qteSequence span,
+  #rrvvfoMission2UI .chapter2Qte span,
+  #rrvvfoChapter4UI .c4QteSequence b{transition:none!important;transform:none!important}
+}

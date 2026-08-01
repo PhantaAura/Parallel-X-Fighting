@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {InputManager} from './input.js?v=29a36-playful-exploration-quest-variety-20260801';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

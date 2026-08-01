@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyConfirm} from './story/story-ux.js?v=29a36-playful-exploration-quest-variety-20260801';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

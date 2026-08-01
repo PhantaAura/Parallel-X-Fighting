@@ -1,8 +1,8 @@
-import {BUILD_VERSION} from './build-info.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {sharedInput} from './input-runtime.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {BUILD_VERSION} from './build-info.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {sharedInput} from './input-runtime.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a36-playful-exploration-quest-variety-20260801';
 
-const MENU_MODULE_CACHE='29a35-living-hubs-rpg-pacing-20260801';
+const MENU_MODULE_CACHE='29a36-playful-exploration-quest-variety-20260801';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([

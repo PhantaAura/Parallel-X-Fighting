@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a35-build-label-hotfix-1';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a36-playful-exploration-quest-variety-20260801';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',

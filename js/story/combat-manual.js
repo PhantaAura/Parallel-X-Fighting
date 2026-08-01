@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {BUILD_VERSION} from '../build-info.js?v=29a36-playful-exploration-quest-variety-20260801';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

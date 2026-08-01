@@ -5,7 +5,7 @@ import {tint} from './effects.js';
 import {tryMeleeClash,tryUltimateClash} from './clash-system.js';
 import {DEFENSE_BALANCE,defensiveDashFrames,resetDefenseState,resolveBlockedHit,updateDefenseState} from './guard-system.js';
 import {beginCinematicUltimate,clearCinematic,ULTIMATES} from './ultimate-system.js';
-import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a36-playful-exploration-quest-variety-20260801';
 
 const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 const LENS_MASTERY_KEY='pxLensMasteryV1';

@@ -1,0 +1,31 @@
+{
+  "name": "Parallels X: Clash of Souls — Prototype 2.9A.36",
+  "version": "Prototype 2.9A.36 — Playful Exploration & Quest Variety",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "base": "Prototype 2.9A.35 — Living Hubs & RPG Pacing",
+  "cacheId": "29a36-playful-exploration-quest-variety-20260801",
+  "saveSchema": 268,
+  "focus": [
+    "memorable non-fetch signature activities across Chapters 1–4",
+    "Festival Technique Exhibition with performance ranks",
+    "five-event incident reconstruction with clue-preserving mistakes",
+    "three-character party field actions and persistent hub changes"
+  ],
+  "chaptersPlayable": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "smokeCasesPackaged": 343,
+  "validation": {
+    "javascriptModules": 90,
+    "relativeImports": 247,
+    "jsonAndManifestFiles": 33,
+    "htmlIds": 259,
+    "duplicateHtmlIds": 0,
+    "browserSmokePassed": 343,
+    "browserSmokeFailed": 0
+  }
+}

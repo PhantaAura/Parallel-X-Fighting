@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {StoryMap} from './story-map.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {storyConfirm} from './story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {StoryMap} from './story-map.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {storyConfirm} from './story-ux.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a36-playful-exploration-quest-variety-20260801';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,8 +22,9 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
+} from './chapter3-content.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a36-playful-exploration-quest-variety-20260801';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -853,23 +854,32 @@ class RrvvfoChapter3{
 
   reconstructSecurityFootage(){
     if((this.state.recordingStep||0)!==2)return;
+    const variety=this.state.variety;
+    if(variety.reconstructionComplete){this.restorePublicRecording();return}
+    const index=variety.incidentSequence.length;
+    const expected=nextIncidentStep(variety);
+    const remaining=CHAPTER3_INCIDENT_ORDER.filter(step=>!variety.incidentSequence.includes(step));
+    const offset=index%Math.max(1,remaining.length);
+    const ordered=[...remaining.slice(offset),...remaining.slice(0,offset)].slice(0,3);
+    if(!ordered.includes(expected))ordered[ordered.length-1]=expected;
     this.showTask({
       kicker:'MAIN INVESTIGATION • SECURITY OFFICE',
-      title:'RECONSTRUCT THE MISSING FOOTAGE',
-      text:'One sequence combines the terminal evidence. Choose the reconstruction that explains the repeated public footage and the missing east-support segment.',
-      buttons:[
-        {label:'MATCH TIMESTAMP → EAST CAMERA → PRIVATE BOOTH',value:'correct',detail:'The public loop hides a copied combat-data route.'},
-        {label:'DELETE THE BROKEN FILES',value:'delete',detail:'Fast, but it destroys the evidence.'},
-        {label:'REPLAY THE PUBLIC CAMERA ONLY',value:'public',detail:'That repeats the same incomplete loop.'}
-      ],
+      title:'RECONSTRUCT THE INCIDENT',
+      text:`Place event ${index+1} of ${CHAPTER3_INCIDENT_ORDER.length}. Wrong answers give a clue and keep your confirmed evidence.`,
+      progress:variety.incidentSequence.join('  →  '),
+      buttons:ordered.map(value=>({label:value,value,detail:value===expected?'Supported by the current evidence.':'Possible, but check what had to happen first.'})),
       onChoose:value=>{
-        if(value!=='correct'){
-          this.battle.notice('THAT DOESN’T EXPLAIN THE MISSING SEGMENT',1.5);
-          this.mode='hub';this.battle.phase='play';this.updateObjective();return;
+        const result=recordIncidentStep(variety,value);this.saveState();
+        if(!result.correct){
+          const clues=['The energy reading exists before any staff movement.','Security had to be redirected before the false worker could enter.','The east support was entered before the ring system failed.','The failed support exposed the underground route.'];
+          this.battle.notice(`ORDER CLUE • ${clues[index]||'FOLLOW THE EVIDENCE CHAIN'}`,2);
+          this.mode='hub';this.battle.phase='play';setTimeout(()=>{if(!this.aborted)this.reconstructSecurityFootage()},250);return;
         }
+        if(!result.complete){this.mode='hub';this.battle.phase='play';setTimeout(()=>{if(!this.aborted)this.reconstructSecurityFootage()},180);return}
+        variety.persistentChanges=[...new Set([...(variety.persistentChanges||[]),'security-reconstruction-visible'])];
         this.state.mediaTerminals=unique([...this.state.mediaTerminals,'damaged-a','damaged-b','private']);
         this.state.recordingStep=4;this.saveState();
-        this.toast('DEDUCTION COMPLETE','THE RECORDING WAS REPEATED','The public footage hides a copied combat-data route through the east support.');
+        this.toast('DEDUCTION COMPLETE','THE INCIDENT HAS AN ORDER','The security terminal now displays the full five-event reconstruction.');
         this.restorePublicRecording();
       }
     });
@@ -1884,6 +1894,7 @@ class RrvvfoChapter3{
       r.billboard({x:point.x+(index-2)*35,y:45+index*8,z:point.z-30,size:20*pulse,color:'#79dfff',alpha:.16+night*.18});
     }
     const next=chapter3NextRequired(this.state);
+    if(this.state.variety.reconstructionComplete){const x=330,z=-650;r.box({x,y:72,z,sx:150,sy:120,sz:24,color:'#19374b'});for(let i=0;i<5;i++)r.segment({x:x-55,y:42+i*15,z:z-14},{x:x+55,y:42+i*15,z:z-14},{width:4,height:2,color:i%2?'#79d7ff':'#ffd557',alpha:.75})}
     if(next==='strangeManWarningSeen'){
       const p=STRANGE_MAN_POINT;
       r.box({x:p.x,y:70,z:p.z,sx:54,sy:118,sz:42,color:'#24222c'});

@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a36-playful-exploration-quest-variety-20260801';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {Fighter} from '../js/fighter.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {EffectSystem} from '../js/effects.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {Fighter} from '../js/fighter.js?v=29a36-playful-exploration-quest-variety-20260801';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,19 +17,20 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a35-build-label-hotfix-1';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,routeProgress,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,STORY_CHAPTERS_PER_CHARACTER,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,routeProgress,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a36-playful-exploration-quest-variety-20260801';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -38,26 +39,26 @@ import {DEFAULT_QOL_SETTINGS,QOL_SETTINGS_KEY,loadQolSettings,saveQolSettings,sa
 import {NotificationSystem} from '../js/notification-system.js';
 import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringifySave,validateSaveImport} from '../js/save-manager.js';
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
-import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a36-playful-exploration-quest-variety-20260801';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {LoadingManager} from '../js/loading-manager.js?v=29a36-playful-exploration-quest-variety-20260801';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {STAGES} from '../js/stages.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {STAGES} from '../js/stages.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a36-playful-exploration-quest-variety-20260801';
 
-const RELEASE_CACHE_ID='29a35-living-hubs-rpg-pacing-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.35 — Living Hubs & RPG Pacing';
-const TOTAL_TESTS=336;
+const RELEASE_CACHE_ID='29a36-playful-exploration-quest-variety-20260801';
+const EXPECTED_BUILD='Prototype 2.9A.36 — Playful Exploration & Quest Variety';
+const TOTAL_TESTS=343;
 const TEST_TIMEOUT_MS=30000;
 class SmokeTimeoutError extends Error{constructor(name){super(`Timed out after ${TEST_TIMEOUT_MS/1000} seconds: ${name}`);this.name='SmokeTimeoutError';this.code='PX_SMOKE_TIMEOUT'}}
 const FETCH_TIMEOUT_MS=12000;
@@ -300,7 +301,7 @@ await test('controller detection and disconnection assignment stay deterministic
 await test('InputManager honors explicit player device assignment',()=>{const pads=[makePad(),null,makePad()],input=new InputManager(()=>pads);input.setControllerStyle(1,'xbox');input.setControllerAssignment(1,2);pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=true;input.poll();pads[2].buttons[CONTROLLER_STYLES.xbox.buttons.a].pressed=false;settleChordWindow(input);assert(input.consumeAction(1,'a'),'assigned Player 1 controller input was ignored')});
 await test('round and Training cleanup clear visual-only state',()=>{const setup=pair();setup.world.fighterVisuals={resetFighter:fighter=>{fighter.__visualReset=true}};setup.one.visualAction='ultimateAttack';setup.one.visualActionTimer=99;setup.one.resetRuntime();assert(setup.one.__visualReset&&!setup.one.visualAction&&!setup.one.visualActionTimer,'fighter reset retained visual state');trainingState.enabled=true;resetTrainingWorld(setup.world);assert(setup.world.projectiles.length===0&&setup.world.effects.effects.length===0,'Training cleanup retained transient visuals')});
 
-await test('Prototype 2.9A.35 uses one centralized build label',async()=>{
+await test('Prototype 2.9A.36 uses one centralized build label',async()=>{
   assert(BUILD_VERSION===EXPECTED_BUILD,'build label is outdated');assert(SAVE_SCHEMA_VERSION===268,'save schema version is outdated');
   const [arena,manual,manualCss]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(r=>r.text()),fetchFresh('../js/story/combat-manual.js').then(r=>r.text()),fetchFresh('../css/interface-unified-29a6.css').then(r=>r.text())]);
   assert(arena.includes("import {BUILD_VERSION}")&&arena.includes('${BUILD_VERSION}'),'Arena still hard-codes a visible build label');
@@ -598,7 +599,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a35-living-hubs-rpg-pacing-20260801');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a36-playful-exploration-quest-variety-20260801');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
@@ -648,7 +649,7 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a35-living-hubs-rpg-pacing-20260801');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a36-playful-exploration-quest-variety-20260801');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','reachLookout'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
@@ -666,13 +667,13 @@ await test('Chapter 4 stages and favicon assets are valid',async()=>{
 });
 
 
-await test('Chapter 2 living hub keeps only the four story-fit questlines mandatory',()=>{
+await test('Chapter 2 living hub keeps only the five story-fit questlines mandatory',()=>{
   const state=createChapter2QuestState(),summary=chapter2QuestSummary(state);
-  assert(summary.mandatory.length===4,'mandatory Chapter 2 quest count changed');
+  assert(summary.mandatory.length===5,'mandatory Chapter 2 quest count changed');
   assert(summary.optional.length===Object.keys(CHAPTER2_OPTIONAL_QUESTS).length&&summary.optional.length===6,'optional Chapter 2 quest count is wrong');
   assert(!chapter2MandatoryReadyForTournament(state),'empty hub state incorrectly unlocked the tournament');
-  state.mandatory.bracket.complete=true;state.mandatory.wadeRace.complete=true;state.mandatory.barkRing.complete=true;
-  assert(chapter2MandatoryReadyForTournament(state),'the three pre-tournament story quests did not unlock registration');
+  state.mandatory.bracket.complete=true;state.mandatory.wadeRace.complete=true;state.mandatory.barkRing.complete=true;state.variety.festivalExhibition.complete=true;
+  assert(chapter2MandatoryReadyForTournament(state),'the four pre-tournament story activities did not unlock registration');
   assert(CHAPTER2_RACE_CHECKPOINTS.length===5&&CHAPTER2_RING_SUPPORTS.length===3&&CHAPTER2_SHORTCUTS.length===3&&CHAPTER2_PLOUKE_CLUES.length===4,'hub quest content counts drifted');
   assert(new Set(CHAPTER2_RING_SUPPORTS.map(support=>support.clue)).size===3,'ring supports do not provide distinct evidence');
 });
@@ -1524,6 +1525,72 @@ await test('2.9A.35 Chapter 1 stays light while still tracking an RPG journey ar
   for(const token of ['syncRpgPacing','BEGINNING THE JOURNEY','chapter1RoadPacing','departure'])assert(source.includes(token)||await fetchSource('../js/story/rpg-pacing.js').then(text=>text.includes(token)),`Chapter 1 pacing omitted ${token}`);
   assert(html.includes('living-hubs-29a35.css'),'Living Hubs presentation stylesheet is missing');
   assert(html.includes(RELEASE_CACHE_ID),'2.9A.35 cache identity is not synchronized');
+});
+
+
+
+await test('2.9A.36 quest-variety state normalizes every released chapter safely',()=>{
+  const c1=normalizeQuestVarietyState('chapter1',{runawayCart:{attempts:-2,complete:true},persistentChanges:['cart','cart']});
+  const c2=normalizeQuestVarietyState('chapter2',{festivalExhibition:{attempts:2,mistakes:1}});
+  const c3=normalizeQuestVarietyState('chapter3',{incidentSequence:[CHAPTER3_INCIDENT_ORDER[1],CHAPTER3_INCIDENT_ORDER[0]]});
+  const c4=normalizeQuestVarietyState('chapter4',{fieldActions:['bad','bark-support','bark-support']});
+  assert(c1.runawayCart.attempts===0&&c1.persistentChanges.length===1,'Chapter 1 variety state did not normalize');
+  assert(c2.festivalExhibition.attempts===2&&c2.festivalExhibition.mistakes===1,'Chapter 2 variety state did not normalize');
+  assert(c3.incidentSequence.length===0,'Invalid Chapter 3 order was not reset safely');
+  assert(c4.fieldActions.length===1&&c4.fieldActions[0]==='bark-support','Chapter 4 field actions were not bounded');
+});
+
+await test('2.9A.36 Chapter 1 runaway cart is a mandatory playable road beat',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-road-hub.js');
+  for(const token of ['beginRunawayCartRescue','startRunawayCartQte','finishRunawayCartQte','chapter1Variety','tournament-supply-cart-saved'])assert(source.includes(token),`Chapter 1 cart rescue omitted ${token}`);
+  assert(runawayCartRank({attempts:1})==='PERFECT INTERCEPT','first-try cart rank is wrong');
+  assert(runawayCartRank({attempts:2})==='SUPPLIES SAVED','retry cart rank is wrong');
+});
+
+await test('2.9A.36 Chapter 2 exhibition gates registration and grades performance',async()=>{
+  const [source,state]=await Promise.all([fetchSource('../js/story/rrvvfo-mission-2.js'),Promise.resolve(normalizeChapter2QuestState())]);
+  state.mandatory.bracket.complete=true;state.mandatory.wadeRace.complete=true;state.mandatory.barkRing.complete=true;
+  assert(!chapter2MandatoryReadyForTournament(state),'registration ignored the festival exhibition');
+  state.variety.festivalExhibition.complete=true;
+  assert(chapter2MandatoryReadyForTournament(state),'completed exhibition did not unlock registration');
+  assert(CHAPTER2_EXHIBITION_SEQUENCE.length===4,'exhibition sequence lost its four-action structure');
+  assert(exhibitionRank({mistakes:0,attempts:1})==='TOURNAMENT SHOWSTOPPER','perfect exhibition rank is wrong');
+  for(const token of ['beginFestivalExhibition','completeFestivalExhibition','FESTIVAL TECHNIQUE EXHIBITION','festival-exhibition-poster'])assert(source.includes(token),`Chapter 2 exhibition omitted ${token}`);
+});
+
+await test('2.9A.36 Chapter 3 reconstruction keeps confirmed evidence and teaches order',async()=>{
+  const state=createQuestVarietyState('chapter3');
+  assert(nextIncidentStep(state)===CHAPTER3_INCIDENT_ORDER[0],'incident did not begin with the energy event');
+  const wrong=recordIncidentStep(state,CHAPTER3_INCIDENT_ORDER[2]);
+  assert(!wrong.correct&&state.incidentSequence.length===0&&state.incidentMistakes===1,'wrong incident choice corrupted confirmed evidence');
+  for(const step of CHAPTER3_INCIDENT_ORDER){const result=recordIncidentStep(state,step);assert(result.correct,'correct incident event was rejected')}
+  assert(state.reconstructionComplete,'five-event reconstruction did not complete');
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['RECONSTRUCT THE INCIDENT','Wrong answers give a clue','security-reconstruction-visible','ORDER CLUE'])assert(source.includes(token),`Chapter 3 reconstruction omitted ${token}`);
+});
+
+await test('2.9A.36 Chapter 4 party field route requires all three characters',async()=>{
+  const state=createQuestVarietyState('chapter4');
+  for(const action of CHAPTER4_PARTY_FIELD_ACTIONS)completePartyFieldAction(state,action.id);
+  assert(state.fieldRouteComplete,'three party field actions did not complete the route');
+  assert(state.persistentChanges.includes('echo-cavern-route-repaired'),'repaired cavern route did not persist');
+  assert(new Set(CHAPTER4_PARTY_FIELD_ACTIONS.map(action=>action.role)).size===3,'party field route lost a character role');
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ['beginPartyFieldRoute','runNextPartyFieldAction','finishPartyFieldRoute','REPAIR THE CAVERN APPROACH','party-route'])assert(source.includes(token),`Chapter 4 party route omitted ${token}`);
+});
+
+await test('2.9A.36 older Chapter 4 saves beyond the caverns never move backward',()=>{
+  const migrated=normalizeChapter4State({requiredCompleted:['opening','villageReached','barkWadeArrive','beaconRestored','cavernsEntered']});
+  assert(migrated.variety.fieldRouteComplete,'older Chapter 4 save was blocked by the new party route');
+  assert(migrated.variety.fieldActions.length===CHAPTER4_PARTY_FIELD_ACTIONS.length,'older Chapter 4 save did not receive completed field actions');
+});
+
+await test('2.9A.36 active build packages playful exploration without changing save schema',async()=>{
+  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a36-playful-exploration-quest-variety-20260801'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.36 build label is not centralized');
+  assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.36 changed the save schema unexpectedly');
+  assert(html.includes(RELEASE_CACHE_ID),'2.9A.36 cache identity is not synchronized');
+  assert(manifest.includes('Playful Exploration & Quest Variety'),'2.9A.36 manifest title is missing');
 });
 
 const initialOrdered=registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean);

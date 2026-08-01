@@ -1,3 +1,4 @@
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a36-playful-exploration-quest-variety-20260801';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.21';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([
@@ -72,6 +73,7 @@ export function createChapter2QuestState(){
     shortcuts:[],
     discoveredDistricts:['arrival'],
     activeQuest:null,
+    variety:normalizeQuestVarietyState('chapter2'),
     completedQuestIds:[]
   };
 }
@@ -87,6 +89,7 @@ function mergeObject(base,saved){
 
 export function normalizeChapter2QuestState(saved){
   const state=mergeObject(createChapter2QuestState(),saved||{});
+  state.variety=normalizeQuestVarietyState('chapter2',saved?.variety);
   if(!Array.isArray(state.mandatory.bracket.cards))state.mandatory.bracket.cards=[];
   const arrays=[
     state.mandatory.bracket.cards,
@@ -134,7 +137,7 @@ export function requiredRumorCountForStep(step){
 
 export function chapter2MandatoryReadyForTournament(state){
   const mandatory=state?.mandatory||{};
-  return Boolean(mandatory.bracket?.complete&&mandatory.wadeRace?.complete&&mandatory.barkRing?.complete);
+  return Boolean(mandatory.bracket?.complete&&mandatory.wadeRace?.complete&&mandatory.barkRing?.complete&&state?.variety?.festivalExhibition?.complete);
 }
 
 export function chapter2QuestSummary(state){
@@ -145,6 +148,7 @@ export function chapter2QuestSummary(state){
       {id:'bracket',title:'THE LOST BRACKET',done:Boolean(mandatory.bracket?.complete),detail:mandatory.bracket?.complete?'Bracket reconstructed':`${mandatory.bracket?.cards?.length||0} / 3 cards recovered`},
       {id:'wadeRace',title:'WADE\'S SHORTCUT',done:Boolean(mandatory.wadeRace?.complete),detail:mandatory.wadeRace?.complete?(mandatory.wadeRace.won?'Beat Wade\'s route':'Completed Wade\'s route'):'Tour the grounds with Wade'},
       {id:'barkRing',title:'THE CRACKED RING',done:Boolean(mandatory.barkRing?.complete),detail:mandatory.barkRing?.complete?'Practice ring stabilized; culprit unresolved':`${mandatory.barkRing?.supports?.length||0} / 3 supports inspected`},
+      {id:'exhibition',title:'FESTIVAL TECHNIQUE EXHIBITION',done:Boolean(state?.variety?.festivalExhibition?.complete),detail:state?.variety?.festivalExhibition?.complete?(state.variety.festivalExhibition.rank||'Exhibition cleared'):'Complete the public movement-and-technique course'},
       {id:'ploukeRumors',title:'RUMORS ABOUT PLOUKE',done:Boolean(mandatory.ploukeRumors?.complete),detail:`${mandatory.ploukeRumors?.clues?.length||0} / 4 reliable clues`}
     ],
     optional:Object.entries(CHAPTER2_OPTIONAL_QUESTS).map(([key,quest])=>({id:key,title:quest.title,started:Boolean(optional[key]?.started),done:Boolean(optional[key]?.complete),detail:quest.reward}))

@@ -1,6 +1,6 @@
-const RELEASE_CACHE_ID='29a35-living-hubs-rpg-pacing-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.35 — Living Hubs & RPG Pacing';
-const TOTAL_TESTS=336;
+const RELEASE_CACHE_ID='29a36-playful-exploration-quest-variety-20260801';
+const EXPECTED_BUILD='Prototype 2.9A.36 — Playful Exploration & Quest Variety';
+const TOTAL_TESTS=343;
 const IMPORT_TIMEOUT_MS=30000;
 const STALL_TIMEOUT_MS=35000;
 
@@ -86,6 +86,6 @@ harness.beginRun({label:'Loading test modules…',total:TOTAL_TESTS});
 try{
   let timer;
   const timeout=new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(`Smoke module startup exceeded ${IMPORT_TIMEOUT_MS/1000} seconds`)),IMPORT_TIMEOUT_MS)});
-  await Promise.race([import(`./smoke.js?v=${RELEASE_CACHE_ID}&hotfix=29a35-build-label-hotfix-1`),timeout]);
+  await Promise.race([import(`./smoke.js?v=${RELEASE_CACHE_ID}`),timeout]);
   clearTimeout(timer);
 }catch(error){fatal(error,'Module startup failed')}

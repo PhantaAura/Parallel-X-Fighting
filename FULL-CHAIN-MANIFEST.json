@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X: Clash of Souls — Prototype 2.9A.35",
-  "version": "Prototype 2.9A.35 — Living Hubs & RPG Pacing",
+  "name": "Parallels X: Clash of Souls — Prototype 2.9A.36",
+  "version": "Prototype 2.9A.36 — Playful Exploration & Quest Variety",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -57,9 +57,10 @@
     "2.9A.32 Hub Charm & Progression Celebration: state-aware NPC reactions, party banter, playful hub activities, evolving hub visuals, arrival feedback, and progression celebrations",
     "2.9A.33 Boss Dance & Stage Personality: three-phase readable Hollow Watcher adaptation, exposed punish windows, route-shaping Arena geometry, clean Tournament preservation, and first-to-one Quick Battle",
     "2.9A.34 Signature Combat & Impact: fighter-specific signature moments, stronger final-KO presentation, and four short identity trials",
-    "2.9A.35 Living Hubs & RPG Pacing: first-visit orientation, phased quest waves, quiet aftermath control, and save-safe chapter pacing across Chapters 1–4"
+    "2.9A.35 Living Hubs & RPG Pacing: first-visit orientation, phased quest waves, quiet aftermath control, and save-safe chapter pacing across Chapters 1–4",
+    "2.9A.36 Playful Exploration & Quest Variety: mandatory cart rescue, ranked festival exhibition, clue-preserving incident reconstruction, three-character field actions, and persistent hub changes"
   ],
-  "cache_tag": "29a35-living-hubs-rpg-pacing-20260801",
+  "cache_tag": "29a36-playful-exploration-quest-variety-20260801",
   "save_schema": 268,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo’s atlas across Chapter 2–4 fight transitions and rejects stale asynchronous sprite loads",
@@ -91,11 +92,12 @@
     "2.9A.32 Hub Charm & Progression Celebration: state-aware NPC reactions, party banter, playful hub activities, evolving hub visuals, arrival feedback, and progression celebrations",
     "2.9A.33 Boss Dance & Stage Personality: three-phase readable Hollow Watcher adaptation, exposed punish windows, route-shaping Arena geometry, clean Tournament preservation, and first-to-one Quick Battle",
     "2.9A.34 Signature Combat & Impact: fighter-specific signature moments, stronger final-KO presentation, and four short identity trials",
-    "2.9A.35 Living Hubs & RPG Pacing: first-visit orientation, phased quest waves, quiet aftermath control, and save-safe chapter pacing across Chapters 1–4"
+    "2.9A.35 Living Hubs & RPG Pacing: first-visit orientation, phased quest waves, quiet aftermath control, and save-safe chapter pacing across Chapters 1–4",
+    "2.9A.36 Playful Exploration & Quest Variety: mandatory cart rescue, ranked festival exhibition, clue-preserving incident reconstruction, three-character field actions, and persistent hub changes"
   ],
-  "currentBuild": "Prototype 2.9A.35 — Living Hubs & RPG Pacing",
-  "cacheId": "29a35-living-hubs-rpg-pacing-20260801",
+  "currentBuild": "Prototype 2.9A.36 — Playful Exploration & Quest Variety",
+  "cacheId": "29a36-playful-exploration-quest-variety-20260801",
   "saveSchema": 268,
-  "latestBuild": "Prototype 2.9A.35 — Living Hubs & RPG Pacing",
-  "latestCacheId": "29a35-living-hubs-rpg-pacing-20260801"
+  "latestBuild": "Prototype 2.9A.36 — Playful Exploration & Quest Variety",
+  "latestCacheId": "29a36-playful-exploration-quest-variety-20260801"
 }

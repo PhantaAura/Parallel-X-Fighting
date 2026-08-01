@@ -1,14 +1,15 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {storyConfirm} from './story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {storyConfirm} from './story-ux.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a36-playful-exploration-quest-variety-20260801';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -43,6 +44,7 @@ function normalizeChapter2State(saved={}){
     state.hubQuests.mandatory.bracket={...state.hubQuests.mandatory.bracket,started:true,cards:['fan-card','vendor-card','veteran-card'],complete:true};
     state.hubQuests.mandatory.wadeRace={...state.hubQuests.mandatory.wadeRace,started:true,complete:true};
     state.hubQuests.mandatory.barkRing={...state.hubQuests.mandatory.barkRing,started:true,supports:['west','south','east'],saboteurDefeated:false,complete:true};
+    state.hubQuests.variety.festivalExhibition={...state.hubQuests.variety.festivalExhibition,started:true,complete:true,rank:state.hubQuests.variety.festivalExhibition.rank||'CROWD FAVORITE'};
   }
   return state;
 }
@@ -238,6 +240,7 @@ class RrvvfoMission2{
     this.qteSequence=[];
     this.qteIndex=0;
     this.qteDeadline=0;
+    this.qteDuration=3600;
     this.qteGamepadState={};
     this.qtePurpose='run';
     this.pendingSupport=null;
@@ -310,7 +313,8 @@ class RrvvfoMission2{
       {id:'grunt-a',label:'LOUD GRUNT',x:520,z:610,color:'#646a76',hair:'#292c33',kind:'grunt'},
       {id:'grunt-b',label:'MASKED GRUNT',x:820,z:-660,color:'#4f5561',hair:'#17191d',kind:'grunt'},
       {id:'bracket',label:'BRACKET BOARD',x:910,z:-430,color:'#2f2238',hair:'#f0c85d',kind:'bracket'},
-      {id:'photo-stand',label:'FESTIVAL PHOTO STAND',x:420,z:250,color:'#d35a77',hair:'#ffd45d',kind:'photoStand'}
+      {id:'photo-stand',label:'FESTIVAL PHOTO STAND',x:420,z:250,color:'#d35a77',hair:'#ffd45d',kind:'photoStand'},
+      {id:'exhibition',label:'FESTIVAL TECHNIQUE EXHIBITION',x:150,z:430,color:'#e35b44',hair:'#ffe36b',kind:'exhibition'}
     ];
   }
 
@@ -667,6 +671,8 @@ class RrvvfoMission2{
     }else if(!q.barkRing.complete){
       if(q.barkRing.supports.length<CHAPTER2_RING_SUPPORTS.length)this.setObjective('INSPECT THE CRACKED RING',`Check the glowing supports around the practice ring. ${q.barkRing.supports.length} / 3`);
       else this.setObjective('REPORT THE CRACKED RING','The evidence is incomplete. Return to Bark without alarming the guests.');
+    }else if(!this.state.hubQuests.variety.festivalExhibition.complete){
+      this.setObjective('COMPLETE THE FESTIVAL EXHIBITION','Use movement, timing, and one clean technique sequence in Central Plaza.');
     }else{
       this.setObjective('REGISTER FOR THE TOURNAMENT','Main preparations are complete. Explore side quests or register when ready.');
     }
@@ -688,6 +694,7 @@ class RrvvfoMission2{
       if(npc.kind==='grunt')return this.state.firstBrawlComplete&&!this.state.gruntDefeated.includes(npc.id);
       if(npc.id==='bracket')return q.mandatory.bracket.complete;
       if(npc.id==='photo-stand')return this.state.metBarkWade;
+      if(npc.id==='exhibition')return this.state.metBarkWade&&!this.state.tournamentStarted&&!q.variety.festivalExhibition.complete;
       return true;
     });
   }
@@ -819,6 +826,7 @@ class RrvvfoMission2{
     else if(npc.kind==='grunt')this.beginGruntEncounter(npc);
     else if(npc.kind==='bracket')this.inspectBracket();
     else if(npc.kind==='photoStand')this.useFestivalPhotoStand();
+    else if(npc.kind==='exhibition')this.beginFestivalExhibition();
     else if(npc.kind==='bracketFanCard')this.catchWadeCard();
     else if(npc.kind==='bracketRoof')this.collectBracketCard('vendor-card',[
       {speaker:'RRVVFO',speakerClass:'p1',text:'Bark’s card landed on the upper market walkway.',tail:'down'},
@@ -1127,7 +1135,7 @@ class RrvvfoMission2{
     this.pendingSupport=support;this.qtePurpose='repair';this.mode='qte';this.battle.phase='story';
     this.root.querySelector('[data-c2-qte] h2').textContent=`STABILIZE ${support.label}`;
     const sequences={west:['KeyA','KeyD','Space'],south:['Space','KeyA','KeyD'],east:['KeyD','Space','KeyA']};
-    this.qteSequence=sequences[support.id]||['KeyA','Space','KeyD'];this.qteIndex=0;this.qteDeadline=performance.now()+4600;this.qteGamepadState={};
+    this.qteSequence=sequences[support.id]||['KeyA','Space','KeyD'];this.qteIndex=0;this.qteDuration=4600;this.qteDeadline=performance.now()+this.qteDuration;this.qteGamepadState={};
     this.root.querySelector('[data-c2-qte]').hidden=false;this.renderQte();
   }
 
@@ -1175,6 +1183,32 @@ class RrvvfoMission2{
     this.showAreaTitle(shortcut.arrival);
     this.battle.notice(shortcut.label,1.1);
     this.nearby=null;this.root.querySelector('[data-c2-prompt]').hidden=true;
+  }
+
+  beginFestivalExhibition(){
+    const activity=this.state.hubQuests.variety.festivalExhibition;
+    if(activity.complete){this.showDialogue([{speaker:'EXHIBITION DIRECTOR',speakerClass:'neutral',text:`Your ${activity.rank||'completed'} run is still on the crowd board.`,tail:'down'}],()=>this.resumeHub());return}
+    this.showDialogue([
+      {speaker:'EXHIBITION DIRECTOR',speakerClass:'neutral',text:'The crowd wants one clean demonstration: move through the marks, clear the target, and finish without hitting the rail.',tail:'down'},
+      {speaker:'WADE',speakerClass:'p2',text:'I can do it before he finishes explaining it.',tail:'down'},
+      {speaker:'BARK',speakerClass:'neutral',text:'That is why you are not demonstrating.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Watch the center of the course.',tail:'down'}
+    ],()=>{
+      activity.started=true;activity.attempts=Math.max(0,activity.attempts||0)+1;this.saveChapterState();
+      this.pendingExhibition=activity;this.qtePurpose='exhibition';this.mode='qte';this.battle.phase='story';
+      this.root.querySelector('[data-c2-qte] h2').textContent='FESTIVAL TECHNIQUE EXHIBITION';
+      this.qteSequence=[...CHAPTER2_EXHIBITION_SEQUENCE];this.qteIndex=0;this.qteDuration=5200;this.qteDeadline=performance.now()+this.qteDuration;this.qteGamepadState={};
+      this.root.querySelector('[data-c2-qte]').hidden=false;this.renderQte();
+    });
+  }
+
+  completeFestivalExhibition(success){
+    const activity=this.state.hubQuests.variety.festivalExhibition;
+    if(!success){activity.mistakes=Math.max(0,activity.mistakes||0)+1;this.saveChapterState();this.battle.notice('COURSE MISSED • THE DIRECTOR RESET THE MARKS',1.4);this.resumeHub();return}
+    activity.complete=true;activity.rank=exhibitionRank(activity);this.state.hubQuests.variety.persistentChanges=[...new Set([...(this.state.hubQuests.variety.persistentChanges||[]),'festival-exhibition-poster'])];this.saveChapterState();
+    this.battle.burst(150,430,'#ffd85c',36,95);
+    document.dispatchEvent(new CustomEvent('pxstorycelebration',{detail:{type:'activity',tone:'technique',kicker:'MANDATORY ACTIVITY COMPLETE',title:activity.rank,detail:'The festival exhibition poster now records Rrvvfo’s run.',items:['MOVEMENT','TIMING','TECHNIQUE'],onceKey:'activity:festival-exhibition'}}));
+    this.showDialogue([{speaker:'TOURNAMENT FAN',speakerClass:'neutral',text:'That was actually part of the exhibition, right?',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'It is now.',tail:'down'}],()=>{this.resumeHub();this.updateHubObjective()});
   }
 
   beginFoodQuest(){
@@ -1469,7 +1503,7 @@ class RrvvfoMission2{
     this.root.querySelector('[data-c2-qte] h2').textContent='ESCAPE SEQUENCE';
     this.mode='qte';this.battle.phase='story';
     this.root.querySelector('[data-c2-qte]').hidden=false;
-    this.qteSequence=['KeyA','Space','KeyD'];this.qteIndex=0;this.qteDeadline=performance.now()+3600;
+    this.qteSequence=['KeyA','Space','KeyD'];this.qteIndex=0;this.qteDuration=3600;this.qteDeadline=performance.now()+this.qteDuration;
     this.renderQte();
   }
 
@@ -1488,7 +1522,7 @@ class RrvvfoMission2{
   }
 
   updateQte(){
-    const remaining=clamp((this.qteDeadline-performance.now())/3600,0,1);
+    const remaining=clamp((this.qteDeadline-performance.now())/Math.max(1,this.qteDuration||3600),0,1);
     this.root.querySelector('[data-c2-qte-timer]').style.width=`${remaining*100}%`;
     if(remaining<=0){this.finishRunQte(false);return}
     const pads=navigator.getGamepads?.()||[],assignment=sharedInput.getControllerAssignment(1);
@@ -1505,6 +1539,7 @@ class RrvvfoMission2{
   finishRunQte(success){
     if(this.mode!=='qte')return;
     this.root.querySelector('[data-c2-qte]').hidden=true;this.qteGamepadState={};
+    if(this.qtePurpose==='exhibition'){this.qtePurpose='run';this.completeFestivalExhibition(success);return}
     if(this.qtePurpose==='repair'){
       const support=this.pendingSupport;this.pendingSupport=null;this.qtePurpose='run';
       if(success){this.completeRingSupport(support)}
@@ -1570,6 +1605,7 @@ class RrvvfoMission2{
       const missing=[];
       if(!quests.mandatory.wadeRace.complete)missing.push('finish Wade’s route');
       if(!quests.mandatory.barkRing.complete)missing.push('repair Bark’s practice ring');
+      if(!quests.variety.festivalExhibition.complete)missing.push('complete the festival exhibition');
       this.showDialogue([{speaker:'TOURNAMENT WORKER',speakerClass:'neutral',text:`Registration is ready after you ${missing.join(' and ')}.`,tail:'down'}]);return;
     }
     this.showChoice({
@@ -2352,6 +2388,7 @@ class RrvvfoMission2{
     if(!this.battle?.renderer)return;
     const r=this.battle.renderer,time=performance.now()/1000,quests=this.state.hubQuests;
     drawTournamentLandmarks(r,time,{afterHours:false});
+    if(quests.variety.festivalExhibition.complete){const x=150,z=430;r.box({x,y:88,z,sx:150,sy:176,sz:14,color:'#7b2f3f'});r.box({x,y:168,z,sx:168,sy:24,sz:22,color:'#ffd85c'});r.billboard({x,y:115,z:z-10,size:46,color:'#fff0a8',alpha:.45+Math.sin(time*2)*.05})}
     const missingCards=missingChapter2BracketCards(quests);
     for(const npc of this.activeNpcs()){
       const bob=Math.sin(time*2+npc.x*.01)*2;

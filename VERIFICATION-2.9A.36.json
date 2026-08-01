@@ -1,0 +1,31 @@
+{
+  "build": "Prototype 2.9A.36 — Playful Exploration & Quest Variety",
+  "cacheId": "29a36-playful-exploration-quest-variety-20260801",
+  "saveSchema": 268,
+  "browserSmoke": {
+    "passed": 343,
+    "failed": 0,
+    "total": 343,
+    "browser": "Chromium 144 headless"
+  },
+  "staticValidation": {
+    "javascriptModulesParsed": 90,
+    "relativeImportsChecked": 247,
+    "missingRelativeImports": 0,
+    "htmlIdsChecked": 259,
+    "duplicateHtmlIds": []
+  },
+  "questVariety": {
+    "chapter1RunawayCart": true,
+    "chapter2FestivalExhibition": true,
+    "chapter3IncidentReconstruction": true,
+    "chapter4PartyFieldRoute": true,
+    "persistentHubConsequences": true,
+    "legacySaveMigration": true
+  },
+  "humanPlaytestStillRecommended": [
+    "judge whether each activity is fun rather than merely functional",
+    "judge whether QTE timing feels fair on keyboard, controller, and touch",
+    "judge whether mandatory activities preserve deliberate RPG pacing"
+  ]
+}

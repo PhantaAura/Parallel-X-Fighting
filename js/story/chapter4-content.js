@@ -1,4 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a36-playful-exploration-quest-variety-20260801';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
 export const CHAPTER4_STATE_VERSION=4;
 
@@ -48,6 +49,7 @@ export function freshChapter4State(){
     requiredCompleted:[],
     beaconNodes:[],cavernDoors:[],liftParts:[],mountainSignals:[],
     pacing:normalizeRpgPacingState('chapter4'),
+    variety:normalizeQuestVarietyState('chapter4'),
     villageDefenseComplete:false,teamRestSeen:false,charm:{echoChimesComplete:false},
     ryuzankaro:{available:false,started:false,ingredients:[],swarmsCleared:[],bossDefeated:false,skipped:false,phase:'idle',checkpoint:'none',rewardsGranted:false},
     rewards:{lensMastery:0,vibrationSense:false,objectSwapRange:0,teamBadge:false,ryuzankaroCodex:false},
@@ -73,11 +75,14 @@ export function normalizeChapter4State(value={}){
   const villageDefenseComplete=requiredCompleted.includes('villageDefended');
   const sourceRyuzankaro=source.ryuzankaro||{};
   const pacing=normalizeRpgPacingState('chapter4',source.pacing);
+  const variety=normalizeQuestVarietyState('chapter4',source.variety);
+  if(requiredCompleted.includes('cavernsEntered')){variety.fieldActions=CHAPTER4_PARTY_FIELD_ACTIONS.map(action=>action.id);variety.fieldRouteComplete=true;variety.persistentChanges=[...new Set([...(variety.persistentChanges||[]),'echo-cavern-route-repaired'])]}
   if(requiredCompleted.includes('barkWadeArrive')){pacing.interactions=[...new Set([...pacing.interactions,'resonance-wall','water-channel'])];pacing.orientationComplete=true;pacing.wave=Math.max(1,pacing.wave)}
   return{
     ...base,...source,version:CHAPTER4_STATE_VERSION,
     requiredCompleted,
     pacing,
+    variety,
     beaconNodes:unique(source.beaconNodes),cavernDoors:unique(source.cavernDoors),liftParts:unique(source.liftParts),mountainSignals:unique(source.mountainSignals),
     villageDefenseComplete,
     ryuzankaro:{...base.ryuzankaro,...sourceRyuzankaro,available:villageDefenseComplete,ingredients:unique(sourceRyuzankaro.ingredients),swarmsCleared:unique(sourceRyuzankaro.swarmsCleared)},

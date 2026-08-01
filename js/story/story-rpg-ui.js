@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a35-living-hubs-rpg-pacing-20260801';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a36-playful-exploration-quest-variety-20260801';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast / Shots of Agony'},

@@ -61,7 +61,7 @@
     "2.9A.36 Playful Exploration & Quest Variety: mandatory cart rescue, ranked festival exhibition, clue-preserving incident reconstruction, three-character field actions, and persistent hub changes",
     "2.9A.36.1 Chapter 4 Replay Overlay Fix: hides stale completion, choice, and QTE overlays during Chapter 4 replay startup and adds regression coverage"
   ],
-  "cache_tag": "29a361-chapter4-replay-overlay-fix-20260801",
+  "cache_tag": "29a362-chapter4-false-completion-recovery-20260801",
   "save_schema": 268,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo’s atlas across Chapter 2–4 fight transitions and rejects stale asynchronous sprite loads",
@@ -98,8 +98,8 @@
     "2.9A.36.1 Chapter 4 Replay Overlay Fix: hides stale completion, choice, and QTE overlays during Chapter 4 replay startup and adds regression coverage"
   ],
   "currentBuild": "Prototype 2.9A.36.1 — Chapter 4 Replay Overlay Fix",
-  "cacheId": "29a361-chapter4-replay-overlay-fix-20260801",
+  "cacheId": "29a362-chapter4-false-completion-recovery-20260801",
   "saveSchema": 268,
   "latestBuild": "Prototype 2.9A.36.1 — Chapter 4 Replay Overlay Fix",
-  "latestCacheId": "29a361-chapter4-replay-overlay-fix-20260801"
+  "latestCacheId": "29a362-chapter4-false-completion-recovery-20260801"
 }

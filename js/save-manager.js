@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a362-chapter4-false-completion-recovery-20260801';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',

@@ -1,6 +1,3 @@
-Prototype 2.9A.36.1 — Chapter 4 Replay Overlay Fix
-Release cache: 29a362-chapter4-false-completion-recovery-20260801
-
 PASS  loads the complete roster
 PASS  casual select and Random use only the four playable fighters
 PASS  preserves mirror-match restriction
@@ -274,6 +271,8 @@ PASS  2.9A.26 Chapter 4 enemy roles change stats and expose readable wave/team H
 PASS  2.9A.26 character motion identity and full-energy/critical-guard cues are wired
 PASS  2.9A.27 Chapter 1 starts with active combat and offers three road routes plus transport rescue
 PASS  2.9A.27 Chapter 2 observation reduces rumor errands without removing tournament matches
+FATAL  Error: Smoke module startup exceeded 30 seconds
+    at https://px.local/tests/smoke-bootstrap.js?v=29a362-chapter4-false-completion-recovery-20260801:88:70
 PASS  2.9A.27 Chapter 3 consolidates footage reconstruction and keeps the facility payoff
 PASS  2.9A.27 Chapter 4 adds team rest, ally commands, and changed cavern return
 PASS  2.9A.27.2 roadside defeat recovery and map guidance are explicit
@@ -345,5 +344,8 @@ PASS  2.9A.36 Chapter 3 reconstruction keeps confirmed evidence and teaches orde
 PASS  2.9A.36 Chapter 4 party field route requires all three characters
 PASS  2.9A.36 older Chapter 4 saves beyond the caverns never move backward
 PASS  2.9A.36 active build packages playful exploration without changing save schema
+PASS  2.9A.36.2 detects impossible Chapter 4 completion without damaging Chapters 1–3
+PASS  2.9A.36.2 route menu offers a saveable Chapter 4 recovery instead of trapping the player in Replay
+PASS  2.9A.36.2 Chapter 4 clearly labels temporary Replay runs
 
-344/344 passing
+347/347 passing

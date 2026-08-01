@@ -1,0 +1,6 @@
+#lostYearStoryScreen .chapterReplayActions{display:grid;gap:7px;align-self:stretch}
+#lostYearStoryScreen .chapterReplayActions .chapterReplay{min-height:0}
+#lostYearStoryScreen .chapterReset{background:#fff!important;color:#111!important;border-color:#ff724f!important}
+#lostYearStoryScreen .chapterRow.hasSaveConflict .chapterCard{outline:3px solid #ff724f;outline-offset:-3px}
+#lostYearStoryScreen .chapterRow.hasSaveConflict .chapterReplay{background:#ff724f!important;color:#fff!important}
+@media(max-width:620px){#lostYearStoryScreen .chapterReplayActions{grid-template-columns:1fr}}

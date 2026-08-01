@@ -2,23 +2,25 @@ import {
   LOST_YEAR_ROUTES,
   RRVVFO_CHAPTERS,
   RRVVFO_PLANNED_CHAPTER_COUNT,
+  chapter4CompletionConflict,
   completedRrvvfoChapterCount,
   loadLostYearProgress,
   rrvvfoChapterComplete,
   rrvvfoNextMission,
   rrvvfoRouteStarted,
+  repairChapter4Progress,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+} from './lost-year-data.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a362-chapter4-false-completion-recovery-20260801';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -55,6 +57,7 @@ function hideGameScreens(){['startScreen','mainMenuScreen','menuScreen','gameScr
 function hideLegacyMobileOverlays(){['touchChoice','touchTutorial','touchSettingsModal','touchMoveList','hotbarCustomizeModal','orientationPrompt','fullscreenPrompt'].forEach(id=>document.getElementById(id)?.classList.add('hidden'))}
 function storyCheckpointLabel(id='rrvvfo-00'){return String(id).replace(/^rrvvfo-\d+-?/,'').replace(/^rrvvfo-/,'').replaceAll('-',' ').trim().toUpperCase()||'CHAPTER START'}
 function chapterMenuComplete(chapter,progress){
+  if(chapter?.number===4&&chapter4CompletionConflict(progress))return false;
   if(rrvvfoChapterComplete(chapter,progress))return true;
   if(chapter?.number===4)return Boolean(progress?.chapter4State?.chapterComplete);
   return false;
@@ -132,8 +135,10 @@ class LostYearStoryScreen{
   showRouteHome({focus=false}={}){
     this.progress=loadLostYearProgress();this.routeView.hidden=true;this.routePanel.hidden=true;this.routeHome.hidden=false;document.dispatchEvent(new CustomEvent('pxstorymenuopen'));
     if(this.progress.completedMissions.includes('rrvvfo-01')&&!combatManualOwned())grantCombatManual({pages:['movement','basic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
-    const next=rrvvfoNextMission(this.progress),manualReady=combatManualOwned(),c1=chapterMenuComplete(RRVVFO_CHAPTERS[0],this.progress),c2=chapterMenuComplete(RRVVFO_CHAPTERS[1],this.progress),c3=chapterMenuComplete(RRVVFO_CHAPTERS[2],this.progress),c4=chapterMenuComplete(RRVVFO_CHAPTERS[3],this.progress);
-    const progressPercent=routeProgress(LOST_YEAR_ROUTES[0],this.progress),completedFullChapters=completedRrvvfoChapterCount(this.progress);
+    const chapter4Conflict=chapter4CompletionConflict(this.progress);
+    const next=chapter4Conflict?'rrvvfo-04':rrvvfoNextMission(this.progress),manualReady=combatManualOwned(),c1=chapterMenuComplete(RRVVFO_CHAPTERS[0],this.progress),c2=chapterMenuComplete(RRVVFO_CHAPTERS[1],this.progress),c3=chapterMenuComplete(RRVVFO_CHAPTERS[2],this.progress),c4=chapterMenuComplete(RRVVFO_CHAPTERS[3],this.progress);
+    const progressForDisplay=chapter4Conflict?repairChapter4Progress(this.progress):this.progress;
+    const progressPercent=routeProgress(LOST_YEAR_ROUTES[0],progressForDisplay),completedFullChapters=completedRrvvfoChapterCount(progressForDisplay);
     const primary=next?next==='rrvvfo-04'?'BEGIN CHAPTER 4':next==='rrvvfo-03'?'BEGIN CHAPTER 3':'CONTINUE STORY':'RELEASED STORY COMPLETE';
     this.routeHome.innerHTML=`
       <div class="routeHomeTop"><button type="button" data-route-home-back>← RRVVFO STORY</button><h1>RRVVFO • RESTLESS FLAME</h1></div>
@@ -144,7 +149,7 @@ class LostYearStoryScreen{
           <p>${next?'Continue automatically through the next unfinished section. The route menu appears only when you choose to leave, replay, or check Rrvvfo’s growth.':'The four released chapters are complete. Rrvvfo’s eight-chapter route continues with Chapter 5.'}</p>
           <div class="routeProgressStatus"><strong>${progressPercent}% STORY COMPLETE</strong><span>${completedFullChapters} / ${RRVVFO_PLANNED_CHAPTER_COUNT} full chapters complete${c4?' • Chapter 4 complete':c3?' • Chapter 3 complete':''}</span></div>
           <div class="routeProgressTrack" style="--route-progress:${progressPercent}%"><i></i></div>
-          <div class="storyRecoveryCard"><small>AUTO-SAVE RECOVERY</small><strong>${storyCheckpointLabel(this.progress.lastCheckpoint)}</strong><span>Continue resumes from this checkpoint. Major fights and QTEs use safe retries instead of restarting the full chapter.</span></div>
+          <div class="storyRecoveryCard"><small>AUTO-SAVE RECOVERY</small><strong>${chapter4Conflict?'CHAPTER 4 SAVE REPAIR':storyCheckpointLabel(this.progress.lastCheckpoint)}</strong><span>${chapter4Conflict?'The save marks Chapter 4 complete without the ending checkpoints. Start Chapter 4 to repair only this chapter; Chapters 1–3 and RPG growth stay untouched.':'Continue resumes from this checkpoint. Major fights and QTEs use safe retries instead of restarting the full chapter.'}</span></div>
           ${storyStatsMarkup(this.progress)}${storyAttackStripMarkup()}
           <div class="routeHomeActions">
             <button type="button" class="primary" data-continue-route ${next?'':'disabled'}><strong>${primary}</strong><span>${next?'Loads the next unfinished section.':'Use Chapter Select to replay released content.'}</span></button>
@@ -156,11 +161,15 @@ class LostYearStoryScreen{
           ${RRVVFO_CHAPTERS.map(chapter=>{
             const complete=chapterMenuComplete(chapter,this.progress),unlocked=chapter.number===1||(chapter.number===2&&c1)||(chapter.number===3&&c2)||(chapter.number===4&&c3);
             const started=chapterHasStarted(chapter,this.progress);
-            const status=complete?'CHAPTER COMPLETE':started?'IN PROGRESS':unlocked?'PLAYABLE':'LOCKED';
-            const replayAvailable=complete||(chapter.number===4&&unlocked&&started);
-            const replayLabel=complete?'REPLAY':'RESTART';
-            const replayDetail=complete?'Start from the beginning.':'Restart Chapter 4 safely.';
-            return `<div class="chapterRow ${complete?'isComplete':''} ${started&&!complete?'isInProgress':''}"><button type="button" class="chapterCard" data-chapter-number="${chapter.number}" ${unlocked?'':'disabled'}><span class="chapterNumber">${chapter.number}</span><span><small>${status}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span></button>${replayAvailable?`<button type="button" class="chapterReplay" data-replay-chapter="${chapter.number}"><strong>${replayLabel}</strong><span>${replayDetail}</span></button>`:''}</div>`;
+            const conflict=chapter.number===4&&chapter4Conflict;
+            const status=conflict?'SAVE REPAIR NEEDED':complete?'CHAPTER COMPLETE':started?'IN PROGRESS':unlocked?'PLAYABLE':'LOCKED';
+            const replayAvailable=conflict||complete||(chapter.number===4&&unlocked&&started);
+            const replayLabel=conflict?'START FRESH':complete?'REPLAY':'RESTART';
+            const replayDetail=conflict?'Repair the false completion and save your real playthrough.':complete?'Start a temporary run without changing your save.':'Restart Chapter 4 safely.';
+            const replayButton=replayAvailable?`<button type="button" class="chapterReplay" ${conflict?'data-repair-chapter4':'data-replay-chapter="'+chapter.number+'"'}><strong>${replayLabel}</strong><span>${replayDetail}</span></button>`:'';
+            const freshButton=chapter.number===4&&complete&&!conflict?`<button type="button" class="chapterReplay chapterReset" data-reset-chapter4><strong>START FRESH</strong><span>Reset only Chapter 4 and begin a saveable run.</span></button>`:'';
+            const actions=replayButton||freshButton?`<div class="chapterReplayActions">${replayButton}${freshButton}</div>`:'';
+            return `<div class="chapterRow ${complete?'isComplete':''} ${started&&!complete?'isInProgress':''} ${conflict?'hasSaveConflict':''}"><button type="button" class="chapterCard" data-chapter-number="${chapter.number}" ${unlocked?'':'disabled'}><span class="chapterNumber">${chapter.number}</span><span><small>${status}</small><strong>${chapter.title}</strong><span>${chapter.description}</span></span></button>${actions}</div>`;
           }).join('')}
           ${Array.from({length:Math.max(0,RRVVFO_PLANNED_CHAPTER_COUNT-RRVVFO_CHAPTERS.length)},(_,index)=>{
             const number=RRVVFO_CHAPTERS.length+index+1;
@@ -170,12 +179,24 @@ class LostYearStoryScreen{
         </div>
       </section>`;
     this.routeHome.querySelector('[data-route-home-back]').addEventListener('click',()=>this.showRoutes({focus:true}));
-    this.routeHome.querySelector('[data-continue-route]')?.addEventListener('click',()=>this.continueRoute());
+    this.routeHome.querySelector('[data-continue-route]')?.addEventListener('click',()=>chapter4Conflict?this.repairAndStartChapter4():this.continueRoute());
     this.routeHome.querySelector('[data-open-manual]')?.addEventListener('click',()=>openCombatManual());
     this.routeHome.querySelector('[data-free-explore]:not(:disabled)')?.addEventListener('click',()=>this.startStep('rrvvfo-road','freeExplore'));
     this.routeHome.querySelectorAll('[data-chapter-number]:not(:disabled)').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.chapterNumber))));
     this.routeHome.querySelectorAll('[data-replay-chapter]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.replayChapter),{replay:true})));
+    this.routeHome.querySelector('[data-repair-chapter4]')?.addEventListener('click',()=>this.repairAndStartChapter4({confirmed:true}));
+    this.routeHome.querySelector('[data-reset-chapter4]')?.addEventListener('click',()=>this.repairAndStartChapter4());
     if(focus)(this.routeHome.querySelector('[data-continue-route]:not(:disabled)')||this.routeHome.querySelector('[data-chapter-number]:not(:disabled)'))?.focus();
+  }
+
+  async repairAndStartChapter4({confirmed=false}={}){
+    if(!confirmed){
+      const approved=await storyConfirm({title:'START CHAPTER 4 FRESH?',message:'This resets only Chapter 4. Chapters 1–3, Story level, XP, stats, settings, and other progress stay saved.',confirmLabel:'RESET CHAPTER 4'});
+      if(!approved)return;
+    }
+    const current=loadLostYearProgress();
+    this.progress=saveLostYearProgress(repairChapter4Progress(current));
+    this.startStep('rrvvfo-04','chapter4',{replay:false,repairFalseCompletion:true});
   }
 
   continueRoute(){const next=rrvvfoNextMission(loadLostYearProgress());if(next)this.startStep(next,'route')}

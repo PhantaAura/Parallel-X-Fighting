@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {storyConfirm} from './story/story-ux.js?v=29a362-chapter4-false-completion-recovery-20260801';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

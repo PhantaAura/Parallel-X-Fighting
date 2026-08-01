@@ -2,6 +2,23 @@ export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;
 
+
+export const CHAPTER4_UNLOCK_IDS=Object.freeze(['echoRegion','echoVillage','echoCaverns','shadowLookout','hollowWatcherProfile','vibrationSense','lensMastery1','ryuzankaroCodex','echoTeamBadge']);
+export function chapter4CompletionConflict(progress){
+  const state=progress?.chapter4State&&typeof progress.chapter4State==='object'?progress.chapter4State:{};
+  const marked=Boolean(progress?.completedMissions?.includes('rrvvfo-04')||state.chapterComplete);
+  if(!marked)return false;
+  const required=new Set(Array.isArray(state.requiredCompleted)?state.requiredCompleted:[]);
+  const fullEvidence=['hollowWatcherDefeated','lookoutReached','shadowBriefing','chapterSaved'].every(id=>required.has(id));
+  const legacyEvidence=Boolean(state.chapterComplete&&progress?.completedMissions?.includes('rrvvfo-04')&&String(progress?.lastCheckpoint||'')==='rrvvfo-04-complete'&&(progress?.unlocks||[]).includes('shadowLookout'));
+  return !(fullEvidence||legacyEvidence);
+}
+export function repairChapter4Progress(progress){
+  const completedMissions=(progress?.completedMissions||[]).filter(id=>id!=='rrvvfo-04');
+  const unlocks=(progress?.unlocks||[]).filter(id=>!CHAPTER4_UNLOCK_IDS.includes(id));
+  return{...progress,completedMissions,unlocks,chapter4State:{},lastCheckpoint:'rrvvfo-04',selectedRoute:'rrvvfo',routeStarted:true};
+}
+
 export const LOST_YEAR_ROUTES=Object.freeze([
   {
     id:'rrvvfo',
@@ -200,6 +217,7 @@ export function rrvvfoRouteStarted(progress){
 }
 
 export function rrvvfoNextMission(progress){
+  if(chapter4CompletionConflict(progress))return'rrvvfo-04';
   const completed=new Set(progress?.completedMissions||[]);
   if(!completed.has('rrvvfo-00'))return'rrvvfo-00';
   if(!completed.has('rrvvfo-01'))return'rrvvfo-01';
@@ -211,6 +229,7 @@ export function rrvvfoNextMission(progress){
 }
 
 export function rrvvfoChapterComplete(chapter,progress){
+  if(chapter?.number===4&&chapter4CompletionConflict(progress))return false;
   const completed=new Set(progress?.completedMissions||[]);
   return Boolean(chapter?.missions?.length&&chapter.missions.every(id=>completed.has(id)));
 }

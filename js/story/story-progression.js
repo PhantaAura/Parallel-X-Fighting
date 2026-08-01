@@ -1,4 +1,4 @@
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a362-chapter4-false-completion-recovery-20260801';
 
 export const STORY_LEVEL_THRESHOLDS=Object.freeze([0,100,250,450,700,1000,1360,1780,2260,2810]);
 export const STORY_RECOMMENDED_LEVELS=Object.freeze({1:1,2:2,3:4,4:5,5:6,6:7,7:8,8:9});

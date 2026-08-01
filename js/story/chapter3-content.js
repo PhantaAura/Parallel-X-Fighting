@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a362-chapter4-false-completion-recovery-20260801';
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
 export const CHAPTER3_STATE_VERSION=2;
 

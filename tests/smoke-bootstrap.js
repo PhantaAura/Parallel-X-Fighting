@@ -1,6 +1,6 @@
-const RELEASE_CACHE_ID='29a361-chapter4-replay-overlay-fix-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.36 — Playful Exploration & Quest Variety';
-const TOTAL_TESTS=344;
+const RELEASE_CACHE_ID='29a362-chapter4-false-completion-recovery-20260801';
+const EXPECTED_BUILD='Prototype 2.9A.36.2 — Chapter 4 False Completion Recovery';
+const TOTAL_TESTS=347;
 const IMPORT_TIMEOUT_MS=30000;
 const STALL_TIMEOUT_MS=35000;
 

@@ -1,20 +1,20 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {StoryMap} from './story-map.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {storyConfirm} from './story-ux.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {StoryMap} from './story-map.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {storyConfirm} from './story-ux.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a362-chapter4-false-completion-recovery-20260801';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+} from './chapter4-content.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a362-chapter4-false-completion-recovery-20260801';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -63,10 +63,10 @@ function buildUI(){
       <section data-c4-journal-list></section><button type="button" data-c4-close-journal>CLOSE</button>
     </aside>
     <div class="c4StoryMenu storyRpgPause" data-c4-menu hidden role="dialog" aria-modal="true" aria-label="Chapter 4 story menu">
-      <article><header><div><small>RRVVFO STORY • CHAPTER 4</small><h2>STORY MENU</h2></div><button type="button" data-c4-menu-close aria-label="Close story menu">×</button></header>
+      <article><header><div><small data-c4-menu-mode>RRVVFO STORY • CHAPTER 4</small><h2>STORY MENU</h2></div><button type="button" data-c4-menu-close aria-label="Close story menu">×</button></header>
       ${storyAttackStripMarkup()}${storyStatsMarkup(loadLostYearProgress())}
       <div class="storyRpgObjectiveCard"><small>CURRENT OBJECTIVE</small><strong data-c4-menu-objective>ECHO REGION</strong><span data-c4-menu-detail>Find a route toward Shadow’s Lookout.</span></div>
-      <div class="chapter2MenuActions"><button class="primary" type="button" data-c4-menu-resume>RETURN TO GAME</button><button type="button" data-c4-menu-manual>SAGE MANUAL</button><button type="button" data-c4-menu-journal>MISSION JOURNAL</button><button type="button" data-c4-exit>EXIT CHAPTER</button></div>${storyControlLegendMarkup()}</article>
+      <div class="chapter2MenuActions"><button class="primary" type="button" data-c4-menu-resume>RETURN TO GAME</button><button type="button" data-c4-menu-start-fresh hidden>START CHAPTER 4 FRESH</button><button type="button" data-c4-menu-manual>SAGE MANUAL</button><button type="button" data-c4-menu-journal>MISSION JOURNAL</button><button type="button" data-c4-exit>EXIT CHAPTER</button></div>${storyControlLegendMarkup()}</article>
     </div>
     <div class="c4Choice" data-c4-choice hidden role="dialog" aria-modal="true"><article><small data-c4-choice-kicker>CHAPTER 4</small><h2 data-c4-choice-title>CHOICE</h2><p data-c4-choice-text></p><div data-c4-choice-buttons></div></article></div>
     <div class="c4Qte" data-c4-qte hidden role="dialog" aria-modal="true"><article><small data-c4-qte-kicker>SECRET BOSS</small><h2 data-c4-qte-title>PLANET-IMPACT CONTROL</h2><p data-c4-qte-text></p><div class="c4QteSequence" data-c4-qte-sequence></div><div class="c4QteMeter"><i data-c4-qte-meter></i></div><button type="button" data-c4-qte-action class="primary">BEGIN</button><small data-c4-qte-prompt></small></article></div>
@@ -79,17 +79,18 @@ function buildUI(){
   document.body.appendChild(root);return root;
 }
 
-export function startRrvvfoChapter4({onComplete=()=>{},onExit=()=>{},replay=false,playtestHub=false}={}){
+export function startRrvvfoChapter4({onComplete=()=>{},onExit=()=>{},replay=false,playtestHub=false,repairFalseCompletion=false}={}){
   if(activeMission)activeMission.cleanup();
-  activeMission=new RrvvfoChapter4({onComplete,onExit,replay,playtestHub});
+  activeMission=new RrvvfoChapter4({onComplete,onExit,replay,playtestHub,repairFalseCompletion});
   return activeMission.start();
 }
 
 class RrvvfoChapter4{
-  constructor({onComplete,onExit,replay,playtestHub}){
+  constructor({onComplete,onExit,replay,playtestHub,repairFalseCompletion}){
     this.onComplete=onComplete;this.onExit=onExit;this.root=buildUI();
     this.progress=loadLostYearProgress();
     this.savedState=normalizeChapter4State(this.progress.chapter4State||{});this.savedCheckpoint=this.progress.lastCheckpoint;
+    if(repairFalseCompletion){this.savedState=freshChapter4State();this.savedCheckpoint='rrvvfo-04'}
     this.completedBefore=Boolean(this.progress.completedMissions?.includes(MISSION_ID)||this.savedState.chapterComplete||chapter4Complete(this.savedState));
     // Replay/Restart is an explicit request for a clean temporary run. Do not depend
     // on completedMissions because older Chapter 4 saves may only carry chapterComplete.
@@ -107,6 +108,7 @@ class RrvvfoChapter4{
     this.root.querySelector('[data-c4-menu-button]').addEventListener('click',()=>this.openStoryMenu());
     this.root.querySelectorAll('[data-c4-menu-close],[data-c4-menu-resume]').forEach(button=>button.addEventListener('click',()=>this.closeStoryMenu()));
     this.root.querySelector('[data-c4-menu-manual]').addEventListener('click',()=>this.openManual());
+    this.root.querySelector('[data-c4-menu-start-fresh]').addEventListener('click',()=>this.startFreshFromReplay());
     this.root.querySelector('[data-c4-menu-journal]').addEventListener('click',()=>{this.closeStoryMenu();this.openTracker()});
     this.root.querySelector('[data-c4-close-journal]').addEventListener('click',()=>this.closeTracker());
     this.root.querySelector('[data-c4-exit]').addEventListener('click',()=>this.requestExit());
@@ -115,12 +117,22 @@ class RrvvfoChapter4{
     this.keyHandler=event=>this.onKey(event);document.addEventListener('keydown',this.keyHandler,true);
   }
 
+  async startFreshFromReplay(){
+    const approved=await storyConfirm({title:'START CHAPTER 4 FRESH?',message:'This ends the temporary Replay and resets only Chapter 4. Chapters 1–3, Story level, XP, stats, settings, and other progress stay saved.',confirmLabel:'START FRESH'});
+    if(!approved)return;
+    const progress=saveLostYearProgress(repairChapter4Progress(loadLostYearProgress()));
+    if(progress.completedMissions?.includes(MISSION_ID))return;
+    startRrvvfoChapter4({onComplete:this.onComplete,onExit:this.onExit,replay:false,repairFalseCompletion:true});
+  }
+
   resetTransientPresentation(){
     for(const selector of ['[data-c4-complete]','[data-c4-choice]','[data-c4-qte]']){const element=this.root.querySelector(selector);if(element)element.hidden=true}
   }
 
   start(){
     this.resetTransientPresentation();
+    const menuMode=this.root.querySelector('[data-c4-menu-mode]');if(menuMode)menuMode.textContent=this.replayMode?'RRVVFO STORY • CHAPTER 4 • REPLAY (DOES NOT SAVE)':'RRVVFO STORY • CHAPTER 4';
+    const freshButton=this.root.querySelector('[data-c4-menu-start-fresh]');if(freshButton)freshButton.hidden=!this.replayMode;
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'mystery'}));
     const stageId=this.stageForLocation(this.state.location);
     this.battle=createStoryBattle({stageId,opponent:{id:'hollow-grunt',name:'Project Hollow Grunt',cpu:true}});

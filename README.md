@@ -6,10 +6,19 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.36.1 — Chapter 4 Replay Overlay Fix**
+**Prototype 2.9A.36.2 — Chapter 4 False Completion Recovery**
 
 This is a complete cumulative build. No older package is required.
 
+
+
+## 2.9A.36.2 Chapter 4 false-completion recovery
+
+- Detects Chapter 4 saves that claim completion without the ending checkpoints.
+- Offers **START FRESH** to repair only Chapter 4 while preserving Chapters 1–3 and RPG growth.
+- Starts the repaired chapter as a normal saveable run instead of temporary Replay.
+- Clearly labels temporary Chapter 4 Replay runs as not saving.
+- Save schema remains 268.
 
 ## 2.9A.36.1 Chapter 4 replay overlay fix
 

@@ -1,0 +1,13 @@
+{
+  "build": "Prototype 2.9A.36.2 — Chapter 4 False Completion Recovery",
+  "cacheId": "29a362-chapter4-false-completion-recovery-20260801",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.36.1 — Chapter 4 Replay Overlay Fix",
+  "focus": [
+    "detect contradictory Chapter 4 completion markers",
+    "repair only Chapter 4 without erasing Chapters 1–3 or RPG growth",
+    "start the repaired chapter as a normal saveable playthrough",
+    "clearly label temporary Replay mode"
+  ],
+  "smokeCasesPackaged": 347
+}

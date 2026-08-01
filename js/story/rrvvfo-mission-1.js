@@ -1,8 +1,8 @@
-import {CONTROL_MAPS} from '../input.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {grantCombatManual} from './combat-manual.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {storyConfirm} from './story-ux.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {CONTROL_MAPS} from '../input.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {grantCombatManual} from './combat-manual.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {storyConfirm} from './story-ux.js?v=29a362-chapter4-false-completion-recovery-20260801';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';

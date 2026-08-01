@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {StoryMap} from './story-map.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {storyConfirm} from './story-ux.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {StoryMap} from './story-map.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {storyConfirm} from './story-ux.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a362-chapter4-false-completion-recovery-20260801';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,9 +22,9 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a361-chapter4-replay-overlay-fix-20260801';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+} from './chapter3-content.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a362-chapter4-false-completion-recovery-20260801';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;

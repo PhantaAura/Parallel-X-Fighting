@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a361-chapter4-replay-overlay-fix-20260801';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

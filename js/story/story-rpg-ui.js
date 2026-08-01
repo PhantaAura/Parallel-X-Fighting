@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a361-chapter4-replay-overlay-fix-20260801';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast / Shots of Agony'},

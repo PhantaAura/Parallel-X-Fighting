@@ -1,20 +1,20 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {StoryMap} from './story-map.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {storyConfirm} from './story-ux.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {StoryMap} from './story-map.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {storyConfirm} from './story-ux.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a361-chapter4-replay-overlay-fix-20260801';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a36-playful-exploration-quest-variety-20260801';
+} from './chapter4-content.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a361-chapter4-replay-overlay-fix-20260801';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -115,7 +115,12 @@ class RrvvfoChapter4{
     this.keyHandler=event=>this.onKey(event);document.addEventListener('keydown',this.keyHandler,true);
   }
 
+  resetTransientPresentation(){
+    for(const selector of ['[data-c4-complete]','[data-c4-choice]','[data-c4-qte]']){const element=this.root.querySelector(selector);if(element)element.hidden=true}
+  }
+
   start(){
+    this.resetTransientPresentation();
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'mystery'}));
     const stageId=this.stageForLocation(this.state.location);
     this.battle=createStoryBattle({stageId,opponent:{id:'hollow-grunt',name:'Project Hollow Grunt',cpu:true}});

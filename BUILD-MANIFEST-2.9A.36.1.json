@@ -1,0 +1,14 @@
+{
+  "build": "Prototype 2.9A.36.1 \u2014 Chapter 4 Replay Overlay Fix",
+  "cacheId": "29a361-chapter4-replay-overlay-fix-20260801",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.36 \u2014 Playful Exploration & Quest Variety",
+  "focus": [
+    "hide the Chapter 4 completion panel during replay startup",
+    "restore hidden behavior for Chapter 4 choice and QTE overlays",
+    "clear transient Chapter 4 overlays before every run",
+    "add replay-specific regression coverage"
+  ],
+  "gameplayChanges": false,
+  "smokeCasesPackaged": 344
+}

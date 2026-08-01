@@ -1,4 +1,4 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a36-playful-exploration-quest-variety-20260801';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a361-chapter4-replay-overlay-fix-20260801';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
@@ -9,7 +9,7 @@ import {
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a36-playful-exploration-quest-variety-20260801';
+} from './lost-year-data.js?v=29a361-chapter4-replay-overlay-fix-20260801';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -378,7 +378,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a36-playful-exploration-quest-variety-20260801`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a361-chapter4-replay-overlay-fix-20260801`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'echo-mountain':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }

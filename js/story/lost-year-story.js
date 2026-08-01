@@ -9,16 +9,16 @@ import {
   rrvvfoRouteStarted,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a36-playful-exploration-quest-variety-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a36-playful-exploration-quest-variety-20260801';
+} from './lost-year-data.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {requireLandscapeForStory,showStoryStartupError} from './story-ux.js?v=29a361-chapter4-replay-overlay-fix-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a361-chapter4-replay-overlay-fix-20260801';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

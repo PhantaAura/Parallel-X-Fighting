@@ -1,0 +1,24 @@
+{
+  "build": "Prototype 2.9A.36.1 \u2014 Chapter 4 Replay Overlay Fix",
+  "cacheId": "29a361-chapter4-replay-overlay-fix-20260801",
+  "saveSchema": 268,
+  "browserSmoke": {
+    "passed": 344,
+    "failed": 0,
+    "total": 344,
+    "method": "Chromium CDP with intercepted packaged resources"
+  },
+  "staticValidation": {
+    "javascriptModulesParsed": 90,
+    "jsonAndManifestFilesParsed": 34,
+    "relativeImportsResolved": 247,
+    "htmlIdsChecked": 259,
+    "duplicateHtmlIds": 0
+  },
+  "regression": {
+    "chapter4ReplayOverlayHidden": true,
+    "chapter4ChoiceHidden": true,
+    "chapter4QteHidden": true,
+    "replayStartClearsTransientPresentation": true
+  }
+}

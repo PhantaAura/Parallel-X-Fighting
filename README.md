@@ -6,9 +6,16 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.36 — Playful Exploration & Quest Variety**
+**Prototype 2.9A.36.1 — Chapter 4 Replay Overlay Fix**
 
 This is a complete cumulative build. No older package is required.
+
+
+## 2.9A.36.1 Chapter 4 replay overlay fix
+
+- Chapter 4 Replay clears the completion, choice, and QTE overlays before the opening scene.
+- Hidden Chapter 4 overlays now use an explicit `display: none !important` rule.
+- Save schema remains 268.
 
 
 ## 2.9A.36 playful exploration and quest variety highlights

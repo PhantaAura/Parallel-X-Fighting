@@ -1,6 +1,6 @@
-const RELEASE_CACHE_ID='29a36-playful-exploration-quest-variety-20260801';
+const RELEASE_CACHE_ID='29a361-chapter4-replay-overlay-fix-20260801';
 const EXPECTED_BUILD='Prototype 2.9A.36 — Playful Exploration & Quest Variety';
-const TOTAL_TESTS=343;
+const TOTAL_TESTS=344;
 const IMPORT_TIMEOUT_MS=30000;
 const STALL_TIMEOUT_MS=35000;
 

@@ -1,3 +1,4 @@
+import {inspectStoryReliability} from './story-reliability.js?v=29a391-chapter4-ending-continuity-20260801';
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;
@@ -9,9 +10,10 @@ export function chapter4CompletionConflict(progress){
   const marked=Boolean(progress?.completedMissions?.includes('rrvvfo-04')||state.chapterComplete);
   if(!marked)return false;
   const required=new Set(Array.isArray(state.requiredCompleted)?state.requiredCompleted:[]);
-  const fullEvidence=['hollowWatcherDefeated','lookoutReached','shadowBriefing','chapterSaved'].every(id=>required.has(id));
-  const legacyEvidence=Boolean(state.chapterComplete&&progress?.completedMissions?.includes('rrvvfo-04')&&String(progress?.lastCheckpoint||'')==='rrvvfo-04-complete'&&(progress?.unlocks||[]).includes('shadowLookout'));
-  return !(fullEvidence||legacyEvidence);
+  const fullEvidence=['hollowWatcherDefeated','lookoutReached','shadowArrival','chapterSaved'].every(id=>required.has(id));
+  const previousEndingEvidence=['hollowWatcherDefeated','lookoutReached','shadowBriefing','chapterSaved'].every(id=>required.has(id));
+  const legacyEvidence=Boolean(required.size===0&&state.chapterComplete&&progress?.completedMissions?.includes('rrvvfo-04')&&String(progress?.lastCheckpoint||'')==='rrvvfo-04-complete'&&(progress?.unlocks||[]).includes('shadowLookout'));
+  return !(fullEvidence||previousEndingEvidence||legacyEvidence);
 }
 export function repairChapter4Progress(progress){
   const completedMissions=(progress?.completedMissions||[]).filter(id=>id!=='rrvvfo-04');
@@ -143,7 +145,10 @@ export function loadLostYearProgress(storage=availableStoryStorage()){
 
 export function saveLostYearProgress(progress,storage=availableStoryStorage()){
   const previous=loadLostYearProgress(storage);
-  const next={...progress,version:1,updatedAt:Date.now()};
+  let next={...progress,version:1,updatedAt:Date.now()};
+  if(chapter4CompletionConflict(next)){
+    next={...next,completedMissions:(next.completedMissions||[]).filter(id=>id!=='rrvvfo-04'),unlocks:(next.unlocks||[]).filter(id=>id!=='shadowLookout'),chapter4State:{...(next.chapter4State||{}),chapterComplete:false},lastCheckpoint:String(next.lastCheckpoint||'').startsWith('rrvvfo-04-complete')?'rrvvfo-04':next.lastCheckpoint};
+  }
   const serialized=JSON.stringify(next);
   try{
     storage?.setItem?.(LOST_YEAR_SAVE_KEY,serialized);
@@ -165,6 +170,8 @@ export function saveLostYearProgress(progress,storage=availableStoryStorage()){
     const statChanges=Object.keys(next.storyBonusStats||{}).map(label=>({label:label.toUpperCase(),amount:(Number(next.storyBonusStats?.[label])||0)-(Number(previous.storyBonusStats?.[label])||0)})).filter(change=>change.amount>0);
     const oldLevel=Number(previous.storyLevel)||1,newLevel=Number(next.storyLevel)||1;
     if(newUnlocks.length||newMissions.length||newKeyItems.length||statChanges.length||newLevel>oldLevel)queueMicrotask(()=>document.dispatchEvent(new CustomEvent('pxstoryprogression',{detail:{newUnlocks,newMissions,newKeyItems,statChanges,oldLevel,newLevel,updatedAt:next.updatedAt,progress:next}})));
+    const reliability=inspectStoryReliability(next);
+    if(reliability.issues.length)queueMicrotask(()=>document.dispatchEvent(new CustomEvent('pxstoryreliabilitywarning',{detail:{...reliability,progress:next}})));
   }
   return next;
 }

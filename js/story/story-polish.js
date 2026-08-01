@@ -1,4 +1,6 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a391-chapter4-ending-continuity-20260801';
+import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyExperienceProfile} from './story-experience.js?v=29a391-chapter4-ending-continuity-20260801';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
@@ -9,7 +11,7 @@ import {
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
+} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -102,7 +104,7 @@ class StoryPolishController{
   constructor(){
     this.root=null;this.transition=null;this.objective=null;this.results=null;this.playtest=null;this.combatCallout=null;
     this.objectiveTimer=0;this.transitionTimer=0;this.lastObjective='';this.codeBuffer=[];this.controllerFrame=0;this.controllerButtons=[];
-    this.observer=null;this.initialized=false;this.currentMode='';this.currentChapter=0;this.nativeContinue=null;this.nativeCompletionOverlay=null;this.recoveredPreFight=false;
+    this.observer=null;this.initialized=false;this.currentMode='';this.currentChapter=0;this.nativeContinue=null;this.nativeCompletionOverlay=null;this.recoveredPreFight=false;this.currentReplay=false;this.currentPlaytest=false;this.currentStepId='';
     this.onKey=this.onKey.bind(this);this.pollController=this.pollController.bind(this);this.scanObjectives=this.scanObjectives.bind(this);
   }
 
@@ -123,7 +125,8 @@ class StoryPolishController{
           <div class="storyResultRank" data-story-result-rank>B</div>
           <dl data-story-result-stats></dl>
           <div class="storyResultRewards" data-story-result-rewards></div>
-          <div class="storyResultActions"><button type="button" class="primary" data-story-results-close>CONTINUE</button><button type="button" data-story-results-menu>CHAPTER SELECT</button></div>
+          <div class="storyAfterglow" data-story-afterglow><small data-story-afterglow-kicker>ADVENTURE BEAT</small><strong data-story-afterglow-title></strong><p data-story-afterglow-recap></p><ul data-story-afterglow-changes></ul><div class="storyNextLeg" data-story-afterglow-next></div></div>
+          <div class="storyResultActions"><button type="button" class="primary" data-story-results-close>CONTINUE JOURNEY</button><button type="button" data-story-results-menu>CHAPTER SELECT</button></div>
         </article>
       </section>
       <section class="storyPlaytestPanel" data-story-playtest hidden role="dialog" aria-modal="true" aria-labelledby="storyPlaytestTitle">
@@ -131,6 +134,7 @@ class StoryPolishController{
           <header><div><small>SECRET PLAYTEST MENU</small><h2 id="storyPlaytestTitle">PARALLELS X DEBUG ROOM</h2></div><button type="button" data-playtest-close>×</button></header>
           <p class="playtestCode">UNLOCKED WITH ↑ ↑ ↓ ↓ ← → ← → B A</p>
           <div class="playtestSnapshot" data-playtest-snapshot></div>
+          <div class="playtestReliability" data-playtest-reliability><strong data-playtest-reliability-title>SAVE HEALTH</strong><span data-playtest-reliability-mode></span><span data-playtest-reliability-issues></span></div>
           <section><h3>RECOVERY</h3><div class="playtestButtons"><button type="button" data-playtest-action="checkpoint">RESTART FROM SAVED CHECKPOINT</button><button type="button" data-playtest-action="chapterSelect">OPEN CHAPTER SELECT</button><button type="button" data-playtest-action="resetChapter">RESET CURRENT CHAPTER</button></div></section>
           <section><h3>JUMP TO RELEASED CHAPTER</h3><div class="playtestButtons">${[1,2,3,4].map(number=>`<button type="button" data-playtest-chapter="${number}">CHAPTER ${number}</button>`).join('')}<button type="button" data-playtest-chapter-hub="4">CHAPTER 4 • ECHO VILLAGE HUB</button></div></section>
           <section><h3>QUICK COMBAT TEST</h3><div class="playtestButtons"><button type="button" data-playtest-fight="revvfo">RRVVFO VS REVVFO</button><button type="button" data-playtest-fight="wade">RRVVFO VS WADE</button><button type="button" data-playtest-fight="bark">RRVVFO VS BARK</button></div></section>
@@ -163,6 +167,7 @@ class StoryPolishController{
     document.addEventListener('pxarenafeedback',event=>this.onCombatFeedback(event.detail||{}));
     document.addEventListener('pxstorystepstart',event=>this.onStoryStepStart(event.detail||{}));
     document.addEventListener('pxstorymenuopen',()=>this.onStoryMenuOpen());
+    document.addEventListener('pxstoryreliabilitywarning',event=>this.onReliabilityWarning(event.detail||{}));
     this.observer=new MutationObserver(()=>{clearTimeout(this.objectiveTimer);this.objectiveTimer=setTimeout(this.scanObjectives,80)});
     this.observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['hidden','class']});
     this.controllerFrame=requestAnimationFrame(this.pollController);
@@ -171,19 +176,22 @@ class StoryPolishController{
 
   onStoryMenuOpen(){
     clearTimeout(this.objectiveTimer);clearTimeout(this.transitionTimer);clearTimeout(this.combatCalloutTimer);
+    this.currentReplay=false;this.currentPlaytest=false;this.currentStepId='';document.body.dataset.storyRunMode='';
     this.lastObjective='';
     if(this.objective){this.objective.classList.remove('show');this.objective.hidden=true}
     if(this.transition){this.transition.classList.remove('show');this.transition.hidden=true}
     if(this.combatCallout){this.combatCallout.classList.remove('show');this.combatCallout.hidden=true}
   }
 
-  onStoryStepStart({chapter=0,stepId=''}){
+  onStoryStepStart({chapter=0,stepId='',replay=false,playtest=false}={}){
     this.currentChapter=Number(chapter)||chapterNumberFromLabel(stepId)||0;
+    this.currentReplay=Boolean(replay);this.currentPlaytest=Boolean(playtest);this.currentStepId=stepId||'';
+    document.body.dataset.storyRunMode=this.currentPlaytest?'playtest':this.currentReplay?'replay':'first-play';
     const number=this.currentChapter||stepId,key=`pxStoryChapterRun:${number}`;
     try{
       if(!sessionStorage.getItem(key)){
         const progress=loadLostYearProgress();
-        sessionStorage.setItem(key,JSON.stringify({startedAt:Date.now(),fights:0,retries:0,startXp:Number(progress.storyXp)||0,startLevel:Number(progress.storyLevel)||1,startUnlocks:[...(progress.unlocks||[])],startOptional:chapterOptionalScore(Number(this.currentChapter)||0,progress)}));
+        sessionStorage.setItem(key,JSON.stringify({startedAt:Date.now(),fights:0,retries:0,replay:this.currentReplay,playtest:this.currentPlaytest,startXp:Number(progress.storyXp)||0,startLevel:Number(progress.storyLevel)||1,startUnlocks:[...(progress.unlocks||[])],startOptional:chapterOptionalScore(Number(this.currentChapter)||0,progress)}));
       }
     }catch{}
     document.body.dataset.storyChapter=String(this.currentChapter||'');
@@ -249,6 +257,11 @@ class StoryPolishController{
     this.showObjective(title,detail,previous?'OBJECTIVE UPDATED':'MAIN OBJECTIVE');
   }
 
+  onReliabilityWarning(detail={}){
+    const issue=(detail.issues||[])[0];if(!issue)return;
+    this.showObjective('STORY SAVE NEEDS ATTENTION',issue,'AUTO-SAVE CHECK');
+  }
+
   showObjective(title,detail,kicker='NEW OBJECTIVE'){
     this.build();clearTimeout(this.objectiveTimer);
     try{const progress=loadLostYearProgress();saveLostYearProgress({...progress,lastStoryObjective:{title,detail,kicker,updatedAt:Date.now()}})}catch{}
@@ -290,7 +303,13 @@ class StoryPolishController{
       <div><dt>Optional quests</dt><dd>${optionalThisRun?`${optionalThisRun} completed this run`:`${optionalTotal} total completed`}</dd></div>
       <div><dt>Story level</dt><dd>${Number(progress.storyLevel)||1}</dd></div>
       <div><dt>Total route</dt><dd>${completed}/${RRVVFO_PLANNED_CHAPTER_COUNT} • ${percent}%</dd></div>`;
-    this.results.querySelector('[data-story-result-rewards]').innerHTML=`<small>CHAPTER REWARDS</small><p>${newUnlocks.length?newUnlocks.map(value=>safe(value).replaceAll(/([A-Z])/g,' $1').toUpperCase()).join(' • '):xpGained?`${xpGained} STORY XP`:'STORY CHECKPOINT SECURED'}</p>`;
+    this.results.querySelector('[data-story-result-rewards]').innerHTML=`<small>CHAPTER REWARDS</small><p>${newUnlocks.length?newUnlocks.map(value=>safe(value).replaceAll(/([A-Z])/g,' $1').toUpperCase()).join(' • '):xpGained?`${xpGained} STORY XP`:'STORY CHECKPOINT SECURED'}</p><span class="storyRunBadge">${run.replay?'REPLAY • PRACTICE':run.playtest?'PLAYTEST • TEMPORARY':'FIRST PLAY • SAVED'}</span>`;
+    const afterglow=storyAfterglowFor(number,progress);
+    this.results.querySelector('[data-story-afterglow-kicker]').textContent=afterglow.kicker;
+    this.results.querySelector('[data-story-afterglow-title]').textContent=afterglow.title;
+    this.results.querySelector('[data-story-afterglow-recap]').textContent=afterglow.recap;
+    this.results.querySelector('[data-story-afterglow-changes]').innerHTML=afterglow.changes.map(value=>`<li>${safe(value)}</li>`).join('');
+    this.results.querySelector('[data-story-afterglow-next]').textContent=afterglow.next;
     this.results.hidden=false;this.results.classList.add('show');this.results.querySelector('[data-story-results-close]').focus();
     document.dispatchEvent(new CustomEvent('pxstoryuicue',{detail:{cue:'chapterComplete'}}));
   }
@@ -323,18 +342,25 @@ class StoryPolishController{
 
   snapshot(){
     const progress=loadLostYearProgress(),root=currentStoryRoot(),chapter=currentChapterNumber()||this.currentChapter;
+    const reliability=inspectStoryReliability(progress,{active:Boolean(root),replay:this.currentReplay,playtest:this.currentPlaytest});
+    const experience=Number(chapter)>=1&&Number(chapter)<=4?storyExperienceProfile(Number(chapter)):null;
     return{
       build:BUILD_VERSION,saveSchema:SAVE_SCHEMA_VERSION,
-      chapter:chapter||'Story menu',mode:root?.dataset?.storyEngineMode||this.currentMode||'menu',checkpoint:progress.lastCheckpoint,
+      chapter:chapter||'Story menu',mode:root?.dataset?.storyEngineMode||this.currentMode||'menu',runMode:reliability.runMode,temporary:reliability.temporary,saveable:reliability.saveable,saveHealth:reliability.health,saveIssues:reliability.issues,chapterStates:reliability.chapters,checkpoint:progress.lastCheckpoint,
       checkpointLabel:checkpointLabel(progress),storyLevel:progress.storyLevel,storyXp:progress.storyXp,
+      pacingTarget:experience?`${experience.targetMinutes[0]}–${experience.targetMinutes[1]} min`:null,pacingCadence:experience?`${experience.cadenceMinutes[0]}–${experience.cadenceMinutes[1]} min between meaningful beats`:null,pacingRhythm:experience?.rhythm||[],
       completedMissions:progress.completedMissions,unlocks:progress.unlocks,
       chapter2State:progress.chapter2State,chapter3State:progress.chapter3State,chapter4State:progress.chapter4State,
       url:location.href,userAgent:navigator.userAgent,viewport:`${innerWidth}×${innerHeight}`,time:new Date().toISOString()
     };
   }
   refreshPlaytest(){
-    const data=this.snapshot();
-    this.playtest.querySelector('[data-playtest-snapshot]').innerHTML=`<strong>${safe(data.build)}</strong><span>Chapter: ${data.chapter} • Mode: ${safe(data.mode).toUpperCase()}</span><span>Checkpoint: ${safe(data.checkpointLabel)}</span><span>Level ${data.storyLevel} • ${data.storyXp} XP</span>`;
+    const data=this.snapshot(),panel=this.playtest.querySelector('[data-playtest-reliability]');
+    this.playtest.querySelector('[data-playtest-snapshot]').innerHTML=`<strong>${safe(data.build)}</strong><span>Chapter: ${data.chapter} • Mode: ${safe(data.mode).toUpperCase()}</span><span>Checkpoint: ${safe(data.checkpointLabel)}</span><span>Level ${data.storyLevel} • ${data.storyXp} XP</span>${data.pacingTarget?`<span>RPG pacing target: ${safe(data.pacingTarget)} • ${safe(data.pacingCadence)}</span>`:''}`;
+    panel.dataset.health=data.saveHealth;
+    panel.querySelector('[data-playtest-reliability-title]').textContent=`SAVE HEALTH • ${data.saveHealth}`;
+    panel.querySelector('[data-playtest-reliability-mode]').textContent=`RUN: ${data.runMode} • ${data.saveable?'SAVEABLE':data.temporary?'TEMPORARY — DOES NOT SAVE':'NO ACTIVE RUN'}`;
+    panel.querySelector('[data-playtest-reliability-issues]').textContent=data.saveIssues.length?data.saveIssues.join(' • '):'Chapter order, completion evidence, and checkpoint order agree.';
     this.playtest.querySelector('[data-playtest-flags]').textContent=JSON.stringify(data,null,2);
   }
   openPlaytest(){this.build();this.refreshPlaytest();this.playtest.hidden=false;this.playtest.classList.add('show');this.playtest.querySelector('[data-playtest-close]').focus()}
@@ -378,7 +404,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a363-chapter4-menu-state-recovery-20260801`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a391-chapter4-ending-continuity-20260801`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'echo-mountain':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }

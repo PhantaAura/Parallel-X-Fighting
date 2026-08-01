@@ -1,10 +1,11 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a391-chapter4-ending-continuity-20260801';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',
   'pxLostYearProgressV1',
   'pxLensMasteryV1',
   'pxCombatManualV1',
+  'pxMasteryRecordsV1',
   'pxArenaControlsV1',
   'pxDialoguePrefsV1',
   'pxControllerSettingsV1',

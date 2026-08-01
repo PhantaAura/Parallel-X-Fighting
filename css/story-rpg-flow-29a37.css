@@ -1,0 +1,12 @@
+.storyAfterglow{margin-top:14px;padding:14px 16px;border:1px solid rgba(255,213,116,.28);border-radius:14px;background:linear-gradient(135deg,rgba(255,196,78,.08),rgba(91,126,255,.08));display:grid;gap:7px}
+.storyAfterglow small{font-weight:900;letter-spacing:.12em;color:#ffd978}
+.storyAfterglow strong{font-size:1.04rem;color:#fff}
+.storyAfterglow p{margin:0;color:#dbe4ff;line-height:1.45}
+.storyAfterglow ul{display:grid;gap:5px;margin:4px 0 0;padding:0;list-style:none}
+.storyAfterglow li{display:flex;gap:8px;align-items:flex-start;color:#bfcbe8}
+.storyAfterglow li::before{content:'◆';font-size:.68em;margin-top:.35em;color:#7db2ff}
+.storyAfterglow .storyNextLeg{margin-top:4px;padding-top:9px;border-top:1px solid rgba(255,255,255,.09);color:#fff;font-weight:750}
+.playtestReliability{display:grid;gap:4px;margin:10px 0;padding:10px 12px;border-radius:10px;background:rgba(8,14,28,.64);border:1px solid rgba(125,178,255,.24)}
+.playtestReliability[data-health="ATTENTION"]{border-color:rgba(255,128,111,.55);background:rgba(70,18,18,.28)}
+.playtestReliability strong{letter-spacing:.08em}.playtestReliability span{color:#bfcbe8;font-size:.92em}
+.storyRunBadge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#10182b;border:1px solid #354665;color:#dbe7ff;font-size:.78rem;font-weight:900;letter-spacing:.08em}

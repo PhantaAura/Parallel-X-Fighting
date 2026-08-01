@@ -1,14 +1,57 @@
 # Parallels X: Clash of Souls
 
+> **Combat Rank Patch integrated:** Every completed fight receives an **S / A / B / C / D / E** grade. Prototype 2.9A.39 includes that mini patch in the cumulative build.
+
 **A 2.5D arena fighter and RPG built around kinetic movement, pursuit combos, parries, character techniques, exploration, side quests, and continuous Story progression.**
 
 Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.36.3 — Chapter 4 Menu State Recovery**
+**Prototype 2.9A.39.1 — Chapter 4 Ending Continuity Patch**
 
 This is a complete cumulative build. No older package is required.
+
+## 2.9A.39.1 Chapter 4 ending continuity highlights
+
+- Replaces only Chapter 4’s final Shadow’s Lookout sequence; the rest of Chapter 4 remains intact.
+- Preserves the floating-lookout summit setup and mandatory **pebble → CHARGE → RELEASE → LOCK → OBJECT SWAP** sequence.
+- Object Swap now lands Rrvvfo on the floating lookout without completing the chapter; the player regains control and must approach Shadow’s entrance.
+- Both Ryuzankaro-completed and Ryuzankaro-skipped routes converge into the same ending scene. Existing optional rewards remain intact.
+- The Chapter 4 ending now contains only Rrvvfo’s line, **“Shadow... it’s been a while.”**, followed by his collapse and a fade to black. Project Hollow, the badge, the tournament, the Sage, memory inspection, and Shadow’s assessment are reserved for Chapter 5.
+- Chapter 4 completion evidence now uses `shadowArrival`, then `chapterSaved`; the canonical completed checkpoint remains `rrvvfo-04-complete`.
+- Old fully completed Chapter 4 saves migrate forward, while partial summit/lookout saves cannot skip the mandatory Object Swap or new entrance scene.
+- Save schema remains **268** and the full smoke suite passes **379 / 379**.
+
+## 2.9A.39 Chapters 1–4 full experience polish highlights
+
+- Formalizes the intended first-play pacing: Chapter 1 **35–50 min**, Chapter 2 **70–100 min**, Chapter 3 **55–80 min**, and Chapter 4 **90–120 min**.
+- Chapter 4 is deliberately the longest because it has the most distinct phases: village arrival, party fieldwork, caverns, village defense, recovery, optional secret route, solo mountain climb, Hollow Watcher, and the floating lookout payoff.
+- Story checkpoints now trigger more RPG-style world-change and adventure-beat reactions across all four released chapters instead of feeling like silent objective updates.
+- S-rank Story fights receive a full celebration and A-rank fights receive a short acknowledgement; B–E do not spam extra overlays.
+- Chapter 4 adds an **optional Bark + Wade recovery moment** after the village defense that restores HP, Energy, and Guard and gives a one-time +45 Story XP reward. It is not a mandatory gate.
+- The hidden playtest menu now reports each chapter’s intended pacing target and gameplay rhythm so boring stretches are easier to diagnose.
+- Save schema remains **268** and the full smoke suite passes **373 / 373**.
+
+
+## 2.9A.38 combat mastery and RPG rewards highlights
+
+- Real-time Sonic Battle-style combat stays intact; progression is built around mastering it rather than replacing it with turn-based menus.
+- Arena-engine matches now earn C/B/A/S mastery ranks based on actual combat decisions such as pursuit finishers, parries, guard breaks, signature mechanics, variety, clean wins, and damage taken.
+- Extras adds **MASTERY & RECORDS**, with persistent records for Rrvvfo, Revvfo, Wade, and Bark.
+- Fifteen optional mastery challenges reuse the best Training trials and fighter identity mechanics.
+- First clears grant one-time medals, mastery points, and named RPG rewards; repeating a challenge cannot farm points.
+- Better challenge grades can replace older grades, so replaying is about improving skill rather than grinding.
+- `pxMasteryRecordsV1` is included in safe save export/import while save schema remains 268.
+
+## 2.9A.37 first-play reliability and RPG flow highlights
+
+- Story runs explicitly distinguish FIRST PLAY, REPLAY, and PLAYTEST so temporary runs cannot masquerade as saveable progress.
+- The save path strips contradictory Chapter 4 completion markers before persistence while preserving earlier chapters and RPG growth.
+- The secret playtest menu now exposes save health, run mode, checkpoint order, and per-chapter completion state.
+- Chapter results include a short RPG afterglow showing what changed in the world and where the adventure goes next.
+- First-time chapter progression still waits for the player at results instead of auto-rushing into the next objective.
+- Save schema remains 268.
 
 
 

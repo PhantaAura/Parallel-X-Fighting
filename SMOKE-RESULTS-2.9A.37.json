@@ -1,0 +1,1433 @@
+{
+  "results": [
+    {
+      "name": "loads the complete roster",
+      "pass": true
+    },
+    {
+      "name": "casual select and Random use only the four playable fighters",
+      "pass": true
+    },
+    {
+      "name": "preserves mirror-match restriction",
+      "pass": true
+    },
+    {
+      "name": "combines keyboard with an idle controller",
+      "pass": true
+    },
+    {
+      "name": "official Chapter controls keep one meaning everywhere",
+      "pass": true
+    },
+    {
+      "name": "unified WASD depth controls work on keyboard and controller",
+      "pass": true
+    },
+    {
+      "name": "Chapter mouse controls are shared by every combat runtime",
+      "pass": true
+    },
+    {
+      "name": "keeps quick keyboard taps between frames",
+      "pass": true
+    },
+    {
+      "name": "maps three-hit light chains for Nintendo Xbox and PlayStation",
+      "pass": true
+    },
+    {
+      "name": "light-to-heavy finishers preserve the existing combo rules",
+      "pass": true
+    },
+    {
+      "name": "Up plus Heavy maps to Launcher in every controller style",
+      "pass": true
+    },
+    {
+      "name": "throws require simultaneous Light and Heavy",
+      "pass": true
+    },
+    {
+      "name": "sequential Light then Heavy never becomes a throw",
+      "pass": true
+    },
+    {
+      "name": "launcher routes translate on keyboard controller and touch",
+      "pass": true
+    },
+    {
+      "name": "damage scaling is identical across controller styles",
+      "pass": true
+    },
+    {
+      "name": "hit-stop input remains buffered until a legal follow-up can begin",
+      "pass": true
+    },
+    {
+      "name": "custom remapping changes prompts and buttons without changing rules",
+      "pass": true
+    },
+    {
+      "name": "Training combo prompts match active input styles",
+      "pass": true
+    },
+    {
+      "name": "Training input history records only real semantic inputs",
+      "pass": true
+    },
+    {
+      "name": "simplified touch can automate only the three-light continuation",
+      "pass": true
+    },
+    {
+      "name": "detects iPhone iPad Android and touch capability",
+      "pass": true
+    },
+    {
+      "name": "applies safe-area and dynamic viewport metrics for cutouts",
+      "pass": true
+    },
+    {
+      "name": "touch layout tracks browser resize and orientation changes",
+      "pass": true
+    },
+    {
+      "name": "virtual joystick filters drift and supports diagonal movement",
+      "pass": true
+    },
+    {
+      "name": "virtual D-Pad supports diagonals and rejects opposites",
+      "pass": true
+    },
+    {
+      "name": "touch Up plus Heavy produces Launcher without Heavy",
+      "pass": true
+    },
+    {
+      "name": "multi-touch preserves movement and Block while attacking",
+      "pass": true
+    },
+    {
+      "name": "touch throw requires overlapping attack touches and dedicated Throw is identical",
+      "pass": true
+    },
+    {
+      "name": "touch clash methods have equivalent capped maximum strength",
+      "pass": true
+    },
+    {
+      "name": "touch movement choice and custom layouts persist locally",
+      "pass": true
+    },
+    {
+      "name": "all touch presets and every editable control are available",
+      "pass": true
+    },
+    {
+      "name": "touch tutorial teaches the full selected control system",
+      "pass": true
+    },
+    {
+      "name": "iOS and Android prevent gameplay scrolling while Android Back pauses",
+      "pass": true
+    },
+    {
+      "name": "haptics modes are optional and rate limited",
+      "pass": true
+    },
+    {
+      "name": "applies three-hit light combo and scaling",
+      "pass": true
+    },
+    {
+      "name": "terminates Wade ground chain at the wall",
+      "pass": true
+    },
+    {
+      "name": "cancels interrupted attack startup",
+      "pass": true
+    },
+    {
+      "name": "launches into an air attack",
+      "pass": true
+    },
+    {
+      "name": "reports actual post-defense damage",
+      "pass": true
+    },
+    {
+      "name": "combo total equals health actually removed",
+      "pass": true
+    },
+    {
+      "name": "fully resets Training state delayed work and buffered inputs",
+      "pass": true
+    },
+    {
+      "name": "cleans all state when exiting Training",
+      "pass": true
+    },
+    {
+      "name": "canceled delayed attacks cannot leak rounds",
+      "pass": true
+    },
+    {
+      "name": "keeps non-CPU dummy modes stationary and passive",
+      "pass": true
+    },
+    {
+      "name": "Bark counter punishes nearby melee only",
+      "pass": true
+    },
+    {
+      "name": "Bark counter does not punish projectiles",
+      "pass": true
+    },
+    {
+      "name": "synchronizes Training settings",
+      "pass": true
+    },
+    {
+      "name": "Lens starts at a truthful 60 Energy and 25 HP cost",
+      "pass": true
+    },
+    {
+      "name": "Shots of Agony creates exactly four clones and consumes full energy",
+      "pass": true
+    },
+    {
+      "name": "Shots active volley blocks reuse and suppresses regeneration",
+      "pass": true
+    },
+    {
+      "name": "Shots fires four projectiles together then starts five-second cooldown",
+      "pass": true
+    },
+    {
+      "name": "Shots cooldown lasts the full 300 simulation frames",
+      "pass": true
+    },
+    {
+      "name": "Shots total damage stays between 25 and 30",
+      "pass": true
+    },
+    {
+      "name": "Phanta defense is balanced and survives every individual move",
+      "pass": true
+    },
+    {
+      "name": "every roster AI can select core offense, movement, and defense",
+      "pass": true
+    },
+    {
+      "name": "all roster AI profiles are character-specific without damage modifiers",
+      "pass": true
+    },
+    {
+      "name": "CPU Rrvvfo obeys Shots availability restrictions",
+      "pass": true
+    },
+    {
+      "name": "compatible heavy attacks trigger a melee clash",
+      "pass": true
+    },
+    {
+      "name": "incompatible attacks do not trigger a cinematic clash",
+      "pass": true
+    },
+    {
+      "name": "beam collisions start a beam clash",
+      "pass": true
+    },
+    {
+      "name": "clash state clears after completion",
+      "pass": true
+    },
+    {
+      "name": "clash state clears when a round ends",
+      "pass": true
+    },
+    {
+      "name": "clash state clears during Training reset",
+      "pass": true
+    },
+    {
+      "name": "CPU clash input respects difficulty",
+      "pass": true
+    },
+    {
+      "name": "clash damage cannot one-shot a full-health fighter",
+      "pass": true
+    },
+    {
+      "name": "blocking reduces guard and applies controlled chip",
+      "pass": true
+    },
+    {
+      "name": "guard regenerates only when allowed",
+      "pass": true
+    },
+    {
+      "name": "guard break activates at zero guard",
+      "pass": true
+    },
+    {
+      "name": "guard-break loops are prevented",
+      "pass": true
+    },
+    {
+      "name": "perfect block only works during its timing window",
+      "pass": true
+    },
+    {
+      "name": "throws beat blocking at close range",
+      "pass": true
+    },
+    {
+      "name": "throws fail outside close range",
+      "pass": true
+    },
+    {
+      "name": "throw protection prevents immediate repeated throws",
+      "pass": true
+    },
+    {
+      "name": "combo breaker costs 60 energy and cannot be spammed",
+      "pass": true
+    },
+    {
+      "name": "chip damage cannot reduce health below one",
+      "pass": true
+    },
+    {
+      "name": "defensive AI can retreat throw break combos and scale perfect blocks",
+      "pass": true
+    },
+    {
+      "name": "every fighter has a valid bounded cinematic ultimate",
+      "pass": true
+    },
+    {
+      "name": "ultimate energy cost and cooldown are enforced",
+      "pass": true
+    },
+    {
+      "name": "missing an ultimate creates punishable recovery",
+      "pass": true
+    },
+    {
+      "name": "no cinematic ultimate one-shots a full-health normal fighter",
+      "pass": true
+    },
+    {
+      "name": "camera restores after every cinematic",
+      "pass": true
+    },
+    {
+      "name": "camera restores after cinematic interruption",
+      "pass": true
+    },
+    {
+      "name": "camera restores after round cleanup and Training reset",
+      "pass": true
+    },
+    {
+      "name": "audio hooks exist for every major combat event",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo and Revvfo ranged specials can beam clash",
+      "pass": true
+    },
+    {
+      "name": "Revvfo keeps ranged beam aerial beam and close teleport visual actions",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo and Phanta ultimates can clash",
+      "pass": true
+    },
+    {
+      "name": "Wade versus Bark preserves speed and armor identities",
+      "pass": true
+    },
+    {
+      "name": "Bark perfect block remains separate from deliberate counter",
+      "pass": true
+    },
+    {
+      "name": "Creed can evade a cinematic ultimate with timed dash invulnerability",
+      "pass": true
+    },
+    {
+      "name": "controller attack buttons contribute independently to clashes",
+      "pass": true
+    },
+    {
+      "name": "Training clash reset clears active and armed states",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo atlas manifest loads with normalized anchors",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo sprite paths are GitHub Pages relative",
+      "pass": true
+    },
+    {
+      "name": "Revvfo atlas manifest loads with normalized anchors and original moveset animations",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo Hood Up has complete matching animation coverage",
+      "pass": true
+    },
+    {
+      "name": "Revvfo sprite paths remain GitHub Pages relative",
+      "pass": true
+    },
+    {
+      "name": "idle and run sprite animations loop",
+      "pass": true
+    },
+    {
+      "name": "non-looping attack animation completes and returns control",
+      "pass": true
+    },
+    {
+      "name": "animation priority lets hurt interrupt movement but not idle interrupt attack",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo light chain chooses light1 light2 light3 in order",
+      "pass": true
+    },
+    {
+      "name": "heavy launcher and air attacks map to dedicated animations",
+      "pass": true
+    },
+    {
+      "name": "block perfect-block and guard-break animations are distinct",
+      "pass": true
+    },
+    {
+      "name": "Fire Blast manifest provides a hand projectile origin",
+      "pass": true
+    },
+    {
+      "name": "Shots of Agony keeps four separate clone visuals and synchronized fire",
+      "pass": true
+    },
+    {
+      "name": "Lens visuals preserve mastered cost and dodge state",
+      "pass": true
+    },
+    {
+      "name": "Object Swap selects disappearance and reappearance without changing movement rules",
+      "pass": true
+    },
+    {
+      "name": "showcase sprites default On and old saves migrate to the stable pipeline",
+      "pass": true
+    },
+    {
+      "name": "explicit Rrvvfo sprite On preference persists",
+      "pass": true
+    },
+    {
+      "name": "Bark and Wade matches preload their first-class sprite atlases",
+      "pass": true
+    },
+    {
+      "name": "genuine missing manifests report fallback status",
+      "pass": true
+    },
+    {
+      "name": "Player 1 Player 2 and Training appearances persist separately",
+      "pass": true
+    },
+    {
+      "name": "Hood Down remains the default appearance",
+      "pass": true
+    },
+    {
+      "name": "Hood Up is labeled as a completed cosmetic appearance",
+      "pass": true
+    },
+    {
+      "name": "production mode exposes both completed Rrvvfo appearances",
+      "pass": true
+    },
+    {
+      "name": "developer mode may expose Hood Up",
+      "pass": true
+    },
+    {
+      "name": "appearance is stored on each Fighter instance",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo appearance never alters gameplay data",
+      "pass": true
+    },
+    {
+      "name": "controller completion systems remain integrated",
+      "pass": true
+    },
+    {
+      "name": "controller styles assignments and custom preferences persist",
+      "pass": true
+    },
+    {
+      "name": "controller detection and disconnection assignment stay deterministic",
+      "pass": true
+    },
+    {
+      "name": "InputManager honors explicit player device assignment",
+      "pass": true
+    },
+    {
+      "name": "round and Training cleanup clear visual-only state",
+      "pass": true
+    },
+    {
+      "name": "Prototype 2.9A.36 uses one centralized build label",
+      "pass": true
+    },
+    {
+      "name": "Bark and Wade are first-class sprite fighters with complete manifests",
+      "pass": true
+    },
+    {
+      "name": "all five cleaned fighter atlases have valid manifests and reachable images",
+      "pass": true
+    },
+    {
+      "name": "Sage uses the supplied full production sheet instead of twelve reused poses",
+      "pass": true
+    },
+    {
+      "name": "Classic fighter sprites are readable and off-model turnaround cells stay inactive",
+      "pass": true
+    },
+    {
+      "name": "main menu exposes every implemented mode and honest Coming Later state",
+      "pass": true
+    },
+    {
+      "name": "battle modes unlock progressively after Chapters 1, 2, and 3",
+      "pass": true
+    },
+    {
+      "name": "Story progress counts four released chapters against the planned eight chapters",
+      "pass": true
+    },
+    {
+      "name": "hub camera snaps after teleports and keeps Rrvvfo centered during exploration",
+      "pass": true
+    },
+    {
+      "name": "hub camera lifts or pulls forward when solid scenery blocks Rrvvfo",
+      "pass": true
+    },
+    {
+      "name": "hub camera keeps the chosen exploration angle and recenters only when disabled or fighting",
+      "pass": true
+    },
+    {
+      "name": "mouse and trackpad camera look starts only from a left-button canvas drag",
+      "pass": true
+    },
+    {
+      "name": "Chapter hubs have distinct scenery while the tournament fight arena stays separate",
+      "pass": true
+    },
+    {
+      "name": "Story startup failure does not create false Continue progress",
+      "pass": true
+    },
+    {
+      "name": "Chapter 2 hub animation timing advances in simulation updates only",
+      "pass": true
+    },
+    {
+      "name": "Tangai Dojo has a detailed but compact 3D stage layout",
+      "pass": true
+    },
+    {
+      "name": "main menu mode descriptions include player and availability data",
+      "pass": true
+    },
+    {
+      "name": "post-match options include every requested destination",
+      "pass": true
+    },
+    {
+      "name": "match statistics track actual damage and both player summaries",
+      "pass": true
+    },
+    {
+      "name": "pause is the single simulation gate for combat AI timers and cooldowns",
+      "pass": true
+    },
+    {
+      "name": "pause menu contains universal and Training-only actions",
+      "pass": true
+    },
+    {
+      "name": "adaptive move list follows keyboard Nintendo Xbox PlayStation touch and custom prompts",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo move list states costs restrictions and cosmetic appearance",
+      "pass": true
+    },
+    {
+      "name": "QOL settings sanitize and persist audio HUD accessibility video and hub-camera values",
+      "pass": true
+    },
+    {
+      "name": "visual accessibility settings cannot alter combat damage or timing",
+      "pass": true
+    },
+    {
+      "name": "combat notifications honor mode importance and repeat cooldown",
+      "pass": true
+    },
+    {
+      "name": "versioned save export and valid import preserve all known data",
+      "pass": true
+    },
+    {
+      "name": "invalid save import is rejected without changing the current save",
+      "pass": true
+    },
+    {
+      "name": "save reset groups keep progress separate from settings and Training presets",
+      "pass": true
+    },
+    {
+      "name": "Training presets save and load isolated Training configuration",
+      "pass": true
+    },
+    {
+      "name": "Training position resource and cleanup shortcuts reset transient state",
+      "pass": true
+    },
+    {
+      "name": "saved controller dead zones filter drift without clearing keyboard",
+      "pass": true
+    },
+    {
+      "name": "first-time hints use active prompts and can be dismissed or reset",
+      "pass": true
+    },
+    {
+      "name": "HUD model reports Rrvvfo cooldowns active volley Lens and breaker state",
+      "pass": true
+    },
+    {
+      "name": "audio manager preserves separate volume and mute settings",
+      "pass": true
+    },
+    {
+      "name": "loading manager exposes progress retry return and safe no-root fallback",
+      "pass": true
+    },
+    {
+      "name": "main page contains first-time start polished menu recovery and confirmation shells",
+      "pass": true
+    },
+    {
+      "name": "touch layout lock defaults on and survives saved settings",
+      "pass": true
+    },
+    {
+      "name": "video particle caps reduce visuals without changing effect semantics",
+      "pass": true
+    },
+    {
+      "name": "mobile presentation defaults ask once and persist portrait fullscreen choices",
+      "pass": true
+    },
+    {
+      "name": "portrait recommendation respects touch orientation and Don’t Show Again",
+      "pass": true
+    },
+    {
+      "name": "rotating into portrait pauses through the prompt hook and preserves the active manager",
+      "pass": true
+    },
+    {
+      "name": "responsive layout preserves a 16:9 logical combat canvas",
+      "pass": true
+    },
+    {
+      "name": "19.5:9 touch layout reserves a landscape action-control zone",
+      "pass": true
+    },
+    {
+      "name": "tablet layout remains safe-area aware",
+      "pass": true
+    },
+    {
+      "name": "ultrawide layout uses side presentation without range advantage",
+      "pass": true
+    },
+    {
+      "name": "desktop hotbar reserves presentation space without changing gameplay bounds",
+      "pass": true
+    },
+    {
+      "name": "narrow fallback keeps HUD and stage inside the available display",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo hotbar uses the exact five requested default slots",
+      "pass": true
+    },
+    {
+      "name": "every roster fighter receives a data-driven ability hotbar",
+      "pass": true
+    },
+    {
+      "name": "Rrvvfo hotbar advertises authoritative costs and restrictions",
+      "pass": true
+    },
+    {
+      "name": "Shots hotbar reports ACTIVE and its five-second cooldown",
+      "pass": true
+    },
+    {
+      "name": "Lens hotbar reports duration HP cost and unsafe payment warning",
+      "pass": true
+    },
+    {
+      "name": "Object Swap hotbar rejects a missing legal destination",
+      "pass": true
+    },
+    {
+      "name": "ultimate hotbar reflects resource and cinematic legality",
+      "pass": true
+    },
+    {
+      "name": "ability slot order saves independently for each fighter",
+      "pass": true
+    },
+    {
+      "name": "hotbar reordering changes display order only and restores defaults",
+      "pass": true
+    },
+    {
+      "name": "hotbar prompts adapt to keyboard touch Nintendo Xbox PlayStation and custom mappings",
+      "pass": true
+    },
+    {
+      "name": "holding a hotbar slot opens information without activating it",
+      "pass": true
+    },
+    {
+      "name": "unavailable hotbar warnings are throttled and never spend resources",
+      "pass": true
+    },
+    {
+      "name": "desktop number-slot actions remain additive to Grab and selected-ability bindings",
+      "pass": true
+    },
+    {
+      "name": "shared hotbar selection cycles and activates the highlighted ability",
+      "pass": true
+    },
+    {
+      "name": "hotbar Fire Blast routes to the exact move even at close range",
+      "pass": true
+    },
+    {
+      "name": "hotbar Shots preserves four clones simultaneous fire cost and active lock",
+      "pass": true
+    },
+    {
+      "name": "hotbar Lens preserves the fair 60 Energy 25 HP cost",
+      "pass": true
+    },
+    {
+      "name": "hotbar actions remain buffered through brief hit-stop",
+      "pass": true
+    },
+    {
+      "name": "touch movement and Block remain held while a hotbar action is buffered",
+      "pass": true
+    },
+    {
+      "name": "default landscape controls do not overlap the bottom hotbar",
+      "pass": true
+    },
+    {
+      "name": "phone touch controls remain separated inside portrait and landscape safe bounds",
+      "pass": true
+    },
+    {
+      "name": "new mobile hotbar presets preserve joystick D-Pad left-handed and tablet choices",
+      "pass": true
+    },
+    {
+      "name": "legacy default touch positions migrate away from the action hotbar",
+      "pass": true
+    },
+    {
+      "name": "Training Reset stays outside the mobile stage HUD",
+      "pass": true
+    },
+    {
+      "name": "fullscreen is requested only through the explicit interaction method",
+      "pass": true
+    },
+    {
+      "name": "unsupported fullscreen falls back without failing the match",
+      "pass": true
+    },
+    {
+      "name": "fullscreen exit is explicit and Pause exposes it conditionally",
+      "pass": true
+    },
+    {
+      "name": "main page includes landscape fullscreen and hotbar presentation shells",
+      "pass": true
+    },
+    {
+      "name": "menu confirm and cancel follow Nintendo Xbox and PlayStation layouts",
+      "pass": true
+    },
+    {
+      "name": "controller settings track configured devices separately per player",
+      "pass": true
+    },
+    {
+      "name": "controller assignment panel and separate controls panel are present",
+      "pass": true
+    },
+    {
+      "name": "touch-capable menus advertise tap before the first gameplay touch",
+      "pass": true
+    },
+    {
+      "name": "Classic settings rail explains swiping and uses comfortable touch targets",
+      "pass": true
+    },
+    {
+      "name": "portrait phone main menu separates its header choices preview and touch hint",
+      "pass": true
+    },
+    {
+      "name": "hotbar exposes an information-close callback for pause recovery",
+      "pass": true
+    },
+    {
+      "name": "fighter select clearly labels showcase and unfinished roster states",
+      "pass": true
+    },
+    {
+      "name": "public Sage Manual grants onboarding guides without forcing story discoveries",
+      "pass": true
+    },
+    {
+      "name": "main menu renders one selected mode at a time with carousel navigation and honest locks",
+      "pass": true
+    },
+    {
+      "name": "loading manager reports task-derived progress and fighter identity",
+      "pass": true
+    },
+    {
+      "name": "active page uses one release cache ID and presentation assets",
+      "pass": true
+    },
+    {
+      "name": "finished Arena fighters have distinct data-driven normal attacks",
+      "pass": true
+    },
+    {
+      "name": "Shot Power and Trick categories organize Rrvvfo techniques",
+      "pass": true
+    },
+    {
+      "name": "Kinetic Arena balance has pursuit scaling fair defense and visible ring-outs",
+      "pass": true
+    },
+    {
+      "name": "the Sage Manual explains pursuit categories and Momentum counterplay",
+      "pass": true
+    },
+    {
+      "name": "Chapter 1 tutorial grab is close-range assisted and confirmed by a connected grab hit",
+      "pass": true
+    },
+    {
+      "name": "Story menu exposes only Rrvvfo and chains Chapters 1–4 without route-menu swaps",
+      "pass": true
+    },
+    {
+      "name": "Chapter 1 uses clear attempt counts, saved checkpoints, and the correct Lens charge target",
+      "pass": true
+    },
+    {
+      "name": "Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permanent tournament Run refusal",
+      "pass": true
+    },
+    {
+      "name": "Chapter 3 contains the complete investigation, facility, and Remote Region route",
+      "pass": true
+    },
+    {
+      "name": "Chapter 3 stages are valid and the reused tournament hub has a true after-hours treatment",
+      "pass": true
+    },
+    {
+      "name": "Chapter 3 data preserves the required structure and migrates duplicate save data safely",
+      "pass": true
+    },
+    {
+      "name": "Chapter 4 data preserves the revised village-first structure and optional secret boss",
+      "pass": true
+    },
+    {
+      "name": "Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending",
+      "pass": true
+    },
+    {
+      "name": "Chapter 4 stages and favicon assets are valid",
+      "pass": true
+    },
+    {
+      "name": "Chapter 2 living hub keeps only the five story-fit questlines mandatory",
+      "pass": true
+    },
+    {
+      "name": "Chapter 2 quest saves migrate safely and rumor gates advance between rounds",
+      "pass": true
+    },
+    {
+      "name": "permanent Chapter 2 side-quest stats affect Story calculations",
+      "pass": true
+    },
+    {
+      "name": "Chapter 2 tournament returns to the hub and exposes mandatory and optional activities",
+      "pass": true
+    },
+    {
+      "name": "Chapter 4 reaches the floating lookout with a pebble Object Swap sequence",
+      "pass": true
+    },
+    {
+      "name": "Prototype 2.9A.22 preserves the approved Chapter 1 and Chapter 2 dialogue sources",
+      "pass": true
+    },
+    {
+      "name": "runtime fighter atlases use compressed WebP files",
+      "pass": true
+    },
+    {
+      "name": "Chapter 1 road skips the repeated mandatory movement marker lesson",
+      "pass": true
+    },
+    {
+      "name": "Chapter 2 mandatory preparation includes active card and repair challenges",
+      "pass": true
+    },
+    {
+      "name": "the uploaded Parallels X icon is wired for browser tabs and installed apps",
+      "pass": true
+    },
+    {
+      "name": "Prototype 2.9A.22 preserves the distinct Chapter 1 and Chapter 2 visual silhouettes",
+      "pass": true
+    },
+    {
+      "name": "Story chapters use one shared runtime controller without method monkey-patching",
+      "pass": true
+    },
+    {
+      "name": "Prototype 2.9A.24 preserves the eight-chapter route without inventing Chapters 5–8",
+      "pass": true
+    },
+    {
+      "name": "Echo Village has a low-tech resonance identity and invasive Hollow contrast",
+      "pass": true
+    },
+    {
+      "name": "Chapter 4 secret-boss checkpoints migrate and one-time rewards cannot duplicate",
+      "pass": true
+    },
+    {
+      "name": "Hollow Watcher adaptation is readable, breakable, and never full immunity",
+      "pass": true
+    },
+    {
+      "name": "Chapter 4 QTEs support keyboard, controller, touch abilities, and safe retries",
+      "pass": true
+    },
+    {
+      "name": "Echo Region uses separate procedural identities for village, cavern, mountain, and Hollow combat",
+      "pass": true
+    },
+    {
+      "name": "Story fights preserve and recover Rrvvfo sprite assets across Chapters 2–4",
+      "pass": true
+    },
+    {
+      "name": "Story combat hides exploration HUD, maps, and menus without hiding combat-specific panels",
+      "pass": true
+    },
+    {
+      "name": "All-chapter polish is initialized from the main runtime",
+      "pass": true
+    },
+    {
+      "name": "Secret playtest menu uses the exact keyboard and controller code",
+      "pass": true
+    },
+    {
+      "name": "Playtest menu exposes recovery chapter jumps combat tests and bug reports",
+      "pass": true
+    },
+    {
+      "name": "Story fight transitions are centralized and preserve a pre-fight save snapshot",
+      "pass": true
+    },
+    {
+      "name": "Dialogue presentation uses atlas portraits expressions and camera focus",
+      "pass": true
+    },
+    {
+      "name": "Unified objectives autosave and route home shows the recovery checkpoint",
+      "pass": true
+    },
+    {
+      "name": "Chapter completion creates a ranked Story results screen",
+      "pass": true
+    },
+    {
+      "name": "Combat feedback adds perfect-parry guard-break heavy-impact and low-health cues",
+      "pass": true
+    },
+    {
+      "name": "Procedural chapter audio crossfades and adds distinct ambience accents",
+      "pass": true
+    },
+    {
+      "name": "Chapter 3 Strange Man sequence preserves order, flags, and facility migration",
+      "pass": true
+    },
+    {
+      "name": "Chapter 3 Strange Man dialogue, hat, Lens contradictions, and east-support clue are packaged",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25 chapter results use real optional quest state and one merged clear screen",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25 secret code is menu-only and settings only expose connected features",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25 hub collision blocks structures and keeps Echo Village spawns clear",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25 Chapter 3 consolidates evidence instead of forcing repeated plaza laps",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25 Chapter 4 makes teamwork playable with QTE roles, waves, allies, and optional swarms",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25 Hollow Watcher learns full combat routes instead of one repeated button",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25 optional stat rewards use diminishing returns",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25 procedural music includes quiet and ambient phrase variation",
+      "pass": true
+    },
+    {
+      "name": "2.9A.25.1 Chapter Select uses full width and exposes Chapter 4 replay or restart",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29 training trials teach pursuit finishers, wall splats, ground bounces, and escapes",
+      "pass": true
+    },
+    {
+      "name": "2.9A.26 Arena Training exposes defensive dummy modes and live trial feedback",
+      "pass": true
+    },
+    {
+      "name": "2.9A.26 impact freeze is adjustable without removing camera-shake accessibility",
+      "pass": true
+    },
+    {
+      "name": "2.9A.26 Chapter 3 journal presents deductions, contradictions, and evidence as a case board",
+      "pass": true
+    },
+    {
+      "name": "2.9A.26 Chapter 4 enemy roles change stats and expose readable wave/team HUD",
+      "pass": true
+    },
+    {
+      "name": "2.9A.26 character motion identity and full-energy/critical-guard cues are wired",
+      "pass": true
+    },
+    {
+      "name": "2.9A.27 Chapter 1 starts with active combat and offers three road routes plus transport rescue",
+      "pass": true
+    },
+    {
+      "name": "2.9A.27 Chapter 2 observation reduces rumor errands without removing tournament matches",
+      "pass": true
+    },
+    {
+      "name": "2.9A.27 Chapter 3 consolidates footage reconstruction and keeps the facility payoff",
+      "pass": true
+    },
+    {
+      "name": "2.9A.27 Chapter 4 adds team rest, ally commands, and changed cavern return",
+      "pass": true
+    },
+    {
+      "name": "2.9A.27.2 roadside defeat recovery and map guidance are explicit",
+      "pass": true
+    },
+    {
+      "name": "Chapter 4 replay always starts from a fresh temporary state",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36.1 Chapter 4 replay hides stale completion choice and QTE overlays",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36.3 Chapter 4 hidden state overrides every desktop overlay display rule",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36.3 Chapter 4 menu close repairs stale visible-menu state",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36.3 Chapter 4 completion closes menus before changing mode",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29 pursuit rules are bounded and prevent repeated wall or ground loops",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29 movement identities keep fighters distinct without damage modifiers",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29 Arena wires buffered pursuit, defensive tech, one-use reactions, and readable prompts",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29.1 Pursuit Tech uses a fair fixed 15-Energy threshold",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29.1 pursuit prompts support Full Minimal and Off without changing combat rules",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29.1 pursuit feedback and cleanup are wired for mobile and Story transitions",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29.1 Training sells the full pursuit route and grades timing",
+      "pass": true
+    },
+    {
+      "name": "2.9A.28 mode and route selectors use one-card carousels",
+      "pass": true
+    },
+    {
+      "name": "2.9A.28.1 mobile Story hubs use compact HUDs and spacious sheets",
+      "pass": true
+    },
+    {
+      "name": "2.9A.29.2 unifies combat HUD feedback without changing pursuit balance",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30 Focus Recovery uses gray health, startup, and fixed energy conversion",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30 Focus Recovery creates release recovery and clears safely",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30 stages expose distinct playstyle profiles and clean tournament rules",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30 Arena wires stage identity, tournament atmosphere, and Focus Recovery",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30.1 Focus Recovery startup cancels cleanly without accidental release lag",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30.1 Focus Recovery availability preserves normal Block when healing is unavailable",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30.1 Focus Recovery reports the current channel instead of the round total",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30.1 preserves Story stats, initializes stage cameras, and clears Training recovery state",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30.1 Mountain Path is open while stage size labels match their dimensions",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30.1 mobile Arena UI separates prompts and uses compact Training and Stage carousels",
+      "pass": true
+    },
+    {
+      "name": "2.9A.30.2 smoke runner exposes progress, timeouts, recovery controls, and mixed-build detection",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31 fighter feel profiles make finished fighters meaningfully distinct",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31 Arena packages late input buffering, identity guide, and instant rematches",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31 active page loads the character-feel presentation stylesheet",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31.3 save export reset and schema validation cover the complete current save set",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31.3 Story save failure returns the verified previous state without false progress",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31.3 every public stage surface uses the same five playable Arena stages",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31.3 ring-out and Story recovery rules are data-driven and functional",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31.3 asset-less enemies keep individual accents and skip missing sprite requests",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31.3 Chapter 4 playtesting can enter a clean temporary Echo Village hub",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31.3 portrait combat retains compact critical cues without Training overlap",
+      "pass": true
+    },
+    {
+      "name": "2.9A.31.3 a timed-out smoke test stops before contaminating later tests",
+      "pass": true
+    },
+    {
+      "name": "2.9A.32 active page loads the shared Hub Charm presentation layer",
+      "pass": true
+    },
+    {
+      "name": "2.9A.32 Story Charm supports arrivals banter progression and future fighter reveals",
+      "pass": true
+    },
+    {
+      "name": "2.9A.32 Story saves emit precise progression deltas without changing export schema",
+      "pass": true
+    },
+    {
+      "name": "2.9A.32 milestone banter and arrival reactions cover the current four-chapter route",
+      "pass": true
+    },
+    {
+      "name": "2.9A.32 Chapter 2 adds a playful photo activity instead of another fetch quest",
+      "pass": true
+    },
+    {
+      "name": "2.9A.32 Chapter 2 ambient NPC reactions change with major tournament progress",
+      "pass": true
+    },
+    {
+      "name": "2.9A.32 Echo Chime Jam is persistent and Chapter 4 state normalizes it safely",
+      "pass": true
+    },
+    {
+      "name": "2.9A.32 Echo Village visuals react to beacon lift defense and party activity progress",
+      "pass": true
+    },
+    {
+      "name": "2.9A.33 non-tournament stages use deliberate route-shaping geometry",
+      "pass": true
+    },
+    {
+      "name": "2.9A.33 stage geometry blocks fighters and projectiles without changing Story hubs",
+      "pass": true
+    },
+    {
+      "name": "2.9A.33 Hollow Watcher teaches a three-phase readable boss dance",
+      "pass": true
+    },
+    {
+      "name": "2.9A.33 Quick Battle launches the last safe matchup as first to one",
+      "pass": true
+    },
+    {
+      "name": "2.9A.33 active page loads boss and stage personality presentation",
+      "pass": true
+    },
+    {
+      "name": "2.9A.34 signature profiles preserve four distinct decision identities",
+      "pass": true
+    },
+    {
+      "name": "2.9A.34 Arena wires Object Swap, pressure, near-miss, and armor punish moments",
+      "pass": true
+    },
+    {
+      "name": "2.9A.34 final KOs use a stronger fighter-colored finish without changing KO rules",
+      "pass": true
+    },
+    {
+      "name": "2.9A.34 Training includes one short identity trial for each finished fighter",
+      "pass": true
+    },
+    {
+      "name": "2.9A.34 active page loads signature-combat presentation and synchronized cache",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 pacing state normalizes safely and keeps quest waves bounded",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 Chapter 2 orientation requires place familiarity and people, not a timer",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 Chapter 3 makes players compare the closed arena with another district",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 Chapter 4 orientation is based on understanding two village landmarks",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 phase transitions support quiet aftermaths without lowering unlock waves",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 Chapter 2 reveals the festival and optional quests in story waves",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 Chapter 3 delays the first lead and stages optional investigations",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 Chapter 4 introduces Echo Village before the party mission begins",
+      "pass": true
+    },
+    {
+      "name": "2.9A.35 Chapter 1 stays light while still tracking an RPG journey arc",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36 quest-variety state normalizes every released chapter safely",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36 Chapter 1 runaway cart is a mandatory playable road beat",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36 Chapter 2 exhibition gates registration and grades performance",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36 Chapter 3 reconstruction keeps confirmed evidence and teaches order",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36 Chapter 4 party field route requires all three characters",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36 older Chapter 4 saves beyond the caverns never move backward",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36 active build packages playful exploration without changing save schema",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36.2 detects impossible Chapter 4 completion without damaging Chapters 1–3",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36.2 route menu offers a saveable Chapter 4 recovery instead of trapping the player in Replay",
+      "pass": true
+    },
+    {
+      "name": "2.9A.36.2 Chapter 4 clearly labels temporary Replay runs",
+      "pass": true
+    },
+    {
+      "name": "2.9A.37 Story reliability distinguishes first play, replay, and invalid completion",
+      "pass": true
+    },
+    {
+      "name": "2.9A.37 save path strips false Chapter 4 completion before persistence",
+      "pass": true
+    },
+    {
+      "name": "2.9A.37 Story runtime reports saveable and temporary run modes explicitly",
+      "pass": true
+    },
+    {
+      "name": "2.9A.37 secret playtest menu exposes Story save health and chapter states",
+      "pass": true
+    },
+    {
+      "name": "2.9A.37 chapter results include RPG afterglow instead of rushing the next objective",
+      "pass": true
+    },
+    {
+      "name": "2.9A.37 active build packages reliability and RPG flow without changing save schema",
+      "pass": true
+    }
+  ],
+  "passed": 356,
+  "failed": 0,
+  "total": 356,
+  "build": "Prototype 2.9A.37 — First-Play Story Reliability & RPG Flow",
+  "cacheId": "29a37-first-play-story-reliability-rpg-flow-20260801"
+}

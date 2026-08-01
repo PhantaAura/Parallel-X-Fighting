@@ -1,0 +1,25 @@
+{
+  "name": "Parallels X: Clash of Souls — Prototype 2.9A.39",
+  "version": "Prototype 2.9A.39 — Chapters 1–4 Full Experience Polish",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cacheId": "29a39-full-experience-polish-20260801",
+  "saveSchema": 268,
+  "focus": [
+    "full Chapters 1–4 RPG pacing polish",
+    "meaningful checkpoint and world-change reactions",
+    "S/A Story fight-rank acknowledgement without low-rank overlay spam",
+    "optional Echo Village party recovery",
+    "Chapter 4 as the longest released chapter without mandatory padding"
+  ],
+  "pacingTargets": {
+    "chapter1": "35–50 min",
+    "chapter2": "70–100 min",
+    "chapter3": "55–80 min",
+    "chapter4": "90–120 min"
+  },
+  "fightRanks": ["S", "A", "B", "C", "D", "E"],
+  "plannedRouteChapters": 8,
+  "releasedRouteChapters": 4,
+  "smokeCasesPackaged": 373
+}

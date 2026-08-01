@@ -1,0 +1,11 @@
+/* Prototype 2.9A.39 — Chapters 1–4 Full Experience Polish */
+.storyEngineActive .battleRankToast{backdrop-filter:blur(8px)}
+.storyEngineActive .battleRankToast[data-rank="S"]{animation:px39RankS .42s cubic-bezier(.2,1.4,.35,1) both;box-shadow:0 18px 58px #000d,0 0 34px #ffe56e55}
+.storyEngineActive .battleRankToast[data-rank="S"] .battleRankLetter{transform:scale(1.08)}
+.storyEngineActive .battleRankToast[data-rank="A"]{box-shadow:0 16px 46px #000c,0 0 22px #6de7ff33}
+.storyChapter4 [data-c4-prompt-title]{letter-spacing:.05em}
+.storyChapter4 [data-c4-prompt-detail]{opacity:.88}
+.storyChapter4 [data-c4-journal-list] article{transition:transform .16s ease,border-color .16s ease}
+.storyChapter4 [data-c4-journal-list] article:hover{transform:translateX(3px);border-color:#8fe8ff77}
+@keyframes px39RankS{0%{transform:translate(-50%,-20px) scale(.84);opacity:0}65%{transform:translate(-50%,0) scale(1.06);opacity:1}100%{transform:translate(-50%,0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.storyEngineActive .battleRankToast[data-rank="S"]{animation:none}.storyChapter4 [data-c4-journal-list] article{transition:none}}

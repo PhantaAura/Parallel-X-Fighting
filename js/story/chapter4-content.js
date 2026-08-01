@@ -1,12 +1,12 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
-export const CHAPTER4_STATE_VERSION=4;
+export const CHAPTER4_STATE_VERSION=5;
 
 export const CHAPTER4_REQUIRED_STEPS=Object.freeze([
   'opening','villageReached','barkWadeArrive','beaconRestored','cavernsEntered',
   'liftPartsRecovered','villageDefended','mountainDecision','mountainEntered',
-  'mountainSignals','hollowWatcherDefeated','lookoutReached','shadowBriefing','chapterSaved'
+  'mountainSignals','hollowWatcherDefeated','lookoutReached','shadowArrival','chapterSaved'
 ]);
 
 export const CHAPTER4_BEACON_NODES=Object.freeze([
@@ -69,6 +69,11 @@ export function ryuzankaroQuestAvailable(state){
 export function normalizeChapter4State(value={}){
   const base=freshChapter4State(),source=value&&typeof value==='object'?value:{};
   let requiredCompleted=unique(source.requiredCompleted);
+  // 2.9A.39.1 ending migration: old fully-completed saves used `shadowBriefing`.
+  // Only completed old endings inherit the new arrival evidence; partial saves must play the new scene.
+  const oldEndingComplete=requiredCompleted.includes('shadowBriefing')&&(requiredCompleted.includes('chapterSaved')||source.chapterComplete);
+  requiredCompleted=requiredCompleted.filter(id=>id!=='shadowBriefing');
+  if(oldEndingComplete&&!requiredCompleted.includes('shadowArrival'))requiredCompleted=unique([...requiredCompleted,'shadowArrival']);
   const villageDefenseIndex=CHAPTER4_REQUIRED_STEPS.indexOf('villageDefended');
   const inferredVillageDefense=Boolean(source.villageDefenseComplete||requiredCompleted.some(id=>CHAPTER4_REQUIRED_STEPS.indexOf(id)>=villageDefenseIndex));
   if(inferredVillageDefense&&!requiredCompleted.includes('villageDefended'))requiredCompleted=unique([...requiredCompleted,'villageDefended']);
@@ -78,8 +83,10 @@ export function normalizeChapter4State(value={}){
   const variety=normalizeQuestVarietyState('chapter4',source.variety);
   if(requiredCompleted.includes('cavernsEntered')){variety.fieldActions=CHAPTER4_PARTY_FIELD_ACTIONS.map(action=>action.id);variety.fieldRouteComplete=true;variety.persistentChanges=[...new Set([...(variety.persistentChanges||[]),'echo-cavern-route-repaired'])]}
   if(requiredCompleted.includes('barkWadeArrive')){pacing.interactions=[...new Set([...pacing.interactions,'resonance-wall','water-channel'])];pacing.orientationComplete=true;pacing.wave=Math.max(1,pacing.wave)}
+  const location=source.location==='shadow-lookout'&&!requiredCompleted.includes('lookoutReached')?'echo-mountain':source.location;
   return{
     ...base,...source,version:CHAPTER4_STATE_VERSION,
+    location:location||base.location,
     requiredCompleted,
     pacing,
     variety,

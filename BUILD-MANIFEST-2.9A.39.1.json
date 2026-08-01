@@ -1,0 +1,17 @@
+{
+  "name": "Parallels X: Clash of Souls — Prototype 2.9A.39.1",
+  "version": "Prototype 2.9A.39.1 — Chapter 4 Ending Continuity Patch",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cacheId": "29a391-chapter4-ending-continuity-20260801",
+  "saveSchema": 268,
+  "focus": [
+    "replace only Chapter 4 Shadow’s Lookout ending",
+    "preserve mandatory summit pebble Object Swap",
+    "converge Ryuzankaro completed/skipped branches",
+    "reserve Project Hollow and badge exposition for Chapter 5",
+    "save-safe lookout entrance checkpoint"
+  ],
+  "chapter4RequiredSteps": 14,
+  "smokeCasesPackaged": 379
+}

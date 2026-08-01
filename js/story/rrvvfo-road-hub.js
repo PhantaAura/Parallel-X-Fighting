@@ -1,15 +1,15 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {StoryMap} from './story-map.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyConfirm} from './story-ux.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a391-chapter4-ending-continuity-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a391-chapter4-ending-continuity-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
+import {StoryMap} from './story-map.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a391-chapter4-ending-continuity-20260801';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a391-chapter4-ending-continuity-20260801';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -810,6 +810,7 @@ class RrvvfoRoadHub{
     foe.asset=null;
     foe.reset(940,-70);applyStoryLevelToFighter(foe,storyLevelFromProgress(loadLostYearProgress()),{restoreHealth:true});
     foe.en=45;
+    this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:foe.id,stageId:this.battle.stage.id,mode:'story'});
     this.battle.koTarget=1;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';
     this.battle.time=Infinity;
     this.battle.hideBanner();
@@ -822,7 +823,7 @@ class RrvvfoRoadHub{
     this.roadKoLocked=true;if(playerWon)this.roadPlayerKOs++;else this.roadFoeKOs++;
     this.battle.scores=[this.roadPlayerKOs,this.roadFoeKOs];this.battle.phase='story';this.mode='fight-ko';
     this.battle.banner(`K.O. • ${this.roadPlayerKOs}–${this.roadFoeKOs}`);this.battle.audio.play('ko');this.battle.hud();
-    const complete=(playerWon?this.roadPlayerKOs:this.roadFoeKOs)>=1;clearTimeout(this.roadKoTimer);
+    const complete=(playerWon?this.roadPlayerKOs:this.roadFoeKOs)>=1;if(complete)this.battle.finalizeBattleRank({won:playerWon,scoreFor:this.roadPlayerKOs,scoreAgainst:this.roadFoeKOs,label:'ROAD FIGHT RANK',showToast:true});clearTimeout(this.roadKoTimer);
     this.roadKoTimer=window.setTimeout(()=>{if(this.aborted)return;if(complete){this.mode='fight';if(playerWon)this.finishRoadFight(true);else this.showRoadDefeatOptions();return}this.respawnRoadFight();},1100);
   }
 

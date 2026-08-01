@@ -1,3 +1,4 @@
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a391-chapter4-ending-continuity-20260801';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 
@@ -70,6 +71,7 @@ class StoryCharmController{
     document.addEventListener('pxstorycelebration',event=>this.enqueue({kind:'celebration',...(event.detail||{})}));
     document.addEventListener('pxstorymodechange',event=>{this.mode=event.detail?.to||''});
     document.addEventListener('pxstorymenuopen',()=>this.clearVisuals());
+    document.addEventListener('pxstoryfightrank',event=>{const reaction=storyRankReaction(event.detail?.rank);if(reaction)this.enqueue({...reaction,once:false})});
   }
   clearVisuals(){
     if(!this.root)return;
@@ -123,7 +125,7 @@ class StoryCharmController{
     document.dispatchEvent(new CustomEvent('pxstoryuicue',{detail:{cue:item.type==='level'?'levelUp':'unlock'}}));
     this.timer=setTimeout(()=>this.finish(node,240),item.duration||3900);
   }
-  onCheckpoint({checkpoint}={}){const moment=CHECKPOINT_MOMENTS[checkpoint];if(moment)this.enqueue({...moment,onceKey:`checkpoint:${checkpoint}`})}
+  onCheckpoint({checkpoint}={}){const moment=CHECKPOINT_MOMENTS[checkpoint]||storyExperienceBeat(checkpoint);if(moment)this.enqueue({...moment,onceKey:`checkpoint:${checkpoint}`})}
   onProgression(detail={}){
     const levelFrom=Number(detail.oldLevel)||0,levelTo=Number(detail.newLevel)||0;
     if(levelTo>levelFrom){

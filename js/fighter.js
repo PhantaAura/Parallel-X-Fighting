@@ -5,7 +5,7 @@ import {tint} from './effects.js';
 import {tryMeleeClash,tryUltimateClash} from './clash-system.js';
 import {DEFENSE_BALANCE,defensiveDashFrames,resetDefenseState,resolveBlockedHit,updateDefenseState} from './guard-system.js';
 import {beginCinematicUltimate,clearCinematic,ULTIMATES} from './ultimate-system.js';
-import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a391-chapter4-ending-continuity-20260801';
 
 const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 const LENS_MASTERY_KEY='pxLensMasteryV1';

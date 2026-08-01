@@ -1,15 +1,15 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyConfirm} from './story-ux.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a391-chapter4-ending-continuity-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a391-chapter4-ending-continuity-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a391-chapter4-ending-continuity-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a391-chapter4-ending-continuity-20260801';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a391-chapter4-ending-continuity-20260801';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -1655,6 +1655,7 @@ class RrvvfoMission2{
       foe.bodyCenter*=foe.visualScale;foe.collisionRadius*=Math.min(1.45,foe.visualScale);
       foe.maxHp=opponentMaxHp;foe.hp=opponentMaxHp;foe.en=config.final?80:45;foe.guard=100;
       if(assisted){foe.storyAttackMultiplier*=.92;foe.storySpeedMultiplier*=.96}
+      this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:foe.id,stageId:this.battle.stage.id,mode:'story'});
       this.battle.koTarget=this.currentFight.koTarget;this.battle.scores=[0,0];this.battle.round=1;this.battle.phase='play';this.battle.time=Infinity;this.battle.hideBanner();
       this.battle.ringOutEnabled=Boolean((this.currentFight.official&&!config.final)||config.ringOutTutorial);
       this.battle.onRingOut=fighter=>{
@@ -1768,6 +1769,7 @@ class RrvvfoMission2{
   finishCurrentFight(won){
     if(this.mode!=='fight'||!this.currentFight||this.currentFight.final)return;
     const fight=this.currentFight;
+    this.battle.finalizeBattleRank({won,scoreFor:fight.playerKOs,scoreAgainst:fight.foeKOs,label:fight.official?'TOURNAMENT FIGHT RANK':'FIGHT RANK',showToast:true});
     this.mode='story';this.battle.phase='story';
     this.root.querySelector('[data-tournament-run]').hidden=true;
     if(!won){
@@ -2119,6 +2121,7 @@ class RrvvfoMission2{
     this.clash.active=false;
     this.root.querySelector('[data-beam-clash]').hidden=true;
     this.finalPhase='finished';this.mode='story';
+    this.battle.finalizeBattleRank({won:false,scoreFor:clashWon?1:0,scoreAgainst:1,label:'FINAL FIGHT RANK',showToast:true});
     this.battle.root.querySelector('[data-impact-flash]').style.opacity='1';
     setTimeout(()=>{if(this.battle?.root)this.battle.root.querySelector('[data-impact-flash]').style.opacity='0'},140);
     if(clashWon){

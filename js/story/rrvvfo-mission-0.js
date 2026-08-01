@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {clampToStage} from '../arena/arena-stages.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyConfirm} from './story-ux.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a391-chapter4-ending-continuity-20260801';
+import {clampToStage} from '../arena/arena-stages.js?v=29a391-chapter4-ending-continuity-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -153,6 +153,7 @@ class RrvvfoMission0{
     this.battle.fighters[1].maxHp=100;
     this.battle.fighters[1].hp=100;
     this.battle.fighters[1].en=100;
+    this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:'sage',stageId:this.battle.stage.id,mode:'story'});
     this.configureHotbar();
     this.root.classList.remove('hidden');
     this.completePanel.classList.add('hidden');
@@ -408,6 +409,7 @@ class RrvvfoMission0{
   finishMission(){
     const battle=this.battle;
     battle.phase='storyComplete';
+    battle.finalizeBattleRank({won:true,scoreFor:1,scoreAgainst:0,label:'SAGE SPAR RANK',showToast:true});
     battle.hideBanner();
     battle.fighters[1].visualAction='hurtLight';
     battle.fighters[1].visualActionTime=.5;

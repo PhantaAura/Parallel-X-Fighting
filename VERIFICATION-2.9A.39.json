@@ -1,0 +1,39 @@
+{
+  "build": "Prototype 2.9A.39 — Chapters 1–4 Full Experience Polish",
+  "cacheId": "29a39-full-experience-polish-20260801",
+  "saveSchema": 268,
+  "browserSmoke": {
+    "passed": 373,
+    "total": 373,
+    "browser": "Chromium 144.0.7559.96 headless",
+    "method": "CDP Page.setDocumentContent + intercepted virtual HTTPS origin"
+  },
+  "static": {
+    "javascriptModulesParsed": 93,
+    "relativeImportsResolved": 260,
+    "htmlIdsChecked": 259,
+    "duplicateHtmlIds": 0,
+    "jsonAndManifestFilesParsed": 46
+  },
+  "pacing": {
+    "chapter1": "35–50 min",
+    "chapter2": "70–100 min",
+    "chapter3": "55–80 min",
+    "chapter4": "90–120 min",
+    "chapter4LongestByDistinctPhasesNotPadding": true,
+    "meaningfulBeatCadence": "2–4 min target"
+  },
+  "chapter4": {
+    "requiredStepCount": 14,
+    "partyRecoveryOptional": true,
+    "partyRecoveryStoryXp": 45
+  },
+  "fightRanks": [
+    "S",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+  ]
+}

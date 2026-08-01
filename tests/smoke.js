@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a391-chapter4-ending-continuity-20260801';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {Fighter} from '../js/fighter.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {EffectSystem} from '../js/effects.js?v=29a391-chapter4-ending-continuity-20260801';
+import {Fighter} from '../js/fighter.js?v=29a391-chapter4-ending-continuity-20260801';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,20 +17,22 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a391-chapter4-ending-continuity-20260801';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a391-chapter4-ending-continuity-20260801';
+import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
+import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a391-chapter4-ending-continuity-20260801';
+import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a391-chapter4-ending-continuity-20260801';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a391-chapter4-ending-continuity-20260801';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a391-chapter4-ending-continuity-20260801';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a391-chapter4-ending-continuity-20260801';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a391-chapter4-ending-continuity-20260801';
+import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a391-chapter4-ending-continuity-20260801';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -39,26 +41,27 @@ import {DEFAULT_QOL_SETTINGS,QOL_SETTINGS_KEY,loadQolSettings,saveQolSettings,sa
 import {NotificationSystem} from '../js/notification-system.js';
 import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringifySave,validateSaveImport} from '../js/save-manager.js';
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
-import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a391-chapter4-ending-continuity-20260801';
+import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a391-chapter4-ending-continuity-20260801';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {LoadingManager} from '../js/loading-manager.js?v=29a391-chapter4-ending-continuity-20260801';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {STAGES} from '../js/stages.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
+import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a391-chapter4-ending-continuity-20260801';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a391-chapter4-ending-continuity-20260801';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a391-chapter4-ending-continuity-20260801';
+import {STAGES} from '../js/stages.js?v=29a391-chapter4-ending-continuity-20260801';
+import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a391-chapter4-ending-continuity-20260801';
 
-const RELEASE_CACHE_ID='29a363-chapter4-menu-state-recovery-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.36.3 — Chapter 4 Menu State Recovery';
-const TOTAL_TESTS=350;
+const RELEASE_CACHE_ID='29a391-chapter4-ending-continuity-20260801';
+const EXPECTED_BUILD='Prototype 2.9A.39.1 — Chapter 4 Ending Continuity Patch';
+const TOTAL_TESTS=379;
 const TEST_TIMEOUT_MS=30000;
 class SmokeTimeoutError extends Error{constructor(name){super(`Timed out after ${TEST_TIMEOUT_MS/1000} seconds: ${name}`);this.name='SmokeTimeoutError';this.code='PX_SMOKE_TIMEOUT'}}
 const FETCH_TIMEOUT_MS=12000;
@@ -600,7 +603,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a363-chapter4-menu-state-recovery-20260801');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a391-chapter4-ending-continuity-20260801');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
@@ -650,10 +653,10 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a363-chapter4-menu-state-recovery-20260801');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a391-chapter4-ending-continuity-20260801');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
-  for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','reachLookout'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
+  for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','enterLookout','startShadowArrival'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
   const defenseUnlock=/unlockRyuzankaroAfterVillageDefense\(\)\{[\s\S]*?villageDefenseComplete=true;[\s\S]*?markChapter4Required\(this\.state,'villageDefended'\);[\s\S]*?ryuzankaro\.available=chapter4VillageDefenseComplete\(this\.state\)/;
   assert(defenseUnlock.test(source)&&source.includes("if(fight.kind==='village-defense')")&&source.includes('this.unlockRyuzankaroAfterVillageDefense()'),'Ryuzankaro quest unlock is not tied to the village defense');
   assert(source.includes('if(!ryuzankaroQuestAvailable(this.state))'),'Old Man quest lacks a strict village-defense gate');
@@ -707,6 +710,51 @@ await test('Chapter 4 reaches the floating lookout with a pebble Object Swap seq
   assert(source.includes("title:'FLOATING LOOKOUT OBJECT SWAP'"),'floating-lookout QTE is missing');
   assert(source.includes("sequence:['CHARGE','RELEASE','LOCK','OBJECT SWAP']"),'pebble Object Swap sequence is incomplete');
   assert(source.includes("It’s floating. I can’t reach it from the mountain."),'floating-lookout setup dialogue is missing');
+});
+await test('Chapter 4 new ending uses the exact one-line Shadow arrival and reserves exposition for Chapter 5',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(response=>response.text());
+  const start=source.indexOf('startShadowArrival(){'),end=source.indexOf('startFight(config)',start),ending=source.slice(start,end);
+  assert(ending.includes("text:'Shadow... it’s been a while.'"),'exact Chapter 4 ending line is missing');
+  assert(ending.includes('player.knockdown=Math.max'),'Rrvvfo does not visibly collapse before the ending fade');
+  for(const forbidden of ['Where did you find that symbol?','You knew I was coming?','And you didn’t help?','Come inside. You shouldn’t have found any of it.','What happened to you?'])assert(!ending.includes(forbidden),`Chapter 5 exposition leaked into Chapter 4 ending: ${forbidden}`);
+  assert(!ending.includes('ryuzankaro'),'Ryuzankaro creates a separate final Shadow scene');
+});
+
+await test('Chapter 4 gives control back on the floating lookout before Shadow entrance',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(response=>response.text());
+  assert(source.includes("this.completeRequired('lookoutReached');\n    this.enterLookout();"),'successful Object Swap does not land in the lookout exploration state');
+  assert(source.includes("kind:'shadow-entrance'")&&source.includes("label:'ENTER SHADOW’S LOOKOUT'"),'Shadow entrance is not an explicit player interaction');
+  assert(source.includes("this.area='lookout'")&&source.includes("player.y=500"),'floating lookout walkable state is missing');
+});
+
+await test('Chapter 4 ending completion display is Chapter 4 Complete then Chapter 5 Setup',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(response=>response.text());
+  assert(source.includes('<small>CHAPTER 4 COMPLETE</small><h2>CHAPTER 5 SETUP</h2>'),'ending completion display does not match the new handoff');
+  assert(source.includes('Chapter 5 begins when he wakes inside.'),'Chapter 5 wake-up setup is missing');
+  assert(source.includes('data-c4-ending-fade'),'new ending does not fade to black before completion');
+});
+
+await test('Chapter 4 required ending evidence uses shadowArrival and migrates only fully completed old endings',()=>{
+  assert(CHAPTER4_REQUIRED_STEPS.includes('shadowArrival')&&!CHAPTER4_REQUIRED_STEPS.includes('shadowBriefing'),'Chapter 4 required steps still use the old Shadow briefing');
+  const oldComplete=normalizeChapter4State({chapterComplete:true,requiredCompleted:['hollowWatcherDefeated','lookoutReached','shadowBriefing','chapterSaved'],location:'shadow-lookout'});
+  assert(oldComplete.requiredCompleted.includes('shadowArrival')&&!oldComplete.requiredCompleted.includes('shadowBriefing'),'fully completed old ending did not migrate to shadowArrival');
+  const oldPartial=normalizeChapter4State({requiredCompleted:['hollowWatcherDefeated','lookoutReached','shadowBriefing'],location:'shadow-lookout'});
+  assert(!oldPartial.requiredCompleted.includes('shadowArrival'),'partial old ending incorrectly skipped the new Shadow arrival');
+});
+
+await test('Chapter 4 lookout checkpoint cannot bypass the mandatory Object Swap',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(response=>response.text());
+  assert(source.includes("this.state.location==='shadow-lookout'&&this.state.requiredCompleted.includes('lookoutReached')"),'lookout restore is not guarded by completed Object Swap evidence');
+  const corrupted=normalizeChapter4State({location:'shadow-lookout',requiredCompleted:['hollowWatcherDefeated']});
+  assert(corrupted.location==='echo-mountain','corrupted lookout location can bypass the summit Object Swap');
+});
+
+await test('Chapter 4 completion reliability accepts the new ending and preserves old completed saves',()=>{
+  const base={completedMissions:['rrvvfo-00','rrvvfo-01','rrvvfo-road','rrvvfo-02','rrvvfo-03','rrvvfo-04'],lastCheckpoint:'rrvvfo-04-complete',unlocks:['shadowLookout']};
+  const modern={...base,chapter4State:{chapterComplete:true,requiredCompleted:['hollowWatcherDefeated','lookoutReached','shadowArrival','chapterSaved']}};
+  assert(inspectStoryReliability(modern).chapters.find(chapter=>chapter.number===4)?.complete,'new shadowArrival ending is not recognized as complete');
+  const old={...base,chapter4State:{chapterComplete:true,requiredCompleted:['hollowWatcherDefeated','lookoutReached','shadowBriefing','chapterSaved']}};
+  assert(inspectStoryReliability(old).chapters.find(chapter=>chapter.number===4)?.complete,'previous completed Chapter 4 save lost compatibility');
 });
 await test('Prototype 2.9A.22 preserves the approved Chapter 1 and Chapter 2 dialogue sources',async()=>{
   const [mission0,mission1,road,mission2,questData]=await Promise.all([
@@ -784,7 +832,7 @@ await test('Echo Village has a low-tech resonance identity and invasive Hollow c
 });
 await test('Chapter 4 secret-boss checkpoints migrate and one-time rewards cannot duplicate',async()=>{
   const state=normalizeChapter4State({version:1,ryuzankaro:{started:true,ingredients:['emberBloom']}});
-  assert(state.version===4&&state.ryuzankaro.checkpoint==='none'&&!state.ryuzankaro.rewardsGranted,'Chapter 4 v1 state did not migrate into the current checkpoint model');
+  assert(state.version===5&&state.ryuzankaro.checkpoint==='none'&&!state.ryuzankaro.rewardsGranted,'Chapter 4 v1 state did not migrate into the current checkpoint model');
   const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
   for(const token of ['resumeRyuzankaroCheckpoint','checkpoint=\'impact\'','checkpoint=\'aerial\'','checkpoint=\'village-final\'','checkpoint=\'seal\'','const firstReward=!this.state.ryuzankaro.rewardsGranted'])assert(source.includes(token),`Ryuzankaro reliability omitted ${token}`);
 });
@@ -1085,7 +1133,7 @@ await test('2.9A.36.3 Chapter 4 menu close repairs stale visible-menu state',asy
 
 await test('2.9A.36.3 Chapter 4 completion closes menus before changing mode',async()=>{
   const chapter4=await fetchSource('../js/story/rrvvfo-chapter-4.js');
-  assert(chapter4.includes("showCompletion(){this.closeStoryMenu();this.closeTracker();this.mode='complete'"),'Chapter 4 completion can leave Story Menu or Journal open');
+  assert(chapter4.includes("showCompletion(){this.closeStoryMenu();this.closeTracker();")&&chapter4.includes("this.mode='complete';this.battle.phase='story'"),'Chapter 4 completion can leave Story Menu or Journal open');
 });
 
 
@@ -1398,7 +1446,7 @@ await test('2.9A.32 Chapter 2 ambient NPC reactions change with major tournament
 
 await test('2.9A.32 Echo Chime Jam is persistent and Chapter 4 state normalizes it safely',async()=>{
   const [content,chapter4]=await Promise.all([fetchSource('../js/story/chapter4-content.js'),fetchSource('../js/story/rrvvfo-chapter-4.js')]);
-  assert(content.includes('CHAPTER4_STATE_VERSION=4'),'Chapter 4 state version was not advanced');
+  assert(content.includes('CHAPTER4_STATE_VERSION=5'),'Chapter 4 state version was not advanced');
   assert(content.includes('echoChimesComplete'),'Echo Chime completion is not normalized');
   for(const token of ['PLAY THE ECHO CHIMES','playEchoChimes','ECHO CHIME JAM','No item hunt, no combat'])assert(chapter4.includes(token),`Echo Chime activity omitted ${token}`);
 });
@@ -1615,7 +1663,7 @@ await test('2.9A.36 older Chapter 4 saves beyond the caverns never move backward
 });
 
 await test('2.9A.36 active build packages playful exploration without changing save schema',async()=>{
-  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a363-chapter4-menu-state-recovery-20260801'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
+  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a391-chapter4-ending-continuity-20260801'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.36 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.36 changed the save schema unexpectedly');
   assert(html.includes(RELEASE_CACHE_ID),'2.9A.36 cache identity is not synchronized');
@@ -1644,6 +1692,185 @@ await test('2.9A.36.2 Chapter 4 clearly labels temporary Replay runs',async()=>{
   assert(chapter4.includes('REPLAY (DOES NOT SAVE)'),'Chapter 4 Story Menu does not warn that Replay is temporary');
   assert(chapter4.includes('data-c4-menu-start-fresh')&&chapter4.includes('startFreshFromReplay'),'temporary Replay cannot be converted into a real Chapter 4 playthrough');
   assert(chapter4.includes('repairFalseCompletion'),'Chapter 4 starter cannot receive a false-completion repair request');
+});
+
+
+await test('2.9A.37 Story reliability distinguishes first play, replay, and invalid completion',()=>{
+  const clean={routeStarted:true,completedMissions:['rrvvfo-00','rrvvfo-01','rrvvfo-road','rrvvfo-02','rrvvfo-03'],lastCheckpoint:'rrvvfo-04',chapter4State:{requiredCompleted:['opening']}};
+  const first=inspectStoryReliability(clean,{active:true}),replay=inspectStoryReliability(clean,{active:true,replay:true});
+  assert(first.health==='GOOD'&&first.runMode==='FIRST PLAY'&&first.saveable,'clean first play is not recognized as saveable');
+  assert(replay.runMode==='REPLAY'&&replay.temporary&&!replay.saveable,'replay is not recognized as temporary');
+  const bad={...clean,completedMissions:[...clean.completedMissions,'rrvvfo-04'],chapter4State:{chapterComplete:true,requiredCompleted:['opening']}};
+  const invalid=inspectStoryReliability(bad);
+  assert(invalid.health==='ATTENTION'&&invalid.issues.some(issue=>issue.includes('Chapter 4')),'false Chapter 4 completion is not exposed');
+});
+
+await test('2.9A.37 save path strips false Chapter 4 completion before persistence',()=>{
+  const data=new Map(),storage={getItem:key=>data.get(key)||null,setItem:(key,value)=>data.set(key,value),removeItem:key=>data.delete(key)};
+  const bad={version:1,routeStarted:true,storyLevel:7,storyXp:1635,completedMissions:['rrvvfo-00','rrvvfo-01','rrvvfo-road','rrvvfo-02','rrvvfo-03','rrvvfo-04'],unlocks:['arena','echoRegion','shadowLookout'],lastCheckpoint:'rrvvfo-04-complete',chapter4State:{chapterComplete:true,requiredCompleted:['opening']}};
+  const saved=saveLostYearProgress(bad,storage);
+  assert(!saved.completedMissions.includes('rrvvfo-04'),'false Chapter 4 completion marker survived save');
+  assert(saved.completedMissions.includes('rrvvfo-03')&&saved.storyLevel===7&&saved.storyXp===1635,'reliability guard damaged earlier Story progress');
+  assert(saved.chapter4State.chapterComplete===false&&!saved.unlocks.includes('shadowLookout'),'false final unlock state survived save guard');
+});
+
+await test('2.9A.37 Story runtime reports saveable and temporary run modes explicitly',async()=>{
+  const [story,polish]=await Promise.all([fetchSource('../js/story/lost-year-story.js'),fetchSource('../js/story/story-polish.js')]);
+  for(const token of ["replay:Boolean(starterOptions.replay)","playtest:chainMode==='playtest'","storyRunMode","FIRST PLAY","REPLAY","TEMPORARY — DOES NOT SAVE"])assert(story.includes(token)||polish.includes(token),`Story run-mode reporting omitted ${token}`);
+});
+
+await test('2.9A.37 secret playtest menu exposes Story save health and chapter states',async()=>{
+  const polish=await fetchSource('../js/story/story-polish.js');
+  for(const token of ['SAVE HEALTH','data-playtest-reliability','saveIssues','chapterStates','Chapter order, completion evidence, and checkpoint order agree.'])assert(polish.includes(token),`playtest state inspector omitted ${token}`);
+});
+
+await test('2.9A.37 chapter results include RPG afterglow instead of rushing the next objective',async()=>{
+  const polish=await fetchSource('../js/story/story-polish.js');
+  assert(Object.keys(STORY_AFTERGLOW).length===4,'released chapters do not all have afterglow data');
+  const chapter2=storyAfterglowFor(2,{}),chapter4=storyAfterglowFor(4,{chapter4State:{ryuzankaro:{bossDefeated:true}}});
+  assert(chapter2.changes.length>=3&&chapter2.next.includes('Return after closing'),'Chapter 2 afterglow does not connect the RPG journey');
+  assert(chapter4.changes.some(line=>line.includes('Ryuzankaro')),'optional Chapter 4 accomplishment is absent from afterglow');
+  for(const token of ['CONTINUE JOURNEY','data-story-afterglow','WHAT CHANGED','storyAfterglowFor'])assert(polish.includes(token)||token==='WHAT CHANGED'&&polish.includes('storyAfterglow'),`RPG results pacing omitted ${token}`);
+});
+
+await test('2.9A.37 active build packages reliability and RPG flow without changing save schema',async()=>{
+  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a391-chapter4-ending-continuity-20260801'),fetchSource('../js/story/story-reliability.js')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.37 build label is not centralized');
+  assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.37 changed save schema unexpectedly');
+  assert(html.includes('story-rpg-flow-29a37.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.37 active page is not synchronized');
+  assert(reliability.includes('STORY_AFTERGLOW')&&reliability.includes('inspectStoryReliability'),'2.9A.37 reliability module is incomplete');
+});
+
+
+await test('2.9A.38 mastery records start clean and expose fifteen optional challenges',()=>{
+  const storage=memoryStorage(),records=loadMasteryRecords(storage),summary=masterySummary(records);
+  assert(Object.keys(MASTERY_CHALLENGES).length===15,'mastery challenge catalog is not 15 challenges');
+  assert(summary.completed===0&&summary.total===15&&summary.rank==='E','fresh mastery summary is not clean');
+  assert(records.fighters.rrvvfo&&records.fighters.revvfo&&records.fighters.wade&&records.fighters.bark,'fighter mastery records are incomplete');
+});
+
+await test('2.9A.38 battle mastery records real-time Sonic Battle mechanics',()=>{
+  const session=createBattleMasterySession({fighterId:'rrvvfo',opponentId:'revvfo',stageId:'dojo'});
+  recordBattleMasteryEvent(session,'hit',{damage:12,combo:1,kind:'light1'});
+  recordBattleMasteryEvent(session,'hit',{damage:14,combo:2,kind:'heavy'});
+  recordBattleMasteryEvent(session,'perfectParry');recordBattleMasteryEvent(session,'guardBreak');recordBattleMasteryEvent(session,'pursuitFinisher');recordBattleMasteryEvent(session,'signature');recordBattleMasteryEvent(session,'wallSplat');recordBattleMasteryEvent(session,'groundBounce');
+  assert(session.damageDealt===26&&session.bestCombo===2&&session.perfectParries===1&&session.guardBreaks===1,'battle mastery did not record core mechanics');
+  assert(session.pursuitFinishers===1&&session.signatures===1&&session.wallSplats===1&&session.groundBounces===1,'advanced combat mastery events were lost');
+});
+
+await test('Combat Rank Patch finished matches use the full S A B C D E ladder plus persistent mastery points',()=>{
+  const storage=memoryStorage(),session=createBattleMasterySession({fighterId:'rrvvfo',opponentId:'revvfo',stageId:'dojo'});
+  for(let i=1;i<=7;i++)recordBattleMasteryEvent(session,'hit',{damage:8,combo:i,kind:i%2?'light1':'heavy'});
+  recordBattleMasteryEvent(session,'perfectParry');recordBattleMasteryEvent(session,'guardBreak');recordBattleMasteryEvent(session,'pursuitFinisher');recordBattleMasteryEvent(session,'signature');recordBattleMasteryEvent(session,'finalKo');
+  const result=finalizeBattleMastery(session,{won:true,scoreFor:3,scoreAgainst:0,storage}),saved=loadMasteryRecords(storage);
+  assert(['E','D','C','B','A','S'].includes(result.rank)&&result.points>=3,'battle result did not award a valid rank and mastery points');
+  assert(saved.totalMatches===1&&saved.totalWins===1&&saved.fighters.rrvvfo.masteryPoints===result.points,'battle mastery did not persist');
+  assert(saved.fighters.rrvvfo.bestCombo===7&&saved.totalPerfectParries===1,'persistent record counters are wrong');
+});
+
+
+await test('Combat Rank Patch exposes all six rank thresholds',()=>{
+  const checks=[[100,'S'],[90,'S'],[89,'A'],[75,'A'],[74,'B'],[60,'B'],[59,'C'],[45,'C'],[44,'D'],[25,'D'],[24,'E'],[0,'E']];
+  for(const [score,rank] of checks)assert(battleMasteryRank(score)===rank,`score ${score} should be ${rank}`);
+});
+
+await test('Combat Rank Patch gives rough and losing fights meaningful D and E results',()=>{
+  const rough=createBattleMasterySession({fighterId:'rrvvfo',opponentId:'revvfo',stageId:'dojo'}),loss=createBattleMasterySession({fighterId:'rrvvfo',opponentId:'revvfo',stageId:'dojo'});
+  const roughResult=finalizeBattleMastery(rough,{won:true,scoreFor:1,scoreAgainst:0,storage:memoryStorage()});
+  const lossResult=finalizeBattleMastery(loss,{won:false,scoreFor:0,scoreAgainst:1,storage:memoryStorage()});
+  assert(['D','C'].includes(roughResult.rank),'a bare win should land around D/C before mechanical bonuses');
+  assert(lossResult.rank==='E','a no-technique loss should receive E rank');
+});
+
+await test('Combat Rank Patch ranks Story fights from Chapter 1 through Chapter 4',async()=>{
+  const [sage,road,c2,c3,c4]=await Promise.all([fetchSource('../js/story/rrvvfo-mission-0.js'),fetchSource('../js/story/rrvvfo-road-hub.js'),fetchSource('../js/story/rrvvfo-mission-2.js'),fetchSource('../js/story/rrvvfo-chapter-3.js'),fetchSource('../js/story/rrvvfo-chapter-4.js')]);
+  assert(sage.includes('SAGE SPAR RANK')&&sage.includes('beginBattleRank')&&sage.includes('finalizeBattleRank'),'Chapter 1 Sage spar is missing its fight rank');
+  for(const [name,source] of [['Chapter 1 road',road],['Chapter 2',c2],['Chapter 3',c3],['Chapter 4',c4]]){
+    assert(source.includes('beginBattleRank'),`${name} does not begin a universal fight rank`);
+    assert(source.includes('finalizeBattleRank'),`${name} does not finalize a universal fight rank`);
+  }
+  assert(c2.includes('FINAL FIGHT RANK'),'Chapter 2 final does not receive a fight rank');
+  assert(c4.includes('BOSS FIGHT RANK')&&c4.includes('SECRET BOSS RANK'),'Chapter 4 bosses are missing fight ranks');
+});
+
+await test('Combat Rank Patch displays S A B C D E on Arena and Story result presentation',async()=>{
+  const arena=await fetchSource('../js/arena/arena-mode.js');
+  for(const token of ['data-battle-rank-toast','data-mastery-rank','FIGHT RANK','data-rank=\"S\"','data-rank=\"A\"','data-rank=\"B\"','data-rank=\"C\"','data-rank=\"D\"','data-rank=\"E\"'])assert(arena.includes(token),`rank presentation omitted ${token}`);
+});
+
+await test('2.9A.38 challenge medals reward mastery once instead of encouraging grinding',()=>{
+  const storage=memoryStorage(),first=recordMasteryChallenge('rrvvfo','rrvvfoIdentity',{grade:'A',storage}),points=first.records.fighters.rrvvfo.masteryPoints,again=recordMasteryChallenge('rrvvfo','rrvvfoIdentity',{grade:'A',storage}),upgrade=recordMasteryChallenge('rrvvfo','rrvvfoIdentity',{grade:'S',storage});
+  assert(first.first&&first.records.challenges.rrvvfoIdentity.completed,'identity mastery did not complete');
+  assert(!again.changed&&loadMasteryRecords(storage).fighters.rrvvfo.masteryPoints===points,'repeating a completed challenge granted grind points');
+  assert(upgrade.changed&&!upgrade.first&&upgrade.records.challenges.rrvvfoIdentity.grade==='S','better challenge grade did not replace the old rank');
+});
+
+await test('2.9A.38 mastery milestones unlock RPG-style titles and rewards',()=>{
+  const storage=memoryStorage();
+  for(const id of ['parry','combo','guard','rrvvfoIdentity'])recordMasteryChallenge('rrvvfo',id,{grade:'A',storage});
+  const records=loadMasteryRecords(storage);
+  assert(records.rewards.includes('Title • Rookie Challenger'),'first mastery milestone reward is missing');
+  assert(records.rewards.includes('Title • Arena Student'),'four-medal mastery milestone reward is missing');
+  assert(records.medals.length===4,'mastery medals did not persist one per challenge');
+});
+
+await test('2.9A.38 Adventure Records renders fighter ranks challenge status and rewards',()=>{
+  const storage=memoryStorage();recordMasteryChallenge('wade','wadeIdentity',{grade:'S',storage});const html=renderMasteryRecords(loadMasteryRecords(storage));
+  for(const token of ['ADVENTURE RECORDS','FIGHTER MASTERY','OPTIONAL MASTERY CHALLENGES','LIGHTNING NEAR-MISS','Wade Victory Aura • Flash Trail'])assert(html.includes(token),`Adventure Records omitted ${token}`);
+});
+
+await test('2.9A.38 mastery records are included in safe save export and import',()=>{
+  const source=memoryStorage();recordMasteryChallenge('bark','barkIdentity',{grade:'A',storage:source});const exported=createSaveExport(source),target=memoryStorage(),result=importSaveText(JSON.stringify(exported),target);
+  assert(SAVE_EXPORT_KEYS.includes(MASTERY_RECORDS_KEY),'mastery record key is absent from the save export allowlist');
+  assert(exported.data[MASTERY_RECORDS_KEY]&&result.ok,'mastery records did not export or import');
+  assert(loadMasteryRecords(target).challenges.barkIdentity.completed,'imported mastery challenge was lost');
+});
+
+await test('2.9A.38 active build integrates mastery results Training rewards and Extras records',async()=>{
+  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a391-chapter4-ending-continuity-20260801')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.38 build label is not centralized');assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.38 changed save schema unexpectedly');
+  assert(html.includes('mastery-records-29a38.css')&&html.includes('MASTERY & RECORDS')&&html.includes(RELEASE_CACHE_ID),'2.9A.38 page does not expose Adventure Records');
+  for(const token of ['createBattleMasterySession','recordBattleMasteryEvent','finalizeBattleMastery','data-mastery-result','recordMasteryChallenge'])assert(arena.includes(token),`Arena mastery integration omitted ${token}`);
+  assert(main.includes("section==='mastery'")&&main.includes('renderMasteryRecords'),'Extras does not render mastery records');
+  assert(save.includes("'pxMasteryRecordsV1'"),'save manager does not preserve mastery records');
+});
+
+
+await test('2.9A.39 chapter length profiles keep Chapter 4 longest without padding',()=>{
+  assert(storyTargetMinutes(1).join('-')==='35-50','Chapter 1 target changed from the short opening role');
+  assert(storyTargetMinutes(2).join('-')==='70-100','Chapter 2 target is wrong');
+  assert(storyTargetMinutes(3).join('-')==='55-80','Chapter 3 target is wrong');
+  assert(storyTargetMinutes(4).join('-')==='90-120'&&storyChapterIsLongest(4),'Chapter 4 is not the longest released chapter');
+  assert(storyExperienceProfile(4).promise.includes('distinct adventure phases')&&!storyExperienceProfile(4).promise.includes('walking farther'),'Chapter 4 pacing goal does not reject empty padding');
+});
+
+await test('2.9A.39 meaningful RPG beats cover travel tournament mystery and Echo Region',()=>{
+  const samples=['rrvvfo-road-cart-saved','rrvvfo-02-round-1','rrvvfo-03-strangeManLead','rrvvfo-04-cavernsEntered','rrvvfo-04-lookoutReached'];
+  for(const checkpoint of samples){const beat=storyExperienceBeat(checkpoint);assert(beat?.title&&beat?.detail,`missing experience beat for ${checkpoint}`)}
+  assert(Object.keys(STORY_EXPERIENCE_PROFILES).length===4,'experience profiles do not cover all released chapters');
+});
+
+await test('2.9A.39 high fight ranks celebrate skill without interrupting every result',()=>{
+  const s=storyRankReaction('S'),a=storyRankReaction('A');
+  assert(s?.kind==='celebration'&&s.title==='CLEAN FIGHT','S-rank Story reaction is missing');
+  assert(a?.kind==='arrival'&&a.duration<=2000,'A-rank reaction should stay brief');
+  assert(storyRankReaction('B')===null&&storyRankReaction('E')===null,'ordinary or rough ranks should not spam Story celebration overlays');
+});
+
+await test('2.9A.39 Chapter 4 adds optional party recovery without adding a mandatory gate',async()=>{
+  const [source,content]=await Promise.all([fetchSource('../js/story/rrvvfo-chapter-4.js'),fetchSource('../js/story/chapter4-content.js')]);
+  for(const token of ["kind:'team-rest'",'restWithTeam()','REST WITH BARK & WADE','ECHO VILLAGE PARTY REST','player.hp=player.maxHp','player.en=100','player.guard=100'])assert(source.includes(token),`Chapter 4 party recovery omitted ${token}`);
+  assert(!content.includes("'teamRestSeen'"),'party rest became a mandatory Chapter 4 required step');
+  assert(CHAPTER4_REQUIRED_STEPS.length===14,'2.9A.39 padded Chapter 4 by adding a mandatory objective');
+});
+
+await test('2.9A.39.1 active build preserves RPG polish with the new Chapter 4 ending',async()=>{
+  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a391-chapter4-ending-continuity-20260801')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD&&build.SAVE_SCHEMA_VERSION===268,'2.9A.39.1 build identity or save schema is wrong');
+  assert(html.includes('full-experience-29a39.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.39.1 presentation/cache is not synchronized');
+  assert(charm.includes('storyExperienceBeat')&&charm.includes('pxstoryfightrank'),'Story charm does not consume the new pacing/rank events');
+  assert(arena.includes("new CustomEvent('pxstoryfightrank'"),'Story fights do not emit rank reactions');
+  assert(polish.includes('pacingTarget')&&polish.includes('pacingRhythm'),'playtest diagnostics do not expose RPG pacing intent');
 });
 
 const initialOrdered=registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean);

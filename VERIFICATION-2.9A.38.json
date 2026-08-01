@@ -1,0 +1,29 @@
+{
+  "build": "Prototype 2.9A.38 \u2014 Combat Mastery & RPG Rewards",
+  "cacheId": "29a38-combat-rank-patch-20260801",
+  "saveSchema": 268,
+  "browserSmoke": {
+    "passed": 364,
+    "total": 364,
+    "browser": "Chromium 144 headless",
+    "method": "CDP Page.setDocumentContent + intercepted virtual HTTPS origin"
+  },
+  "static": {
+    "javascriptModulesParsed": 92,
+    "relativeImportsResolved": 256,
+    "htmlIdsChecked": 259,
+    "duplicateHtmlIds": 0,
+    "jsonAndManifestFilesParsed": 44
+  },
+  "mastery": {
+    "challengeCount": 15,
+    "ranks": [
+      "C",
+      "B",
+      "A",
+      "S"
+    ],
+    "noRepeatPointFarm": true,
+    "safeSaveKey": "pxMasteryRecordsV1"
+  }
+}

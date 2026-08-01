@@ -1,0 +1,18 @@
+{
+  "name": "Parallels X: Clash of Souls — Prototype 2.9A.37",
+  "version": "Prototype 2.9A.37 — First-Play Story Reliability & RPG Flow",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cacheId": "29a37-first-play-story-reliability-rpg-flow-20260801",
+  "saveSchema": 268,
+  "focus": [
+    "first-play Story save integrity",
+    "explicit replay and playtest run modes",
+    "save-health diagnostics",
+    "chapter-to-chapter RPG afterglow pacing",
+    "Chapter 4 false-completion prevention"
+  ],
+  "plannedRouteChapters": 8,
+  "releasedRouteChapters": 4,
+  "smokeCasesPackaged": 356
+}

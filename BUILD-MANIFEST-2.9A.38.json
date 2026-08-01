@@ -1,0 +1,18 @@
+{
+  "name": "Parallels X: Clash of Souls \u2014 Prototype 2.9A.38",
+  "version": "Prototype 2.9A.38 \u2014 Combat Mastery & RPG Rewards",
+  "type": "full repository build",
+  "requires_previous_patch": false,
+  "cacheId": "29a38-combat-rank-patch-20260801",
+  "saveSchema": 268,
+  "focus": [
+    "real-time combat mastery ranks",
+    "persistent Adventure Records",
+    "optional fighter and technique mastery challenges",
+    "one-time RPG mastery rewards",
+    "no-grind mastery progression"
+  ],
+  "plannedRouteChapters": 8,
+  "releasedRouteChapters": 4,
+  "smokeCasesPackaged": 364
+}

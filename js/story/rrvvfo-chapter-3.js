@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {StoryMap} from './story-map.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyConfirm} from './story-ux.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a391-chapter4-ending-continuity-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a391-chapter4-ending-continuity-20260801';
+import {StoryMap} from './story-map.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a391-chapter4-ending-continuity-20260801';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,9 +22,9 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a363-chapter4-menu-state-recovery-20260801';
+} from './chapter3-content.js?v=29a391-chapter4-ending-continuity-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a391-chapter4-ending-continuity-20260801';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -1344,6 +1344,7 @@ class RrvvfoChapter3{
     foe.id=config.id;foe.name=config.name;foe.accent=config.kind==='echo'?'#72d9e7':'#a98c5e';foe.cpu=true;foe.visualScale=config.kind==='echo'?1.18:1;foe.reset(420,-70);foe.asset=null;
     applyStoryLevelToFighter(foe,playerLevel+(config.kind==='echo'?2:0));
     foe.maxHp=Math.round(foe.maxHp*(config.hpScale||1));foe.hp=foe.maxHp;foe.en=80;foe.guard=100;
+    this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:foe.id,stageId:this.battle.stage.id,mode:'story'});
     if(config.kind==='echo'&&this.state.rewards.echoResistance)player.storyDefenseMultiplier*=.92;
     this.battle.time=9999;
     this.engine.setHotbarAvailability([1,2,3,4,5],{show:true});
@@ -1391,6 +1392,7 @@ class RrvvfoChapter3{
   finishFight(won){
     const fight=this.currentFight;
     if(!fight||this.mode!=='fight')return;
+    this.battle.finalizeBattleRank({won,scoreFor:won?1:0,scoreAgainst:won?0:1,label:fight.kind==='echo'?'BOSS FIGHT RANK':'FIGHT RANK',showToast:true});
     this.mode='story';this.battle.phase='story';
     if(!won){
       const losses=(this.fightLosses[fight.kind]||0)+1;this.fightLosses[fight.kind]=losses;

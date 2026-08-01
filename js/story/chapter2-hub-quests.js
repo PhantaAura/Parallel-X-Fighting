@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a391-chapter4-ending-continuity-20260801';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.21';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([

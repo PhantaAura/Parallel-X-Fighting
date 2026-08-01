@@ -11,16 +11,17 @@ import {
   repairChapter4Progress,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a363-chapter4-menu-state-recovery-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a363-chapter4-menu-state-recovery-20260801';
+} from './lost-year-data.js?v=29a391-chapter4-ending-continuity-20260801';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a391-chapter4-ending-continuity-20260801';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a391-chapter4-ending-continuity-20260801';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a391-chapter4-ending-continuity-20260801';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a391-chapter4-ending-continuity-20260801';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a391-chapter4-ending-continuity-20260801';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a391-chapter4-ending-continuity-20260801';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a391-chapter4-ending-continuity-20260801';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a391-chapter4-ending-continuity-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a391-chapter4-ending-continuity-20260801';
+import {inspectStoryReliability} from './story-reliability.js?v=29a391-chapter4-ending-continuity-20260801';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -135,7 +136,7 @@ class LostYearStoryScreen{
   showRouteHome({focus=false}={}){
     this.progress=loadLostYearProgress();this.routeView.hidden=true;this.routePanel.hidden=true;this.routeHome.hidden=false;document.dispatchEvent(new CustomEvent('pxstorymenuopen'));
     if(this.progress.completedMissions.includes('rrvvfo-01')&&!combatManualOwned())grantCombatManual({pages:['movement','basic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
-    const chapter4Conflict=chapter4CompletionConflict(this.progress);
+    const chapter4Conflict=chapter4CompletionConflict(this.progress),reliability=inspectStoryReliability(this.progress);
     const next=chapter4Conflict?'rrvvfo-04':rrvvfoNextMission(this.progress),manualReady=combatManualOwned(),c1=chapterMenuComplete(RRVVFO_CHAPTERS[0],this.progress),c2=chapterMenuComplete(RRVVFO_CHAPTERS[1],this.progress),c3=chapterMenuComplete(RRVVFO_CHAPTERS[2],this.progress),c4=chapterMenuComplete(RRVVFO_CHAPTERS[3],this.progress);
     const progressForDisplay=chapter4Conflict?repairChapter4Progress(this.progress):this.progress;
     const progressPercent=routeProgress(LOST_YEAR_ROUTES[0],progressForDisplay),completedFullChapters=completedRrvvfoChapterCount(progressForDisplay);
@@ -149,7 +150,7 @@ class LostYearStoryScreen{
           <p>${next?'Continue automatically through the next unfinished section. The route menu appears only when you choose to leave, replay, or check Rrvvfo’s growth.':'The four released chapters are complete. Rrvvfo’s eight-chapter route continues with Chapter 5.'}</p>
           <div class="routeProgressStatus"><strong>${progressPercent}% STORY COMPLETE</strong><span>${completedFullChapters} / ${RRVVFO_PLANNED_CHAPTER_COUNT} full chapters complete${c4?' • Chapter 4 complete':c3?' • Chapter 3 complete':''}</span></div>
           <div class="routeProgressTrack" style="--route-progress:${progressPercent}%"><i></i></div>
-          <div class="storyRecoveryCard"><small>AUTO-SAVE RECOVERY</small><strong>${chapter4Conflict?'CHAPTER 4 SAVE REPAIR':storyCheckpointLabel(this.progress.lastCheckpoint)}</strong><span>${chapter4Conflict?'The save marks Chapter 4 complete without the ending checkpoints. Start Chapter 4 to repair only this chapter; Chapters 1–3 and RPG growth stay untouched.':'Continue resumes from this checkpoint. Major fights and QTEs use safe retries instead of restarting the full chapter.'}</span></div>
+          <div class="storyRecoveryCard"><small>AUTO-SAVE RECOVERY • SAVE HEALTH ${reliability.health}</small><strong>${chapter4Conflict?'CHAPTER 4 SAVE REPAIR':storyCheckpointLabel(this.progress.lastCheckpoint)}</strong><span>${chapter4Conflict?'The save marks Chapter 4 complete without the ending checkpoints. Start Chapter 4 to repair only this chapter; Chapters 1–3 and RPG growth stay untouched.':reliability.issues.length?reliability.issues[0]:'Continue resumes from this checkpoint. Major fights and QTEs use safe retries instead of restarting the full chapter.'}</span></div>
           ${storyStatsMarkup(this.progress)}${storyAttackStripMarkup()}
           <div class="routeHomeActions">
             <button type="button" class="primary" data-continue-route ${next?'':'disabled'}><strong>${primary}</strong><span>${next?'Loads the next unfinished section.':'Use Chapter Select to replay released content.'}</span></button>
@@ -213,10 +214,11 @@ class LostYearStoryScreen{
     const starter=starters[stepId];if(!starter)return;
     const progressBeforeStart=loadLostYearProgress();
     const chapter=stepId==='rrvvfo-02'?2:stepId==='rrvvfo-03'?3:stepId==='rrvvfo-04'?4:1;
-    document.dispatchEvent(new CustomEvent('pxstorystepstart',{detail:{stepId,chapter,chainMode}}));
+    document.dispatchEvent(new CustomEvent('pxstorystepstart',{detail:{stepId,chapter,chainMode,replay:Boolean(starterOptions.replay),playtest:chainMode==='playtest'}}));
     this.root.hidden=true;let completedThisRun=false;
     try{
       starter({...starterOptions,onComplete:()=>{completedThisRun=true;this.progress=loadLostYearProgress()},onExit:()=>{
+      document.body.dataset.storyRunMode='';
       this.progress=loadLostYearProgress();
       if(completedThisRun&&chainMode==='route'){
         const chain={'rrvvfo-00':'rrvvfo-01','rrvvfo-01':'rrvvfo-road','rrvvfo-road':'rrvvfo-02','rrvvfo-02':'rrvvfo-03','rrvvfo-03':'rrvvfo-04'};

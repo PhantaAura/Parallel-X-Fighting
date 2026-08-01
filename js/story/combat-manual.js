@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {BUILD_VERSION} from '../build-info.js?v=29a363-chapter4-menu-state-recovery-20260801';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

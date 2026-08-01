@@ -1,0 +1,14 @@
+{
+  "build": "Prototype 2.9A.36.3 \u2014 Chapter 4 Menu State Recovery",
+  "cacheId": "29a363-chapter4-menu-state-recovery-20260801",
+  "saveSchema": 268,
+  "javascriptModulesParsed": 90,
+  "relativeImportsResolved": 247,
+  "jsonFilesParsed": 39,
+  "htmlIdsChecked": 259,
+  "duplicateHtmlIds": 0,
+  "smokePassed": 350,
+  "smokeFailed": 0,
+  "directDesktopHiddenState": "PASS",
+  "packageIntegrity": "PASS"
+}

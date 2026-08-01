@@ -1,15 +1,15 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {StoryMap} from './story-map.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {storyConfirm} from './story-ux.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {StoryMap} from './story-map.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {storyConfirm} from './story-ux.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a363-chapter4-menu-state-recovery-20260801';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';

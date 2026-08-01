@@ -1,7 +1,7 @@
-const RELEASE_CACHE_ID='29a362-chapter4-false-completion-recovery-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.36.2 — Chapter 4 False Completion Recovery';
-const TOTAL_TESTS=347;
-const IMPORT_TIMEOUT_MS=30000;
+const RELEASE_CACHE_ID='29a363-chapter4-menu-state-recovery-20260801';
+const EXPECTED_BUILD='Prototype 2.9A.36.3 — Chapter 4 Menu State Recovery';
+const TOTAL_TESTS=350;
+const IMPORT_TIMEOUT_MS=600000;
 const STALL_TIMEOUT_MS=35000;
 
 const $=id=>document.getElementById(id);

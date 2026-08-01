@@ -1,0 +1,14 @@
+{
+  "build": "Prototype 2.9A.36.3 \u2014 Chapter 4 Menu State Recovery",
+  "cacheId": "29a363-chapter4-menu-state-recovery-20260801",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.36.2 \u2014 Chapter 4 False Completion Recovery",
+  "focus": [
+    "enforce Chapter 4 hidden state on desktop",
+    "repair stale Story Menu state",
+    "clear every temporary Chapter 4 panel at startup",
+    "close menus before completion"
+  ],
+  "gameplayChanges": false,
+  "smokeCasesPackaged": 350
+}

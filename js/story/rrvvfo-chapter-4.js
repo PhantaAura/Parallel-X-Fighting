@@ -1,20 +1,20 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {StoryMap} from './story-map.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {storyConfirm} from './story-ux.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a362-chapter4-false-completion-recovery-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {StoryMap} from './story-map.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {storyConfirm} from './story-ux.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a363-chapter4-menu-state-recovery-20260801';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a362-chapter4-false-completion-recovery-20260801';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a362-chapter4-false-completion-recovery-20260801';
+} from './chapter4-content.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a363-chapter4-menu-state-recovery-20260801';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a363-chapter4-menu-state-recovery-20260801';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -126,7 +126,10 @@ class RrvvfoChapter4{
   }
 
   resetTransientPresentation(){
-    for(const selector of ['[data-c4-complete]','[data-c4-choice]','[data-c4-qte]']){const element=this.root.querySelector(selector);if(element)element.hidden=true}
+    for(const selector of ['[data-c4-menu]','[data-c4-tracker]','[data-c4-complete]','[data-c4-choice]','[data-c4-qte]','[data-c4-vibration-overlay]','[data-c4-watcher-scan]','[data-c4-enemy-role]','[data-c4-team-status]']){
+      const element=this.root.querySelector(selector);if(element)element.hidden=true;
+    }
+    this.storyMenuOpen=false;this.storyMenuPaused=false;this.trackerOpen=false;this.choiceOpen=false;this.choiceCallback=null;
   }
 
   start(){
@@ -882,9 +885,9 @@ class RrvvfoChapter4{
   refreshTracker(){if(!this.root)return;this.root.querySelector('[data-c4-required-count]').textContent=`${this.state.requiredCompleted.length} / ${CHAPTER4_REQUIRED_STEPS.length}`;this.root.querySelector('[data-c4-secret-status]').textContent=this.state.ryuzankaro.bossDefeated?'DEFEATED':this.state.ryuzankaro.skipped?'SKIPPED':this.state.ryuzankaro.available?'AVAILABLE':'LOCKED';this.root.querySelector('[data-c4-area-status]').textContent=this.area==='cavern'?'ECHO CAVERNS':this.area==='mountain'?'MOUNTAIN PATH':'ECHO VILLAGE';this.root.querySelector('[data-c4-vibration-status]').textContent=this.state.rewards.vibrationSense?'UNLOCKED':'LOCKED';const next=chapter4NextRequired(this.state);this.root.querySelector('[data-c4-journal-list]').innerHTML=`<article><small>HUB PHASE</small><strong>${rpgPacingLabel('chapter4',this.pacing)}</strong><span>Objectives unlock in story waves, with room for arrival and aftermath.</span></article><article><small>CURRENT STORY STEP</small><strong>${pretty(next||'complete')}</strong><span>${chapter4CompletionPercent(this.state)}% chapter completion</span></article><article><small>WHY THIS COMES NEXT</small><strong>${next==='beaconRestored'?'RESTORE REGIONAL DETECTION':next==='cavernsEntered'||next==='liftPartsRecovered'?'RECOVER THE BLOCKED MOUNTAIN ROUTE':next==='villageDefended'?'PROTECT THE LIFT REPAIR':next==='mountainDecision'?'OPTIONAL SECRET OR SOLO DEPARTURE':next==='mountainSignals'||next==='hollowWatcherDefeated'?'TRACE WHO IS WATCHING SHADOW':next==='lookoutReached'?'REACH THE UNCLIMBABLE LOOKOUT':'FOLLOW THE PROJECT HOLLOW TRAIL'}</strong><span>Every mandatory objective opens the next route instead of acting as an unrelated errand.</span></article><article><small>PARTY FIELD ROUTE</small><strong>${this.state.variety.fieldActions.length} / ${CHAPTER4_PARTY_FIELD_ACTIONS.length}</strong><span>${this.state.variety.fieldRouteComplete?'Cavern approach permanently repaired':'Bark, Wade, and Rrvvfo each have one action'}</span></article><article><small>ECHO BEACON</small><strong>${this.state.beaconNodes.length} / ${CHAPTER4_BEACON_NODES.length}</strong><span>Fire, earth, and lightning repairs</span></article><article><small>MOUNTAIN LIFT</small><strong>${this.state.liftParts.length} / ${CHAPTER4_LIFT_PARTS.length}</strong><span>Recovered components</span></article><article><small>OLD MAN’S POTIONS</small><strong>${this.state.ryuzankaro.ingredients.length} / ${CHAPTER4_INGREDIENTS.length}</strong><span>${this.state.ryuzankaro.bossDefeated?'Ryuzankaro sealed':this.state.ryuzankaro.skipped?'Quest skipped':'Optional before departure'}</span></article><article><small>PROJECT HOLLOW</small><strong>${this.state.hollowWatcher.defeated?'DATA TRANSMITTED':'WATCHER ACTIVE'}</strong><span>${this.state.hollowWatcher.patternsRecorded} repeated patterns recorded</span></article>`}
 
   openTracker(){if(this.trackerOpen||!['explore','cavern','mountain'].includes(this.mode))return;this.trackerOpen=true;this.refreshTracker();this.root.querySelector('[data-c4-tracker]').hidden=false;this.previousMode=this.mode;this.mode='tracker';this.battle.phase='story';this.root.querySelector('[data-c4-close-journal]').focus()}
-  closeTracker(){if(!this.trackerOpen)return;this.trackerOpen=false;this.root.querySelector('[data-c4-tracker]').hidden=true;this.mode=this.previousMode||'explore';this.battle.phase='play'}
-  openStoryMenu(){if(this.storyMenuOpen||!['explore','cavern','mountain','fight'].includes(this.mode))return;this.storyMenuOpen=true;this.root.querySelector('[data-c4-menu]').hidden=false;this.storyMenuPaused=Boolean(this.battle&&!this.battle.paused);if(this.storyMenuPaused)this.battle.togglePause();this.root.querySelector('[data-c4-menu-resume]')?.focus()}
-  closeStoryMenu(){if(!this.storyMenuOpen)return;this.storyMenuOpen=false;this.root.querySelector('[data-c4-menu]').hidden=true;if(this.storyMenuPaused&&this.battle?.paused)this.battle.togglePause();this.storyMenuPaused=false}
+  closeTracker(){const panel=this.root?.querySelector('[data-c4-tracker]');if(panel)panel.hidden=true;const wasOpen=this.trackerOpen;this.trackerOpen=false;if(wasOpen){this.mode=this.previousMode||'explore';this.battle.phase='play'}}
+  openStoryMenu(){if(this.storyMenuOpen||!['explore','cavern','mountain','fight'].includes(this.mode))return;this.closeTracker();this.storyMenuOpen=true;const panel=this.root.querySelector('[data-c4-menu]');panel.hidden=false;this.storyMenuPaused=Boolean(this.battle&&!this.battle.paused);if(this.storyMenuPaused)this.battle.togglePause();this.root.querySelector('[data-c4-menu-resume]')?.focus()}
+  closeStoryMenu(){const panel=this.root?.querySelector('[data-c4-menu]');if(panel)panel.hidden=true;this.storyMenuOpen=false;if(this.storyMenuPaused&&this.battle?.paused)this.battle.togglePause();this.storyMenuPaused=false}
   openManual(){if(this.storyMenuOpen)this.closeStoryMenu();const previous=this.mode;this.mode='manual';this.battle.phase='story';const opened=openCombatManual({onClose:()=>{if(this.aborted)return;this.mode=previous;this.battle.phase='play'}});if(!opened){this.mode=previous;this.battle.phase='play'}}
 
   unlockRyuzankaroAfterVillageDefense(){
@@ -896,7 +899,7 @@ class RrvvfoChapter4{
   }
   completeRequired(id){markChapter4Required(this.state,id);this.saveState();this.refreshTracker()}
   commitCompletion(){if(this.completed)return;this.completeRequired('chapterSaved');if(!chapter4Complete(this.state)){console.warn('[Chapter 4] Completion blocked',CHAPTER4_REQUIRED_STEPS.filter(id=>!this.state.requiredCompleted.includes(id)));return}this.completed=true;this.state.chapterComplete=true;this.state.location='shadow-lookout';this.mode='complete';this.battle.phase='story';const progress=loadLostYearProgress();if(this.replayMode)saveLostYearProgress({...progress,chapter4State:this.savedState,lastCheckpoint:this.savedCheckpoint||'rrvvfo-04-complete'});else{const completedMissions=unique([...(progress.completedMissions||[]),MISSION_ID]),unlocks=unique([...(progress.unlocks||[]),'echoRegion','echoVillage','echoCaverns','shadowLookout','hollowWatcherProfile',...(this.state.ryuzankaro.bossDefeated?['vibrationSense','lensMastery1','ryuzankaroCodex','echoTeamBadge']:[])]);saveLostYearProgress({...progress,completedMissions,unlocks,chapter4State:this.state,lastCheckpoint:'rrvvfo-04-complete'})}this.onComplete();this.showCompletion()}
-  showCompletion(){this.mode='complete';this.battle.phase='story';this.map?.close?.();this.root.querySelector('.c4Hud').hidden=true;this.root.querySelector('[data-c4-prompt]').hidden=true;this.root.querySelector('[data-c4-toast]').hidden=true;this.root.querySelector('[data-c4-tracker]').hidden=true;const globalObjective=document.querySelector('[data-story-objective-toast]');if(globalObjective){globalObjective.classList.remove('show');globalObjective.hidden=true}const secret=this.root.querySelector('[data-c4-complete-secret]');secret.innerHTML=this.state.ryuzankaro.bossDefeated?'<strong>SECRET BOSS COMPLETE</strong><span>Vibration Sense • Lens Mastery Lv. 1 • Improved Object Swap</span>':'<strong>SECRET QUEST SKIPPED</strong><span>Chapter 4 remains fully complete.</span>';this.root.querySelector('[data-c4-complete]').hidden=false;this.root.querySelector('[data-c4-continue]').focus()}
+  showCompletion(){this.closeStoryMenu();this.closeTracker();this.mode='complete';this.battle.phase='story';this.map?.close?.();this.root.querySelector('.c4Hud').hidden=true;this.root.querySelector('[data-c4-prompt]').hidden=true;this.root.querySelector('[data-c4-toast]').hidden=true;this.root.querySelector('[data-c4-tracker]').hidden=true;const globalObjective=document.querySelector('[data-story-objective-toast]');if(globalObjective){globalObjective.classList.remove('show');globalObjective.hidden=true}const secret=this.root.querySelector('[data-c4-complete-secret]');secret.innerHTML=this.state.ryuzankaro.bossDefeated?'<strong>SECRET BOSS COMPLETE</strong><span>Vibration Sense • Lens Mastery Lv. 1 • Improved Object Swap</span>':'<strong>SECRET QUEST SKIPPED</strong><span>Chapter 4 remains fully complete.</span>';this.root.querySelector('[data-c4-complete]').hidden=false;this.root.querySelector('[data-c4-continue]').focus()}
 
   saveState(){const progress=loadLostYearProgress();if(this.replayMode){saveLostYearProgress({...progress,chapter4State:this.savedState,lastCheckpoint:this.savedCheckpoint||'rrvvfo-04-complete'});return}saveLostYearProgress({...progress,chapter4State:this.state,lastCheckpoint:`rrvvfo-04-${chapter4NextRequired(this.state)||'complete'}`})}
   async requestExit(){const leave=await storyConfirm({title:'EXIT CHAPTER 4?',message:'Completed Echo Region checkpoints remain saved. Active fights restart.',confirmLabel:'EXIT CHAPTER'});if(leave)this.exitToStory()}

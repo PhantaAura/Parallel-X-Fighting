@@ -6,7 +6,7 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.36.2 — Chapter 4 False Completion Recovery**
+**Prototype 2.9A.36.3 — Chapter 4 Menu State Recovery**
 
 This is a complete cumulative build. No older package is required.
 

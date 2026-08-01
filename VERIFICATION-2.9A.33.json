@@ -1,0 +1,33 @@
+{
+  "build": "Prototype 2.9A.33 — Boss Dance & Stage Personality",
+  "cacheId": "29a33-boss-dance-stage-personality-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.32 — Hub Charm & Progression Celebration",
+  "validation": {
+    "javascriptModuleFiles": 87,
+    "javascriptSyntax": "pass",
+    "jsonAndManifestParsing": "pass",
+    "relativeImports": "pass",
+    "duplicateHtmlIds": 0,
+    "smokeTests": {
+      "total": 322,
+      "passed": 322,
+      "failed": 0,
+      "status": "Initial run complete — all tests passed"
+    },
+    "jsonAndManifestFiles": 27,
+    "activeCacheSynchronization": "pass",
+    "saveSchemaConsistency": "pass"
+  },
+  "features": [
+    "three Hollow Watcher scan phases",
+    "named learned patterns",
+    "pattern-break exposure and punish window",
+    "solid Arena route geometry",
+    "projectile interaction with stage geometry",
+    "clean Tournament ring preservation",
+    "first-to-one Quick Battle"
+  ],
+  "deployed": false,
+  "deploymentNote": "Local verified package. GitHub repository write access was previously rejected by the connected integration."
+}

@@ -1,6 +1,6 @@
-const RELEASE_CACHE_ID='29a311-smoke-syntax-recovery-20260731';
-const EXPECTED_BUILD='Prototype 2.9A.31.1 — Smoke Syntax Recovery';
-const TOTAL_TESTS=301;
+const RELEASE_CACHE_ID='29a35-living-hubs-rpg-pacing-20260801';
+const EXPECTED_BUILD='Prototype 2.9A.35 — Living Hubs & RPG Pacing';
+const TOTAL_TESTS=336;
 const IMPORT_TIMEOUT_MS=30000;
 const STALL_TIMEOUT_MS=35000;
 
@@ -24,8 +24,8 @@ function refreshCounts(){
 }
 function setButtons(enabled){elements.retry.disabled=!enabled||state.failed===0;elements.again.disabled=!enabled;elements.copy.disabled=!enabled||state.lines.size===0}
 function fatal(error,phase='Startup failure'){
-  state.fatal=true;state.running=false;setStatus(phase,'failText');elements.current.textContent='Runner stopped before completing';
-  state.lines.set('__fatal__',`FATAL  ${errorText(error)}`);elements.results.classList.add('fatal');renderLines();setButtons(true);touchProgress();
+  state.fatal=true;state.running=false;setStatus(phase,'failText');elements.current.textContent=error?.code==='PX_SMOKE_TIMEOUT'?'Timed-out test stopped the suite — reload before testing again':'Runner stopped before completing';
+  state.lines.set('__fatal__',`FATAL  ${errorText(error)}`);elements.results.classList.add('fatal');renderLines();elements.retry.disabled=true;elements.again.disabled=false;elements.copy.disabled=state.lines.size===0;touchProgress();
 }
 
 const harness={

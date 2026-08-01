@@ -10,7 +10,11 @@ export const TRAINING_TRIALS=Object.freeze({
   escape:Object.freeze({id:'escape',label:'Pursuit Escape Trial',goal:'Dash during an incoming pursuit to tech away.',target:1}),
   pressure:Object.freeze({id:'pressure',label:'Pursuit Pressure',goal:'Escape two incoming pursuits, then punish once.',target:3}),
   guard:Object.freeze({id:'guard',label:'Guard-Break Punish',goal:'Break guard, then punish with a grab.',target:2}),
-  variation:Object.freeze({id:'variation',label:'Unpredictable Route',goal:'Connect five different attack or ability types.',target:5})
+  variation:Object.freeze({id:'variation',label:'Unpredictable Route',goal:'Connect five different attack or ability types.',target:5}),
+  rrvvfoIdentity:Object.freeze({id:'rrvvfoIdentity',label:'Rrvvfo • Improvised Angle',goal:'Use Object Swap and connect a close attack during the angle window.',target:1}),
+  revvfoIdentity:Object.freeze({id:'revvfoIdentity',label:'Revvfo • Relentless Pressure',goal:'Connect three close actions before pressure expires.',target:1}),
+  wadeIdentity:Object.freeze({id:'wadeIdentity',label:'Wade • Lightning Near-Miss',goal:'Dash through an active enemy strike without taking damage.',target:1}),
+  barkIdentity:Object.freeze({id:'barkIdentity',label:'Bark • Armored Punish',goal:'Absorb a hit with armor and answer before the punish window closes.',target:1})
 });
 
 const cleanId=id=>TRAINING_TRIALS[id]?id:'free';
@@ -86,6 +90,8 @@ export function recordTrainingTrialEvent(state,event,detail={}){
     state.distinct.push(action);state.progress=Math.min(5,state.distinct.length);state.message=`Different connected actions: ${state.progress} / 5`;
     return state.progress>=5?finish(state,'five different connected actions'): {changed:true,completed:false};
   }
+  const signatureEvents={rrvvfoIdentity:'signatureRrvvfo',revvfoIdentity:'signatureRevvfo',wadeIdentity:'signatureWade',barkIdentity:'signatureBark'};
+  if(signatureEvents[state.trial]===event)return finish(state,TRAINING_TRIALS[state.trial].label);
   return{changed:false,completed:false};
 }
 

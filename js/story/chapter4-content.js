@@ -1,5 +1,6 @@
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
-export const CHAPTER4_STATE_VERSION=3;
+export const CHAPTER4_STATE_VERSION=4;
 
 export const CHAPTER4_REQUIRED_STEPS=Object.freeze([
   'opening','villageReached','barkWadeArrive','beaconRestored','cavernsEntered',
@@ -46,7 +47,8 @@ export function freshChapter4State(){
     location:'echo-region',
     requiredCompleted:[],
     beaconNodes:[],cavernDoors:[],liftParts:[],mountainSignals:[],
-    villageDefenseComplete:false,teamRestSeen:false,
+    pacing:normalizeRpgPacingState('chapter4'),
+    villageDefenseComplete:false,teamRestSeen:false,charm:{echoChimesComplete:false},
     ryuzankaro:{available:false,started:false,ingredients:[],swarmsCleared:[],bossDefeated:false,skipped:false,phase:'idle',checkpoint:'none',rewardsGranted:false},
     rewards:{lensMastery:0,vibrationSense:false,objectSwapRange:0,teamBadge:false,ryuzankaroCodex:false},
     hollowWatcher:{defeated:false,patternsRecorded:0,highestConfidence:0},
@@ -70,13 +72,17 @@ export function normalizeChapter4State(value={}){
   if(inferredVillageDefense&&!requiredCompleted.includes('villageDefended'))requiredCompleted=unique([...requiredCompleted,'villageDefended']);
   const villageDefenseComplete=requiredCompleted.includes('villageDefended');
   const sourceRyuzankaro=source.ryuzankaro||{};
+  const pacing=normalizeRpgPacingState('chapter4',source.pacing);
+  if(requiredCompleted.includes('barkWadeArrive')){pacing.interactions=[...new Set([...pacing.interactions,'resonance-wall','water-channel'])];pacing.orientationComplete=true;pacing.wave=Math.max(1,pacing.wave)}
   return{
     ...base,...source,version:CHAPTER4_STATE_VERSION,
     requiredCompleted,
+    pacing,
     beaconNodes:unique(source.beaconNodes),cavernDoors:unique(source.cavernDoors),liftParts:unique(source.liftParts),mountainSignals:unique(source.mountainSignals),
     villageDefenseComplete,
     ryuzankaro:{...base.ryuzankaro,...sourceRyuzankaro,available:villageDefenseComplete,ingredients:unique(sourceRyuzankaro.ingredients),swarmsCleared:unique(sourceRyuzankaro.swarmsCleared)},
     rewards:{...base.rewards,...(source.rewards||{})},
+    charm:{...base.charm,...(source.charm||{})},
     hollowWatcher:{...base.hollowWatcher,...(source.hollowWatcher||{})},
     chapterComplete:Boolean(source.chapterComplete)
   };

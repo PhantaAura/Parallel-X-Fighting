@@ -1,0 +1,15 @@
+{
+  "build": "Prototype 2.9A.31.2 — Final Smoke Cleanup",
+  "cacheId": "29a312-final-smoke-cleanup-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.31.1 — Smoke Syntax Recovery",
+  "focus": [
+    "isolate Lens cost and duration checks from the player's saved mastery value",
+    "centralize visible Arena and Sage Manual build labels through BUILD_VERSION",
+    "tie Ryuzankaro availability to the completed Echo Village defense state",
+    "replace brittle whitespace-sensitive smoke assertions with behavior-aware checks"
+  ],
+  "gameplayChanges": true,
+  "gameplayScope": "Chapter 4 unlock hardening only; no combat balance, damage, resource, or save-schema changes",
+  "smokeCasesPackaged": 301
+}

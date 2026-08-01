@@ -1,0 +1,18 @@
+{
+  "build": "Prototype 2.9A.34 \u2014 Signature Combat & Impact",
+  "cacheId": "29a34-signature-combat-impact-20260801",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.33 \u2014 Boss Dance & Stage Personality",
+  "focus": [
+    "fighter-specific signature combat moments",
+    "stronger final-KO presentation",
+    "Rrvvfo Object Swap angle reward",
+    "Revvfo close-pressure chain",
+    "Wade dash near-miss reward",
+    "Bark armor-to-punish reward",
+    "four short Fighter Identity Training trials"
+  ],
+  "gameplayChanges": true,
+  "smokeCasesPackaged": 327,
+  "requiresPreviousPatch": false
+}

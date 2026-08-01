@@ -1,3 +1,4 @@
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
 export const CHAPTER3_STATE_VERSION=2;
 
@@ -83,6 +84,7 @@ export function freshChapter3State(){
     evidence:[],
     hubState:1,
     location:'after-hours-hub',
+    pacing:normalizeRpgPacingState('chapter3'),
     medicalSort:[],
     recordingStep:0,
     mediaTerminals:[],
@@ -184,6 +186,7 @@ export function normalizeChapter3State(value={}){
     ...value,
     version:CHAPTER3_STATE_VERSION,
     requiredCompleted,
+    pacing:normalizeRpgPacingState('chapter3',value.pacing),
     evidence:uniqueKnown(value.evidence,CHAPTER3_EVIDENCE.map(entry=>entry.id)),
     medicalSort:uniqueKnown(value.medicalSort,['hamual-belt','daniel-wrap','glove']),
     mediaTerminals:uniqueKnown(value.mediaTerminals,['public','damaged-a','damaged-b','private','restored']),

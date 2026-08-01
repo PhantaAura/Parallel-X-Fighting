@@ -1,0 +1,16 @@
+/* Prototype 2.9A.33 — Boss Dance & Stage Personality */
+#mainMenuScreen .quickActionButtons{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+#mainMenuScreen .quickActionButtons button{margin-top:0}
+#mainMenuScreen #quickBattleButton{border-color:#78e7ff;background:linear-gradient(135deg,#173c56,#1a2943);box-shadow:0 0 18px #4fdcff2c}
+#mainMenuScreen #quickBattleButton:hover,#mainMenuScreen #quickBattleButton:focus-visible{background:linear-gradient(135deg,#215471,#253759)}
+#mainMenuScreen .quickActionButtons .hidden{display:none!important}
+
+#rrvvfoChapter4UI .c4WatcherScan{transition:border-color .16s,box-shadow .16s,background .16s,transform .16s}
+#rrvvfoChapter4UI .c4WatcherScan[data-phase="2"]{border-color:#86d9ff}
+#rrvvfoChapter4UI .c4WatcherScan[data-phase="3"]{border-color:#ff9f80;box-shadow:0 0 24px #ff745533}
+#rrvvfoChapter4UI .c4WatcherScan.adapted{background:linear-gradient(135deg,#082830f2,#101b2cf2);border-color:#63dce3;box-shadow:0 0 28px #63dce344}
+#rrvvfoChapter4UI .c4WatcherScan.exposed{background:linear-gradient(135deg,#3b2c0cf4,#25150af4);border-color:#fff0a8;box-shadow:0 0 34px #ffe36d66;transform:translateY(-2px)}
+#rrvvfoChapter4UI .c4WatcherScan.exposed [data-c4-watcher-meter]{background:#fff0a8;box-shadow:0 0 16px #fff0a8}
+#rrvvfoChapter4UI .c4WatcherScan.adapted [data-c4-watcher-meter]{background:#63dce3;box-shadow:0 0 14px #63dce3}
+
+@media(max-width:760px){#mainMenuScreen .quickActionButtons{width:100%}#mainMenuScreen .quickActionButtons button{flex:1 1 140px}}

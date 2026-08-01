@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a311-smoke-syntax-recovery-20260731';
+import {storyConfirm} from './story/story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

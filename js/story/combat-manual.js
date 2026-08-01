@@ -1,3 +1,4 @@
+import {BUILD_VERSION} from '../build-info.js?v=29a35-living-hubs-rpg-pacing-20260801';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 
@@ -307,7 +308,7 @@ function ensureUI(){
   root.setAttribute('aria-label',"The Sage's Combat Manual");
   root.innerHTML=`
     <div class="manualBookShell">
-      <header class="manualBookHeader"><div><small>THE SAGE'S COMBAT MANUAL</small><h1>FUTURE-PROOF EDITION</h1></div><button type="button" data-manual-close>× CLOSE</button></header>
+      <header class="manualBookHeader"><div><small>THE SAGE'S COMBAT MANUAL</small><h1>FUTURE-PROOF EDITION</h1><small class="manualBuildVersion">${BUILD_VERSION}</small></div><button type="button" data-manual-close>× CLOSE</button></header>
       <p class="manualWelcome">“You opened the manual. Impressive. Most fighters just mash Light Attack and complain when they lose.” — THE SAGE</p>
       <div class="manualQuickActions" data-manual-categories aria-label="Manual categories"></div>
       <div class="manualBookLayout"><nav class="manualPageList" data-manual-page-list aria-label="Unlocked manual pages"></nav><article class="manualPage" data-manual-page></article></div>

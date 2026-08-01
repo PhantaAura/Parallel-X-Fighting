@@ -1,0 +1,37 @@
+{
+  "build": "Prototype 2.9A.32 \u2014 Hub Charm & Progression Celebration",
+  "cacheId": "29a32-hub-charm-progression-celebration-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.31.3 \u2014 Save, Stage, Chapter 4 & Fallback Reliability",
+  "validation": {
+    "javascriptModuleFiles": 86,
+    "javascriptSyntax": "pass",
+    "jsonAndManifestParsing": "pass",
+    "relativeImports": "pass",
+    "duplicateHtmlIds": 0,
+    "smokeTests": {
+      "total": 317,
+      "passed": 317,
+      "failed": 0,
+      "status": "Initial run complete \u2014 all tests passed"
+    },
+    "directRuntime": {
+      "arrivalPresentation": "pass",
+      "storyMenuCleanup": "pass",
+      "futureFighterCelebration": "pass"
+    }
+  },
+  "features": [
+    "state-aware NPC reactions",
+    "Rrvvfo Bark and Wade party banter",
+    "environmental interactions and jokes",
+    "arrival animation and audio cues",
+    "level stat and technique celebrations",
+    "route mode and future character unlock celebrations",
+    "Festival Photo Stand",
+    "Echo Chime Jam",
+    "progress-reactive Chapter 2 and Chapter 4 hubs"
+  ],
+  "deployed": false,
+  "deploymentNote": "Local verified package. GitHub repository write access was previously rejected by the connected integration."
+}

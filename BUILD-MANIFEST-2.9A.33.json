@@ -1,0 +1,17 @@
+{
+  "build": "Prototype 2.9A.33 — Boss Dance & Stage Personality",
+  "cacheId": "29a33-boss-dance-stage-personality-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.32 — Hub Charm & Progression Celebration",
+  "focus": [
+    "three-phase readable Hollow Watcher adaptation",
+    "short exposed punish window after breaking a learned pattern",
+    "route-shaping Arena geometry for Facility Caverns and Mountain Path",
+    "clean obstacle-free Global Tournament ring",
+    "first-to-one Quick Battle shortcut",
+    "Story-safe separation from new Arena geometry"
+  ],
+  "gameplayChanges": true,
+  "smokeCasesPackaged": 322,
+  "requiresPreviousPatch": false
+}

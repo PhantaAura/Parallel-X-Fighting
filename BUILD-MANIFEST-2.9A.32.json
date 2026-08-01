@@ -1,0 +1,18 @@
+{
+  "build": "Prototype 2.9A.32 \u2014 Hub Charm & Progression Celebration",
+  "cacheId": "29a32-hub-charm-progression-celebration-20260731",
+  "saveSchema": 268,
+  "base": "Prototype 2.9A.31.3 \u2014 Save, Stage, Chapter 4 & Fallback Reliability",
+  "focus": [
+    "state-aware NPC reactions after major events",
+    "Rrvvfo Bark and Wade party banter",
+    "small environmental interactions and jokes",
+    "destination arrival splashes and audio cues",
+    "level stat technique route and future fighter celebrations",
+    "short playful side activities without extra fetch quests",
+    "chapter hubs that visually react to Story progress"
+  ],
+  "gameplayChanges": true,
+  "smokeCasesPackaged": 317,
+  "requiresPreviousPatch": false
+}

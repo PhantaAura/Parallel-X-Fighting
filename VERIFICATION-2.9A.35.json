@@ -1,0 +1,17 @@
+{
+  "build": "Prototype 2.9A.35 — Living Hubs & RPG Pacing",
+  "cacheId": "29a35-living-hubs-rpg-pacing-20260801",
+  "saveSchema": 268,
+  "browserSmoke": {
+    "passed": 336,
+    "failed": 0,
+    "total": 336
+  },
+  "syntax": {
+    "javascriptFilesParsed": 89
+  },
+  "imports": {
+    "relativeImportsResolved": 238
+  },
+  "result": "PASS"
+}

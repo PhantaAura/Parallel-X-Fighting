@@ -1,11 +1,11 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a311-smoke-syntax-recovery-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a311-smoke-syntax-recovery-20260731';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a311-smoke-syntax-recovery-20260731';
-import {StoryMap} from './story-map.js?v=29a311-smoke-syntax-recovery-20260731';
-import {storyConfirm} from './story-ux.js?v=29a311-smoke-syntax-recovery-20260731';
-import {openCombatManual} from './combat-manual.js?v=29a311-smoke-syntax-recovery-20260731';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a311-smoke-syntax-recovery-20260731';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a311-smoke-syntax-recovery-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {StoryMap} from './story-map.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyConfirm} from './story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,7 +22,8 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a311-smoke-syntax-recovery-20260731';
+} from './chapter3-content.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -262,6 +263,8 @@ class RrvvfoChapter3{
     this.areaTimer=0;
     this.toastTimer=0;
     this.currentDistrict='';
+    this.pacing=this.state.pacing;
+    this.aftermathSeconds=0;
     this.storyMenuOpen=false;
     this.storyMenuPaused=false;
     this.trackerOpen=false;
@@ -484,6 +487,19 @@ class RrvvfoChapter3{
     foe.y=-1400;foe.x=this.battle.fighters[0].x-120;foe.z=this.battle.fighters[0].z-120;foe.hp=100;foe.attackState=null;foe.asset=null;
   }
 
+  syncRpgPacing(){
+    const phase=this.area==='remote'?'departure':this.area==='facility'?(this.state.underground.projectHollowRead?'aftermath':'crisis'):(this.state.hubState>=2?'development':'arrival');
+    const wave=this.area==='facility'?3:this.state.hubState>=4?3:this.state.hubState>=2?2:this.pacing.orientationComplete?1:0;
+    setRpgPacingPhase(this.pacing,phase,{wave});
+    this.root.dataset.rpgPhase=this.pacing.phase;this.root.dataset.rpgWave=String(rpgPacingQuestWave(this.pacing));
+    if(this.battle?.root){this.battle.root.dataset.rpgPhase=this.pacing.phase;this.battle.root.dataset.rpgChapter='chapter3'}
+  }
+
+  beginInvestigationAftermath(eventId,seconds=7){
+    recordPacingAftermath(this.pacing,eventId);setRpgPacingPhase(this.pacing,'aftermath',{wave:3});
+    this.aftermathSeconds=this.replayMode?0:Math.max(0,seconds);this.syncRpgPacing();this.saveState();
+  }
+
   enterAfterHoursHub({opening=false,spawn=HUB_SPAWN}={}){
     this.area='hub';
     this.state.location='after-hours-hub';
@@ -492,6 +508,7 @@ class RrvvfoChapter3{
     this.battle.root.classList.add('storyChapter3Hub');this.battle.root.classList.remove('storyChapter3Combat');
     this.engine.setLabels({stageName:'AFTER-HOURS TOURNAMENT',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','THE SAGE']});
     this.preparePlayer(spawn);
+    this.syncRpgPacing();
     this.updateLensAvailability();
     this.showAreaTitle('AFTER-HOURS TOURNAMENT','THE LOST YEAR • SOMETHING UNDER THE RING');
     this.saveState();
@@ -520,8 +537,16 @@ class RrvvfoChapter3{
     if(this.area==='hub'){
       const district=[...HUB_DISTRICTS].sort((a,b)=>distance(player,a)-distance(player,b))[0];
       if(district&&district.id!==this.currentDistrict&&distance(player,district)<420){
-        this.currentDistrict=district.id;this.showAreaTitle(district.name,'AFTER-HOURS TOURNAMENT');
+        this.currentDistrict=district.id;recordPacingVisit(this.pacing,district.id);
+        const wasReady=this.pacing.orientationComplete;
+        if(!wasReady&&completePacingOrientation('chapter3',this.pacing)){
+          setRpgPacingPhase(this.pacing,'development',{wave:1});
+          this.toast('INVESTIGATION OPENED','THE CLOSED GROUNDS MAKE SENSE NOW','The medical worker is the first reliable lead.');
+          document.dispatchEvent(new CustomEvent('pxstorybanter',{detail:{onceKey:'c3-orientation-complete',lines:[['RRVVFO','The tournament feels different when nobody is cheering.'],['SAGE','Good. Listen to what remains.']]}}));
+        }
+        this.syncRpgPacing();this.saveState();this.updateObjective();this.showAreaTitle(district.name,'AFTER-HOURS TOURNAMENT');
       }
+      if(this.aftermathSeconds>0){const before=this.aftermathSeconds;this.aftermathSeconds=Math.max(0,this.aftermathSeconds-1/60);if(before>0&&this.aftermathSeconds===0)this.updateObjective()}
     }
     const candidates=this.availableInteractions().filter(item=>distance(player,item)<145);
     this.nearby=candidates.sort((a,b)=>distance(player,a)-distance(player,b))[0]||null;
@@ -538,7 +563,7 @@ class RrvvfoChapter3{
     if(this.area==='facility')return this.facilityInteractions();
     const next=chapter3NextRequired(this.state);
     const items=[];
-    if(next==='medicalLead')items.push({kind:'medical',label:'TALK TO MEDICAL WORKER',x:640,z:-520});
+    if(next==='medicalLead'&&this.pacing.orientationComplete)items.push({kind:'medical',label:'TALK TO MEDICAL WORKER',x:640,z:-520});
     if(next==='fighterNobodyRecorded'){
       const step=this.state.recordingStep;
       if(step===0)items.push({kind:'forgotten-fighter',label:'THE UNRECORDED FIGHTER',x:-900,z:-420});
@@ -569,7 +594,11 @@ class RrvvfoChapter3{
     }
     if(next==='sageExplanation')items.push({kind:'elevator',label:'CONFRONT THE SAGE',x:1190,z:40});
     if(next==='facilityEntered')items.push({kind:'enter-facility',label:'ENTER UNDERGROUND FACILITY',x:1190,z:40});
+    const optionalWave=rpgPacingQuestWave(this.pacing),waveOne=new Set(['oneLastMatch','finalAnnouncement','lateFan','medicalFollowup']),waveTwo=new Set(['unpaidSnacks','poukiEquipment','fakePloukes']),waveThree=new Set(['prizeEnvelope','cleanupEchoes','controlledFlame']);
     for(const quest of CHAPTER3_OPTIONAL_QUESTS){
+      if(optionalWave<1)continue;
+      if(optionalWave===1&&!waveOne.has(quest.id))continue;
+      if(optionalWave===2&&!waveOne.has(quest.id)&&!waveTwo.has(quest.id))continue;
       const saved=this.state.optional[quest.id];
       if(saved.complete)continue;
       if(quest.id==='medicalFollowup'&&(!this.state.requiredCompleted.includes('medicalLead')||next==='medicalWorkerRevisited'))continue;
@@ -1201,6 +1230,7 @@ class RrvvfoChapter3{
     this.engine.setLabels({stageName:'ABANDONED RESONANCE FACILITY',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','FACILITY']});
     const spawn=restored?this.facilityCheckpointSpawn():FACILITY_SPAWN;
     this.preparePlayer(spawn);
+    this.syncRpgPacing();
     this.engine.setHotbarAvailability([],{show:false});
     this.showAreaTitle('ABANDONED RESONANCE FACILITY','UNDERGROUND • OPERATOR GONE');
     this.saveState();this.updateObjective();this.refreshTracker();
@@ -1308,7 +1338,7 @@ class RrvvfoChapter3{
     this.battle.time=9999;
     this.engine.setHotbarAvailability([1,2,3,4,5],{show:true});
     this.engine.setLabels({stageName:config.kind==='echo'?'CENTRAL DEFENSE CHAMBER':'FACILITY TRAINING CHAMBER',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO',config.name.toUpperCase()]});
-    this.setObjective(config.kind==='echo'?'DEFEAT THE UNFINISHED ECHO':'DEFEAT THE RUNAWAY TRAINING DUMMY',config.kind==='echo'?'Copied abilities preserve copied weaknesses. Force rapid pattern changes.':'The dummy cycles through Hamual, Daniel, and Wade patterns.');
+    this.setObjective(config.kind==='echo'?'DEFEAT THE UNFINISHED ECHO':'DEFEAT THE RUNAWAY TRAINING DUMMY',config.kind==='echo'?'Copied abilities preserve copied weaknesses. Force rapid pattern changes.':'The dummy cycles through Hamual’s power pattern, Daniel’s balanced timing, and Wade’s speed pattern.');
     this.battle.notice(config.kind==='echo'?'BOSS • THE UNFINISHED ECHO':'MINIBOSS • RUNAWAY TRAINING DUMMY',2);
   }
 
@@ -1428,7 +1458,7 @@ class RrvvfoChapter3{
       {speaker:'SAGE',speakerClass:'neutral',text:'And the rest of the files are gone.',tail:'down'}
     ],()=>{
       this.state.underground.projectHollowRead=true;this.completeRequired('projectHollow');
-      this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState();
+      this.mode='dungeon';this.battle.phase='play';this.beginInvestigationAftermath('project-hollow',8);this.updateObjective();this.saveState();
       this.toast('FACILITY LOCKDOWN','PROJECT HOLLOW DATA ERASED','Alarms seal the quiet investigation route. Fight toward the teleporter before the evidence disappears.');
       this.battle.notice('LOCKDOWN • SECURITY UNITS DEPLOYED',2.2);
     });
@@ -1597,7 +1627,12 @@ class RrvvfoChapter3{
   }
 
   updateObjective(){
-    const next=chapter3NextRequired(this.state);
+    const next=chapter3NextRequired(this.state);this.syncRpgPacing();
+    if(this.aftermathSeconds>0){this.setObjective('LET THE DISCOVERY LAND','The alarms have changed the facility. Look around while the next route becomes clear.');this.refreshTracker();return}
+    if(next==='medicalLead'&&!this.pacing.orientationComplete){
+      const progress=pacingOrientationProgress('chapter3',this.pacing);
+      this.setObjective('WALK THE CLOSED TOURNAMENT GROUNDS',`${progress.districts} / ${progress.districtTarget} districts compared • Visit the Main Arena and one other district.`);this.refreshTracker();return;
+    }
     const objectives={
       opening:['CONFRONT THE SAGE','The tournament has ended, but the arena is still unstable.'],
       medicalLead:['QUESTION THE MEDICAL WORKER','The first reliable witness is in the recovery tent.'],
@@ -1669,6 +1704,7 @@ class RrvvfoChapter3{
   }
 
   refreshTracker(){
+    this.syncRpgPacing();
     const mandatory=chapter3MandatorySummary(this.state),optional=chapter3OptionalSummary(this.state),evidence=chapter3EvidenceSummary(this.state),caseBoard=chapter3CaseBoard(this.state);
     this.root.querySelector('[data-c3-required-count]').textContent=`${this.state.requiredCompleted.length} / ${CHAPTER3_REQUIRED_STEPS.length}`;
     this.root.querySelector('[data-c3-mandatory-count]').textContent=`${mandatory.filter(entry=>entry.complete).length} / ${mandatory.length}`;
@@ -1736,6 +1772,7 @@ class RrvvfoChapter3{
   }
 
   showAreaTitle(name,kicker='CHAPTER 3'){
+    document.dispatchEvent(new CustomEvent('pxstoryarrival',{detail:{title:name,detail:kicker,tone:name.includes('FACILITY')||name.includes('HOLLOW')?'mystery':'gold',onceKey:`c3-area:${name}`}}));
     this.root.querySelector('[data-c3-area-name]').textContent=name;
     this.root.querySelector('[data-c3-area-kicker]').textContent=kicker;
     const panel=this.root.querySelector('[data-c3-area]');panel.hidden=false;this.areaTimer=2.4;
@@ -1825,7 +1862,9 @@ class RrvvfoChapter3{
   }
 
   drawAfterHoursHub(r,time){
-    const night=Math.min(.72,.22+this.state.hubState*.08);
+    const night=Math.min(.72,.22+this.state.hubState*.08),phase=rpgPacingLabel('chapter3',this.pacing);
+    const phaseColor=this.pacing.phase==='development'?'#79dfff':this.pacing.phase==='crisis'?'#ff6f62':'#8e90a5';
+    r.billboard({x:1120,y:235,z:40,size:24+Math.sin(time*2)*2,color:phaseColor,alpha:.28});
     for(let index=0;index<7;index++){
       const x=-820+index*250,z=index%2?760:-760;
       r.box({x,y:58,z,sx:150,sy:110,sz:90,color:'#222a35',alpha:.76});

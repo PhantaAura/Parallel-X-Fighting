@@ -5,12 +5,12 @@ import {tint} from './effects.js';
 import {tryMeleeClash,tryUltimateClash} from './clash-system.js';
 import {DEFENSE_BALANCE,defensiveDashFrames,resetDefenseState,resolveBlockedHit,updateDefenseState} from './guard-system.js';
 import {beginCinematicUltimate,clearCinematic,ULTIMATES} from './ultimate-system.js';
-import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a311-smoke-syntax-recovery-20260731';
+import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a35-living-hubs-rpg-pacing-20260801';
 
 const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 const LENS_MASTERY_KEY='pxLensMasteryV1';
-function readLensMastery(){try{return clamp(Number(localStorage.getItem(LENS_MASTERY_KEY))||0,0,100)}catch{return 0}}
-function saveLensMastery(value){const next=clamp(Math.round(value),0,100);try{localStorage.setItem(LENS_MASTERY_KEY,String(next))}catch{}return next}
+function readLensMastery(){try{return clamp(Number(globalThis.localStorage.getItem(LENS_MASTERY_KEY))||0,0,100)}catch{return clamp(Number(globalThis.__PX_TEST_STORAGE__?.getItem?.(LENS_MASTERY_KEY))||0,0,100)}}
+function saveLensMastery(value){const next=clamp(Math.round(value),0,100);try{globalThis.localStorage.setItem(LENS_MASTERY_KEY,String(next))}catch{try{globalThis.__PX_TEST_STORAGE__?.setItem?.(LENS_MASTERY_KEY,String(next))}catch{}}return next}
 function lensCosts(mastery=readLensMastery()){const ratio=clamp(mastery/100,0,1);return{energy:Math.round(60-15*ratio),hp:Math.round(25-15*ratio),duration:Math.round(240+90*ratio),autoDodges:mastery>=100?2:0}}
 
 

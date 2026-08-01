@@ -1,0 +1,41 @@
+/* Prototype 2.9A.31.3 — reliability and compact portrait combat cues. */
+@media (max-width:680px) and (orientation:portrait){
+  body #arenaModeScreen .pursuitPrompt,
+  body #arenaModeScreen .focusRecoveryCue,
+  body #arenaModeScreen .combatEventLayer,
+  body #arenaModeScreen .edgeWarning{
+    display:flex!important;
+    position:fixed!important;
+    left:50%!important;
+    right:auto!important;
+    width:auto!important;
+    max-width:min(74vw,300px)!important;
+    min-height:28px!important;
+    transform:translateX(-50%)!important;
+    padding:5px 9px!important;
+    border-radius:9px!important;
+    font-size:clamp(9px,2.6vw,12px)!important;
+    line-height:1.15!important;
+    pointer-events:none!important;
+    white-space:normal!important;
+    text-align:center!important;
+    justify-content:center!important;
+    z-index:1080!important;
+  }
+  body #arenaModeScreen .pursuitPrompt{top:max(calc(env(safe-area-inset-top) + 86px),104px)!important}
+  body #arenaModeScreen .focusRecoveryCue{top:max(calc(env(safe-area-inset-top) + 120px),138px)!important}
+  body #arenaModeScreen .combatEventLayer{top:max(calc(env(safe-area-inset-top) + 154px),172px)!important;height:42px!important;overflow:visible!important}
+  body #arenaModeScreen .edgeWarning{top:auto!important;bottom:max(calc(env(safe-area-inset-bottom) + 184px),204px)!important}
+  body #arenaModeScreen .combatEventLayer:empty,
+  body #arenaModeScreen .pursuitPrompt[hidden],
+  body #arenaModeScreen .focusRecoveryCue[hidden],
+  body #arenaModeScreen .edgeWarning[hidden]{display:none!important}
+  body #arenaModeScreen .arenaTrainingPanel:not(.collapsed){
+    top:max(calc(env(safe-area-inset-top) + 206px),224px)!important;
+    max-height:min(43vh,330px)!important;
+  }
+}
+@media (max-height:460px) and (orientation:landscape){
+  body #arenaModeScreen .arenaTrainingPanel:not(.collapsed){max-height:46vh!important}
+  body #arenaModeScreen .pursuitPrompt{max-width:42vw!important}
+}

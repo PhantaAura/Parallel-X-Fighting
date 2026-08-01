@@ -1,13 +1,14 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a311-smoke-syntax-recovery-20260731';
-import {sharedInput} from '../input-runtime.js?v=29a311-smoke-syntax-recovery-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a311-smoke-syntax-recovery-20260731';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a311-smoke-syntax-recovery-20260731';
-import {StoryMap} from './story-map.js?v=29a311-smoke-syntax-recovery-20260731';
-import {storyConfirm} from './story-ux.js?v=29a311-smoke-syntax-recovery-20260731';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a311-smoke-syntax-recovery-20260731';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a311-smoke-syntax-recovery-20260731';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a311-smoke-syntax-recovery-20260731';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a311-smoke-syntax-recovery-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {StoryMap} from './story-map.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyConfirm} from './story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -113,6 +114,7 @@ class RrvvfoRoadHub{
     this.defeatPanel=this.root.querySelector('[data-road-defeat]');
     this.mode='opening';
     this.step='warmup';
+    this.pacing=normalizeRpgPacingState('road',loadLostYearProgress().chapter1RoadPacing);
     this.completed=false;
     this.aborted=false;
     this.dialogue=null;
@@ -487,6 +489,17 @@ class RrvvfoRoadHub{
     this.battle.notice(`${route.toUpperCase()} ROUTE SELECTED`,1.5);
   }
 
+
+  syncRpgPacing(){
+    let phase='arrival';
+    if(['bridge','bridge-ready','route-choice','route-travel','cart','cart-ready','transport','gate','gate-ready'].includes(this.step))phase='development';
+    if(['lens','lens-ready','encounter','encounter-ready','fight'].includes(this.step)||this.mode==='fight')phase='crisis';
+    if(['finish','finish-dialogue'].includes(this.step)||this.encounterResolved)phase='aftermath';
+    if(this.completed)phase='departure';
+    this.pacing=setRpgPacingPhase(this.pacing,phase);
+    this.root.dataset.pacingPhase=this.pacing.phase;
+    return this.pacing;
+  }
 
   abilityPrompt(slot,label){return `${this.engine?.prompt?.(`ability${slot}`,`PRESS ${slot}`)||`PRESS ${slot}`} • ${label}`}
   interactionPrompt(){return this.engine?.prompt?.('interact','E')||'E'}
@@ -867,7 +880,10 @@ class RrvvfoRoadHub{
   drawHubExtras(){
     if(!this.battle?.renderer||this.aborted)return;
     const r=this.battle.renderer,time=performance.now()/1000;
+    const pacing=this.syncRpgPacing();
     drawRoadLandmarks(r,time);
+    const phaseColors={arrival:'#e8c978',development:'#73c3a7',crisis:'#ef765f',aftermath:'#8ab8e8',departure:'#d5b4ff'};
+    r.disc({x:-1430,y:4,z:-570,rx:54,rz:30,color:phaseColors[pacing.phase]||'#e8c978',alpha:.16});
     const drawPerson=(npc,index)=>{
       const bob=Math.sin(time*2+npc.phase)*2,traveler=index%3===0,worker=index%3===1;
       r.disc({x:npc.x,y:5,z:npc.z,rx:25,rz:16,color:'#000000',alpha:.25});
@@ -1008,15 +1024,19 @@ class RrvvfoRoadHub{
     return table[this.step]||null;
   }
 
-  showAreaTitle(name){
+  showAreaTitle(name){document.dispatchEvent(new CustomEvent('pxstoryarrival',{detail:{title:name,detail:'Story hub updated',tone:'gold',onceKey:`area:${name}`}}));
     this.areaName.textContent=name;
     this.area.hidden=false;
     this.areaTimer=2.4;
   }
 
   setObjective(title,detail){
+    const pacing=this.syncRpgPacing();
     this.objective.textContent=title;
     this.detail.textContent=detail;
+    this.objective.closest('.roadObjective')?.setAttribute('data-phase-label',rpgPacingLabel('road',pacing));
+    const progress=loadLostYearProgress();
+    saveLostYearProgress({...progress,chapter1RoadPacing:pacing});
   }
 
   onKey(event){
@@ -1060,7 +1080,8 @@ class RrvvfoRoadHub{
     const progress=loadLostYearProgress();
     const completedMissions=progress.completedMissions.includes(MISSION_ID)?progress.completedMissions:[...progress.completedMissions,MISSION_ID];
     const unlocks=[...new Set([...(progress.unlocks||[]),'trainingGroundsHub','tournamentRoad','fieldObjectSwap','fieldShotsOfAgony','runEncounters','fieldLensOfTruth'])];
-    saveLostYearProgress({...progress,completedMissions,unlocks,lastCheckpoint:MISSION_ID});
+    this.pacing=setRpgPacingPhase(this.pacing,'departure');
+    saveLostYearProgress({...progress,completedMissions,unlocks,lastCheckpoint:MISSION_ID,chapter1RoadPacing:this.pacing});
     this.onComplete();
     this.completePanel.hidden=false;
     this.completePanel.querySelector('[data-road-continue]').focus();

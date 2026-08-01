@@ -1,0 +1,9 @@
+/* Prototype 2.9A.34 — signature combat and final-KO presentation */
+#arenaModeScreen.finalKoPulse [data-world-layer],#arenaModeScreen.finalKoPulse [data-fighter-layer]{animation:px34FinalKoCamera .42s cubic-bezier(.16,.9,.25,1)}
+#arenaModeScreen.finalKoPulse [data-banner]{letter-spacing:.12em;text-shadow:0 0 18px currentColor,0 4px 20px #000;animation:px34FinalKoBanner .62s ease-out}
+#arenaModeScreen.finalKoPulse [data-impact-flash]{mix-blend-mode:screen}
+.arenaTrialCard.complete{box-shadow:0 0 0 1px #ffe07a,0 0 24px #ffe07a33}
+.identityCards article::after{content:'SHORT IDENTITY TRIAL AVAILABLE';display:block;margin-top:.55rem;font-size:.64rem;letter-spacing:.08em;opacity:.58}
+@keyframes px34FinalKoCamera{0%{filter:brightness(1.8) contrast(1.25);transform:scale(1.018)}35%{filter:brightness(.72) contrast(1.35);transform:scale(1.006)}100%{filter:none;transform:none}}
+@keyframes px34FinalKoBanner{0%{opacity:0;transform:translateY(14px) scale(.86)}45%{opacity:1;transform:translateY(0) scale(1.08)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){#arenaModeScreen.finalKoPulse [data-world-layer],#arenaModeScreen.finalKoPulse [data-fighter-layer],#arenaModeScreen.finalKoPulse [data-banner]{animation:none}}

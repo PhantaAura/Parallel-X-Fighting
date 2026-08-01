@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a311-smoke-syntax-recovery-20260731';
-import {clampToStage} from '../arena/arena-stages.js?v=29a311-smoke-syntax-recovery-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a311-smoke-syntax-recovery-20260731';
-import {storyConfirm} from './story-ux.js?v=29a311-smoke-syntax-recovery-20260731';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a311-smoke-syntax-recovery-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {clampToStage} from '../arena/arena-stages.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyConfirm} from './story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a35-living-hubs-rpg-pacing-20260801';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

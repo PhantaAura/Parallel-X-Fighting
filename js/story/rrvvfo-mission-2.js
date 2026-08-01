@@ -1,13 +1,14 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a311-smoke-syntax-recovery-20260731';
-import {sharedInput} from '../input-runtime.js?v=29a311-smoke-syntax-recovery-20260731';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a311-smoke-syntax-recovery-20260731';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a311-smoke-syntax-recovery-20260731';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a311-smoke-syntax-recovery-20260731';
-import {storyConfirm} from './story-ux.js?v=29a311-smoke-syntax-recovery-20260731';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a311-smoke-syntax-recovery-20260731';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a311-smoke-syntax-recovery-20260731';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a311-smoke-syntax-recovery-20260731';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a311-smoke-syntax-recovery-20260731';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyConfirm} from './story-ux.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a35-living-hubs-rpg-pacing-20260801';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -21,6 +22,7 @@ function freshChapter2State(){
     barkSparResult:null,gruntDefeated:[],tournamentStarted:false,
     tournamentStep:'opening-ceremony',ceremonyComplete:false,prelimComplete:false,
     finalPrepSeen:false,ploukePerformanceBadge:null,runRefusals:0,intermission:null,
+    pacing:normalizeRpgPacingState('chapter2'),
     hubQuests:normalizeChapter2QuestState()
   };
 }
@@ -32,6 +34,7 @@ function normalizeChapter2State(saved={}){
     ...saved,
     talked:Array.isArray(saved.talked)?[...new Set(saved.talked)]:[],
     gruntDefeated:Array.isArray(saved.gruntDefeated)?[...new Set(saved.gruntDefeated)]:[],
+    pacing:normalizeRpgPacingState('chapter2',saved.pacing),
     hubQuests:normalizeChapter2QuestState(saved.hubQuests)
   };
   // Saves created before the living-hub patch may already be inside the bracket.
@@ -245,6 +248,9 @@ class RrvvfoMission2{
     this.trackerPausedBattle=false;
     this.hubAmbientTimer=5;
     this.currentDistrict='arrival';
+    this.pacing=this.state.pacing;
+    this.aftermathSeconds=0;
+    this.aftermathEvent='';
     this.questToastTimer=0;
     this.race={active:false,index:0,startedAt:0,countdownUntil:0,elapsed:0,wadeX:250,wadeZ:20,splits:[]};
     this.ambientSpeech={npc:null,until:0};
@@ -303,7 +309,8 @@ class RrvvfoMission2{
       {id:'challenger',label:'REJECTED CHALLENGER',x:-1450,z:520,color:'#5f73a5',hair:'#242b3b',kind:'challenger'},
       {id:'grunt-a',label:'LOUD GRUNT',x:520,z:610,color:'#646a76',hair:'#292c33',kind:'grunt'},
       {id:'grunt-b',label:'MASKED GRUNT',x:820,z:-660,color:'#4f5561',hair:'#17191d',kind:'grunt'},
-      {id:'bracket',label:'BRACKET BOARD',x:910,z:-430,color:'#2f2238',hair:'#f0c85d',kind:'bracket'}
+      {id:'bracket',label:'BRACKET BOARD',x:910,z:-430,color:'#2f2238',hair:'#f0c85d',kind:'bracket'},
+      {id:'photo-stand',label:'FESTIVAL PHOTO STAND',x:420,z:250,color:'#d35a77',hair:'#ffd45d',kind:'photoStand'}
     ];
   }
 
@@ -569,7 +576,35 @@ class RrvvfoMission2{
     return this.hubActors.filter(actor=>actor.asset&&(activeIds.has(actor.id)||(actor.id==='wade'&&this.race.active)));
   }
 
-  showAreaTitle(name){
+  syncRpgPacing(){
+    const phase=this.state.tournamentStarted?(this.state.intermission?'aftermath':'crisis'):(this.state.firstBrawlComplete?'development':'arrival');
+    setRpgPacingPhase(this.pacing,phase,{wave:this.state.tournamentStarted?3:this.state.firstBrawlComplete?2:this.pacing.orientationComplete?1:0});
+    this.root.dataset.rpgPhase=this.pacing.phase;
+    this.root.dataset.rpgWave=String(rpgPacingQuestWave(this.pacing));
+    if(this.battle?.root){this.battle.root.dataset.rpgPhase=this.pacing.phase;this.battle.root.dataset.rpgChapter='chapter2'}
+  }
+
+  notePacingConversation(id){
+    if(!id)return;
+    const before=this.pacing.orientationComplete;
+    recordPacingConversation(this.pacing,id);
+    if(!before&&completePacingOrientation('chapter2',this.pacing)){
+      setRpgPacingPhase(this.pacing,'development',{wave:1});
+      this.saveChapterState();
+      document.dispatchEvent(new CustomEvent('pxstorybanter',{detail:{onceKey:'c2-orientation-complete',lines:[['RRVVFO','Okay, I have seen enough of the grounds. Where is the announcer?'],['TOURNAMENT FAN','Registration Plaza. Follow the banners that are somehow louder than he is.']]}}));
+      this.questToast('HUB PHASE UPDATED','TOURNAMENT PREPARATION','The announcer and the first main quest are now available.');
+      this.updateHubObjective();
+    }else this.saveChapterState();
+    this.syncRpgPacing();
+  }
+
+  beginHubAftermath(eventId,seconds=6){
+    recordPacingAftermath(this.pacing,eventId);setRpgPacingPhase(this.pacing,'aftermath',{wave:3});
+    this.aftermathEvent=eventId;this.aftermathSeconds=this.replayMode?0:Math.max(0,seconds);
+    this.syncRpgPacing();this.saveChapterState();
+  }
+
+  showAreaTitle(name){document.dispatchEvent(new CustomEvent('pxstoryarrival',{detail:{title:name,detail:'Story hub updated',tone:'gold',onceKey:`area:${name}`}}));
     const panel=this.root.querySelector('[data-c2-area]');
     this.root.querySelector('[data-c2-area-name]').textContent=name;
     panel.hidden=false;this.areaTimer=2.2;
@@ -586,6 +621,16 @@ class RrvvfoMission2{
 
   updateHubObjective(){
     const q=this.state.hubQuests.mandatory;
+    this.syncRpgPacing();
+    if(this.aftermathSeconds>0){
+      this.setObjective('LET THE ROUND SETTLE','The crowd, workers, and fighters are reacting. Explore or talk while the next bracket call is prepared.');
+      this.renderQuestJournal();return;
+    }
+    if(!this.pacing.orientationComplete&&!this.state.tournamentStarted){
+      const progress=pacingOrientationProgress('chapter2',this.pacing);
+      this.setObjective('TAKE IN THE TOURNAMENT GROUNDS',`${progress.districts} / ${progress.districtTarget} districts • ${progress.conversations} / ${progress.conversationTarget} people • Visit Central Plaza.`);
+      this.renderQuestJournal();return;
+    }
     if(this.state.tournamentStarted&&this.state.tournamentStep!=='complete'){
       const step=this.state.tournamentStep||'round-1';
       const required=requiredRumorCountForStep(step);
@@ -635,13 +680,14 @@ class RrvvfoMission2{
       if(npc.id==='announcer')return true;
       if(npc.id==='practice')return this.state.sageVanished&&!this.state.firstBrawlComplete;
       if(npc.id==='bark'||npc.id==='wade')return this.state.firstBrawlComplete;
-      if(npc.id==='fake-champion')return this.state.tournamentStarted&&!q.optional.fakeChampion.complete;
-      if(npc.id==='lost-fan')return this.state.metBarkWade&&!q.optional.lostFan.complete;
-      if(npc.id==='mechanic')return q.mandatory.barkRing.complete&&!q.optional.dummy.complete;
-      if(npc.id==='cashier')return this.state.tournamentStarted&&!q.optional.prizeCart.complete;
-      if(npc.id==='challenger')return q.mandatory.bracket.complete&&!q.optional.challenger.complete;
+      if(npc.id==='fake-champion')return rpgPacingQuestWave(this.pacing)>=3&&this.state.tournamentStarted&&!q.optional.fakeChampion.complete;
+      if(npc.id==='lost-fan')return rpgPacingQuestWave(this.pacing)>=2&&this.state.metBarkWade&&!q.optional.lostFan.complete;
+      if(npc.id==='mechanic')return rpgPacingQuestWave(this.pacing)>=2&&q.mandatory.barkRing.complete&&!q.optional.dummy.complete;
+      if(npc.id==='cashier')return rpgPacingQuestWave(this.pacing)>=3&&this.state.tournamentStarted&&!q.optional.prizeCart.complete;
+      if(npc.id==='challenger')return rpgPacingQuestWave(this.pacing)>=1&&q.mandatory.bracket.complete&&!q.optional.challenger.complete;
       if(npc.kind==='grunt')return this.state.firstBrawlComplete&&!this.state.gruntDefeated.includes(npc.id);
       if(npc.id==='bracket')return q.mandatory.bracket.complete;
+      if(npc.id==='photo-stand')return this.state.metBarkWade;
       return true;
     });
   }
@@ -657,9 +703,19 @@ class RrvvfoMission2{
     const district=nearestDistrict(player.x,player.z);
     if(district.id!==this.currentDistrict){
       this.currentDistrict=district.id;
-      if(!quests.discoveredDistricts.includes(district.id)){quests.discoveredDistricts.push(district.id);this.saveChapterState()}
+      if(!quests.discoveredDistricts.includes(district.id))quests.discoveredDistricts.push(district.id);
+      recordPacingVisit(this.pacing,district.id);
+      if(!this.pacing.orientationComplete&&completePacingOrientation('chapter2',this.pacing)){
+        setRpgPacingPhase(this.pacing,'development',{wave:1});
+        this.questToast('HUB PHASE UPDATED','TOURNAMENT PREPARATION','You understand the plaza. Speak with the announcer when ready.');
+      }
+      this.saveChapterState();this.syncRpgPacing();this.updateHubObjective();
       this.showAreaTitle(district.name);
       this.root.querySelector('[data-c2-tracker-area]').textContent=district.name;
+    }
+    if(this.aftermathSeconds>0){
+      const before=this.aftermathSeconds;this.aftermathSeconds=Math.max(0,this.aftermathSeconds-dt);
+      if(before>0&&this.aftermathSeconds===0){this.syncRpgPacing();this.updateHubObjective();this.battle.notice('THE NEXT BRACKET CALL IS READY',1.2)}
     }
     if(this.race.active)this.updateWadeRace(dt);
     this.hubAmbientTimer-=dt;
@@ -705,20 +761,25 @@ class RrvvfoMission2{
   }
 
   beginAmbientSpeech(player){
+    const quests=this.state.hubQuests,afterBrawl=this.state.firstBrawlComplete,ringFixed=quests.mandatory.barkRing.complete,raceDone=quests.mandatory.wadeRace.complete;
     const lines={
-      announcer:this.state.tournamentStarted?'Fighters, check the updated bracket!':'Registration opens after the bracket is repaired!',
-      vendor:'Hot meals before the next round!',
-      fan:this.state.tournamentStarted?'That last pursuit changed the whole match!':'Wade just sprinted through here again!',
-      worker:this.state.tournamentStarted?'Arena repairs are almost finished!':'Keep the central path clear!'
+      announcer:this.state.tournamentStarted?['Fighters, check the updated bracket!','That last match changed three predictions and one chair.']:afterBrawl?['The bracket is almost readable again!','Please stop testing attacks near my announcement desk!']:['Registration opens after the bracket is repaired!'],
+      vendor:this.state.tournamentStarted?['Hot meals before the next round!','Plouke still has an unpaid tab!']:['Hot meals! Controlled flames only!'],
+      fan:raceDone?['Wade showed me a shortcut and then forgot where it ended.','Rrvvfo, Bark, and Wade finally took a festival photo!']:afterBrawl?['That practice brawl was better than the opening ceremony!','Wade just sprinted through here again!']:['Is the tournament supposed to start this late?'],
+      worker:ringFixed?['The practice ring is stable again. Nobody mention the footprints.','The repaired supports are holding perfectly!']:this.state.tournamentStarted?['Arena repairs are almost finished!']:['Keep the central path clear!']
     };
-    const nearby=this.activeNpcs().filter(npc=>lines[npc.id]&&distance(player,npc)<650);
-    if(!nearby.length)return;
-    const npc=nearby[Math.floor(Math.random()*nearby.length)];
-    this.ambientSpeech={npc,until:performance.now()+2400};
-    const bubble=this.root.querySelector('[data-c2-chatter]');
-    bubble.hidden=false;
-    this.root.querySelector('[data-c2-chatter-speaker]').textContent=npc.label;
-    this.root.querySelector('[data-c2-chatter-text]').textContent=lines[npc.id];
+    const nearby=this.activeNpcs().filter(npc=>lines[npc.id]&&distance(player,npc)<650);if(!nearby.length)return;
+    const npc=nearby[Math.floor(Math.random()*nearby.length)],pool=Array.isArray(lines[npc.id])?lines[npc.id]:[lines[npc.id]];
+    this.ambientSpeech={npc,until:performance.now()+2400};const bubble=this.root.querySelector('[data-c2-chatter]');bubble.hidden=false;
+    this.root.querySelector('[data-c2-chatter-speaker]').textContent=npc.label;this.root.querySelector('[data-c2-chatter-text]').textContent=pool[Math.floor(Math.random()*pool.length)];
+  }
+
+  useFestivalPhotoStand(){
+    if(this.state.festivalPhotoTaken){this.showDialogue([{speaker:'TOURNAMENT PHOTOGRAPHER',speakerClass:'neutral',text:'Your photo is still the loudest one on the wall.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'Photos do not make sound.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'That one does somehow.',tail:'down'}]);return}
+    this.showChoice({kicker:'PLAYFUL SIDE ACTIVITY',title:'TAKE A FESTIVAL PHOTO',text:'Pick the pose. This is a short character moment, not another errand.',buttons:[{label:'SERIOUS TEAM POSE',value:'serious',primary:true},{label:'WADE CHOOSES',value:'wade'},{label:'RRVVFO SOLO POSE',value:'solo'}],onChoose:value=>{
+      const lines=value==='serious'?[{speaker:'BARK',speakerClass:'neutral',text:'Stand still for one second.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'I am standing extremely fast.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'That sentence ruined the serious pose.',tail:'down'}]:value==='wade'?[{speaker:'WADE',speakerClass:'p2',text:'Everybody point in a different direction.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'Why?',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'So at least one of us looks correct.',tail:'down'}]:[{speaker:'RRVVFO',speakerClass:'p1',text:'Make sure I am in the center.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'It is a team photo.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'We can stand very far behind him.',tail:'down'}];
+      this.state.festivalPhotoTaken=value;this.saveChapterState();this.showDialogue(lines,()=>{document.dispatchEvent(new CustomEvent('pxstorycelebration',{detail:{type:'activity',tone:'stat',kicker:'SIDE ACTIVITY COMPLETE',title:'FESTIVAL PHOTO ADDED',detail:'The tournament hub now displays the team photo.',items:['NO FETCH QUEST','PARTY MEMORY'],onceKey:'activity:festival-photo'}}));this.resumeHub()})
+    }});
   }
 
   positionAmbientSpeech(){
@@ -738,6 +799,7 @@ class RrvvfoMission2{
   tryInteract(){
     if(this.mode!=='hub'||!this.nearby||this.race.active)return;
     const npc=this.nearby;
+    if(['talk','announcer','vendor','veteran','registration','sage','bark','wade','practice'].includes(npc.kind))this.notePacingConversation(npc.id||npc.kind);
     if(npc.kind==='talk')this.talkToLocal(npc);
     else if(npc.kind==='announcer')this.talkToAnnouncer();
     else if(npc.kind==='vendor')this.talkToVendor();
@@ -756,6 +818,7 @@ class RrvvfoMission2{
     else if(npc.kind==='shortcut')this.useWadeShortcut(npc);
     else if(npc.kind==='grunt')this.beginGruntEncounter(npc);
     else if(npc.kind==='bracket')this.inspectBracket();
+    else if(npc.kind==='photoStand')this.useFestivalPhotoStand();
     else if(npc.kind==='bracketFanCard')this.catchWadeCard();
     else if(npc.kind==='bracketRoof')this.collectBracketCard('vendor-card',[
       {speaker:'RRVVFO',speakerClass:'p1',text:'Bark’s card landed on the upper market walkway.',tail:'down'},
@@ -792,6 +855,10 @@ class RrvvfoMission2{
 
   talkToAnnouncer(){
     const bracket=this.state.hubQuests.mandatory.bracket;
+    if(!this.pacing.orientationComplete){
+      const progress=pacingOrientationProgress('chapter2',this.pacing);
+      this.showDialogue([{speaker:'ANNOUNCER',speakerClass:'rival',text:'Registration is not open yet. Walk the grounds, meet the people, and learn where everything is before I turn this festival into a crisis.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:`Fine. I have seen ${progress.districts} areas and spoken to ${progress.conversations} people.`,tail:'down'}],()=>this.resumeHub());return;
+    }
     if(!bracket.started){
       this.showDialogue([
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'Disaster! Three contestant cards escaped the bracket board!',tail:'down'},
@@ -1359,12 +1426,13 @@ class RrvvfoMission2{
     const render=items=>items.map(item=>`<span class="${item.done?'done':''}"><b>${item.done?'✓':'◇'}</b><strong>${item.title}</strong><small>${item.detail}</small></span>`).join('');
     const discoveredOptional=summary.optional.filter(item=>item.started||item.done);
     const main=this.root.querySelector('[data-c2-main-quests]'),side=this.root.querySelector('[data-c2-side-quests]');
-    if(main)main.innerHTML=render(summary.mandatory);
+    if(main)main.innerHTML=`<span class="questPacingPhase"><b>◆</b><strong>${rpgPacingLabel('chapter2',this.pacing)}</strong><small>${this.pacing.orientationComplete?'Activities unlock in story waves instead of all at once.':'Explore the festival before registration opens.'}</small></span>${render(summary.mandatory)}`;
     if(side)side.innerHTML=discoveredOptional.length?render(discoveredOptional):'<span class="questDiscoveryHint"><b>?</b><strong>EXPLORE THE GROUNDS</strong><small>Blue markers reveal optional character quests. They are never required to advance.</small></span>';
   }
 
   showIntermissionArrival(){
     const step=this.state.tournamentStep||'quarterfinal',required=requiredRumorCountForStep(step),found=this.state.hubQuests.mandatory.ploukeRumors.clues.length;
+    this.beginHubAftermath(`intermission:${this.state.intermission||step}`,7);
     const intermissionText={
       'after-round-1':'Hamual is recovering in the medical tent. Workers are repairing the edge Rrvvfo damaged, and Daniel is studying the new bracket.',
       'after-quarterfinal':'Daniel is reviewing the match in the medical tent. The crowd has moved toward Bark and Pouki’s ring.',
@@ -2373,6 +2441,17 @@ class RrvvfoMission2{
         if(unlocked)r.disc({x:shortcut.x,y:6,z:shortcut.z,rx:42*pulse,rz:28*pulse,color:'#63c9ff',alpha:.28});
       }
     }
+
+    if(this.state.festivalPhotoTaken){
+      const glow=.62+Math.sin(time*2.4)*.08;r.box({x:455,y:100,z:220,sx:150,sy:116,sz:14,color:'#f4e8c9',alpha:.96});r.box({x:455,y:100,z:211,sx:126,sy:90,sz:8,color:'#1a2434',alpha:.95});
+      for(const [i,color] of ['#ef5048','#b88750','#51b8ff'].entries())r.billboard({x:420+i*35,y:105+(i===1?5:0),z:205,size:26,color,alpha:glow});
+      r.billboard({x:455,y:170,z:215,size:22,color:'#ffd85d',alpha:.8});
+    }
+    const festivalPhase=this.state.tournamentStarted?1:this.state.firstBrawlComplete?.72:this.pacing.orientationComplete?.48:.25;
+    const phaseLabel=rpgPacingLabel('chapter2',this.pacing),phaseColor=this.pacing.phase==='aftermath'?'#8edcff':this.pacing.phase==='crisis'?'#ff8b5c':'#ffd85d';
+    r.billboard({x:-260,y:238,z:40,size:28+Math.sin(time*2)*2,color:phaseColor,alpha:.36});
+    if(this.pacing.phase==='aftermath')for(let i=0;i<4;i++){const x=650+i*95;r.box({x,y:24,z:470,sx:48,sy:42,sz:36,color:'#5a7180',alpha:.72});r.billboard({x,y:80,z:470,size:14,color:'#8edcff',alpha:.35})}
+    for(let i=0;i<8;i++){const x=-900+i*280,z=-770+(i%2)*1540;r.billboard({x,y:178+Math.sin(time*2+i)*7,z,size:18+festivalPhase*12,color:i%2?'#ffd85d':'#ff6f91',alpha:.28+festivalPhase*.38})}
 
     // Crowd movement makes the hub feel active without turning every person into a quest giver.
     const crowdColors=['#d45172','#4ea4d1','#d99c45','#6e58ad','#5aa36d'];

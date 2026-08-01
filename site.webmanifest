@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X: Clash of Souls",
-  "short_name": "Parallels X",
+  "name": "Parallels X: Clash of Souls — Prototype 2.9A.35",
+  "short_name": "Parallels X 2.9A.35",
   "description": "The Parallels X browser fighting game.",
   "start_url": "./",
   "scope": "./",
@@ -8,9 +8,29 @@
   "background_color": "#0b0d16",
   "theme_color": "#648ee4",
   "icons": [
-    {"src":"favicon-32x32.png","sizes":"32x32","type":"image/png","purpose":"any"},
-    {"src":"apple-touch-icon.png","sizes":"180x180","type":"image/png","purpose":"any"},
-    {"src":"assets/site-icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
-    {"src":"assets/site-icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+    {
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/site-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/site-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }

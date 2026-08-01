@@ -97,10 +97,14 @@ export const LOST_YEAR_ROUTES=Object.freeze([
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],keyItems:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],keyItems:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},storyCharmState:{discoveries:[],activities:[],celebrations:[]},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},updatedAt:Date.now()};
 }
 
-export function loadLostYearProgress(storage=localStorage){
+let lastSaveFailure=null;
+function availableStoryStorage(){try{return globalThis.localStorage}catch{return null}}
+export function lastLostYearSaveError(){return lastSaveFailure}
+
+export function loadLostYearProgress(storage=availableStoryStorage()){
   const fallback=defaultLostYearProgress();
   try{
     const parsed=JSON.parse(storage.getItem(LOST_YEAR_SAVE_KEY)||'null');
@@ -113,20 +117,37 @@ export function loadLostYearProgress(storage=localStorage){
       unlocks:Array.isArray(parsed.unlocks)?parsed.unlocks:[],
       keyItems:Array.isArray(parsed.keyItems)?[...new Set(parsed.keyItems.filter(item=>typeof item==='string'))]:[],
       storyBonusStats:{...fallback.storyBonusStats,...(parsed.storyBonusStats||{})},
+      storyCharmState:{...fallback.storyCharmState,...(parsed.storyCharmState||{}),discoveries:[...new Set(parsed.storyCharmState?.discoveries||[])],activities:[...new Set(parsed.storyCharmState?.activities||[])],celebrations:[...new Set(parsed.storyCharmState?.celebrations||[])]},
       routeStarted:Boolean(parsed.routeStarted||parsed.completedMissions?.length),
       lastCheckpoint:typeof parsed.lastCheckpoint==='string'?parsed.lastCheckpoint:'rrvvfo-00'
     };
   }catch{return fallback}
 }
 
-export function saveLostYearProgress(progress,storage=localStorage){
+export function saveLostYearProgress(progress,storage=availableStoryStorage()){
   const previous=loadLostYearProgress(storage);
   const next={...progress,version:1,updatedAt:Date.now()};
-  try{storage.setItem(LOST_YEAR_SAVE_KEY,JSON.stringify(next))}catch{}
+  const serialized=JSON.stringify(next);
+  try{
+    storage?.setItem?.(LOST_YEAR_SAVE_KEY,serialized);
+    const verified=storage?.getItem?.(LOST_YEAR_SAVE_KEY);
+    if(verified!==serialized)throw new Error('Story save verification failed');
+    lastSaveFailure=null;
+  }catch(error){
+    lastSaveFailure=error instanceof Error?error:new Error(String(error||'Story save failed'));
+    if(typeof document!=='undefined')queueMicrotask(()=>document.dispatchEvent(new CustomEvent('pxstorysavefailure',{detail:{error:lastSaveFailure.message,attempted:next,restored:previous}})));
+    return previous;
+  }
   if(typeof document!=='undefined'){
     const newlyCompleted=RRVVFO_CHAPTERS.find(chapter=>!rrvvfoChapterComplete(chapter,previous)&&rrvvfoChapterComplete(chapter,next));
     if(newlyCompleted)queueMicrotask(()=>document.dispatchEvent(new CustomEvent('pxstorychaptercomplete',{detail:{chapter:newlyCompleted,progress:next}})));
     if(previous.lastCheckpoint!==next.lastCheckpoint)queueMicrotask(()=>document.dispatchEvent(new CustomEvent('pxstorycheckpoint',{detail:{checkpoint:next.lastCheckpoint,progress:next}})));
+    const newUnlocks=(next.unlocks||[]).filter(id=>!(previous.unlocks||[]).includes(id));
+    const newMissions=(next.completedMissions||[]).filter(id=>!(previous.completedMissions||[]).includes(id));
+    const newKeyItems=(next.keyItems||[]).filter(id=>!(previous.keyItems||[]).includes(id));
+    const statChanges=Object.keys(next.storyBonusStats||{}).map(label=>({label:label.toUpperCase(),amount:(Number(next.storyBonusStats?.[label])||0)-(Number(previous.storyBonusStats?.[label])||0)})).filter(change=>change.amount>0);
+    const oldLevel=Number(previous.storyLevel)||1,newLevel=Number(next.storyLevel)||1;
+    if(newUnlocks.length||newMissions.length||newKeyItems.length||statChanges.length||newLevel>oldLevel)queueMicrotask(()=>document.dispatchEvent(new CustomEvent('pxstoryprogression',{detail:{newUnlocks,newMissions,newKeyItems,statChanges,oldLevel,newLevel,updatedAt:next.updatedAt,progress:next}})));
   }
   return next;
 }

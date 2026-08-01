@@ -1,0 +1,23 @@
+{
+  "build": "Prototype 2.9A.31.3 — Save, Stage, Chapter 4 & Fallback Reliability",
+  "saveSchema": 268,
+  "smoke": {
+    "total": 309,
+    "passed": 309,
+    "failed": 0,
+    "completed": true
+  },
+  "releaseChecks": {
+    "basicAttackBuffering": "PASS",
+    "fighterIdentityDifferences": "PASS",
+    "instantRematch": "PASS",
+    "randomRematchHiddenInStory": "PASS",
+    "victoryAnimationReset": "PASS",
+    "fighterIdentityGuideClose": "PASS"
+  },
+  "chapter4ReplayRepair": true,
+  "githubDeployment": {
+    "completed": false,
+    "reason": "Connected GitHub integration returned HTTP 403 Resource not accessible by integration for refs, trees, and contents writes."
+  }
+}

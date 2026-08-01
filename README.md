@@ -6,10 +6,71 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.31.1 — Smoke Syntax Recovery**
+**Prototype 2.9A.35 — Living Hubs & RPG Pacing**
 
 This is a complete cumulative build. No older package is required.
 
+
+## 2.9A.35 living hubs and RPG pacing highlights
+
+- Chapters 1–4 now track arrival, development, crisis, aftermath, and departure phases instead of presenting each hub as one flat checklist.
+- Chapter 2 asks first-time players to learn the festival layout and meet people before tournament registration opens.
+- Chapter 2 optional activities unlock in story waves, while round aftermaths return control for reactions and exploration before the next call.
+- Chapter 3 uses the empty tournament grounds as an orientation beat before its investigation opens, then stages optional leads as tension rises.
+- Chapter 4 lets Rrvvfo inspect Echo Village’s resonance wall and water channel before Bark and Wade arrive, with a quiet recovery period after the defense.
+- Chapter 1 remains the lightest introduction while still tracking a clear journey arc.
+- Existing saves normalize safely, Chapter 4 legacy progress bypasses the new orientation gate, and save schema remains 268.
+
+
+## 2.9A.34 signature combat and impact highlights
+
+- Rrvvfo, Revvfo, Wade, and Bark each have a short signature combat moment built around their existing identity rather than a universal new meter.
+- Object Swap angles, close pressure, lightning near-misses, and armored punishes now create distinct resource and feedback rewards.
+- Final match KOs use stronger fighter-colored impact, audio, freeze, camera emphasis, and victory hold while preserving accessibility settings.
+- Arena Training adds one quick identity trial for each finished standard fighter.
+- Save schema remains 268.
+
+
+## 2.9A.33 boss dance and stage personality highlights
+
+- Hollow Watcher now teaches a three-phase Action, Range, and Route scan instead of applying an opaque general resistance.
+- Breaking its named learned pattern creates a short, obvious exposed state with increased damage and stun.
+- Resonance Facility, Echo Caverns, and Mountain Path gain solid route-shaping Arena geometry that blocks fighters and projectiles.
+- Tangai Dojo remains a direct pressure stage, while the Global Tournament remains a completely clean official ring.
+- New Arena geometry is disabled during Story fights so chapter scripting and hub collision remain unchanged.
+- Quick Battle launches a first-to-one VS CPU match from the main menu using the last safe setup.
+- The browser smoke suite now packages 322 cases.
+- Save schema remains 268.
+
+
+## 2.9A.32 hub charm and progression celebration highlights
+
+- Story hubs now use a shared arrival, banter, and progression-celebration layer.
+- NPC chatter changes after major tournament events instead of repeating one static line.
+- Bark, Wade, and Rrvvfo receive short party banter at selected Story milestones.
+- Chapter 2 adds a Festival Photo Stand activity and persistent team-photo display.
+- Chapter 4 adds Echo Chime Jam, plus villagers, banners, beacon energy, and lift visuals that react to progress.
+- Level, permanent stat, technique, chapter, mode, route, and future fighter unlocks now have clear celebration presentation.
+- Save schema remains 268.
+
+
+## 2.9A.31.3 reliability highlights
+
+- Save export, import, Reset All, Story autosave failure reporting, and schema validation now protect the complete current save set.
+- VS CPU, Local 2 Player, Extras, and Stage Select share the same five playable Arena stages.
+- Ring-out rules read stage profiles instead of a tournament-only ID check.
+- Asset-less Story opponents use their own accent colors and unsupported sprite IDs skip missing-manifest requests.
+- Interrupted Story fights restore their pre-fight snapshot, while the playtest menu can jump straight to a clean temporary Echo Village hub.
+- Portrait combat keeps compact critical cues, and a timed-out smoke test stops before contaminating later results.
+- Save schema remains 268.
+
+## 2.9A.31.2 final smoke cleanup highlights
+
+- Lens smoke tests now isolate temporary mastery values and restore the player’s real saved mastery afterward.
+- Visible Arena and Sage Manual build labels now come from the shared build constant.
+- Ryuzankaro availability is strictly derived from completion of the Echo Village defense.
+- The smoke suite remains 301 tests and uses a fresh cache identity.
+- Save schema remains 268.
 
 ## 2.9A.31 core feel and character fantasy highlights
 
@@ -28,7 +89,7 @@ This is a complete cumulative build. No older package is required.
 - Startup import failures, unhandled errors, and stalled progress display an explicit diagnostic instead of leaving `Running…` forever.
 - Mixed GitHub Pages/Safari build files trigger a cache/build warning.
 - Retry Failed Tests, Run Again, and Copy Results controls are available after completion or failure.
-- The suite now packages 301 browser smoke cases.
+- The 2.9A.30.2 foundation packages 301 browser smoke cases; the current 2.9A.33 suite packages 322.
 - Save schema remains 268.
 
 
@@ -208,4 +269,4 @@ Save-export schema: **268**. Existing Story saves continue through the current s
 
 ## Testing
 
-Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.29.1.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.29.1.md) for the real-device pass. See [`PATCH-NOTES-2.9A.29.1.md`](PATCH-NOTES-2.9A.29.1.md) and [`VALIDATION-2.9A.29.1.md`](VALIDATION-2.9A.29.1.md) for release details.
+Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.33.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.33.md) for the real-device pass. See [`PATCH-NOTES-2.9A.33.md`](PATCH-NOTES-2.9A.33.md) and [`VALIDATION-2.9A.33.md`](VALIDATION-2.9A.33.md) for release details.

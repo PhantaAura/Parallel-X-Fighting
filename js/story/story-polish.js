@@ -1,14 +1,15 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a311-smoke-syntax-recovery-20260731';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
   RRVVFO_PLANNED_CHAPTER_COUNT,
   completedRrvvfoChapterCount,
   loadLostYearProgress,
+  lastLostYearSaveError,
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a311-smoke-syntax-recovery-20260731';
+} from './lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -27,6 +28,26 @@ const CHAPTER_MISSIONS=Object.freeze({
   3:['rrvvfo-03'],
   4:['rrvvfo-04']
 });
+
+const PREFIGHT_BACKUP_KEY='pxStoryPreFightBackupV1';
+function storePreFightBackup(chapter=0){
+  try{sessionStorage.setItem(PREFIGHT_BACKUP_KEY,JSON.stringify({version:1,createdAt:Date.now(),chapter:Number(chapter)||0,progress:loadLostYearProgress()}));return true}catch{return false}
+}
+function clearPreFightBackup(){try{sessionStorage.removeItem(PREFIGHT_BACKUP_KEY)}catch{}}
+function restorePreFightBackup(){
+  try{
+    const raw=sessionStorage.getItem(PREFIGHT_BACKUP_KEY);if(!raw)return false;
+    const parsed=JSON.parse(raw),progress=parsed?.progress&&typeof parsed.progress==='object'?parsed.progress:parsed;
+    if(!progress||typeof progress!=='object')return false;
+    const restored=saveLostYearProgress(progress);
+    if(lastLostYearSaveError())return false;
+    const verified=loadLostYearProgress();
+    const restoredOk=verified?.lastCheckpoint===progress.lastCheckpoint
+      &&JSON.stringify(verified?.completedMissions||[])===JSON.stringify(progress.completedMissions||[]);
+    if(restoredOk)clearPreFightBackup();
+    return restoredOk;
+  }catch{return false}
+}
 
 let singleton=null;
 
@@ -81,7 +102,7 @@ class StoryPolishController{
   constructor(){
     this.root=null;this.transition=null;this.objective=null;this.results=null;this.playtest=null;this.combatCallout=null;
     this.objectiveTimer=0;this.transitionTimer=0;this.lastObjective='';this.codeBuffer=[];this.controllerFrame=0;this.controllerButtons=[];
-    this.observer=null;this.initialized=false;this.currentMode='';this.currentChapter=0;this.nativeContinue=null;this.nativeCompletionOverlay=null;
+    this.observer=null;this.initialized=false;this.currentMode='';this.currentChapter=0;this.nativeContinue=null;this.nativeCompletionOverlay=null;this.recoveredPreFight=false;
     this.onKey=this.onKey.bind(this);this.pollController=this.pollController.bind(this);this.scanObjectives=this.scanObjectives.bind(this);
   }
 
@@ -111,7 +132,7 @@ class StoryPolishController{
           <p class="playtestCode">UNLOCKED WITH ↑ ↑ ↓ ↓ ← → ← → B A</p>
           <div class="playtestSnapshot" data-playtest-snapshot></div>
           <section><h3>RECOVERY</h3><div class="playtestButtons"><button type="button" data-playtest-action="checkpoint">RESTART FROM SAVED CHECKPOINT</button><button type="button" data-playtest-action="chapterSelect">OPEN CHAPTER SELECT</button><button type="button" data-playtest-action="resetChapter">RESET CURRENT CHAPTER</button></div></section>
-          <section><h3>JUMP TO RELEASED CHAPTER</h3><div class="playtestButtons">${[1,2,3,4].map(number=>`<button type="button" data-playtest-chapter="${number}">CHAPTER ${number}</button>`).join('')}</div></section>
+          <section><h3>JUMP TO RELEASED CHAPTER</h3><div class="playtestButtons">${[1,2,3,4].map(number=>`<button type="button" data-playtest-chapter="${number}">CHAPTER ${number}</button>`).join('')}<button type="button" data-playtest-chapter-hub="4">CHAPTER 4 • ECHO VILLAGE HUB</button></div></section>
           <section><h3>QUICK COMBAT TEST</h3><div class="playtestButtons"><button type="button" data-playtest-fight="revvfo">RRVVFO VS REVVFO</button><button type="button" data-playtest-fight="wade">RRVVFO VS WADE</button><button type="button" data-playtest-fight="bark">RRVVFO VS BARK</button></div></section>
           <section><h3>BUG REPORT</h3><div class="playtestButtons"><button type="button" class="primary" data-playtest-action="copyReport">COPY BUG REPORT</button><button type="button" data-playtest-action="downloadReport">DOWNLOAD REPORT</button><button type="button" data-playtest-action="refreshFlags">REFRESH FLAGS</button></div></section>
           <pre data-playtest-flags></pre>
@@ -128,11 +149,13 @@ class StoryPolishController{
     this.root.querySelector('[data-playtest-close]').addEventListener('click',()=>this.closePlaytest());
     this.root.querySelectorAll('[data-playtest-action]').forEach(button=>button.addEventListener('click',()=>this.handlePlaytestAction(button.dataset.playtestAction)));
     this.root.querySelectorAll('[data-playtest-chapter]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.playtestChapter))));
+    this.root.querySelectorAll('[data-playtest-chapter-hub]').forEach(button=>button.addEventListener('click',()=>this.startChapterHub(Number(button.dataset.playtestChapterHub))));
     this.root.querySelectorAll('[data-playtest-fight]').forEach(button=>button.addEventListener('click',()=>this.startCombatTest(button.dataset.playtestFight)));
   }
 
   init(){
-    if(this.initialized)return this;this.initialized=true;this.build();
+    if(this.initialized)return this;this.initialized=true;this.recoveredPreFight=restorePreFightBackup();this.build();
+    if(this.recoveredPreFight)queueMicrotask(()=>this.showObjective('STORY FIGHT RECOVERED','The pre-fight checkpoint was restored after an interrupted battle.','AUTO-SAVE RECOVERY'));
     document.addEventListener('keydown',this.onKey,true);
     document.addEventListener('pxstorymodechange',event=>this.onModeChange(event.detail||{}));
     document.addEventListener('pxdialogueline',event=>this.onDialogueLine(event.detail||{}));
@@ -175,11 +198,12 @@ class StoryPolishController{
       try{const key=`pxStoryChapterRun:${this.currentChapter}`,run=JSON.parse(sessionStorage.getItem(key)||'{}');run.fights=(Number(run.fights)||0)+1;sessionStorage.setItem(key,JSON.stringify(run))}catch{}
     }
     if(to==='combat'||to==='tutorial'){
-      try{sessionStorage.setItem('pxStoryPreFightBackupV1',JSON.stringify(loadLostYearProgress()))}catch{}
+      storePreFightBackup(this.currentChapter)
       this.showTransition({kicker:to==='tutorial'?'TRAINING ENGAGED':'STORY BATTLE',title:opponent?`VS ${safe(opponent).toUpperCase()}`:'FIGHT',detail:'Checkpoint secured • exploration UI hidden • combat controls active'});
       document.body.classList.add('storyCombatFeedback');
       setTimeout(()=>document.body.classList.remove('storyCombatFeedback'),720);
     }else if(from==='combat'&&['exploration','story','cinematic','complete'].includes(to)){
+      clearPreFightBackup();
       this.showTransition({kicker:'BATTLE COMPLETE',title:'RETURNING TO STORY',detail:'Checkpoint secured • exploration controls restored'});
     }
   }
@@ -237,6 +261,7 @@ class StoryPolishController{
   }
 
   onChapterComplete({chapter,progress}={}){
+    clearPreFightBackup();
     const number=Number(chapter?.number)||0;if(!number)return;
     queueMicrotask(()=>{
       const selectors=['[data-road-complete]','[data-route-end]','[data-c3-complete]','[data-c4-complete]'];
@@ -344,12 +369,17 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Use the chapter’s Story Menu exit, then enter the secret code again.','PLAYTEST TOOL');return}
     this.closePlaytest();document.dispatchEvent(new CustomEvent('pxplayteststartchapter',{detail:{number,stepId}}));
   }
+  startChapterHub(number){
+    if(number!==4)return;
+    if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Use the chapter’s Story Menu exit, then enter the secret code again.','PLAYTEST TOOL');return}
+    this.closePlaytest();document.dispatchEvent(new CustomEvent('pxplayteststartchapter',{detail:{number:4,stepId:'rrvvfo-04',entry:'hub'}}));
+  }
   async startCombatTest(opponent){
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a311-smoke-syntax-recovery-20260731`);
-      startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'remote-highlands':'dojo',difficulty:'normal',koTarget:1});
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a35-living-hubs-rpg-pacing-20260801`);
+      startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'echo-mountain':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }
   resetCurrentChapter(){

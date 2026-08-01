@@ -36,6 +36,9 @@ export const FIGHTER_ABILITY_HOTBARS=Object.freeze(Object.fromEntries(ROSTER_IDS
 export function abilitiesForFighter(id){return FIGHTER_ABILITY_HOTBARS[id]||[]}
 export function defaultAbilityOrder(id){return abilitiesForFighter(id).map(entry=>entry.id)}
 
+
+function availableStorage(storage){if(storage)return storage;try{return globalThis.localStorage}catch{return globalThis.__PX_TEST_STORAGE__||null}}
+
 export function createDefaultAbilityHotbarSettings(stored={}){
   const orders={};for(const id of ROSTER_IDS){const saved=Array.isArray(stored?.orders?.[id])?stored.orders[id]:[],defaults=defaultAbilityOrder(id),valid=saved.filter(item=>defaults.includes(item));orders[id]=[...new Set([...valid,...defaults])].slice(0,defaults.length)}
   return{
@@ -54,8 +57,8 @@ export function createDefaultAbilityHotbarSettings(stored={}){
   };
 }
 
-export function loadAbilityHotbarSettings(storage=globalThis.localStorage){try{return createDefaultAbilityHotbarSettings(JSON.parse(storage?.getItem?.(ABILITY_HOTBAR_KEY)||'{}'))}catch{return createDefaultAbilityHotbarSettings()}}
-export function saveAbilityHotbarSettings(settings,storage=globalThis.localStorage){try{storage?.setItem?.(ABILITY_HOTBAR_KEY,JSON.stringify(createDefaultAbilityHotbarSettings(settings)));return true}catch{return false}}
+export function loadAbilityHotbarSettings(storage=null){try{const active=availableStorage(storage);return createDefaultAbilityHotbarSettings(JSON.parse(active?.getItem?.(ABILITY_HOTBAR_KEY)||'{}'))}catch{return createDefaultAbilityHotbarSettings()}}
+export function saveAbilityHotbarSettings(settings,storage=null){try{availableStorage(storage)?.setItem?.(ABILITY_HOTBAR_KEY,JSON.stringify(createDefaultAbilityHotbarSettings(settings)));return true}catch{return false}}
 
 export function orderedAbilities(id,settings=createDefaultAbilityHotbarSettings()){
   const all=abilitiesForFighter(id),byId=new Map(all.map(entry=>[entry.id,entry]));return(settings.orders?.[id]||defaultAbilityOrder(id)).map(entry=>byId.get(entry)).filter(Boolean);
@@ -68,7 +71,7 @@ export function moveAbilitySlot(settings,fighterId,abilityId,targetIndex){
 export function restoreAbilityOrder(settings,fighterId){settings.orders={...settings.orders,[fighterId]:defaultAbilityOrder(fighterId)};return settings.orders[fighterId]}
 
 const seconds=frames=>Math.max(0,Math.ceil(Number(frames||0)/60));
-function currentLensCosts(storage=globalThis.localStorage){let mastery=0;try{mastery=Math.max(0,Math.min(100,Number(storage?.getItem?.('pxLensMasteryV1'))||0))}catch{}const ratio=mastery/100;return{mastery,energy:Math.round(60-15*ratio),hp:Math.round(25-15*ratio)}}
+function currentLensCosts(storage=null){let mastery=0;try{mastery=Math.max(0,Math.min(100,Number(availableStorage(storage)?.getItem?.('pxLensMasteryV1'))||0))}catch{}const ratio=mastery/100;return{mastery,energy:Math.round(60-15*ratio),hp:Math.round(25-15*ratio)}}
 export function abilityStatus(fighter,entry,world=fighter?.world){
   if(!fighter||!entry)return{available:false,reason:'Fighter unavailable',cooldown:0,fill:0,active:false};
   let cooldown=0,active=false,activeText='',reason='';const lens=currentLensCosts();const requiredEnergy=entry.action==='lensOfTruth'?lens.energy:entry.energy;

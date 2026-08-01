@@ -1,0 +1,63 @@
+/* Prototype 2.9A.35 — Living Hubs & RPG Pacing */
+:root{
+  --px-rpg-arrival:#e8c978;
+  --px-rpg-development:#73c3a7;
+  --px-rpg-crisis:#ef765f;
+  --px-rpg-aftermath:#8ab8e8;
+  --px-rpg-departure:#d5b4ff;
+}
+
+[data-rpg-phase="arrival"], [data-pacing-phase="arrival"]{--px-rpg-phase:var(--px-rpg-arrival)}
+[data-rpg-phase="development"], [data-pacing-phase="development"]{--px-rpg-phase:var(--px-rpg-development)}
+[data-rpg-phase="crisis"], [data-pacing-phase="crisis"]{--px-rpg-phase:var(--px-rpg-crisis)}
+[data-rpg-phase="aftermath"], [data-pacing-phase="aftermath"]{--px-rpg-phase:var(--px-rpg-aftermath)}
+[data-rpg-phase="departure"], [data-pacing-phase="departure"]{--px-rpg-phase:var(--px-rpg-departure)}
+
+[data-rpg-phase] .roadObjective,
+[data-rpg-phase] .c2Objective,
+[data-rpg-phase] .c3Objective,
+[data-rpg-phase] .c4Objective,
+[data-pacing-phase] .roadObjective{
+  border-left-color:var(--px-rpg-phase,#e8c978);
+  transition:border-color .35s ease,box-shadow .35s ease;
+}
+
+[data-rpg-phase="crisis"] .roadObjective,
+[data-rpg-phase="crisis"] .c2Objective,
+[data-rpg-phase="crisis"] .c3Objective,
+[data-rpg-phase="crisis"] .c4Objective{
+  box-shadow:0 0 24px color-mix(in srgb,var(--px-rpg-phase) 22%,transparent);
+}
+
+.roadObjective[data-phase-label]::before{
+  content:attr(data-phase-label);
+  display:block;
+  margin-bottom:.18rem;
+  color:var(--px-rpg-phase,#e8c978);
+  font-size:.62rem;
+  font-weight:900;
+  letter-spacing:.13em;
+}
+
+.questPacingPhase{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:.2rem .55rem;
+  align-items:center;
+  margin:0 0 .72rem;
+  padding:.66rem .75rem;
+  border:1px solid color-mix(in srgb,var(--px-rpg-phase,#e8c978) 54%,transparent);
+  border-radius:.72rem;
+  background:linear-gradient(110deg,color-mix(in srgb,var(--px-rpg-phase,#e8c978) 14%,#10131a),rgba(8,10,15,.82));
+}
+.questPacingPhase>b{grid-row:1/3;color:var(--px-rpg-phase,#e8c978);font-size:1.1rem}
+.questPacingPhase>strong{font-size:.78rem;letter-spacing:.09em}
+.questPacingPhase>small{opacity:.76;line-height:1.35}
+
+[data-rpg-wave="0"] [data-optional-quest],
+[data-rpg-wave="0"] .optionalQuestMarker{opacity:.42}
+
+@media (max-width:700px){
+  .questPacingPhase{padding:.55rem .62rem}
+  .roadObjective[data-phase-label]::before{font-size:.56rem}
+}

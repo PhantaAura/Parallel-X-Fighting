@@ -1,12 +1,12 @@
 "use strict";
-import {FIGHTER_META,FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from './roster.js?v=29a311-smoke-syntax-recovery-20260731';
+import {FIGHTER_META,FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from './roster.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {STAGES,drawStage} from './stages.js';
-import {CUSTOM_CONTROLLER_ACTIONS} from './input.js?v=29a311-smoke-syntax-recovery-20260731';
-import {sharedInput as input} from './input-runtime.js?v=29a311-smoke-syntax-recovery-20260731';
+import {CUSTOM_CONTROLLER_ACTIONS} from './input.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {sharedInput as input} from './input-runtime.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {decideCPU} from './ai.js';
 import {TimerRegistry,clamp,resetCombo} from './combat.js';
 import {EffectSystem} from './effects.js';
-import {Fighter} from './fighter.js?v=29a311-smoke-syntax-recovery-20260731';
+import {Fighter} from './fighter.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {moveList} from './movesets.js';
 import {trainingState,recordInput,clearTraining,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from './training.js';
 import {byId as $} from './ui.js';
@@ -15,37 +15,39 @@ import {applyCamera,createCameraState,updateCamera} from './camera-system.js';
 import {clearCinematic,createCinematicState,drawCinematicOverlay,updateCinematic} from './ultimate-system.js';
 import {AudioManager} from './audio-manager.js';
 import {HapticsManager,MobilePlatformController,loadTouchSettings,saveTouchSettings} from './mobile-platform.js';
-import {TouchControls} from './touch-controls.js?v=29a311-smoke-syntax-recovery-20260731';
-import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js?v=29a311-smoke-syntax-recovery-20260731';
-import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=29a311-smoke-syntax-recovery-20260731';
+import {TouchControls} from './touch-controls.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
-import {ControllerManager} from './controller-manager.js?v=29a311-smoke-syntax-recovery-20260731';
-import {BUILD_VERSION} from './build-info.js?v=29a311-smoke-syntax-recovery-20260731';
-import {initializeStoryPolish} from './story/story-polish.js?v=29a311-smoke-syntax-recovery-20260731';
-import {initializeMobileStoryUi} from './story/mobile-story-ui.js?v=29a311-smoke-syntax-recovery-20260731';
+import {ControllerManager} from './controller-manager.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {BUILD_VERSION} from './build-info.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {initializeStoryPolish} from './story/story-polish.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {initializeStoryCharm} from './story/story-charm.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {initializeMobileStoryUi} from './story/mobile-story-ui.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=29a311-smoke-syntax-recovery-20260731';
+import {MainMenu} from './main-menu.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {MatchStatistics} from './match-statistics.js';
-import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=29a311-smoke-syntax-recovery-20260731';
+import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {ResultsScreen} from './results-screen.js';
-import {loadQolSettings,saveQolSettings} from './qol-settings.js?v=29a311-smoke-syntax-recovery-20260731';
+import {loadQolSettings,saveQolSettings} from './qol-settings.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {NotificationSystem} from './notification-system.js';
 import {adaptiveMoveList,renderAdaptiveMoveList} from './move-list.js';
-import {SettingsPanel} from './settings-panel.js?v=29a311-smoke-syntax-recovery-20260731';
-import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=29a311-smoke-syntax-recovery-20260731';
+import {SettingsPanel} from './settings-panel.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=29a35-living-hubs-rpg-pacing-20260801';
 import {LoadingManager} from './loading-manager.js';
 import {applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from './training-presets.js';
 import {FirstTimeHints} from './first-time-hints.js';
-import {cooldownText,fighterHudModel} from './hud-model.js?v=29a311-smoke-syntax-recovery-20260731';
-import {AbilityHotbar} from './ability-hotbar.js?v=29a311-smoke-syntax-recovery-20260731';
-import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a311-smoke-syntax-recovery-20260731';
-import {ResponsiveGameLayout} from './responsive-game-layout.js?v=29a311-smoke-syntax-recovery-20260731';
-import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=29a311-smoke-syntax-recovery-20260731';
-import {FullscreenManager} from './fullscreen-manager.js?v=29a311-smoke-syntax-recovery-20260731';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a311-smoke-syntax-recovery-20260731';
+import {cooldownText,fighterHudModel} from './hud-model.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {AbilityHotbar} from './ability-hotbar.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {ResponsiveGameLayout} from './responsive-game-layout.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {FullscreenManager} from './fullscreen-manager.js?v=29a35-living-hubs-rpg-pacing-20260801';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a35-living-hubs-rpg-pacing-20260801';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;
 const U={start:$('startScreen'),main:$('mainMenuScreen'),menu:$('menuScreen'),game:$('gameScreen'),mode:$('mode'),diff:$('difficulty'),stage:$('stage'),rt:$('roundTime'),rounds:$('rounds'),cine:$('cinematics'),reduced:$('reducedShake'),spriteToggle:$('rrvvfoSprites'),spriteQuality:$('rrvvfoQuality'),spriteDebug:$('rrvvfoSpriteDebug'),prototypeExpose:$('showPrototypeAppearances'),prototypeBuildNote:$('prototypeAppearanceBuildNote'),spriteLoading:$('spriteLoading'),appearancePanels:[$('rrvvfoAppearancePanel1'),$('rrvvfoAppearancePanel2')],appearanceSelects:[$('rrvvfoAppearance1'),$('rrvvfoAppearance2')],appearancePreviews:[$('rrvvfoPreview1'),$('rrvvfoPreview2')],controller1:$('controllerStyle1'),controller2:$('controllerStyle2'),controllerCustom:$('customController'),customSide:$('customSide'),customBindings:$('customBindings'),controllerGuide:$('controllerGuide'),roster:$('roster'),slot1:$('slot1'),slot2:$('slot2'),n1:$('name1'),n2:$('name2'),m1:$('moves1'),m2:$('moves2'),s2l:$('slot2label'),notice:$('notice'),p1n:$('p1name'),p2n:$('p2name'),p1h:$('p1hp'),p2h:$('p2hp'),p1e:$('p1en'),p2e:$('p2en'),p1g:$('p1guard'),p2g:$('p2guard'),p1d:$('p1defense'),p2d:$('p2defense'),p1hpText:$('p1hpText'),p2hpText:$('p2hpText'),p1enText:$('p1enText'),p2enText:$('p2enText'),p1guardText:$('p1guardText'),p2guardText:$('p2guardText'),p1status:$('p1status'),p2status:$('p2status'),timer:$('timer'),rl:$('roundLabel'),msg:$('msg'),mt:$('msgTitle'),mx:$('msgText'),mb:$('msgButton'),pause:$('pause')};
+const resilientStorage=Object.freeze({getItem:key=>safeStorageGet(key),setItem:(key,value)=>safeStorageSet(key,value),removeItem:key=>safeStorageRemove(key)});
 const comboHud=[document.createElement('div'),document.createElement('div')];comboHud.forEach((element,index)=>{element.className=`comboHud c${index+1}`;$('gameWrap').appendChild(element)});
 const cooldownHud=[document.createElement('div'),document.createElement('div')];cooldownHud.forEach((element,index)=>{element.className='moveCooldown';(index?U.p2e:U.p1e).parentElement.parentElement.appendChild(element)});
 const clashHud=document.createElement('div');clashHud.className='clashHud hidden';clashHud.innerHTML='<strong id="clashLabel">CLASH!</strong><div class="clashTrack"><div class="clashFill" id="clashFill"></div></div>';$('gameWrap').appendChild(clashHud);
@@ -55,14 +57,14 @@ const trainingHud=document.createElement('div');trainingHud.className='trainingH
 const SONIC_KO_TARGET=3,CPU_MAX_HEALTH=100;
 let selectSlot=1,p1id='rrvvfo',p2id='revvfo',mode='cpu',difficulty='normal',stage='dojo',limit=Infinity,roundsToWin=SONIC_KO_TARGET,currentRound=1,wins1=0,wins2=0,state='menu',paused=false,pauseOwner=1,time=90,last=0,acc=0,roundIntro=0,clashInputActive=false,cinematicInputActive=false,hotbarInfoPausedMatch=false;
 let controllerHotbarButtons={left:false,right:false};
-const controllerManager=new ControllerManager({input,getState:()=>paused?'menu':state,onPause:({side}={side:1})=>togglePause(side),onDisconnect:({side})=>{setPaused(true,side||1);notifications?.push(`PLAYER ${side||'?'} CONTROLLER DISCONNECTED`,{important:true,key:'controller-disconnected'})},onReconnect:({side})=>{setPaused(true,side);confirmation.open({title:'Controller Reconnected',message:`Controller restored to Player ${side}. Confirm when ready to resume.`,accept:'RESUME'}).then(ok=>{if(ok)setPaused(false)})},onStatus:({type,side})=>updateControllerStatus(type,side),onStyleChange:(side,style)=>syncControllerStyleUi(side,style),onAssignmentClose:()=>{if(paused)showPauseOverlay()}});
+const controllerManager=new ControllerManager({input,storage:resilientStorage,getState:()=>paused?'menu':state,onPause:({side}={side:1})=>togglePause(side),onDisconnect:({side})=>{setPaused(true,side||1);notifications?.push(`PLAYER ${side||'?'} CONTROLLER DISCONNECTED`,{important:true,key:'controller-disconnected'})},onReconnect:({side})=>{setPaused(true,side);confirmation.open({title:'Controller Reconnected',message:`Controller restored to Player ${side}. Confirm when ready to resume.`,accept:'RESUME'}).then(ok=>{if(ok)setPaused(false)})},onStatus:({type,side})=>updateControllerStatus(type,side),onStyleChange:(side,style)=>syncControllerStyleUi(side,style),onAssignmentClose:()=>{if(paused)showPauseOverlay()}});
 U.controller1.value=controllerManager.settings.styles[0];U.controller2.value=controllerManager.settings.styles[1];
-let qolSettings=loadQolSettings();
-let abilityHotbarSettings=loadAbilityHotbarSettings();
-const mobilePresentationSettings=loadMobilePresentationSettings();
+let qolSettings=loadQolSettings(resilientStorage);
+let abilityHotbarSettings=loadAbilityHotbarSettings(resilientStorage);
+const mobilePresentationSettings=loadMobilePresentationSettings(resilientStorage);
 const audio=new AudioManager(qolSettings.audio);
-const touchSettings=loadTouchSettings(localStorage,createDefaultTouchSettings);
-saveTouchSettings(touchSettings);
+const touchSettings=loadTouchSettings(resilientStorage,createDefaultTouchSettings);
+saveTouchSettings(touchSettings,resilientStorage);
 const haptics=new HapticsManager({mode:()=>touchSettings.haptics});
 let orientationManager=null,fullscreenManager=null,abilityHotbar=null;
 const mobilePlatform=new MobilePlatformController({onBackPause:()=>setPaused(true),onViewportChange:metrics=>handleViewportChange(metrics)});
@@ -81,7 +83,7 @@ const touchSettingsPanel=new TouchSettingsPanel({
 const responsiveLayout=new ResponsiveGameLayout({doc:document,view:window,gameScreen:U.game,gameWrap:$('gameWrap'),canvas,touchRoot:$('touchLayer'),platform:()=>({...mobilePlatform.info,touch:wantsTouchControls(),desktopHotbar:!wantsTouchControls()&&qolSettings.hotbar.desktop!=='hidden'})});
 const world={width:WIDTH,height:HEIGHT,ground:GROUND,fighters:[],projectiles:[],effects:new EffectSystem(),timers:new TimerRegistry(),clash:createClashState(),camera:createCameraState(),cinematic:createCinematicState(),cinematicMode:'full',localMode:false,reducedShake:false,shake:0,hitstop:0,training:trainingState,sound,tryProjectileClash};
 const developerSpriteBuild=isDeveloperSpriteBuild();
-const savedVisuals=loadRrvvfoVisualSettings();
+const savedVisuals=loadRrvvfoVisualSettings(resilientStorage);
 U.spriteToggle.value=savedVisuals.enabled?'on':'off';U.spriteQuality.value=savedVisuals.quality;U.spriteDebug.checked=savedVisuals.developerViewer;U.prototypeExpose.checked=savedVisuals.exposePrototypeAppearances;U.prototypeExpose.disabled=!developerSpriteBuild;U.prototypeBuildNote.textContent='Hood Up has dedicated animation coverage.';
 const fighterVisuals=new FighterVisuals({settings:savedVisuals,onStatus:({status})=>{U.spriteLoading.classList.toggle('hidden',status!=='loading')}});
 const spriteDebugViewer=new SpriteDebugViewer(fighterVisuals);world.fighterVisuals=fighterVisuals;world.effects.spriteVisuals=fighterVisuals;
@@ -89,22 +91,24 @@ const statistics=new MatchStatistics();world.statistics=statistics;
 const confirmation=new ConfirmationDialog($('confirmDialog'));
 const pauseMenu=new PauseMenu($('pauseMenu'),{onAction:handlePauseAction});
 const resultsScreen=new ResultsScreen($('resultsScreen'),{onAction:handleResultAction});
-const mainMenu=new MainMenu(U.main,{onSelect:handleMainMenuSelection});
+const mainMenu=new MainMenu(U.main,{onSelect:handleMainMenuSelection,storage:resilientStorage});
 U.main.addEventListener('menumove',()=>sound('menuMove'));U.main.addEventListener('menuselect',event=>{sound('menuConfirm');if(event.detail?.id==='story')audio.startMusic('dojo');else if(event.detail?.id==='arena')audio.startMusic('tournament')});U.main.addEventListener('menuerror',event=>{sound('menuError');const detail=event.detail||{};const message=detail.id==='arcade'?'ARCADE MODE • COMING IN PROTOTYPE 3.x':(detail.availability||'COMPLETE MORE OF RRVVFO’S STORY TO UNLOCK');notifications?.push(message.toUpperCase(),{important:true,key:'coming-later'})});
 U.main.addEventListener('storyprogressrefresh',()=>{mainMenu.render();renderQuickContinue()});
 document.addEventListener('pxmusictheme',event=>{const theme=typeof event.detail==='string'?event.detail:event.detail?.theme;if(theme)audio.startMusic(theme)});
 document.addEventListener('pxcombatduck',event=>{const detail=event.detail||{};audio.duckMusic(detail.amount,detail.duration)});
-document.addEventListener('pxstoryuicue',event=>{const cue=event.detail?.cue;if(cue==='chapterComplete')audio.victoryStinger();else if(cue==='objective')audio.play('menuConfirm')});
+document.addEventListener('pxstoryuicue',event=>{const cue=event.detail?.cue;if(['chapterComplete','unlock','levelUp'].includes(cue))audio.victoryStinger();else if(cue==='arrival'){audio.play('dash');audio.play('menuConfirm')}else if(cue==='banter')audio.play('menuMove');else if(cue==='objective')audio.play('menuConfirm')});
 initializeStoryPolish();
+initializeStoryCharm();
 initializeMobileStoryUi();
 const notifications=new NotificationSystem($('combatNotifications'),{mode:()=>qolSettings.gameplay.combatMessages});world.notifications=notifications;
+document.addEventListener('pxstorysavefailure',event=>{const detail=event.detail||{};notifications.push(`STORY SAVE FAILED • ${detail.error||'STORAGE UNAVAILABLE'}`,{important:true,key:'story-save-failed'});confirmation.open({title:'Story Save Failed',message:'This checkpoint could not be written to this browser. Keep this tab open and export your save before continuing.',accept:'OK'}).catch(()=>{})});
 document.addEventListener('pxperfectparry',event=>{if(event.detail?.engine!=='2d')return;const wrap=$('gameWrap');wrap.classList.remove('perfectParryPulse');void wrap.offsetWidth;wrap.classList.add('perfectParryPulse');setTimeout(()=>wrap.classList.remove('perfectParryPulse'),360)});
-orientationManager=new OrientationManager({root:$('orientationPrompt'),settings:mobilePresentationSettings,onChange:saveMobilePresentationSettings,onLayout:metrics=>responsiveLayout.apply(metrics),onNotice:message=>notifications.push(message,{important:true,key:'orientation'}),onPrompt:()=>{if(state==='playing'){setPaused(true);pauseMenu.hide()}},onDismiss:()=>{if(state==='playing'&&wantsTouchControls()){fullscreenManager?.start({touch:true});if(!$('fullscreenPrompt').classList.contains('hidden')){setPaused(true);pauseMenu.hide()}else setPaused(false)}}});
-fullscreenManager=new FullscreenManager({root:$('fullscreenPrompt'),element:U.game,settings:mobilePresentationSettings,onChange:saveMobilePresentationSettings,onLayout:()=>responsiveLayout.apply(),onUnexpectedExit:()=>{if(state==='playing')setPaused(true)},onNotice:message=>notifications.push(message,{important:true,key:'fullscreen'}),onDismiss:()=>{if(state==='playing')setPaused(false)}});
-abilityHotbar=new AbilityHotbar({root:$('abilityHotbar'),input,settings:{...abilityHotbarSettings,...qolSettings.hotbar},getFighter:()=>world.fighters[0],getWorld:()=>world,getDevice:()=>input.lastInputDevice[0],notify:(message,options)=>notifications.push(message,options),onChange:settings=>{abilityHotbarSettings=settings;saveAbilityHotbarSettings(settings);syncHotbarCustomize()},onInfo:()=>{if(qolSettings.hotbar.pauseForInfo&&mode!=='local'&&state==='playing'){hotbarInfoPausedMatch=!paused;if(hotbarInfoPausedMatch)setPaused(true);pauseMenu.hide()}},onInfoClose:()=>{if(hotbarInfoPausedMatch){hotbarInfoPausedMatch=false;setPaused(false)}else if(paused)showPauseOverlay()}});
+orientationManager=new OrientationManager({root:$('orientationPrompt'),settings:mobilePresentationSettings,onChange:settings=>saveMobilePresentationSettings(settings,resilientStorage),onLayout:metrics=>responsiveLayout.apply(metrics),onNotice:message=>notifications.push(message,{important:true,key:'orientation'}),onPrompt:()=>{if(state==='playing'){setPaused(true);pauseMenu.hide()}},onDismiss:()=>{if(state==='playing'&&wantsTouchControls()){fullscreenManager?.start({touch:true});if(!$('fullscreenPrompt').classList.contains('hidden')){setPaused(true);pauseMenu.hide()}else setPaused(false)}}});
+fullscreenManager=new FullscreenManager({root:$('fullscreenPrompt'),element:U.game,settings:mobilePresentationSettings,onChange:settings=>saveMobilePresentationSettings(settings,resilientStorage),onLayout:()=>responsiveLayout.apply(),onUnexpectedExit:()=>{if(state==='playing')setPaused(true)},onNotice:message=>notifications.push(message,{important:true,key:'fullscreen'}),onDismiss:()=>{if(state==='playing')setPaused(false)}});
+abilityHotbar=new AbilityHotbar({root:$('abilityHotbar'),input,settings:{...abilityHotbarSettings,...qolSettings.hotbar},getFighter:()=>world.fighters[0],getWorld:()=>world,getDevice:()=>input.lastInputDevice[0],notify:(message,options)=>notifications.push(message,options),onChange:settings=>{abilityHotbarSettings=settings;saveAbilityHotbarSettings(settings,resilientStorage);syncHotbarCustomize()},onInfo:()=>{if(qolSettings.hotbar.pauseForInfo&&mode!=='local'&&state==='playing'){hotbarInfoPausedMatch=!paused;if(hotbarInfoPausedMatch)setPaused(true);pauseMenu.hide()}},onInfoClose:()=>{if(hotbarInfoPausedMatch){hotbarInfoPausedMatch=false;setPaused(false)}else if(paused)showPauseOverlay()}});
 const loadingManager=new LoadingManager($('loadingScreen'),{onRetry:()=>startGame(),onReturn:()=>showMainMenu()});
 const settingsPanel=new SettingsPanel($('settingsPanel'),{settings:qolSettings,onApply:applyQolSettings,onAction:handleSettingsAction});
-const firstTimeHints=new FirstTimeHints({input,enabled:()=>qolSettings.gameplay.firstTimeHints});let hintTimer=360;
+const firstTimeHints=new FirstTimeHints({input,storage:resilientStorage,enabled:()=>qolSettings.gameplay.firstTimeHints});let hintTimer=360;
 
 function sound(cue=220,duration=.05,type='square',volume=.03){if(typeof cue==='string'){audio.play(cue);haptics.trigger(cue)}else audio.tone(cue,duration,type,volume)}
 function updateControllerStatus(type,side){const connected=type==='connected';$('inputStatus').textContent=connected?`Controller connected${side?` • Player ${side}`:''}`:'Controller disconnected';audio.play(connected?'controllerConnected':'controllerDisconnected');if(typeof notifications!=='undefined')notifications.push(connected?'CONTROLLER CONNECTED':'CONTROLLER DISCONNECTED',{important:true,key:`controller-${type}`})}
@@ -132,27 +136,27 @@ function beginMobilePresentation(){
   if($('orientationPrompt').classList.contains('hidden'))fullscreenManager.start({touch:true});
   if(!$('orientationPrompt').classList.contains('hidden')||!$('fullscreenPrompt').classList.contains('hidden')){setPaused(true);pauseMenu.hide()}else setPaused(false);
 }
-function persistTouchSettings(settings,meta={}){saveTouchSettings(settings);applyTouchAvailability();if(meta.choice||meta.tutorial)setTimeout(beginMobilePresentation,0)}
+function persistTouchSettings(settings,meta={}){saveTouchSettings(settings,resilientStorage);applyTouchAvailability();if(meta.choice||meta.tutorial)setTimeout(beginMobilePresentation,0)}
 
 function applyQolSettings(settings,{persist=true}={}){
-  qolSettings=settings;audio.configure(settings.audio);if(persist)saveQolSettings(settings);
-  document.body.dataset.hubCameraMode=settings.gameplay.hubCamera;document.body.dataset.hubCameraSensitivity=String(settings.gameplay.hubCameraSensitivity);document.body.classList.toggle('skipMenuAnimations',settings.menu.skipAnimations);document.body.classList.toggle('reducedMotion',settings.menu.reducedMotion);document.body.classList.toggle('backgroundMotionOff',settings.accessibility.backgroundMotion==='off'||settings.video.backgroundMotion==='off');document.body.classList.toggle('highContrastHud',settings.accessibility.highContrastHud);document.body.classList.toggle('largeHudText',settings.accessibility.largerHudText);document.body.classList.toggle('smoothSprites',settings.video.spriteSmoothing);document.body.classList.toggle('desktop-hotbar-hidden',settings.hotbar.desktop==='hidden');$('hud').dataset.hudMode=settings.hud.mode==='auto'&&mobilePlatform.info.touch?'compact':settings.hud.mode;world.reducedShake=settings.accessibility.cameraShake!=='full'||U.reduced.checked;world.shakeScale=settings.accessibility.cameraShake==='off'?0:settings.accessibility.cameraShake==='reduced'?0.35:1;world.hitstopScale=settings.accessibility.impactFreeze==='off'?0:settings.accessibility.impactFreeze==='reduced'?0.55:1;world.flashScale=settings.accessibility.screenFlash==='off'?0:settings.accessibility.screenFlash==='reduced'?0.45:1;world.hitFlashScale=settings.accessibility.hitFlash==='off'?0:settings.accessibility.hitFlash==='reduced'?0.45:1;world.strongOutlines=settings.accessibility.strongOutlines;const particleCaps={low:100,medium:220,high:420,automatic:mobilePlatform.info.touch?160:320};world.effects.configure({particleCap:Math.max(40,Math.round(particleCaps[settings.video.quality]*settings.video.particleScale))});document.body.classList.toggle('reducedUltimateEffects',settings.accessibility.ultimateEffects==='reduced');document.body.classList.toggle('reducedLensOverlay',settings.accessibility.lensOverlay==='reduced');document.body.classList.toggle('simplifiedBackgrounds',Boolean(settings.accessibility.simplifiedBackground));document.body.classList.toggle('hidePlayerLabels',!settings.accessibility.playerLabels);document.body.classList.toggle('colorIndependentIcons',Boolean(settings.accessibility.colorIndependentIcons));$('fpsDisplay').classList.toggle('hidden',!settings.developer.fps);abilityHotbarSettings={...abilityHotbarSettings,...settings.hotbar};saveAbilityHotbarSettings(abilityHotbarSettings);abilityHotbar?.configure(abilityHotbarSettings);responsiveLayout?.apply();renderQuickContinue();
+  qolSettings=settings;audio.configure(settings.audio);if(persist)saveQolSettings(settings,resilientStorage);
+  document.body.dataset.hubCameraMode=settings.gameplay.hubCamera;document.body.dataset.hubCameraSensitivity=String(settings.gameplay.hubCameraSensitivity);document.body.classList.toggle('skipMenuAnimations',settings.menu.skipAnimations);document.body.classList.toggle('reducedMotion',settings.menu.reducedMotion);document.body.classList.toggle('backgroundMotionOff',settings.accessibility.backgroundMotion==='off'||settings.video.backgroundMotion==='off');document.body.classList.toggle('highContrastHud',settings.accessibility.highContrastHud);document.body.classList.toggle('largeHudText',settings.accessibility.largerHudText);document.body.classList.toggle('smoothSprites',settings.video.spriteSmoothing);document.body.classList.toggle('desktop-hotbar-hidden',settings.hotbar.desktop==='hidden');$('hud').dataset.hudMode=settings.hud.mode==='auto'&&mobilePlatform.info.touch?'compact':settings.hud.mode;world.reducedShake=settings.accessibility.cameraShake!=='full'||U.reduced.checked;world.shakeScale=settings.accessibility.cameraShake==='off'?0:settings.accessibility.cameraShake==='reduced'?0.35:1;world.hitstopScale=settings.accessibility.impactFreeze==='off'?0:settings.accessibility.impactFreeze==='reduced'?0.55:1;world.flashScale=settings.accessibility.screenFlash==='off'?0:settings.accessibility.screenFlash==='reduced'?0.45:1;world.hitFlashScale=settings.accessibility.hitFlash==='off'?0:settings.accessibility.hitFlash==='reduced'?0.45:1;world.strongOutlines=settings.accessibility.strongOutlines;const particleCaps={low:100,medium:220,high:420,automatic:mobilePlatform.info.touch?160:320};world.effects.configure({particleCap:Math.max(40,Math.round(particleCaps[settings.video.quality]*settings.video.particleScale))});document.body.classList.toggle('reducedUltimateEffects',settings.accessibility.ultimateEffects==='reduced');document.body.classList.toggle('reducedLensOverlay',settings.accessibility.lensOverlay==='reduced');document.body.classList.toggle('simplifiedBackgrounds',Boolean(settings.accessibility.simplifiedBackground));document.body.classList.toggle('hidePlayerLabels',!settings.accessibility.playerLabels);document.body.classList.toggle('colorIndependentIcons',Boolean(settings.accessibility.colorIndependentIcons));$('fpsDisplay').classList.toggle('hidden',!settings.developer.fps);abilityHotbarSettings={...abilityHotbarSettings,...settings.hotbar};saveAbilityHotbarSettings(abilityHotbarSettings,resilientStorage);abilityHotbar?.configure(abilityHotbarSettings);responsiveLayout?.apply();renderQuickContinue();
 }
 function openSettingsPanel(category='Gameplay'){settingsPanel.open(category)}
 function closeSettingsPanel(){settingsPanel.close();$('settingsPanel').classList.add('hidden');if(paused)showPauseOverlay()}
 async function requestCloseSettings(){if(settingsPanel.dirty&&!await confirmation.open({title:'Discard Unsaved Changes?',message:'Changes not applied will be lost.',accept:'DISCARD'}))return;closeSettingsPanel()}
 function handleSettingsAction(action){
   if(action==='audioTest'){audio.test();return}
-  if(action==='resetHubCamera'){import('./story/hub-camera.js?v=29a311-smoke-syntax-recovery-20260731').then(({resetAllHubCameras})=>{resetAllHubCameras();notifications.push('HUB CAMERA RESET',{important:true,key:'camera-reset'})});return}
+  if(action==='resetHubCamera'){import('./story/hub-camera.js?v=29a35-living-hubs-rpg-pacing-20260801').then(({resetAllHubCameras})=>{resetAllHubCameras();notifications.push('HUB CAMERA RESET',{important:true,key:'camera-reset'})});return}
   if(action==='resetHints'){firstTimeHints.reset();notifications.push('FIRST-TIME HINTS RESET',{important:true,key:'hints-reset'});return}
   if(action==='touchPanel'){openTouchSettings();return}
   if(action==='controllerTest'){$('controllerTestButton').click();return}
   if(action==='controllerStyle'){closeSettingsPanel();openCharacterSelect(U.mode.value);U.controller1.focus();return}
   if(action==='controllerReconnect'){closeSettingsPanel();pauseMenu.hide();controllerManager.openAssignments();return}
   if(action==='restoreHotbar'){abilityHotbar.restoreDefaults();notifications.push('HOTBAR DEFAULTS RESTORED',{important:true,key:'hotbar-restore'});return}
-  if(action==='exportSave'){const blob=new Blob([stringifySave()],{type:'application/json'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='parallels-x-save.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),500);return}
-  if(action==='importSave'){const text=prompt('Paste exported Parallels X save JSON. Your current save is preserved if validation fails.');if(text===null)return;confirmation.open({title:'Import Save?',message:'Validated settings and progress will replace matching saved data.',accept:'IMPORT'}).then(ok=>{if(!ok)return;const result=importSaveText(text);notifications.push(result.ok?'Save imported. Reload to apply all settings.':result.error,{important:true,key:'save-import'});if(result.ok)location.reload()});return}
-  const group=action==='resetSettings'?'settings':action==='resetTraining'?'training':action==='resetAll'?'all':null;if(group)confirmation.open({title:group==='all'?'Reset All Save Data?':'Reset Saved Data?',message:'This action cannot be undone after confirmation.',accept:'RESET'}).then(ok=>{if(!ok)return;resetSaveGroup(group);if(group==='all'||group==='settings')location.reload();else notifications.push('Training presets reset.',{important:true})});
+  if(action==='exportSave'){const blob=new Blob([stringifySave(resilientStorage)],{type:'application/json'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='parallels-x-save.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),500);return}
+  if(action==='importSave'){const text=prompt('Paste exported Parallels X save JSON. Your current save is preserved if validation fails.');if(text===null)return;confirmation.open({title:'Import Save?',message:'Validated settings and progress will replace the current saved data.',accept:'IMPORT'}).then(ok=>{if(!ok)return;const result=importSaveText(text,resilientStorage);notifications.push(result.ok?'Save imported. Reload to apply all settings.':result.error,{important:true,key:'save-import'});if(result.ok)location.reload()});return}
+  const group=action==='resetSettings'?'settings':action==='resetTraining'?'training':action==='resetAll'?'all':null;if(group)confirmation.open({title:group==='all'?'Reset All Save Data?':'Reset Saved Data?',message:'This action cannot be undone after confirmation.',accept:'RESET'}).then(ok=>{if(!ok)return;resetSaveGroup(group,resilientStorage);if(group==='all'||group==='settings')location.reload();else notifications.push('Training presets reset.',{important:true})});
 }
 function openAdaptiveMoveList(fighterId=p1id,side=1,device){const model=adaptiveMoveList({fighterId,input,side,device});$('moveListHeading').textContent=`${model.name.toUpperCase()} MOVE LIST`;$('adaptiveMoveList').innerHTML=renderAdaptiveMoveList(model);$('moveListPanel').classList.remove('hidden');$('closeMoveList').focus()}
 function closeAdaptiveMoveList(){$('moveListPanel').classList.add('hidden');if(paused)showPauseOverlay()}
@@ -160,16 +164,19 @@ function controlsModel(side){const device=input.lastInputDevice[side-1],style=in
 function openControlsPanel(){const sides=mode==='local'?[1,2]:[1],models=sides.map(controlsModel);$('controlsPanelBody').innerHTML=`<div class="controlsSummary">${models.map(model=>`<section><h3>PLAYER ${model.side} — ${model.style.toUpperCase()}</h3><dl>${model.rows.map(([name,value])=>`<div><dt>${name}</dt><dd>${value}</dd></div>`).join('')}</dl></section>`).join('')}</div><p class="moveListNote">Controller assignments: Player 1 — ${controllerManager.settings.assignments[0]===null?'Keyboard / Auto':`Controller ${controllerManager.settings.assignments[0]+1}`} • Player 2 — ${controllerManager.settings.assignments[1]===null?'Keyboard / Auto':`Controller ${controllerManager.settings.assignments[1]+1}`}</p>`;$('controlsPanel').classList.remove('hidden');$('closeControlsPanel').focus()}
 function closeControlsPanel(){$('controlsPanel').classList.add('hidden');if(paused)showPauseOverlay()}
 function openExtrasPanel(section='version'){$('extrasPanel').classList.remove('hidden');showExtra(section)}
-function showExtra(section){const content=$('extrasContent');if(section==='manual'){import('./story/combat-manual.js?v=29a311-smoke-syntax-recovery-20260731').then(({openCombatManual})=>{openCombatManual({grantPublic:true,onClose:()=>{$('extrasPanel').classList.remove('hidden')}});$('extrasPanel').classList.add('hidden')});return}if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style} <small>• ${FIGHTER_STATUS[id]?.label||'PROTOTYPE'}</small></p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls'){openControlsPanel();return}else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Living Tournament Hub • Chapters 1–4 • Story RPG stats • Side quests • Tournament intermissions • Kinetic combat</p>`}
+function showExtra(section){const content=$('extrasContent');if(section==='manual'){import('./story/combat-manual.js?v=29a35-living-hubs-rpg-pacing-20260801').then(({openCombatManual})=>{openCombatManual({grantPublic:true,onClose:()=>{$('extrasPanel').classList.remove('hidden')}});$('extrasPanel').classList.add('hidden')});return}if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style} <small>• ${FIGHTER_STATUS[id]?.label||'PROTOTYPE'}</small></p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls'){openControlsPanel();return}else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Living Tournament Hub • Chapters 1–4 • Story RPG stats • Side quests • Tournament intermissions • Kinetic combat</p>`}
 
 const STARTED_KEY='pxQolStartSeen';
 const LAST_ACTIVITY_KEY='pxQolLastActivity';
+function safeStorageGet(key,fallback=null){try{return globalThis.localStorage?.getItem?.(key)??fallback}catch{return fallback}}
+function safeStorageSet(key,value){try{globalThis.localStorage?.setItem?.(key,String(value));return true}catch{return false}}
+function safeStorageRemove(key){try{globalThis.localStorage?.removeItem?.(key);return true}catch{return false}}
 const STAGE_DETAILS={
-  dojo:{description:'Warm dojo lighting and focused sparring space.',boundary:'Closed arena',performance:'Light'},
-  tournament:{description:'A tournament ring surrounded by a lively crowd.',boundary:'Closed tournament ring',performance:'Light'},
-  asrylyte:{description:'Unstable pink and purple cosmic distortion.',boundary:'Closed dimensional field',performance:'Effects-heavy'},
-  clonebase:{description:'Machinery, clone tanks, and mechanical lighting.',boundary:'Closed laboratory',performance:'Medium'},
-  hell:{description:'Dark heat distortion and supernatural atmosphere.',boundary:'Closed arena',performance:'Effects-heavy'}
+  dojo:{description:'Compact dojo floor built for wall pressure and short pursuit routes.',boundary:'Walled',performance:'Light'},
+  tournament:{description:'Clean official ring focused on pursuit and edge control.',boundary:'Ring-out',performance:'Medium'},
+  'resonance-facility':{description:'Broad facility floor with long sightlines and route control.',boundary:'Walled',performance:'Medium'},
+  'echo-caverns':{description:'Dense cavern arena built for close pressure and wall splats.',boundary:'Walled',performance:'Medium'},
+  'echo-mountain':{description:'Long open route for pursuit, zoning, and risky recovery.',boundary:'Open',performance:'Medium'}
 };
 let stageReturnTarget='character';
 
@@ -178,7 +185,7 @@ function showMainMenu(){
   if(state==='playing'||state==='over')cleanupMatchForNavigation();
   state='menu';paused=false;hideMenuLayers();U.main.classList.remove('hidden');resultsScreen.hide();pauseMenu.hide();confirmation.close();mainMenu.render();renderQuickContinue();audio.startMusic('menu');
 }
-function battleModeUnlocked(modeValue){return modeUnlockedForProgress(modeValue,loadLostYearProgress())}
+function battleModeUnlocked(modeValue){return modeUnlockedForProgress(modeValue,loadLostYearProgress(resilientStorage))}
 function openCharacterSelect(modeValue=U.mode.value){
   if(['cpu','local'].includes(modeValue)&&!battleModeUnlocked(modeValue)){
     showMainMenu();mainMenu.select(modeValue);notifications?.push(`${modeUnlockRequirement(modeValue)} TO UNLOCK ${modeValue==='cpu'?'VS CPU':'2 PLAYER'}`,{important:true,key:`story-lock-${modeValue}`});return false;
@@ -198,43 +205,62 @@ function activateStartOnce(){
   if(startActivated||U.start.classList.contains('hidden'))return startActivationPromise||Promise.resolve(false);
   startActivated=true;
   startActivationPromise=(async()=>{
-    localStorage.setItem(STARTED_KEY,'1');
+    safeStorageSet(STARTED_KEY,'1');
     U.start.classList.add('hidden');
     U.main.classList.remove('hidden');
     state='menu';
     mainMenu.render();
     controllerManager.promptAfterStart();
-    const enabled=await audio.enable();
+    let enabled=false;
+    try{enabled=await audio.enable()}catch(error){console.warn('[Start Screen] Audio initialization failed',error)}
     $('audioEnableNotice')?.classList.toggle('hidden',enabled);
-    if(enabled)await audio.startMusic('menu');
+    if(enabled){try{await audio.startMusic('menu')}catch(error){console.warn('[Start Screen] Menu music failed',error)}}
     return true;
   })().catch(error=>{
-    console.warn('[Start Screen] Audio initialization failed',error);
+    startActivated=false;startActivationPromise=null;
+    console.error('[Start Screen] Activation failed',error);
+    U.start.classList.remove('hidden');U.main.classList.add('hidden');
     return false;
   });
   return startActivationPromise;
 }
 function saveLastActivity(){
-  const data={mode:U.mode.value,p1id,p2id,stage:U.stage.value,difficulty:U.diff.value,at:Date.now()};localStorage.setItem(LAST_ACTIVITY_KEY,JSON.stringify(data));
+  const data={mode:U.mode.value,p1id,p2id,stage:U.stage.value,difficulty:U.diff.value,at:Date.now()};
+  return safeStorageSet(LAST_ACTIVITY_KEY,JSON.stringify(data));
 }
 function renderQuickContinue(){
-  let saved=null;try{saved=JSON.parse(localStorage.getItem(LAST_ACTIVITY_KEY)||'null')}catch{}
+  let saved=null;try{saved=JSON.parse(safeStorageGet(LAST_ACTIVITY_KEY,'null')||'null')}catch{}
   const legacyStory=saved?.mode==='story';
-  const unlockedMode=legacyStory||saved?.mode==='training'||battleModeUnlocked(saved?.mode);
-  const enabled=qolSettings.menu.showQuickContinue&&unlockedMode&&saved&&saved.mode&&(legacyStory||(saved.p1id&&saved.stage));$('quickContinue').classList.toggle('hidden',!enabled);if(!enabled)return;
-  $('quickContinueTitle').textContent=legacyStory?'RETURN TO STORY':saved.mode==='training'?'RETURN TO TRAINING':`CONTINUE ${String(saved.mode).toUpperCase()}`;
-  $('quickContinueDetails').textContent=legacyStory?'Open the current Rrvvfo chapter route.':`Last Fighter: ${ROSTER[saved.p1id]?.n||saved.p1id} • Last Stage: ${STAGES[saved.stage]?.n||saved.stage}`;
-  $('quickContinueButton').onclick=()=>{
+  const savedModeUnlocked=legacyStory||saved?.mode==='training'||battleModeUnlocked(saved?.mode);
+  const continueEnabled=Boolean(qolSettings.menu.showQuickContinue&&savedModeUnlocked&&saved?.mode&&(legacyStory||(saved.p1id&&saved.stage)));
+  const quickBattleEnabled=battleModeUnlocked('cpu');
+  const panel=$('quickContinue');panel.classList.toggle('hidden',!continueEnabled&&!quickBattleEnabled);
+  const quickButton=$('quickBattleButton'),continueButton=$('quickContinueButton');quickButton.classList.toggle('hidden',!quickBattleEnabled);continueButton.classList.toggle('hidden',!continueEnabled);
+  const lastP1=PLAYABLE_ROSTER_IDS.includes(saved?.p1id)?saved.p1id:'rrvvfo';
+  const lastP2=PLAYABLE_ROSTER_IDS.includes(saved?.p2id)&&saved.p2id!==lastP1?saved.p2id:(lastP1==='revvfo'?'rrvvfo':'revvfo');
+  const lastStage=STAGES[saved?.stage]?saved.stage:'dojo';
+  if(continueEnabled){
+    $('quickContinueTitle').textContent=legacyStory?'RETURN TO STORY':saved.mode==='training'?'RETURN TO TRAINING':`CONTINUE ${String(saved.mode).toUpperCase()}`;
+    $('quickContinueDetails').textContent=legacyStory?'Open the current Rrvvfo chapter route.':`Last Fighter: ${ROSTER[lastP1]?.n||lastP1} • Last Stage: ${STAGES[lastStage]?.n||lastStage}`;
+  }else{
+    $('quickContinueTitle').textContent='ONE-BUTTON QUICK BATTLE';
+    $('quickContinueDetails').textContent=`${ROSTER[lastP1]?.n||lastP1} vs ${ROSTER[lastP2]?.n||lastP2} • ${STAGES[lastStage]?.n||lastStage} • First to 1 KO`;
+  }
+  quickButton.onclick=()=>{
+    p1id=lastP1;p2id=lastP2;U.mode.value='cpu';U.stage.value=lastStage;U.diff.value=['easy','normal','hard'].includes(saved?.difficulty)?saved.difficulty:'normal';U.rounds.value='1';startGame();
+  };
+  continueButton.onclick=()=>{
     if(legacyStory){mainMenu.select('story');mainMenu.confirm();return}
-    p1id=PLAYABLE_ROSTER_IDS.includes(saved.p1id)?saved.p1id:p1id;p2id=PLAYABLE_ROSTER_IDS.includes(saved.p2id)?saved.p2id:p2id;U.stage.value=STAGES[saved.stage]?saved.stage:'dojo';U.diff.value=saved.difficulty||'normal';openCharacterSelect(saved.mode)
+    p1id=lastP1;p2id=lastP2;U.stage.value=lastStage;U.diff.value=saved?.difficulty||'normal';openCharacterSelect(saved.mode)
   };
 }
+
 function cleanupMatchForNavigation(){
   if(trainingState.enabled)exitTrainingWorld(world,input);else{clearTransient();input.clear()}
   touchControls.stopMatch();mobilePlatform.deactivateMatch();orientationManager.stop();fullscreenManager.stop();fullscreenManager.exit();abilityHotbar.setVisible(false);document.body.classList.remove('gameplay-active');spriteDebugViewer.hide();trainingHud.classList.add('hidden');trainingState.enabled=false;paused=false;hotbarInfoPausedMatch=false;U.game.classList.add('hidden');U.msg.classList.add('hidden');pauseMenu.hide();resultsScreen.hide();
 }
 function openStageSelect(returnTarget='character'){
-  stageReturnTarget=returnTarget;const cards=$('stageCards');cards.innerHTML=`<button class="stageCard" data-stage-card="random"><strong>RANDOM STAGE</strong><small>Choose any current stage</small></button>`+Object.entries(STAGES).map(([id,data])=>`<button class="stageCard ${id===stage?'selected':''}" data-stage-card="${id}"><strong>${data.n}</strong><small>${STAGE_DETAILS[id].description}</small><small>${STAGE_DETAILS[id].boundary} • Ring-out disabled</small><small>Performance: ${STAGE_DETAILS[id].performance}</small></button>`).join('');
+  stageReturnTarget=returnTarget;const cards=$('stageCards');cards.innerHTML=`<button class="stageCard" data-stage-card="random"><strong>RANDOM STAGE</strong><small>Choose any current stage</small></button>`+Object.entries(STAGES).map(([id,data])=>`<button class="stageCard ${id===stage?'selected':''}" data-stage-card="${id}"><strong>${data.n}</strong><small>${STAGE_DETAILS[id].description}</small><small>${STAGE_DETAILS[id].boundary}${id==='tournament'?' • Ring-out active':' • Ring-out disabled'}</small><small>Performance: ${STAGE_DETAILS[id].performance}</small></button>`).join('');
   cards.querySelectorAll('[data-stage-card]').forEach(button=>button.onclick=()=>{cards.querySelectorAll('.stageCard').forEach(card=>{card.classList.remove('selected');delete card.dataset.selected});button.classList.add('selected');button.dataset.selected='true'});$('stageSelectPanel').classList.remove('hidden');cards.querySelector('.selected,.stageCard')?.focus();
 }
 function closeStageSelect(confirm=false){
@@ -284,7 +310,7 @@ function syncHotbarCustomize(){
 }
 function openHotbarCustomize(){if(state==='playing'&&!paused)setPaused(true);pauseMenu.hide();syncHotbarCustomize();$('hotbarCustomizeModal').classList.remove('hidden');$('hotbarAbilitySelect').focus()}
 function closeHotbarCustomize(){$('hotbarCustomizeModal').classList.add('hidden');if(paused)showPauseOverlay()}
-function persistHotbarUi(){abilityHotbarSettings={...abilityHotbar.settings};qolSettings.hotbar={...qolSettings.hotbar,desktop:abilityHotbarSettings.desktop,text:abilityHotbarSettings.text,size:abilityHotbarSettings.size,customScale:abilityHotbarSettings.customScale,cooldown:abilityHotbarSettings.cooldown,activation:abilityHotbarSettings.activation,opacity:abilityHotbarSettings.opacity,locked:abilityHotbarSettings.locked,pauseForInfo:abilityHotbarSettings.pauseForInfo};saveAbilityHotbarSettings(abilityHotbarSettings);saveQolSettings(qolSettings);settingsPanel.settings=qolSettings;abilityHotbar.configure(abilityHotbarSettings);syncHotbarCustomize()}
+function persistHotbarUi(){abilityHotbarSettings={...abilityHotbar.settings};qolSettings.hotbar={...qolSettings.hotbar,desktop:abilityHotbarSettings.desktop,text:abilityHotbarSettings.text,size:abilityHotbarSettings.size,customScale:abilityHotbarSettings.customScale,cooldown:abilityHotbarSettings.cooldown,activation:abilityHotbarSettings.activation,opacity:abilityHotbarSettings.opacity,locked:abilityHotbarSettings.locked,pauseForInfo:abilityHotbarSettings.pauseForInfo};saveAbilityHotbarSettings(abilityHotbarSettings,resilientStorage);saveQolSettings(qolSettings,resilientStorage);settingsPanel.settings=qolSettings;abilityHotbar.configure(abilityHotbarSettings);syncHotbarCustomize()}
 
 function buildRoster(){
   U.roster.innerHTML='';
@@ -460,7 +486,7 @@ async function startGameInternal(){
     if(['cpu','local'].includes(requestedMode)){
       hideMenuLayers();
       cleanupMatchForNavigation();
-      const {startConfiguredArenaBattle}=await import('./arena/arena-mode.js?v=29a311-smoke-syntax-recovery-20260731');
+      const {startConfiguredArenaBattle}=await import('./arena/arena-mode.js?v=29a35-living-hubs-rpg-pacing-20260801');
       saveLastActivity();
       loadingManager.task('match','done');
       loadingManager.finish('3D BATTLE READY');
@@ -574,14 +600,14 @@ U.spriteToggle.onchange=()=>fighterVisuals.configure({enabled:U.spriteToggle.val
 U.spriteQuality.onchange=()=>fighterVisuals.configure({quality:U.spriteQuality.value});
 U.spriteDebug.onchange=()=>fighterVisuals.configure({developerViewer:U.spriteDebug.checked});
 U.prototypeExpose.onchange=()=>{fighterVisuals.configure({exposePrototypeAppearances:developerSpriteBuild&&U.prototypeExpose.checked});refreshAppearancePanels()};
-$('random').onclick=()=>{p1id=PLAYABLE_ROSTER_IDS[Math.floor(Math.random()*PLAYABLE_ROSTER_IDS.length)];p2id=different(p1id);refreshSelection()};$('reset').onclick=()=>confirmation.open({title:'Reset All Save Data?',message:'Story progress, settings, controls, appearances, and Training presets will be removed.',accept:'RESET ALL'}).then(ok=>{if(ok){resetSaveGroup('all');location.reload()}});$('fight').onclick=startGame;
+$('random').onclick=()=>{p1id=PLAYABLE_ROSTER_IDS[Math.floor(Math.random()*PLAYABLE_ROSTER_IDS.length)];p2id=different(p1id);refreshSelection()};$('reset').onclick=()=>confirmation.open({title:'Reset All Save Data?',message:'Story progress, settings, controls, appearances, and Training presets will be removed.',accept:'RESET ALL'}).then(ok=>{if(ok){resetSaveGroup('all',resilientStorage);location.reload()}});$('fight').onclick=startGame;
 $('chooseStage').onclick=()=>openStageSelect('character');
 $('backMenu').onclick=returnToCharacterSelect;
 let quickRestartHeldAt=0;
 const SHARED_MOUSE_SETTINGS_KEY='pxArenaControlsV1';
 const standardMouseBindings=new Map();
 function sharedPrimaryMouseAction(){
-  try{return JSON.parse(localStorage.getItem(SHARED_MOUSE_SETTINGS_KEY)||'{}')?.mousePrimaryAttack==='heavy'?'h':'a'}catch{return'a'}
+  try{return JSON.parse(safeStorageGet(SHARED_MOUSE_SETTINGS_KEY,'{}')||'{}')?.mousePrimaryAttack==='heavy'?'h':'a'}catch{return'a'}
 }
 input.setMousePrimaryAction(sharedPrimaryMouseAction());
 function standardMouseGameplayActive(){
@@ -668,7 +694,7 @@ bindSyncedCheckbox('trainHealth','liveHealth','infiniteHealth');bindSyncedCheckb
 bindSyncedCheckbox('trainGuard','liveGuard','infiniteGuard');bindSyncedCheckbox('trainGuardRegen','liveGuardRegen','guardRegen');bindSyncedCheckbox('trainPerfectPractice','livePerfectPractice','perfectBlockPractice');
 bindSyncedCheckbox('trainClash','liveClash','infiniteClash');
 function syncDummy(event){setTrainingSetting('dummy',event.target.value,$('dummyMode'),$('liveDummy'));trainingState.afterFirstHit=false}$('dummyMode').onchange=syncDummy;$('liveDummy').onchange=syncDummy;
-$('forceClash').onclick=()=>{trainingState.forceNextClash=true};$('resetClash').onclick=()=>{resetTrainingClash(world);input.clearBuffers()};$('trainResetPos').onclick=()=>{resetTrainingPosition(world,'center');input.clearBuffers()};$('trainLeft').onclick=()=>resetTrainingPosition(world,'left');$('trainRight').onclick=()=>resetTrainingPosition(world,'right');$('trainSwap').onclick=()=>swapTrainingSides(world);$('trainRefillHealth').onclick=()=>refillTraining(world,'health');$('trainRefillEnergy').onclick=()=>refillTraining(world,'energy');$('trainRefillGuard').onclick=()=>refillTraining(world,'guard');$('trainClearCooldowns').onclick=()=>clearTrainingState(world,'cooldowns');$('trainClearProjectiles').onclick=()=>clearTrainingState(world,'projectiles');$('trainClearShots').onclick=()=>clearTrainingState(world,'agony');$('trainClearLens').onclick=()=>clearTrainingState(world,'lens');$('trainClearSwap').onclick=()=>clearTrainingState(world,'swap');$('trainResetCombo').onclick=()=>{clearTrainingState(world,'combo');input.clearBuffers()};$('trainSavePreset').onclick=()=>{const name=prompt('Training preset name','My Training Setup');if(name)notifications.push(`Saved ${saveTrainingPreset(name,trainingState)}`,{important:true,key:'preset-save'})};$('trainLoadPreset').onclick=()=>{const presets=loadTrainingPresets(),names=Object.keys(presets);if(!names.length){notifications.push('No Training presets saved.',{important:true,key:'preset-empty'});return}const name=prompt(`Training preset to load:\n${names.join('\n')}`,names[0]);if(name&&applyTrainingPreset(name,trainingState)){for(const [pre,live,key] of [['trainHealth','liveHealth','infiniteHealth'],['trainEnergy','liveEnergy','infiniteEnergy'],['trainGuard','liveGuard','infiniteGuard'],['trainGuardRegen','liveGuardRegen','guardRegen'],['trainPerfectPractice','livePerfectPractice','perfectBlockPractice'],['trainClash','liveClash','infiniteClash']])setTrainingSetting(key,trainingState[key],$(pre),$(live));setTrainingSetting('dummy',trainingState.dummy,$('dummyMode'),$('liveDummy'));notifications.push(`Loaded ${name}`,{important:true,key:'preset-load'})}};$('trainRestart').onclick=()=>{resetTrainingWorld(world,input);setup()};$('exitTraining').onclick=returnToCharacterSelect;
+$('forceClash').onclick=()=>{trainingState.forceNextClash=true};$('resetClash').onclick=()=>{resetTrainingClash(world);input.clearBuffers()};$('trainResetPos').onclick=()=>{resetTrainingPosition(world,'center');input.clearBuffers()};$('trainLeft').onclick=()=>resetTrainingPosition(world,'left');$('trainRight').onclick=()=>resetTrainingPosition(world,'right');$('trainSwap').onclick=()=>swapTrainingSides(world);$('trainRefillHealth').onclick=()=>refillTraining(world,'health');$('trainRefillEnergy').onclick=()=>refillTraining(world,'energy');$('trainRefillGuard').onclick=()=>refillTraining(world,'guard');$('trainClearCooldowns').onclick=()=>clearTrainingState(world,'cooldowns');$('trainClearProjectiles').onclick=()=>clearTrainingState(world,'projectiles');$('trainClearShots').onclick=()=>clearTrainingState(world,'agony');$('trainClearLens').onclick=()=>clearTrainingState(world,'lens');$('trainClearSwap').onclick=()=>clearTrainingState(world,'swap');$('trainResetCombo').onclick=()=>{clearTrainingState(world,'combo');input.clearBuffers()};$('trainSavePreset').onclick=()=>{const name=prompt('Training preset name','My Training Setup');if(name)notifications.push(`Saved ${saveTrainingPreset(name,trainingState,resilientStorage)}`,{important:true,key:'preset-save'})};$('trainLoadPreset').onclick=()=>{const presets=loadTrainingPresets(resilientStorage),names=Object.keys(presets);if(!names.length){notifications.push('No Training presets saved.',{important:true,key:'preset-empty'});return}const name=prompt(`Training preset to load:\n${names.join('\n')}`,names[0]);if(name&&applyTrainingPreset(name,trainingState,resilientStorage)){for(const [pre,live,key] of [['trainHealth','liveHealth','infiniteHealth'],['trainEnergy','liveEnergy','infiniteEnergy'],['trainGuard','liveGuard','infiniteGuard'],['trainGuardRegen','liveGuardRegen','guardRegen'],['trainPerfectPractice','livePerfectPractice','perfectBlockPractice'],['trainClash','liveClash','infiniteClash']])setTrainingSetting(key,trainingState[key],$(pre),$(live));setTrainingSetting('dummy',trainingState.dummy,$('dummyMode'),$('liveDummy'));notifications.push(`Loaded ${name}`,{important:true,key:'preset-load'})}};$('trainRestart').onclick=()=>{resetTrainingWorld(world,input);setup()};$('exitTraining').onclick=returnToCharacterSelect;
 
 const TRAINING_DRILL_PRESETS=Object.freeze({
   parry:{label:'PERFECT PARRY WINDOW',dummy:'cpu',infiniteHealth:true,infiniteEnergy:true,infiniteGuard:false,perfectBlockPractice:true,description:'Let the CPU attack. Press Guard at the opening instant and land three perfect parries.'},
@@ -697,7 +723,7 @@ applyQolSettings(qolSettings,{persist:false});
 document.querySelectorAll('[data-build-version]').forEach(element=>element.textContent=BUILD_VERSION);
 $('touchStatus').textContent=mobilePlatform.info.touch?`Touch Controls Ready • ${touchSettings.movement==='dpad'?'Virtual D-Pad':'Virtual Joystick'}`:'Touch controls available when detected';
 if(mobilePlatform.info.touch){$('inputStatus').textContent='Touchscreen ready';document.querySelector('[data-main-menu-controls]').textContent='Tap • Swipe'}
-if(localStorage.getItem(STARTED_KEY)){
+if(safeStorageGet(STARTED_KEY)){
   startActivated=true;
   U.start.classList.add('hidden');
   U.main.classList.remove('hidden');

@@ -83,6 +83,7 @@ export function abilityStatus(fighter,entry,world=fighter?.world){
   if(entry.action==='c')cooldown=fighter.counterCd||0;
   const blocked=!!(fighter.stun||fighter.knockdown||fighter.getup||fighter.guardBreakStun||world?.clash?.active||world?.cinematic?.active);
   if(blocked)reason='Unavailable in current state';
+  else if(entry.action==='shotsOfAgony'&&fighter.storyShotsLocked)reason='Unknown technique • invented in Chapter 5';
   else if(active&&entry.action==='shotsOfAgony')reason='Shots of Agony already active';
   else if(cooldown>0)reason=`Cooldown ${seconds(cooldown)}s`;
   else if(fighter.en<requiredEnergy)reason=`Needs ${requiredEnergy} Energy`;

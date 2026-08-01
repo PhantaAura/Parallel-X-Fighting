@@ -1,0 +1,28 @@
+{
+  "build": "Prototype 2.9A.40.2 \u2014 Field Skills & Minimal UI",
+  "cache": "29a402-field-skills-minimal-ui-20260801",
+  "saveSchema": 268,
+  "requiresPreviousPatch": false,
+  "cumulative": true,
+  "foundation": "Prototype 2.9A.40.1 \u2014 Builds & Combat Readability",
+  "majorSystems": [
+    "Minimal contextual Story exploration HUD",
+    "Persistent field-skill mastery and Story-menu journal",
+    "Chapter 1 three-anchor Object Swap field trial",
+    "Tournament Road precision Object Swap relay",
+    "Shots of Agony removed from Chapters 1\u20134 Story and reserved behind a future Chapter 5 prototype unlock",
+    "Story-safe loadouts with canonical scripted-technique protection",
+    "Chapter 4 Bark/Wade/Rrvvfo field-skill mastery",
+    "Flow Cancel audiovisual readiness cue",
+    "Parry Spark and Pursuit Battery proc feedback"
+  ],
+  "validation": {
+    "smokeTests": 419,
+    "javascriptModules": 93,
+    "testModules": 2,
+    "relativeImports": 279,
+    "htmlIds": 259,
+    "duplicateHtmlIds": 0,
+    "jsonAndManifestFilesBeforeCurrentManifest": 50
+  }
+}

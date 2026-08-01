@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a40-core-fun-overhaul-20260801';
+import {BUILD_VERSION} from '../build-info.js?v=29a402-field-skills-minimal-ui-20260801';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 
@@ -59,7 +59,7 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     id:'special-categories',category:'TECHNIQUES',title:'SHOT / POWER / TRICK',kicker:'THREE TACTICAL JOBS',
     summary:'Every special belongs to one readable category. The categories do not create hidden immunity; they explain the move’s job and counterplay.',
     entries:[
-      ['Shot','Ranged pressure such as Fire Blast or Shots of Agony'],
+      ['Shot','Ranged pressure such as Fire Blast'],
       ['Power','High-commitment damage and guard pressure such as Solar Weave'],
       ['Trick','Mobility, prediction, traps, or defensive utility such as Object Swap and Lens'],
       ['Read the cue','Each technique announces its category before the dangerous part'],
@@ -149,7 +149,7 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
   {
     id:'hotbar',category:'TECHNIQUES',title:'RRVVFO HOTBAR',kicker:'SHOT / POWER / TRICK',
     summary:'Rrvvfo carries five techniques organized into the three tactical categories: Shot, Power, and Trick.',
-    entries:[['1 • SHOT','Fire Blast'],['2 • SHOT','Shots of Agony'],['3 • TRICK','Object Swap'],['4 • TRICK','Lens of Truth'],['5 • POWER','Solar Weave / Momentum Finisher']],
+    entries:[['1 • SHOT','Fire Blast'],['2 • LOCKED','Unknown Technique'],['3 • TRICK','Object Swap'],['4 • TRICK','Lens of Truth'],['5 • POWER','Solar Weave / Momentum Finisher']],
     drill:'Use every unlocked hotbar slot once without wasting the technique into empty space.'
   },
   {
@@ -158,7 +158,7 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     entries:[
       ['Strengths','Flexible kit, strong comeback tools, unusual positioning'],
       ['Weaknesses','Expensive techniques and risky Lens health cost'],
-      ['Signature','Shots of Agony surrounds the target with coordinated copies'],
+      ['Signature','Object Swap creates unusual angles and improvisational routes'],
       ['Beginner plan','Use Fire Blast for space, then save energy for one committed technique'],
       ['Fight against him','Pressure his charging and do not become predictable during Lens']
     ]
@@ -223,9 +223,9 @@ export const COMBAT_MANUAL_PAGES=Object.freeze([
     entries:[['Burnable object','Look for dry wood, rope, or heat-reactive machinery'],['Field input','Use hotbar slot 1 inside the marked zone'],['World result','The obstacle is removed and nearby characters react'],['Safety note','Do not interpret this page as permission to burn everything']]
   },
   {
-    id:'field-shots',category:'FIELD',title:'SHOTS OF AGONY SWITCHES',kicker:'ONE RRVVFO IS APPARENTLY NOT ENOUGH',
-    summary:'Shots of Agony can strike several field targets at once.',
-    entries:[['Target group','Find switches carrying the same glow'],['Field input','Use hotbar slot 2 inside the target zone'],['Timing','All copies fire together'],['Result','Multi-lock gates and machines activate at once']]
+    id:'field-shots',category:'FIELD',title:'PRECISION OBJECT SWAP',kicker:'THE FIRST ANSWER IS NOT ALWAYS THE ONLY ROUTE',
+    summary:'Small marked anchors can become traversal points when Rrvvfo reads the angle correctly.',
+    entries:[['Anchor','Look for the gold precision-lock shimmer'],['Field input','Use Object Swap on the active anchor'],['Route change','Every swap changes your position and the next useful angle'],['Result','Optional high roads and hidden approaches become reachable']]
   },
   {
     id:'tournament-rules',category:'TOURNAMENT',title:'TOURNAMENT RULES',kicker:'READ BEFORE COMPLAINING',

@@ -1,0 +1,27 @@
+{
+  "build": "Prototype 2.9A.40.1 — Builds & Combat Readability",
+  "cache": "29a401-builds-readability-20260801",
+  "saveSchema": 268,
+  "requiresPreviousPatch": false,
+  "cumulative": true,
+  "foundation": "Prototype 2.9A.40 — Core Fun Overhaul",
+  "majorSystems": [
+    "In-Story Rrvvfo Build Lab with combat/QTE locks",
+    "Fourth Custom loadout — four techniques plus two passives",
+    "Enemy archetype role icons and fallback silhouette differentiation",
+    "Telegraphed and interruptible Support healing",
+    "Manual Chapter 4 squad target cycling across keyboard/controller/touch",
+    "Player-facing chapter gameplay identity cards",
+    "Optional experiential Flow Cancel teaching in Chapter 1",
+    "Chapter-appropriate Adventure Mission result labels"
+  ],
+  "validation": {
+    "smokeTests": 407,
+    "javascriptModules": 92,
+    "testModules": 2,
+    "relativeImports": 271,
+    "htmlIds": 259,
+    "duplicateHtmlIds": 0,
+    "jsonAndManifestFilesBeforeCurrentManifest": 49
+  }
+}

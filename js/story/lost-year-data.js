@@ -1,4 +1,4 @@
-import {inspectStoryReliability} from './story-reliability.js?v=29a40-core-fun-overhaul-20260801';
+import {inspectStoryReliability} from './story-reliability.js?v=29a402-field-skills-minimal-ui-20260801';
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;
@@ -36,12 +36,12 @@ export const LOST_YEAR_ROUTES=Object.freeze([
       {
         id:'rrvvfo-00',
         number:0,
-        title:'NO MAXIMUMS',
+        title:'FIELD CONTROL',
         available:true,
         playable:true,
         status:'PLAYABLE',
-        description:'The Sage trains Rrvvfo in an open field. Direct attacks cannot touch the Sage; Rrvvfo must develop four coordinated energy copies and catch him outside his prediction dodge.',
-        objectives:['Try to hit the Sage with normal attacks','Build Shots of Agony from one clone to four','Land the complete four-clone volley'],
+        description:'The Sage starts Rrvvfo with a short field trial: ignore the obvious path and use Object Swap to move between three anchors.',
+        objectives:['Read the field instead of following the path','Object Swap through three anchors','Master Object Swap as a field technique'],
         stage:'Sage Training Field',
         note:'The Sage is a story-only mentor opponent. He is not added to the standard playable roster.'
       },
@@ -66,10 +66,10 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         playable:true,
         unlockAfter:'rrvvfo-01',
         status:'PLAYABLE 3D HUB',
-        description:'Rrvvfo leaves the Training Grounds and follows a lively road toward the tournament, learning field uses for Object Swap, Shots of Agony, Lens of Truth, and the Fight-or-Run encounter system.',
-        objectives:['Explore the Training Grounds road','Cross the river with Object Swap','Open the four-target gate with Shots of Agony','Handle a roaming challenger','Reveal the final roadblock with Lens of Truth'],
+        description:'Rrvvfo leaves the Training Grounds and follows a lively road toward the tournament, applying Object Swap, Lens of Truth, platforming, and the Fight-or-Run encounter system in the field.',
+        objectives:['Explore the Training Grounds road','Cross the river with Object Swap','Clear the three-point Object Swap relay','Handle a roaming challenger','Reveal the final roadblock with Lens of Truth'],
         stage:'Training Grounds and Tournament Road',
-        note:'The Sage still personally teaches Shots of Agony earlier. The manual only teaches new field uses after he leaves.'
+        note:'The road stops spelling out every Object Swap solution. A future combat-technique slot remains unknown until Rrvvfo invents it later.'
       },
       {
         id:'rrvvfo-02',
@@ -199,7 +199,7 @@ export function routePlayable(route){
 export const RRVVFO_CHAPTERS=Object.freeze([
   {
     id:'rrvvfo-chapter-1',number:1,title:'NO MAXIMUMS',
-    description:'Shots of Agony training, the Sage’s Combat Manual, the fighting refresher, and the road to the tournament.',
+    description:'Object Swap field control, the Sage’s Combat Manual, the fighting refresher, and the road to the tournament.',
     missions:['rrvvfo-00','rrvvfo-01','rrvvfo-road']
   },
   {

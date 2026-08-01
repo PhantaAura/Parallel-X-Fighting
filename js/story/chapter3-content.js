@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
 export const CHAPTER3_STATE_VERSION=2;
 

@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a40-core-fun-overhaul-20260801';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a402-field-skills-minimal-ui-20260801';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',

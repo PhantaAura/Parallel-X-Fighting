@@ -1,11 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a40-core-fun-overhaul-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
-import {StoryMap} from './story-map.js?v=29a40-core-fun-overhaul-20260801';
-import {storyConfirm} from './story-ux.js?v=29a40-core-fun-overhaul-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a40-core-fun-overhaul-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a40-core-fun-overhaul-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a40-core-fun-overhaul-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
+import {StoryMap} from './story-map.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
+import {openCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
+import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -22,10 +24,10 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a40-core-fun-overhaul-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
+} from './chapter3-content.js?v=29a402-field-skills-minimal-ui-20260801';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -192,7 +194,8 @@ function buildUI(){
         ${storyAttackStripMarkup()}
         ${storyStatsMarkup(loadLostYearProgress())}
         <div class="storyRpgObjectiveCard"><small>CURRENT OBJECTIVE</small><strong data-c3-menu-objective>SOMETHING UNDER THE RING</strong><span data-c3-menu-detail>Find out where the Sage went after the tournament.</span></div>
-        <div class="chapter2MenuActions"><button class="primary" type="button" data-c3-menu-resume>RETURN TO GAME</button><button type="button" data-c3-menu-manual>SAGE MANUAL</button><button type="button" data-c3-menu-tracker>QUEST JOURNAL</button><button type="button" data-c3-exit>EXIT CHAPTER</button></div>
+        <div data-c3-field-skills>${renderFieldSkillJournal({chapter:3})}</div>
+        <div class="chapter2MenuActions"><button class="primary" type="button" data-c3-menu-resume>RETURN TO GAME</button><button type="button" data-c3-menu-manual>SAGE MANUAL</button><button type="button" data-c3-menu-build>RRVVFO BUILD</button><button type="button" data-c3-menu-tracker>QUEST JOURNAL</button><button type="button" data-c3-exit>EXIT CHAPTER</button></div>
         ${storyControlLegendMarkup()}
       </article>
     </div>
@@ -285,6 +288,7 @@ class RrvvfoChapter3{
     this.root.querySelector('[data-c3-menu-button]').addEventListener('click',()=>this.openStoryMenu());
     this.root.querySelectorAll('[data-c3-menu-close],[data-c3-menu-resume]').forEach(button=>button.addEventListener('click',()=>this.closeStoryMenu()));
     this.root.querySelector('[data-c3-menu-manual]').addEventListener('click',()=>this.openManual());
+    this.root.querySelector('[data-c3-menu-build]').addEventListener('click',()=>this.openBuildLab());
     this.root.querySelector('[data-c3-menu-tracker]').addEventListener('click',()=>{this.closeStoryMenu();this.openTracker()});
     this.root.querySelector('[data-c3-close-status]').addEventListener('click',()=>this.closeTracker());
     this.root.querySelector('[data-c3-exit]').addEventListener('click',()=>this.requestExit());
@@ -1812,9 +1816,14 @@ class RrvvfoChapter3{
     this.mode=this.area==='facility'?'dungeon':this.area==='remote'?'remote':'hub';this.battle.phase='play';
   }
 
+  openBuildLab(){
+    const locked=this.mode==='fight';
+    openRrvvfoBuildLab({storyChapter:3,storyProgress:loadLostYearProgress(),locked,lockReason:locked?'BUILD LOCKED • FINISH THE ACTIVE FIGHT':'',onChange:build=>{const player=this.battle?.fighters?.[0];if(player)applyRrvvfoBuildToFighter(player,build);this.battle?.notice?.(`BUILD EQUIPPED • ${build.label}`,1.1)},onClose:()=>this.root.querySelector('[data-c3-menu-build]')?.focus()});
+  }
+
   openStoryMenu(){
     if(this.storyMenuOpen||!['hub','dungeon','remote','fight'].includes(this.mode))return;
-    this.storyMenuOpen=true;this.root.querySelector('[data-c3-menu]').hidden=false;
+    this.storyMenuOpen=true;this.root.querySelector('[data-c3-menu]').hidden=false;const skillPanel=this.root.querySelector('[data-c3-field-skills]');if(skillPanel)skillPanel.innerHTML=renderFieldSkillJournal({chapter:3});const buildButton=this.root.querySelector('[data-c3-menu-build]');if(buildButton){buildButton.disabled=this.mode==='fight';buildButton.textContent=this.mode==='fight'?'BUILD LOCKED • ACTIVE FIGHT':'RRVVFO BUILD'}
     this.storyMenuPaused=Boolean(this.battle&&!this.battle.paused);if(this.storyMenuPaused)this.battle.togglePause();
     this.root.querySelector('[data-c3-menu-resume]')?.focus();
   }

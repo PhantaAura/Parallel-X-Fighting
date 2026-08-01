@@ -5,7 +5,7 @@ import {tint} from './effects.js';
 import {tryMeleeClash,tryUltimateClash} from './clash-system.js';
 import {DEFENSE_BALANCE,defensiveDashFrames,resetDefenseState,resolveBlockedHit,updateDefenseState} from './guard-system.js';
 import {beginCinematicUltimate,clearCinematic,ULTIMATES} from './ultimate-system.js';
-import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a40-core-fun-overhaul-20260801';
+import {channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from './focus-recovery.js?v=29a402-field-skills-minimal-ui-20260801';
 
 const ZERO_COMMAND={down:()=>false,pressed:()=>false};
 const LENS_MASTERY_KEY='pxLensMasteryV1';
@@ -68,7 +68,7 @@ export class Fighter{
       if(!this.charging){
         if(command.pressed('characterSpecial'))this.special();
         if(command.pressed('fireBlast'))this.fireBlast();
-        if(command.pressed('shotsOfAgony'))this.beginShotsOfAgony();
+        if(command.pressed('shotsOfAgony')&&!this.storyShotsLocked)this.beginShotsOfAgony();
         if(command.pressed('objectSwap'))this.dash();
         if(command.pressed('lensOfTruth'))this.lensAbility();
         if(command.pressed('ultimate'))this.ultimate();

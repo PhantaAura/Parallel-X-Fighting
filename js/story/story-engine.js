@@ -1,10 +1,10 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a40-core-fun-overhaul-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a40-core-fun-overhaul-20260801';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a40-core-fun-overhaul-20260801';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a402-field-skills-minimal-ui-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a402-field-skills-minimal-ui-20260801';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
 
 export const STORY_ENGINE_VERSION='2.9A.24';
-export const STORY_ENGINE_CACHE='29a40-core-fun-overhaul-20260801';
+export const STORY_ENGINE_CACHE='29a402-field-skills-minimal-ui-20260801';
 
 const EMPTY_COMMAND=Object.freeze({x:0,z:0,jump:false,light:false,heavy:false,launcher:false,dash:false,block:false,charge:false,grab:false,breaker:false,counter:false,interact:false,special:false});
 const STORY_MODES=Object.freeze(['dialogue','exploration','tutorial','combat','cinematic','complete','story']);

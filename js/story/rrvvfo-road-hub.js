@@ -1,16 +1,17 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a40-core-fun-overhaul-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a40-core-fun-overhaul-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a40-core-fun-overhaul-20260801';
-import {StoryMap} from './story-map.js?v=29a40-core-fun-overhaul-20260801';
-import {storyConfirm} from './story-ux.js?v=29a40-core-fun-overhaul-20260801';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a40-core-fun-overhaul-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a40-core-fun-overhaul-20260801';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a40-core-fun-overhaul-20260801';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
-import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
+import {StoryMap} from './story-map.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a402-field-skills-minimal-ui-20260801';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
+import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -72,8 +73,9 @@ function buildUI(){
     <div class="roadPause storyRpgPause" data-road-pause hidden>
       <article><header><small>RRVVFO • CHAPTER 1</small><h2>STORY MENU</h2></header>
         <p data-road-pause-objective>Follow the Tournament Road.</p>
+        <div data-road-field-skills>${renderFieldSkillJournal({chapter:1})}</div>
         ${storyControlLegendMarkup()}
-        <div><button class="primary" type="button" data-road-resume>RETURN TO GAME</button><button type="button" data-road-pause-manual>SAGE MANUAL</button><button type="button" data-road-pause-map>AREA MAP</button><button type="button" data-road-pause-exit>RETURN TO STORY MENU</button></div>
+        <div><button class="primary" type="button" data-road-resume>RETURN TO GAME</button><button type="button" data-road-pause-manual>SAGE MANUAL</button><button type="button" data-road-pause-build>RRVVFO BUILD</button><button type="button" data-road-pause-map>AREA MAP</button><button type="button" data-road-pause-exit>RETURN TO STORY MENU</button></div>
       </article>
     </div>
     <div class="roadDefeat storyRpgPause" data-road-defeat hidden>
@@ -131,6 +133,8 @@ class RrvvfoRoadHub{
     this.routeChoiceShown=false;
     this.transportFixed=false;
     this.gateOpen=false;
+    this.gateSwapIndex=0;
+    this.gateSwapMarkers=[{x:468,z:-96,label:'LOW MARKER'},{x:522,z:96,label:'HIGH MARKER'},{x:570,z:0,label:'CENTER LOCK'}];
     this.lensRevealed=false;
     this.encounterResolved=false;
     this.lostCompetitorDecision=null;
@@ -149,7 +153,7 @@ class RrvvfoRoadHub{
       {x:355,z:400,label:'CLIFF STEP 2',done:false},
       {x:412,z:350,label:'CLIFF STEP 3',done:false}
     ];
-    this.lastCommand={};this.runAttempts=0;
+    this.lastCommand={};this.runAttempts=0;this.flowCancelHintShown=false;this.flowCancelLearned=loadLostYearProgress().unlocks?.includes('flowCancelLearned')||false;
     this.qteSequence=[];
     this.qteIndex=0;
     this.qteDeadline=0;
@@ -169,6 +173,7 @@ class RrvvfoRoadHub{
     this.root.querySelector('[data-road-manual]').addEventListener('click',()=>this.openManualFromHub());
     this.root.querySelector('[data-road-resume]').addEventListener('click',()=>this.closePauseMenu());
     this.root.querySelector('[data-road-pause-manual]').addEventListener('click',()=>{this.closePauseMenu();this.openManualFromHub()});
+    this.root.querySelector('[data-road-pause-build]').addEventListener('click',()=>this.openBuildLab());
     this.root.querySelector('[data-road-pause-map]').addEventListener('click',()=>{this.closePauseMenu();this.map?.open()});
     this.root.querySelector('[data-road-pause-exit]').addEventListener('click',()=>this.requestExit());
     this.root.querySelector('[data-road-rematch]').addEventListener('click',()=>{this.defeatPanel.hidden=true;this.restartRoadFight()});
@@ -181,7 +186,8 @@ class RrvvfoRoadHub{
     this.root.querySelector('[data-road-continue]').addEventListener('click',()=>this.exitToStory());
     this.root.querySelectorAll('[data-road-route]').forEach(button=>button.addEventListener('click',()=>this.chooseRoadRoute(button.dataset.roadRoute)));
     this.keyHandler=event=>this.onKey(event);
-    document.addEventListener('keydown',this.keyHandler,true);
+    this.flowCancelHandler=event=>{if(this.aborted||this.mode!=='fight'||event?.detail?.fighterId!=='rrvvfo')return;this.flowCancelLearned=true;const progress=loadLostYearProgress(),unlocks=[...new Set([...(progress.unlocks||[]),'flowCancelLearned'])];saveLostYearProgress({...progress,unlocks});this.battle.notice('FLOW CANCEL LEARNED • HIT → DASH → KEEP MOVING',1.8)};
+    document.addEventListener('keydown',this.keyHandler,true);document.addEventListener('pxflowcancel',this.flowCancelHandler);
   }
 
   start(){
@@ -274,6 +280,7 @@ class RrvvfoRoadHub{
           player.hp=Math.max(1,Math.min(player.maxHp,player.hp));battle.time=9999;this.updateHub(dt,previous);
         }else if(this.mode==='fight'){
           battle.time=9999;battle.fighters[1].en=Math.min(battle.fighters[1].en,45);
+          if(!this.flowCancelLearned&&!this.flowCancelHintShown&&player.flowCancelWindow>0){this.flowCancelHintShown=true;this.battle.notice('OPENING! • DASH NOW TO FLOW CANCEL',1.35);this.setObjective('OPTIONAL TECH • FLOW CANCEL','After a connected melee hit, Dash during the brief opening. It costs 8 Energy and lets you keep your route going.')}
         }else if(this.mode==='qte')this.updateQte();
         this.updateNpcMotion(dt);this.map?.draw();
       },
@@ -430,7 +437,7 @@ class RrvvfoRoadHub{
     }
     if(this.routeChoice&&this.step==='route-travel'&&player.x>430&&this.routeGimmickReady()){
       this.roadCleared=true;this.step='gate';this.battle.notice(`${this.routeChoice.toUpperCase()} ROUTE CLEARED`,1.4);if(this.routeChoice==='cliff')completeAdventureMission('c1-high-road',{rank:'A',reward:'TITLE • ROAD RUNNER'});
-      this.setObjective('REACH THE MULTI-TARGET GATE','The routes reconnect here. Use Shots of Agony on the four targets.');
+      this.setObjective('REACH THE SWAP RELAY','The routes reconnect here. Read the three marked positions and use Object Swap to open the route.');
       saveLostYearProgress({...loadLostYearProgress(),roadRoute:this.routeChoice,lastCheckpoint:'rrvvfo-road-route'});return;
     }
     if(this.step==='cart'&&player.x>235&&!this.manualPending){
@@ -447,8 +454,9 @@ class RrvvfoRoadHub{
     }
     if(this.step==='gate'&&player.x>430&&!this.manualPending){
       this.step='gate-ready';
-      this.pauseForManual('field-shots',()=>{
-        this.setObjective('OPEN THE MULTI-TARGET GATE','Press hotbar slot 2 to strike all four gate targets together.');
+      this.pauseForManual('field-object-swap',()=>{
+        this.setObjective('SOLVE THE THREE-POINT SWAP RELAY','Use Object Swap on each glowing marker. Every swap changes your position, so read the next angle instead of standing still.');
+        this.battle.notice('FIELD TRIAL • OBJECT SWAP • 0/3',1.6);
       });
       return;
     }
@@ -540,7 +548,7 @@ class RrvvfoRoadHub{
     }else if(this.step==='cart-ready'&&player.x>210&&player.x<300){
       visible=true;title='FALLEN PRACTICE LOG';detail=this.abilityPrompt(1,'FIRE BLAST');
     }else if(this.step==='gate-ready'&&player.x>410&&player.x<555){
-      visible=true;title='FOUR TARGETS';detail=this.abilityPrompt(2,'SHOTS OF AGONY');
+      visible=true;title='SWAP RELAY';detail=this.abilityPrompt(3,'OBJECT SWAP');
     }else if(this.step==='lens-ready'&&player.x>920&&player.x<1045){
       visible=true;title='SUSPICIOUS ROADBLOCK';detail=this.abilityPrompt(4,'LENS OF TRUTH');
     }else{
@@ -636,26 +644,32 @@ class RrvvfoRoadHub{
         this.mode='hub';
         this.battle.phase='play';
         this.step='gate';
-        this.setObjective('REACH THE MULTI-TARGET GATE','Continue east. The next check uses Shots of Agony.');
+        this.setObjective('REACH THE SWAP RELAY','Continue east. The next field check expands Object Swap instead of teaching a new combat move.');
         saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-fire'});
       });
       return true;
     }
-    if(slot===2&&this.step==='gate-ready'&&player.x>380&&player.x<570){
-      player.visualAction='shotsSummon';
-      player.visualActionTime=.75;
-      this.battle.notice('FOUR FIELD TARGETS LOCKED',1.4);
-      this.mode='transition';
-      this.battle.phase='story';
-      setTimeout(()=>{
-        if(this.aborted)return;
-        this.gateOpen=true;
-        this.mode='hub';
-        this.battle.phase='play';
-        this.step='transport';
-        this.setObjective('HELP THE STRANDED TOURNAMENT TRANSPORT','A wheel mechanism fell beyond the broken ledge. Use Object Swap to recover it.');
-        saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-gate'});
-      },700);
+    if(slot===3&&this.step==='gate-ready'&&player.x>380&&player.x<620){
+      const marker=this.gateSwapMarkers[this.gateSwapIndex];if(!marker)return false;
+      recordFieldSkillTrial('precisionSwap');
+      const oldX=player.x,oldZ=player.z;player.x=marker.x;player.z=marker.z;marker.x=oldX;marker.z=oldZ;
+      player.visualAction='objectSwapDisappear';player.visualActionTime=.45;
+      this.battle.burst(oldX,oldZ,'#ffd079',16,46);this.battle.burst(player.x,player.z,'#8df4ff',18,52);
+      this.gateSwapIndex++;
+      this.battle.notice(`SWAP RELAY • ${this.gateSwapIndex}/3`,1.0);
+      if(this.gateSwapIndex>=this.gateSwapMarkers.length){
+        masterFieldSkill('precisionSwap');
+        this.mode='transition';this.battle.phase='story';
+        setTimeout(()=>{
+          if(this.aborted)return;
+          this.gateOpen=true;this.mode='hub';this.battle.phase='play';this.step='transport';
+          this.setObjective('HELP THE STRANDED TOURNAMENT TRANSPORT','A wheel mechanism fell beyond the broken ledge. Use Object Swap to recover it.');
+          saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-gate',chapter1SwapRelayComplete:true});
+        },520);
+      }else{
+        const next=this.gateSwapMarkers[this.gateSwapIndex];
+        this.setObjective(`SWAP RELAY • ${this.gateSwapIndex}/3`,`Find the next glowing marker (${next.label}) and use Object Swap again.`);
+      }
       return true;
     }
     if(slot===3&&this.step==='transport'&&player.x>650&&player.x<850){
@@ -676,7 +690,7 @@ class RrvvfoRoadHub{
       saveLostYearProgress({...loadLostYearProgress(),lastCheckpoint:'rrvvfo-road-lens'});
       return true;
     }
-    const labels={1:'NO BURNABLE ROADBLOCK HERE',2:'NO MULTI-TARGET SWITCH HERE',3:'NO SWAP POINT HERE',4:'NOTHING HIDDEN HERE',5:'ULTIMATES ARE DISABLED IN HUBS'};
+    const labels={1:'NO BURNABLE ROADBLOCK HERE',2:'UNKNOWN TECHNIQUE • NOT INVENTED YET',3:'NO SWAP POINT HERE',4:'NOTHING HIDDEN HERE',5:'ULTIMATES ARE DISABLED IN HUBS'};
     this.battle.notice(labels[slot]||'FIELD TECHNIQUE UNAVAILABLE',1.1);
     return false;
   }
@@ -684,7 +698,7 @@ class RrvvfoRoadHub{
   pauseForManual(pageId,onClose,reactionLines=null){
     this.manualPending=true;
     discoverCombatManualPage(pageId,{reactionLines,open:false,onClose:()=>{}});
-    const pageNames={'hub-exploration':'EXPLORATION','field-object-swap':'OBJECT SWAP','field-fire':'FIRE BLAST','field-shots':'SHOTS OF AGONY','run-encounters':'FIGHT OR RUN','lens-secrets':'LENS OF TRUTH'};
+    const pageNames={'hub-exploration':'EXPLORATION','field-object-swap':'OBJECT SWAP','field-fire':'FIRE BLAST','run-encounters':'FIGHT OR RUN','lens-secrets':'LENS OF TRUTH'};
     const manualHint=['controller','touch'].includes(this.engine?.activeInput?.())?'OPEN FROM PAUSE':'M TO READ';this.battle.notice(`NEW MANUAL PAGE • ${pageNames[pageId]||'COMBAT LESSON'} • ${manualHint}`,1.8);
     this.manualPending=false;
     if(!this.aborted){this.mode='hub';this.battle.phase='play';onClose?.()}
@@ -828,7 +842,7 @@ class RrvvfoRoadHub{
     this.mode='fight';
     this.fighterVisible=true;
     this.setRoadFightUi(true);
-    this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;clearTimeout(this.roadKoTimer);
+    this.roadPlayerKOs=0;this.roadFoeKOs=0;this.roadKoLocked=false;this.flowCancelHintShown=this.flowCancelLearned;clearTimeout(this.roadKoTimer);
     player.reset(790,70);applyStoryProgressionToFighter(player,loadLostYearProgress());
     player.en=45;
     foe.id='road-fighter';
@@ -874,9 +888,15 @@ class RrvvfoRoadHub{
     requestAnimationFrame(()=>this.defeatPanel.querySelector('[data-road-rematch]')?.focus());
   }
 
+
+  openBuildLab(){
+    openRrvvfoBuildLab({storyChapter:1,storyProgress:loadLostYearProgress(),onChange:build=>{const player=this.battle?.fighters?.[0];if(player)applyRrvvfoBuildToFighter(player,build);this.battle?.notice?.(`BUILD EQUIPPED • ${build.label}`,1.1)},onClose:()=>this.root.querySelector('[data-road-pause-build]')?.focus()});
+  }
+
   openPauseMenu(){
     if(this.mode!=='hub')return;
     this.pausePanel.querySelector('[data-road-pause-objective]').textContent=`${this.objective.textContent} — ${this.detail.textContent}`;
+    const skills=this.pausePanel.querySelector('[data-road-field-skills]');if(skills)skills.innerHTML=renderFieldSkillJournal({chapter:1});
     this.pausePanel.hidden=false;this.mode='pause';this.battle.phase='story';this.pausePanel.querySelector('[data-road-resume]')?.focus();
   }
 
@@ -1030,11 +1050,7 @@ class RrvvfoRoadHub{
     }
 
     if(!this.gateOpen){
-      for(const z of [-96,-32,32,96]){
-        const glow=.65+Math.sin(time*5+z)*.2;
-        r.billboard({x:548,y:82,z,size:38,color:'#73e9ff',alpha:glow});
-        r.disc({x:548,y:6,z,rx:22,rz:15,color:'#73e9ff',alpha:.2});
-      }
+      this.gateSwapMarkers.forEach((marker,index)=>{if(index<this.gateSwapIndex)return;const glow=.68+Math.sin(time*5+index)*.2,color=index===this.gateSwapIndex?'#fff0a0':'#73e9ff';r.billboard({x:marker.x,y:82,z:marker.z,size:index===this.gateSwapIndex?46:34,color,alpha:glow});r.disc({x:marker.x,y:6,z:marker.z,rx:22,rz:15,color,alpha:.22})});
       r.segment({x:598,y:70,z:-125},{x:598,y:70,z:125},{width:18,height:18,color:'#d84c56',alpha:.95});
     }
 
@@ -1049,7 +1065,7 @@ class RrvvfoRoadHub{
     const points=[
       {x:-1160,z:-240,label:'TRAINING GROUNDS',color:'#d9232f',kind:'landmark'},
       {x:80,z:0,label:'BROKEN RIVER',color:'#5ba9dc',kind:'landmark'},
-      {x:590,z:0,label:'TARGET GATE',color:'#6b58be',kind:'landmark'},
+      {x:590,z:0,label:'SWAP RELAY',color:'#6b58be',kind:'landmark'},
       {x:1320,z:0,label:'TOURNAMENT',color:'#d9a629',kind:'landmark'}
     ];
     if(this.routeChoice==='forest')points.push({x:390,z:-390,label:'FOREST SHORTCUT',color:'#3f9f78',kind:'route'});
@@ -1166,7 +1182,7 @@ class RrvvfoRoadHub{
   cleanup(){
     if(this.aborted)return;
     this.setRoadFightUi(false);this.aborted=true;clearTimeout(this.roadKoTimer);this.map?.destroy();this.map=null;
-    document.removeEventListener('keydown',this.keyHandler,true);
+    document.removeEventListener('keydown',this.keyHandler,true);document.removeEventListener('pxflowcancel',this.flowCancelHandler);
     if(this.dialogue?._onKey)document.removeEventListener('keydown',this.dialogue._onKey);
     this.dialogue?.overlay?.remove();
     destroyStoryBattle(this.battle);

@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a40-core-fun-overhaul-20260801';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a40-core-fun-overhaul-20260801';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a402-field-skills-minimal-ui-20260801';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a40-core-fun-overhaul-20260801';
-import {Fighter} from '../js/fighter.js?v=29a40-core-fun-overhaul-20260801';
+import {EffectSystem} from '../js/effects.js?v=29a402-field-skills-minimal-ui-20260801';
+import {Fighter} from '../js/fighter.js?v=29a402-field-skills-minimal-ui-20260801';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,23 +17,24 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a40-core-fun-overhaul-20260801';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a40-core-fun-overhaul-20260801';
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a40-core-fun-overhaul-20260801';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a40-core-fun-overhaul-20260801';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a40-core-fun-overhaul-20260801';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a40-core-fun-overhaul-20260801';
-import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
-import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a40-core-fun-overhaul-20260801';
-import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a40-core-fun-overhaul-20260801';
-import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a40-core-fun-overhaul-20260801';
-import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,RRVVFO_BUILDS,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,loadAdventureProgress,loadRrvvfoBuild,saveRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a40-core-fun-overhaul-20260801';
-import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a40-core-fun-overhaul-20260801';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a40-core-fun-overhaul-20260801';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a40-core-fun-overhaul-20260801';
-import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a40-core-fun-overhaul-20260801';
-import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a40-core-fun-overhaul-20260801';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a402-field-skills-minimal-ui-20260801';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a402-field-skills-minimal-ui-20260801';
+import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
+import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a402-field-skills-minimal-ui-20260801';
+import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a402-field-skills-minimal-ui-20260801';
+import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
+import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a402-field-skills-minimal-ui-20260801';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a402-field-skills-minimal-ui-20260801';
+import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a402-field-skills-minimal-ui-20260801';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -42,27 +43,27 @@ import {DEFAULT_QOL_SETTINGS,QOL_SETTINGS_KEY,loadQolSettings,saveQolSettings,sa
 import {NotificationSystem} from '../js/notification-system.js';
 import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringifySave,validateSaveImport} from '../js/save-manager.js';
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
-import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a40-core-fun-overhaul-20260801';
-import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a40-core-fun-overhaul-20260801';
-import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a40-core-fun-overhaul-20260801';
+import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a402-field-skills-minimal-ui-20260801';
+import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a402-field-skills-minimal-ui-20260801';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a40-core-fun-overhaul-20260801';
+import {LoadingManager} from '../js/loading-manager.js?v=29a402-field-skills-minimal-ui-20260801';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a40-core-fun-overhaul-20260801';
-import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a40-core-fun-overhaul-20260801';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a40-core-fun-overhaul-20260801';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a40-core-fun-overhaul-20260801';
-import {STAGES} from '../js/stages.js?v=29a40-core-fun-overhaul-20260801';
-import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a40-core-fun-overhaul-20260801';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
+import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a402-field-skills-minimal-ui-20260801';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a402-field-skills-minimal-ui-20260801';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a402-field-skills-minimal-ui-20260801';
+import {STAGES} from '../js/stages.js?v=29a402-field-skills-minimal-ui-20260801';
+import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a402-field-skills-minimal-ui-20260801';
 
-const RELEASE_CACHE_ID='29a40-core-fun-overhaul-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.40 — Core Fun Overhaul';
-const TOTAL_TESTS=397;
+const RELEASE_CACHE_ID='29a402-field-skills-minimal-ui-20260801';
+const EXPECTED_BUILD='Prototype 2.9A.40.2 — Field Skills & Minimal UI';
+const TOTAL_TESTS=419;
 const TEST_TIMEOUT_MS=30000;
 class SmokeTimeoutError extends Error{constructor(name){super(`Timed out after ${TEST_TIMEOUT_MS/1000} seconds: ${name}`);this.name='SmokeTimeoutError';this.code='PX_SMOKE_TIMEOUT'}}
 const FETCH_TIMEOUT_MS=12000;
@@ -591,9 +592,9 @@ await test('Story menu exposes only Rrvvfo and chains Chapters 1–4 without rou
   assert(source.includes("'rrvvfo-00':'rrvvfo-01'")&&source.includes("'rrvvfo-road':'rrvvfo-02'")&&source.includes("'rrvvfo-02':'rrvvfo-03'")&&source.includes("'rrvvfo-03':'rrvvfo-04'"),'automatic Story chain is incomplete');
   assert(!source.includes('routeVisible(')&&!source.includes('ALT & ROVER'),'unreleased Story routes leaked into the player screen');
 });
-await test('Chapter 1 uses clear attempt counts, saved checkpoints, and the correct Lens charge target',async()=>{
+await test('Chapter 1 uses a clear Object Swap field trial, saved checkpoints, and the correct Lens charge target',async()=>{
   const m0=await(await fetchFresh('../js/story/rrvvfo-mission-0.js')).text(),m1=await(await fetchFresh('../js/story/rrvvfo-mission-1.js')).text();
-  assert(m0.includes('ACTIVE SPAR • LAND ONE DIRECT ATTACK')&&m0.includes('MAKE THE SAGE PREDICT ONE DIRECT ATTACK FIRST'),'active direct-attack requirement is hidden');
+  assert(m0.includes('OBJECT SWAP RELAY • 0 / 3')&&m0.includes('Three anchors. No walking between them.'),'Object Swap field requirement is hidden');
   assert(m1.includes('CHARGE TO 60')&&!m1.includes('CHARGE TO 90'),'Lens charge instruction is contradictory');
   for(const checkpoint of ['movement','parry','abilities','lensCharge','final'])assert(m1.includes(checkpoint),`tutorial checkpoint ${checkpoint} is missing`);
 });
@@ -604,7 +605,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a40-core-fun-overhaul-20260801');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a402-field-skills-minimal-ui-20260801');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
@@ -654,7 +655,7 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a40-core-fun-overhaul-20260801');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a402-field-skills-minimal-ui-20260801');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','enterLookout','startShadowArrival'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
@@ -815,7 +816,7 @@ await test('2.9A.40 Rrvvfo builds persist and alter fighter/loadout behavior wit
   const storage=memoryStorage();saveRrvvfoBuild('improviser',storage);assert(loadRrvvfoBuild(storage).id==='improviser','Build Lab choice did not persist');
   const build=currentRrvvfoBuild(storage),fighter={id:'rrvvfo',en:30};applyRrvvfoBuildToFighter(fighter,build);assert(fighter.storyBuildId==='improviser'&&fighter.storyBuildTechniques.length===4&&fighter.storyBuildPassives.length===2,'saved build did not apply to Rrvvfo');
   const [arena,story]=await Promise.all([fetchFresh('../js/arena/arena-mode.js').then(r=>r.text()),fetchFresh('../js/story/story-engine.js').then(r=>r.text())]);
-  assert(arena.includes("storyHudMode!=='combat'")&&arena.includes('storyScripted?ARENA_ABILITIES:playerLoadout'),'scripted Story traversal can be broken by a combat build');
+  assert(arena.includes("storyHudMode!=='combat'")&&arena.includes('if(storyScripted)return ARENA_ABILITIES'),'scripted Story traversal can be broken by a combat build');
   assert(story.includes('refreshPlayerHotbar?.()'),'Story mode changes do not refresh canonical/build hotbars safely');
   assert(SAVE_SCHEMA_VERSION===268,'Core Fun Overhaul unexpectedly changed save schema');
 });
@@ -865,11 +866,78 @@ await test('2.9A.40 Chapter 4 has simultaneous-feeling 3v3 and 3v2 squad encount
   assert(source.includes("archetype:'support'")&&source.includes("archetype:'heavy'")&&source.includes("archetype:'trickster'"),'Chapter 4 squad enemies do not mix tactical archetypes');
 });
 
-await test('Prototype 2.9A.22 preserves the approved Chapter 1 and Chapter 2 dialogue sources',async()=>{
+
+await test('2.9A.40.1 Custom Build persists four techniques and two passives without duplicates',()=>{
+  const storage=memoryStorage();
+  saveRrvvfoCustomBuild({techniques:['fireBlast','fireBlast','objectSwap','ultimate'],passives:['parrySpark','parrySpark']},storage);
+  const state=loadRrvvfoBuild(storage),build=currentRrvvfoBuild(storage);
+  assert(state.id==='custom'&&build.id==='custom','Custom Build did not become active');
+  assert(build.techniques.length===4&&new Set(build.techniques).size===4,'Custom Build did not normalize to four unique techniques');
+  assert(build.passives.length===2&&new Set(build.passives).size===2,'Custom Build did not normalize to two unique passives');
+  assert(build.techniques.every(id=>RRVVFO_TECHNIQUES[id])&&build.passives.every(id=>RRVVFO_PASSIVES[id]),'Custom Build saved an invalid slot');
+});
+
+await test('2.9A.40.1 Build Lab exposes presets, Custom slots, and a locked Story state',()=>{
+  const storage=memoryStorage(),html=renderRrvvfoBuildLab({storage});
+  assert(html.includes('CUSTOM BUILD')&&(html.match(/data-custom-tech=/g)||[]).length===4&&(html.match(/data-custom-passive=/g)||[]).length===2,'Build Lab does not expose 4+2 Custom slots');
+  const locked=renderRrvvfoBuildLab({storage,locked:true,lockReason:'BUILD LOCKED • TEST'});
+  assert(locked.includes('BUILD LOCKED • TEST')&&locked.includes('disabled'),'Build Lab does not communicate/obey Story lock state');
+});
+
+await test('2.9A.40.1 Chapters 1–4 expose the Build Lab from Story pause menus',async()=>{
+  const files=['rrvvfo-road-hub.js','rrvvfo-mission-2.js','rrvvfo-chapter-3.js','rrvvfo-chapter-4.js'];
+  for(const file of files){const source=await fetchFresh(`../js/story/${file}`).then(r=>r.text());assert(source.includes('RRVVFO BUILD')&&source.includes('openRrvvfoBuildLab'),`${file} has no in-Story Build Lab path`)}
+});
+
+await test('2.9A.40.1 active fights lock build switching in the combat-heavy Story chapters',async()=>{
+  const [c2,c3,c4]=await Promise.all(['rrvvfo-mission-2.js','rrvvfo-chapter-3.js','rrvvfo-chapter-4.js'].map(file=>fetchFresh(`../js/story/${file}`).then(r=>r.text())));
+  assert(c2.includes("['fight','fight-ko'].includes(this.mode)")&&c2.includes('BUILD LOCKED • FINISH THE ACTIVE FIGHT'),'Chapter 2 can change builds during combat');
+  assert(c3.includes("locked=this.mode==='fight'")&&c3.includes('BUILD LOCKED • FINISH THE ACTIVE FIGHT'),'Chapter 3 can change builds during combat');
+  assert(c4.includes("locked=this.mode==='fight'||this.qte?.active")&&c4.includes('BUILD LOCKED • FINISH THE ACTIVE ENCOUNTER'),'Chapter 4 can change builds during combat/QTEs');
+});
+
+await test('2.9A.40.1 chapter identity cards use player-facing hooks instead of internal design prose',async()=>{
+  for(let chapter=1;chapter<=4;chapter++){const id=chapterGameplayIdentity(chapter);assert(id.playerTitle&&id.playerTagline&&id.playerHint,`Chapter ${chapter} is missing player-facing identity copy`)}
+  const source=await fetchFresh('../js/story/story-polish.js').then(r=>r.text());
+  assert(source.includes('identity.playerTitle')&&source.includes('identity.playerTagline')&&source.includes('identity.playerHint'),'Story presentation still exposes only internal chapter identity metadata');
+});
+
+await test('2.9A.40.1 enemy archetypes are readable by icon and fallback silhouette shape',()=>{
+  assert(Object.keys(ENEMY_ARCHETYPE_ICONS).length===6,'not every archetype has a role icon');
+  assert(enemyArchetypeShape('heavy').width>enemyArchetypeShape('rushdown').width,'Heavy silhouette is not visibly broader');
+  assert(enemyArchetypeShape('trickster').width<enemyArchetypeShape('rushdown').width,'Trickster silhouette is not visibly leaner');
+});
+
+await test('2.9A.40.1 Chapter 2 reveals opponent role on first engagement',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-mission-2.js').then(r=>r.text());
+  for(const token of ['data-c2-enemy-role','OPPONENT STYLE','enemyArchetypeIcon(arch.id)','panel.hidden=false','arch.description'])assert(source.includes(token),`Chapter 2 role readability omitted ${token}`);
+});
+
+await test('2.9A.40.1 Chapter 4 gives keyboard controller and touch deliberate squad target cycling',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
+  for(const token of ["const targetCycle=Boolean(command.interact)","targetCycle&&!this.targetCycleHeld","event.code==='Tab'","touchTarget.textContent=squad?'TARGET':'INTERACT'","CYCLE TARGET"])assert(source.includes(token),`manual target cycling omitted ${token}`);
+});
+
+await test('2.9A.40.1 Support healing is telegraphed and can actually be interrupted',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text());
+  for(const token of ['support.supportCast=.9','SUPPORT CASTING • INTERRUPT','support.hp<Number(support.supportCastHp','SUPPORT INTERRUPTED','support.supportCooldown=2.2'])assert(source.includes(token),`Support heal fairness omitted ${token}`);
+});
+
+await test('2.9A.40.1 Flow Cancel is taught through an optional Chapter 1 combat opening and mission results respect chapter-specific grading',async()=>{
+  const source=await fetchFresh('../js/story/rrvvfo-road-hub.js').then(r=>r.text());
+  assert(source.includes('OPENING! • DASH NOW TO FLOW CANCEL')&&source.includes('FLOW CANCEL LEARNED')&&source.includes("'pxflowcancel'"),'Flow Cancel still relies on patch notes to be discovered');
+  const state={completed:['c2-ring-master','c3-no-false-leads','c1-swap-cache'],bestRanks:{'c2-ring-master':'S','c3-no-false-leads':'S','c1-swap-cache':'A'}};
+  assert(adventureMissionResultLabel(ADVENTURE_MISSIONS.find(m=>m.id==='c2-ring-master'),state)==='S RANK','combat mission lost S–E grading');
+  assert(adventureMissionResultLabel(ADVENTURE_MISSIONS.find(m=>m.id==='c3-no-false-leads'),state)==='PERFECT','investigation mission was forced into combat-style grading');
+  assert(adventureMissionResultLabel(ADVENTURE_MISSIONS.find(m=>m.id==='c1-swap-cache'),state)==='COMPLETE','exploration completion was forced into an unnecessary rank');
+});
+
+await test('Prototype 2.9A.40.2 preserves current Chapter 1 and Chapter 2 dialogue while replacing the retired Shots tutorial',async()=>{
   const [mission0,mission1,road,mission2,questData]=await Promise.all([
     'rrvvfo-mission-0.js','rrvvfo-mission-1.js','rrvvfo-road-hub.js','rrvvfo-mission-2.js','chapter2-hub-quests.js'
   ].map(file=>fetchFresh(`../js/story/${file}`).then(response=>response.text())));
-  for(const line of ['Eh, focus your energy into your hands or something. I’m getting bored. I have places to be.','You damn perv.','I’ll name this attack... Shots of Agony.'])assert(mission0.includes(line),`Chapter 1 training omitted: ${line}`);
+  for(const line of ['Before you start throwing attacks around, prove you can move without a path.','There is literally a path right there.','If an object can get somewhere, you can turn that into a route. Figure out the rest.'])assert(mission0.includes(line),`Chapter 1 field training omitted: ${line}`);
+  assert(!mission0.includes("I’ll name this attack... Shots of Agony."),'retired early Shots of Agony invention still appears in Chapter 1');
   assert(mission1.includes('I signed you up for this tournament. I heard there’d be some nice ladies there.'),'Chapter 1 manual handoff dialogue is stale');
   for(const line of ['Lemme guess. Your ‘important training’ is going to the spa and spying on women, perv.','This seems like a knockoff of the World Martial Arts Tournament.'])assert(road.includes(line),`Tournament Road omitted: ${line}`);
   for(const line of ['Not my problem.','Aren’t you the announcer I used to watch in those World Tournaments on TV when I was younger? So I guess your clumsiness wasn’t a character.','After the tournament, I’ll figure out who did it. Don’t stress about it, Bark.','I beat you in the beam! Haha—','Now that explains what you were doing during your fight with Hailey.'])assert(mission2.includes(line),`Chapter 2 omitted: ${line}`);
@@ -1170,9 +1238,9 @@ await test('2.9A.26 character motion identity and full-energy/critical-guard cue
 });
 
 
-await test('2.9A.27 Chapter 1 starts with active combat and offers three road routes plus transport rescue',async()=>{
+await test('2.9A.40.2 Chapter 1 starts with active field movement and offers three road routes plus transport rescue',async()=>{
   const [training,road]=await Promise.all([fetchFresh('../js/story/rrvvfo-mission-0.js').then(r=>r.text()),fetchFresh('../js/story/rrvvfo-road-hub.js').then(r=>r.text())]);
-  for(const token of ['ACTIVE SPAR','normalDodges<1','this.mastery=4'])assert(training.includes(token),`Chapter 1 active training omitted ${token}`);
+  for(const token of ['OBJECT SWAP FIELD TRIAL','SWAP_MARKERS','FIELD TECHNIQUE MASTERED'])assert(training.includes(token),`Chapter 1 active field training omitted ${token}`);
   for(const token of ['CHOOSE A ROUTE','data-road-route="main"','data-road-route="forest"','data-road-route="cliff"','RECOVER THE TRANSPORT WHEEL','transportRescued'])assert(road.includes(token),`Tournament Road pacing omitted ${token}`);
 });
 
@@ -1772,7 +1840,7 @@ await test('2.9A.36 older Chapter 4 saves beyond the caverns never move backward
 });
 
 await test('2.9A.36 active build packages playful exploration without changing save schema',async()=>{
-  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a40-core-fun-overhaul-20260801'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
+  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.36 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.36 changed the save schema unexpectedly');
   assert(html.includes(RELEASE_CACHE_ID),'2.9A.36 cache identity is not synchronized');
@@ -1843,7 +1911,7 @@ await test('2.9A.37 chapter results include RPG afterglow instead of rushing the
 });
 
 await test('2.9A.37 active build packages reliability and RPG flow without changing save schema',async()=>{
-  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a40-core-fun-overhaul-20260801'),fetchSource('../js/story/story-reliability.js')]);
+  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801'),fetchSource('../js/story/story-reliability.js')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.37 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.37 changed save schema unexpectedly');
   assert(html.includes('story-rpg-flow-29a37.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.37 active page is not synchronized');
@@ -1891,9 +1959,9 @@ await test('Combat Rank Patch gives rough and losing fights meaningful D and E r
   assert(lossResult.rank==='E','a no-technique loss should receive E rank');
 });
 
-await test('Combat Rank Patch ranks Story fights from Chapter 1 through Chapter 4',async()=>{
-  const [sage,road,c2,c3,c4]=await Promise.all([fetchSource('../js/story/rrvvfo-mission-0.js'),fetchSource('../js/story/rrvvfo-road-hub.js'),fetchSource('../js/story/rrvvfo-mission-2.js'),fetchSource('../js/story/rrvvfo-chapter-3.js'),fetchSource('../js/story/rrvvfo-chapter-4.js')]);
-  assert(sage.includes('SAGE SPAR RANK')&&sage.includes('beginBattleRank')&&sage.includes('finalizeBattleRank'),'Chapter 1 Sage spar is missing its fight rank');
+await test('Combat Rank Patch ranks actual Story fights from Chapter 1 through Chapter 4 while field trials stay unranked',async()=>{
+  const [field,road,c2,c3,c4]=await Promise.all([fetchSource('../js/story/rrvvfo-mission-0.js'),fetchSource('../js/story/rrvvfo-road-hub.js'),fetchSource('../js/story/rrvvfo-mission-2.js'),fetchSource('../js/story/rrvvfo-chapter-3.js'),fetchSource('../js/story/rrvvfo-chapter-4.js')]);
+  assert(!field.includes('beginBattleRank')&&!field.includes('SAGE SPAR RANK'),'Chapter 1 Object Swap field trial is incorrectly treated as a ranked fight');
   for(const [name,source] of [['Chapter 1 road',road],['Chapter 2',c2],['Chapter 3',c3],['Chapter 4',c4]]){
     assert(source.includes('beginBattleRank'),`${name} does not begin a universal fight rank`);
     assert(source.includes('finalizeBattleRank'),`${name} does not finalize a universal fight rank`);
@@ -1936,7 +2004,7 @@ await test('2.9A.38 mastery records are included in safe save export and import'
 });
 
 await test('2.9A.38 active build integrates mastery results Training rewards and Extras records',async()=>{
-  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a40-core-fun-overhaul-20260801')]);
+  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.38 build label is not centralized');assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.38 changed save schema unexpectedly');
   assert(html.includes('mastery-records-29a38.css')&&html.includes('MASTERY & RECORDS')&&html.includes(RELEASE_CACHE_ID),'2.9A.38 page does not expose Adventure Records');
   for(const token of ['createBattleMasterySession','recordBattleMasteryEvent','finalizeBattleMastery','data-mastery-result','recordMasteryChallenge'])assert(arena.includes(token),`Arena mastery integration omitted ${token}`);
@@ -1974,12 +2042,99 @@ await test('2.9A.39 Chapter 4 adds optional party recovery without adding a mand
 });
 
 await test('2.9A.39.1 active build preserves RPG polish with the new Chapter 4 ending',async()=>{
-  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a40-core-fun-overhaul-20260801')]);
+  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD&&build.SAVE_SCHEMA_VERSION===268,'2.9A.39.1 build identity or save schema is wrong');
   assert(html.includes('full-experience-29a39.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.39.1 presentation/cache is not synchronized');
   assert(charm.includes('storyExperienceBeat')&&charm.includes('pxstoryfightrank'),'Story charm does not consume the new pacing/rank events');
   assert(arena.includes("new CustomEvent('pxstoryfightrank'"),'Story fights do not emit rank reactions');
   assert(polish.includes('pacingTarget')&&polish.includes('pacingRhythm'),'playtest diagnostics do not expose RPG pacing intent');
+});
+
+
+await test('2.9A.40.2 field-skill state persists trials and first mastery without duplicate unlocks',()=>{
+  const storage=memoryStorage();
+  recordFieldSkillTrial('objectSwapField',storage);recordFieldSkillTrial('objectSwapField',storage);
+  const first=masterFieldSkill('objectSwapField',{storage,quiet:true}),again=masterFieldSkill('objectSwapField',{storage,quiet:true}),state=loadFieldSkillState(storage);
+  assert(first.first&&!again.first,'field mastery did not distinguish first completion from repeat completion');
+  assert(state.mastered.filter(id=>id==='objectSwapField').length===1,'field mastery duplicated the same technique');
+  assert(state.trialCounts.objectSwapField===2,'field-trial count did not persist');
+  assert(normalizeFieldSkillState({mastered:['bad-id','precisionSwap']}).mastered.join(',')==='precisionSwap','field-skill normalization retained an unknown skill');
+});
+
+await test('2.9A.40.2 reserves Shots of Agony for its Chapter 5 invention instead of unlocking it in Chapters 1–4',()=>{
+  const rule=STORY_TECHNIQUE_RULES.shotsOfAgony;
+  assert(rule.availableFromChapter===5&&rule.requiresUnlock&&rule.unlock==='shotsOfAgonyPrototype','Shots Story rule does not reserve the prototype invention');
+  for(const chapter of [1,2,3,4,5])assert(!storyTechniqueAvailable('shotsOfAgony',{chapter,progress:{unlocks:[]}}),`Shots became available before its invention unlock in Chapter ${chapter}`);
+  assert(storyTechniqueAvailable('shotsOfAgony',{chapter:5,progress:{unlocks:['shotsOfAgonyPrototype']}}),'Chapter 5 prototype unlock does not enable Shots');
+  assert(storyTechniqueAvailable('fireBlast',{chapter:1,progress:{}}),'ordinary Story techniques were accidentally locked');
+});
+
+await test('2.9A.40.2 Story-safe Rrvvfo builds remove Shots without breaking the four-slot Story kit',()=>{
+  const safe=storySafeRrvvfoBuild(RRVVFO_BUILDS.fire,{chapter:2,progress:{unlocks:[]}});
+  assert(!safe.techniques.includes('shotsOfAgony'),'early Story build still equips Shots of Agony');
+  assert(safe.techniques.length===4,'early Story build no longer fills four usable technique slots');
+  for(const id of ['fireBlast','objectSwap','lensOfTruth','ultimate'])assert(safe.techniques.includes(id),`Story-safe build lost ${id}`);
+  const invented=storySafeRrvvfoBuild(RRVVFO_BUILDS.fire,{chapter:5,progress:{unlocks:['shotsOfAgonyPrototype']}});
+  assert(invented.techniques.includes('shotsOfAgony'),'invented Chapter 5 prototype cannot return to the build');
+});
+
+await test('2.9A.40.2 Chapter 1 opens with a playable three-anchor Object Swap field trial instead of Shots training',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-mission-0.js');
+  for(const token of ['SWAP_MARKERS','OBJECT SWAP RELAY • 0 / 3',"slot!==3",'recordFieldSkillTrial(\'objectSwapField\')','masterFieldSkill(\'objectSwapField\'','FIELD TECHNIQUE MASTERED'])assert(source.includes(token),`Chapter 1 Object Swap field trial omitted ${token}`);
+  assert(!source.includes("I’ll name this attack... Shots of Agony."),'Chapter 1 still contains the retired Shots invention dialogue');
+  assert(!source.includes("beginShotsOfAgony"),'Chapter 1 field trial still starts Shots of Agony');
+});
+
+await test('2.9A.40.2 Chapter 1 follow-up removes the old Shots phase and keeps the tutorial chain at seven steps',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-mission-1.js');
+  assert(source.includes('const TOTAL_STEPS=7'),'Chapter 1 manual/tutorial chain did not shrink to seven steps');
+  assert(source.includes("['shotsCharge','shotsReady'].includes(saved)?'lensCharge':saved"),'legacy Shots checkpoints are not migrated into the current Lens step');
+  assert(!source.includes("this.phase='shotsCharge'")&&!source.includes("this.phase='shotsReady'"),'retired Shots tutorial phase remains active in the current mission flow');
+  assert(source.includes('masterFieldSkill(\'objectSwapField\'')||source.includes('masterFieldSkill("objectSwapField"'),'Object Swap field mastery is not reinforced by Chapter 1 training');
+});
+
+await test('2.9A.40.2 Tournament Road replaces the old Shots gate with a three-point Object Swap relay',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-road-hub.js');
+  for(const token of ['REACH THE SWAP RELAY','SWAP RELAY','chapter1SwapRelayComplete','masterFieldSkill(\'precisionSwap\''])assert(source.includes(token),`Tournament Road swap relay omitted ${token}`);
+  assert(!source.includes('FOUR TARGETS')&&!source.includes('SHOTS OF AGONY'),'Tournament Road still exposes the retired early Shots gate');
+});
+
+await test('2.9A.40.2 Story-facing manual and RPG HUD keep the future technique unidentified',async()=>{
+  const [manual,rpg]=await Promise.all([fetchSource('../js/story/combat-manual.js'),fetchSource('../js/story/story-rpg-ui.js')]);
+  assert(manual.includes('Unknown Technique')&&manual.includes('PRECISION OBJECT SWAP'),'Combat Manual does not present the current Story-safe field training');
+  assert(!manual.includes('Shots of Agony')&&!manual.includes('SHOTS OF AGONY'),'Combat Manual spoils Shots before Chapter 5');
+  assert(!rpg.includes('Shots of Agony')&&! rpg.includes('SHOTS OF AGONY'),'persistent Story RPG UI spoils Shots before Chapter 5');
+});
+
+await test('2.9A.40.2 Chapter 4 party route teaches Bark Wade and Rrvvfo field skills through actions',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ["action.id==='bark-support'?'barkStabilize'","action.id==='wade-current'?'wadeCurrent'","action.id==='rrvvfo-swap'?'precisionSwap'","masterFieldSkill(fieldSkillId)","masterFieldSkill('vibrationSense'"])assert(source.includes(token),`Chapter 4 field progression omitted ${token}`);
+  for(const id of ['barkStabilize','wadeCurrent','vibrationSense'])assert(FIELD_SKILLS[id]?.chapter===4,`${id} is not classified as a Chapter 4 field skill`);
+});
+
+await test('2.9A.40.2 field-skill journals live inside Story menus instead of the exploration HUD',async()=>{
+  const files=['rrvvfo-road-hub.js','rrvvfo-mission-2.js','rrvvfo-chapter-3.js','rrvvfo-chapter-4.js'];
+  for(const file of files){const source=await fetchSource(`../js/story/${file}`);assert(source.includes('renderFieldSkillJournal'),`${file} does not expose field skills in its Story menu`)}
+  const html=renderFieldSkillJournal({chapter:4,storage:memoryStorage()});
+  assert(html.includes('FIELD TECHNIQUES')&&html.includes('LEARNED BY DOING'),'field-skill journal lacks the intended RPG framing');
+});
+
+await test('2.9A.40.2 minimal field HUD hides clutter until combat and exposes a tiny Flow cue',async()=>{
+  const css=await fetchSource('../css/field-minimal-29a402.css');
+  for(const token of ['storyEngineMode-exploration','arenaHotbar','flowCancelReady',"content:'FLOW'",'fieldSkillMasteryCard'])assert(css.includes(token),`minimal/contextual HUD CSS omitted ${token}`);
+  assert(css.includes('display:none')||css.includes('opacity:0'),'minimal HUD stylesheet does not actually suppress field clutter');
+});
+
+await test('2.9A.40.2 Flow Cancel and build passives give audiovisual feedback instead of relying on patch notes',async()=>{
+  const source=await fetchSource('../js/arena/arena-mode.js');
+  for(const token of ['flowCancelReady','pursuitBuffer','PASSIVE • PARRY SPARK','PASSIVE • PURSUIT BATTERY','pxpassiveproc'])assert(source.includes(token),`combat feedback pass omitted ${token}`);
+});
+
+await test('2.9A.40.2 current release identity keeps save schema 268 and the new cache synchronized',async()=>{
+  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801'),fetchSource('../index.html')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.2 build label is not centralized');
+  assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.2 changed save schema unexpectedly');
+  assert(index.includes('field-minimal-29a402.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.2 index is missing the minimal-UI release identity');
 });
 
 const initialOrdered=registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean);

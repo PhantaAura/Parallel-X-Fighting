@@ -1,7 +1,7 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a40-core-fun-overhaul-20260801';
-import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a40-core-fun-overhaul-20260801';
-import {storyExperienceProfile} from './story-experience.js?v=29a40-core-fun-overhaul-20260801';
-import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a402-field-skills-minimal-ui-20260801';
+import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyExperienceProfile} from './story-experience.js?v=29a402-field-skills-minimal-ui-20260801';
+import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
@@ -12,7 +12,7 @@ import {
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
+} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -203,9 +203,9 @@ class StoryPolishController{
     document.body.dataset.storyChapter=String(this.currentChapter||'');
     if(this.currentChapter>=1&&this.currentChapter<=4&&this.gimmick){
       const identity=chapterGameplayIdentity(this.currentChapter),build=currentRrvvfoBuild();
-      this.gimmick.querySelector('[data-gimmick-kicker]').textContent=`CHAPTER ${this.currentChapter} GAMEPLAY • ${build.label} BUILD`;
-      this.gimmick.querySelector('[data-gimmick-title]').textContent=identity.label;
-      this.gimmick.querySelector('[data-gimmick-detail]').textContent=`${identity.primary} • ${identity.secondary.join(' • ')}`;
+      this.gimmick.querySelector('[data-gimmick-kicker]').textContent=`CHAPTER ${this.currentChapter} • ${identity.label} • ${build.label} BUILD`;
+      this.gimmick.querySelector('[data-gimmick-title]').textContent=identity.playerTitle||identity.label;
+      this.gimmick.querySelector('[data-gimmick-detail]').textContent=`${identity.playerTagline||identity.primary} — ${identity.playerHint||identity.promise}`;
       this.gimmick.hidden=false;requestAnimationFrame(()=>this.gimmick?.classList.add('show'));
       clearTimeout(this.gimmickTimer);this.gimmickTimer=setTimeout(()=>{this.gimmick?.classList.remove('show');setTimeout(()=>{if(this.gimmick)this.gimmick.hidden=true},180)},4300);
     }
@@ -418,7 +418,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a40-core-fun-overhaul-20260801`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a402-field-skills-minimal-ui-20260801`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'echo-mountain':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }

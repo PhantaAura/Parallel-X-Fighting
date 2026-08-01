@@ -8,9 +8,20 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.40 — Core Fun Overhaul**
+**Prototype 2.9A.40.2 — Field Skills & Minimal UI**
 
 This is a complete cumulative build. No older package is required.
+
+
+
+## 2.9A.40.2 Field Skills & Minimal UI
+
+This cumulative pass reduces Story exploration clutter and makes technique progression happen through play. Chapter 1's old early Shots of Agony lesson is replaced by a three-anchor Object Swap field trial and Tournament Road precision relay; Chapter 4's Bark/Wade/Rrvvfo field actions now become persistent field mastery. Shots of Agony is hidden and unavailable in Chapters 1–4 Story, while non-Story modes retain the full moveset. The future Story slot stays **UNKNOWN TECHNIQUE** until Chapter 5 eventually grants the unstable prototype unlock. Flow Cancel and build passives also get compact feedback instead of permanent HUD text.
+
+
+## 2.9A.40.1 Builds & Combat Readability
+
+This cumulative follow-up keeps the 2.9A.40 Core Fun Overhaul and removes friction from using its new systems. Rrvvfo builds can now be changed from Story pause menus during exploration, Custom supports four techniques plus two passives, combat/QTEs lock loadout changes, enemy roles have icons and silhouette differences, Chapter 4 squad target cycling works across keyboard/controller/touch, Support healing is telegraphed and interruptible, chapter identity cards use player-facing language, Flow Cancel is taught through an optional Chapter 1 combat opening, and Adventure Missions use chapter-appropriate result language instead of forcing every activity into S–E grading.
 
 ## 2.9A.40 Core Fun Overhaul
 

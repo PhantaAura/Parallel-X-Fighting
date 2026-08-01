@@ -1,12 +1,13 @@
-import {CONTROL_MAPS} from '../input.js?v=29a40-core-fun-overhaul-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
-import {grantCombatManual} from './combat-manual.js?v=29a40-core-fun-overhaul-20260801';
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a40-core-fun-overhaul-20260801';
-import {storyConfirm} from './story-ux.js?v=29a40-core-fun-overhaul-20260801';
+import {CONTROL_MAPS} from '../input.js?v=29a402-field-skills-minimal-ui-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
+import {grantCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
+import {masterFieldSkill} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
 
 const MISSION_ID='rrvvfo-01';
 const UI_ID='rrvvfoMission1UI';
-const TOTAL_STEPS=8;
+const TOTAL_STEPS=7;
 let activeMission=null;
 
 function controlLabel(code){
@@ -72,7 +73,7 @@ class RrvvfoMission1{
     this.root.querySelector('[data-return-story]').addEventListener('click',()=>this.exitToStory());
     this.phase='opening';
     this.progress=loadLostYearProgress();
-    this.flags={move:false,jump:false,dash:false,light:false,heavy:false,launcher:false,parry:false,grab:false,charge:false,fire:false,shots:false,swap:false,lens:false,lensRead:false};
+    this.flags={move:false,jump:false,dash:false,light:false,heavy:false,launcher:false,parry:false,grab:false,charge:false,fire:false,swap:false,lens:false,lensRead:false};
     this.finalHits=0;
     this.sageAttackTimer=.8;
     this.parryAttempts=0;
@@ -152,7 +153,7 @@ class RrvvfoMission1{
     this.engine.useChapterProfile({
       hud:next=>{
         next();
-        const show=['abilities','shotsCharge','shotsReady','lensCharge','lensReady','lensPractice','final'].includes(this.phase);
+        const show=['abilities','lensCharge','lensReady','lensPractice','final'].includes(this.phase);
         this.engine.setHotbarAvailability(this.allowedAbilitySlots(),{show});
       },
       input:next=>{
@@ -251,12 +252,6 @@ class RrvvfoMission1{
         if(this.phase==='movement'&&this.flags.move&&this.flags.jump&&this.flags.dash)this.startBasics();
         if(this.phase==='basics'&&this.flags.light&&this.flags.heavy&&this.flags.launcher&&this.flags.grab)this.startParryLesson();
         if(this.phase==='resource'&&this.flags.charge&&player.en>=75)this.startAbilities();
-        if(this.phase==='shotsCharge'&&player.en>=100){
-          this.phase='shotsReady';
-          this.setObjective('FULL-ENERGY TECHNIQUE','Energy is full. Use slot 2: Shots of Agony. It consumes the entire meter.');
-          this.updateCoach();this.syncTutorialHud();
-          battle.notice(`${this.engine.prompt('ability2','PRESS 2')} • SHOTS OF AGONY • ALL ENERGY`,2);
-        }
         if(this.phase==='lensCharge'&&player.en>=60){
           this.phase='lensReady';
           this.setObjective('RISKY PREDICTION','Energy is at 60. Use slot 4: Lens of Truth. It costs 25 HP.');
@@ -276,8 +271,8 @@ class RrvvfoMission1{
             }
           }
         }
-        if(['abilities','shotsReady','lensReady'].includes(this.phase)){
-          for(const key of ['fireBlast','shotsOfAgony','objectSwap','lensOfTruth'])player.cooldowns[key]=Math.min(player.cooldowns[key],.2);
+        if(['abilities','lensReady'].includes(this.phase)){
+          for(const key of ['fireBlast','objectSwap','lensOfTruth'])player.cooldowns[key]=Math.min(player.cooldowns[key],.2);
         }
         this.updateLiveCoach();this.showInactivityHint();
       },
@@ -311,7 +306,7 @@ class RrvvfoMission1{
       <section><h3>BASIC COMBAT</h3><dl><div><dt>Light</dt><dd>${prompt('light',`${controlLabel(a.light)} / MOUSE 1`)}</dd></div><div><dt>Heavy</dt><dd>${prompt('heavy',controlLabel(a.heavy))}</dd></div><div><dt>Launcher</dt><dd>${prompt('launcher',controlLabel(a.launcher))}</dd></div><div><dt>Timed Guard</dt><dd>${prompt('block',`${controlLabel(a.block)} / MOUSE 2`)}</dd></div><div><dt>Grab</dt><dd>${prompt('grab',controlLabel(a.grab))}</dd></div></dl></section>
       <section><h3>KINETIC COMBAT</h3><dl><div><dt>Pursuit route</dt><dd>LAUNCHER → ${prompt('dash',controlLabel(a.dash))} → LIGHT → HEAVY</dd></div><div><dt>Attack ready</dt><dd>BUFFER LIGHT OR HEAVY WHEN THE PURSUIT PROMPT PULSES</dd></div><div><dt>Pursuit Tech</dt><dd>SPEND 15 ENERGY AND DASH WHILE BEING CHASED</dd></div></dl></section>
       <section><h3>RESOURCE CONTROL</h3><dl><div><dt>Charge</dt><dd>${prompt('charge',controlLabel(a.charge))} • STAND STILL</dd></div><div><dt>Attack gain</dt><dd>CLEAN HITS RESTORE ENERGY</dd></div><div><dt>Guard recovery</dt><dd>FASTER WHILE STANDING STILL</dd></div></dl></section>
-      <section><h3>HOTBAR</h3><dl><div><dt>${ability(1)}</dt><dd>FIRE BLAST</dd></div><div><dt>${ability(2)}</dt><dd>SHOTS OF AGONY • ALL ENERGY</dd></div><div><dt>${ability(3)}</dt><dd>OBJECT SWAP</dd></div><div><dt>${ability(4)}</dt><dd>LENS • 60 ENERGY / 25 HP EARLY</dd></div><div><dt>${ability(5)}</dt><dd>SOLAR WEAVE • NOT USED HERE</dd></div></dl></section>
+      <section><h3>HOTBAR</h3><dl><div><dt>${ability(1)}</dt><dd>FIRE BLAST</dd></div><div><dt>${ability(2)}</dt><dd>??? • TECHNIQUE NOT INVENTED</dd></div><div><dt>${ability(3)}</dt><dd>OBJECT SWAP</dd></div><div><dt>${ability(4)}</dt><dd>LENS • 60 ENERGY / 25 HP EARLY</dd></div><div><dt>${ability(5)}</dt><dd>SOLAR WEAVE • NOT USED HERE</dd></div></dl></section>
       <section><h3>HOW THE REFRESHER WORKS</h3><p>The large instruction card shows one task at a time. An action checks off only after the game confirms that it actually happened—not merely when a button is pressed.</p></section>
       <section><h3>SAGE'S NOTE</h3><p>Lens predicts the most probable attack. Successful reads build mastery. At full mastery it can auto-dodge only a few times—not forever.</p></section>`;
   }
@@ -327,7 +322,8 @@ class RrvvfoMission1{
   }
 
   savedTutorialCheckpoint(){
-    return loadLostYearProgress().chapter1TutorialCheckpoint||'movement';
+    const saved=loadLostYearProgress().chapter1TutorialCheckpoint||'movement';
+    return ['shotsCharge','shotsReady'].includes(saved)?'lensCharge':saved;
   }
 
   saveTutorialCheckpoint(phase){
@@ -352,12 +348,12 @@ class RrvvfoMission1{
       Object.assign(this.flags,{move:true,jump:true,dash:true,light:true,heavy:true,launcher:true,grab:true,parry:true,charge:true});
       this.phase='resource';player.en=75;this.startAbilities();
     }else if(startPhase==='lensCharge'){
-      Object.assign(this.flags,{move:true,jump:true,dash:true,light:true,heavy:true,launcher:true,grab:true,parry:true,charge:true,fire:true,swap:true,shots:true});
+      Object.assign(this.flags,{move:true,jump:true,dash:true,light:true,heavy:true,launcher:true,grab:true,parry:true,charge:true,fire:true,swap:true});
       this.phase='lensCharge';player.en=35;player.hp=player.maxHp;
-      this.setObjective('STEP 7 • LENS OF TRUTH','Charge to 60 energy, press slot 4, then follow its prediction.');
+      this.setObjective('STEP 6 • LENS OF TRUTH','Charge to 60 energy, press slot 4, then follow its prediction.');
       this.markProgress();this.updateCoach();this.syncTutorialHud();
     }else if(startPhase==='final'){
-      Object.assign(this.flags,{move:true,jump:true,dash:true,light:true,heavy:true,launcher:true,grab:true,parry:true,charge:true,fire:true,swap:true,shots:true,lens:true,lensRead:true});
+      Object.assign(this.flags,{move:true,jump:true,dash:true,light:true,heavy:true,launcher:true,grab:true,parry:true,charge:true,fire:true,swap:true,lens:true,lensRead:true});
       this.phase='lensPractice';this.startFinalSpar();
     }else{
       this.phase='movement';this.movementDistance=0;this.previousPlayerPos={x:player.x,z:player.z};
@@ -391,7 +387,7 @@ class RrvvfoMission1{
         const key=kind.startsWith('light')||kind==='airLight'?'light':kind==='heavy'||kind==='airHeavy'?'heavy':kind==='launcher'?'launcher':'';
         if(key&&!this.flags[key]){this.flags[key]=true;changed=true}
       }
-          }else if(['resource','shotsCharge','lensCharge'].includes(this.phase)){
+          }else if(['resource','lensCharge'].includes(this.phase)){
       const stationary=Math.hypot(player.moveVX||0,player.moveVZ||0)<20;
       if(player.charging&&stationary&&player.en>before.en+.01&&!this.flags.charge){this.flags.charge=true;changed=true}
     }
@@ -400,7 +396,6 @@ class RrvvfoMission1{
 
   allowedAbilitySlots(){
     if(this.phase==='abilities')return[1,3];
-    if(this.phase==='shotsReady')return[2];
     if(this.phase==='lensReady')return[4];
     if(this.phase==='final')return[1,2,3,4];
     return[];
@@ -409,9 +404,9 @@ class RrvvfoMission1{
   syncTutorialHud(){
     const root=this.battle?.root;
     if(!root)return;
-    const energyPhases=['resource','abilities','shotsCharge','shotsReady','lensCharge','lensReady','lensPractice','final'];
+    const energyPhases=['resource','abilities','lensCharge','lensReady','lensPractice','final'];
     const guardPhases=['parry','lensPractice','final'];
-    const hotbarPhases=['abilities','shotsCharge','shotsReady','lensCharge','lensReady','lensPractice','final'];
+    const hotbarPhases=['abilities','lensCharge','lensReady','lensPractice','final'];
     root.classList.add('tutorialHudActive');
     root.classList.toggle('tutorialShowEnergy',energyPhases.includes(this.phase));
     root.classList.toggle('tutorialShowGuard',guardPhases.includes(this.phase));
@@ -477,29 +472,18 @@ class RrvvfoMission1{
       this.markProgress();
       this.updateCoach();
       if(this.flags.fire&&this.flags.swap){
-        this.phase='shotsCharge';
+        masterFieldSkill('objectSwapField');
+        this.phase='lensCharge';
+        this.saveTutorialCheckpoint('lensCharge');
+        const player=this.battle.fighters[0];
+        player.en=35;player.hp=100;
         this.flags.charge=false;
-        this.battle.fighters[0].en=Math.min(this.battle.fighters[0].en,35);
-        this.setObjective('STEP 6 • SHOTS OF AGONY','Charge to 100 energy, then use slot 2. It consumes everything.');
+        this.setObjective('STEP 6 • LENS OF TRUTH','Charge to 60 energy, press slot 4, then follow its prediction.');
         this.markProgress();
         this.updateCoach();
         this.syncTutorialHud();
-        this.battle.notice(`CHARGE TO 100 • THEN ${this.engine.prompt('ability2','USE SLOT 2')}`,2);
+        this.battle.notice('OBJECT SWAP FIELD CONTROL REGISTERED • CHARGE TO 60',2.2);
       }
-      return;
-    }
-    if(slot===2&&this.phase==='shotsReady'){
-      this.flags.shots=true;
-      this.phase='lensCharge';
-      this.saveTutorialCheckpoint('lensCharge');
-      const player=this.battle.fighters[0];
-      player.en=35;player.hp=100;
-      this.flags.charge=false;
-      this.setObjective('STEP 7 • LENS OF TRUTH','Charge to 60 energy, press slot 4, then follow its prediction.');
-      this.markProgress();
-      this.updateCoach();
-      this.syncTutorialHud();
-      this.battle.notice('SHOTS USED ALL ENERGY • CHARGE TO 60',2.2);
       return;
     }
     if(slot===4&&this.phase==='lensReady'){
@@ -507,7 +491,7 @@ class RrvvfoMission1{
       this.phase='lensPractice';
       this.sageAttackTimer=.9;
       this.lensTrialActive=false;
-      this.setObjective('STEP 7 • READ THE SAGE','Watch the Lens prediction. Dodge or perfect-parry the next strike.');
+      this.setObjective('STEP 6 • READ THE SAGE','Watch the Lens prediction. Dodge or perfect-parry the next strike.');
       this.markProgress();
       this.updateCoach();
       this.syncTutorialHud();
@@ -522,7 +506,7 @@ class RrvvfoMission1{
     this.finalHits=0;
     const player=this.battle.fighters[0];
     player.hp=100;player.en=Math.max(player.en,50);
-    this.setObjective('STEP 8 • FINAL SPAR','Land three clean hits on the Sage using anything you relearned.');
+    this.setObjective('STEP 7 • FINAL SPAR','Land three clean hits on the Sage using anything you relearned.');
     this.markProgress();
     this.updateCoach();
     this.syncTutorialHud();
@@ -544,12 +528,10 @@ class RrvvfoMission1{
       case'parry':return{step:3,title:'PERFECT-PARRY THE SAGE',keys:[prompt('block',`${controlLabel(a.block)} / MOUSE 2`)],instruction:'Tap block only when BLOCK NOW appears. Holding too early will not count.',items:[['PERFECT PARRY',this.flags.parry]]};
       case'resource':return{step:4,title:'CHARGE ENERGY TO 75',keys:[prompt('charge',controlLabel(a.charge)),'STAND STILL'],instruction:`Hold charge without moving. Current energy: ${Math.round(player?.en||0)} / 75.`,items:[['ENERGY IS RISING',this.flags.charge],['75 ENERGY',(player?.en||0)>=75]]};
       case'abilities':return{step:5,title:'USE YOUR CORE TECHNIQUES',keys:[`${ability(1)} • FIRE BLAST`,`${ability(3)} • OBJECT SWAP`],instruction:'Only slots 1 and 3 are unlocked for this lesson.',items:[['FIRE BLAST',this.flags.fire],['OBJECT SWAP',this.flags.swap]]};
-      case'shotsCharge':return{step:6,title:'CHARGE TO FULL ENERGY',keys:[prompt('charge',controlLabel(a.charge)),'100 ENERGY'],instruction:`Shots of Agony needs the full meter. Current energy: ${Math.round(player?.en||0)} / 100.`,items:[['100 ENERGY',(player?.en||0)>=100],['USE SHOTS',false]]};
-      case'shotsReady':return{step:6,title:'USE SHOTS OF AGONY',keys:[`${ability(2)} • SHOTS OF AGONY`,'ALL ENERGY'],instruction:'Use the highlighted slot. The move consumes the full energy meter.',items:[['100 ENERGY',true],['SHOTS ACTIVATED',this.flags.shots]]};
-      case'lensCharge':return{step:7,title:'PREPARE LENS OF TRUTH',keys:[prompt('charge',controlLabel(a.charge)),'60 ENERGY'],instruction:`Charge back to 60. Current energy: ${Math.round(player?.en||0)} / 60.`,items:[['60 ENERGY',(player?.en||0)>=60],['ACTIVATE LENS',false],['FOLLOW PREDICTION',false]]};
-      case'lensReady':return{step:7,title:'ACTIVATE LENS OF TRUTH',keys:[`${ability(4)} • LENS`,'60 ENERGY','25 HP'],instruction:'Use the highlighted slot, then react to the predicted Sage attack.',items:[['60 ENERGY',true],['LENS ACTIVATED',this.flags.lens],['FOLLOW PREDICTION',this.flags.lensRead]]};
-      case'lensPractice':return{step:7,title:'FOLLOW THE PREDICTION',keys:[prompt('block',controlLabel(a.block)),'DODGE'],instruction:'The Lens names the probable attack. Avoid or perfect-parry the next strike.',items:[['LENS ACTIVE',this.flags.lens],['SUCCESSFUL READ',this.flags.lensRead]]};
-      case'final':return{step:8,title:'LAND THREE CLEAN HITS',keys:['ANY UNLOCKED ATTACK'],instruction:`Blocked attacks do not count. Clean hits: ${this.finalHits} / 3.`,items:[['HIT 1',this.finalHits>=1],['HIT 2',this.finalHits>=2],['HIT 3',this.finalHits>=3]]};
+            case'lensCharge':return{step:6,title:'PREPARE LENS OF TRUTH',keys:[prompt('charge',controlLabel(a.charge)),'60 ENERGY'],instruction:`Charge back to 60. Current energy: ${Math.round(player?.en||0)} / 60.`,items:[['60 ENERGY',(player?.en||0)>=60],['ACTIVATE LENS',false],['FOLLOW PREDICTION',false]]};
+      case'lensReady':return{step:6,title:'ACTIVATE LENS OF TRUTH',keys:[`${ability(4)} • LENS`,'60 ENERGY','25 HP'],instruction:'Use the highlighted slot, then react to the predicted Sage attack.',items:[['60 ENERGY',true],['LENS ACTIVATED',this.flags.lens],['FOLLOW PREDICTION',this.flags.lensRead]]};
+      case'lensPractice':return{step:6,title:'FOLLOW THE PREDICTION',keys:[prompt('block',controlLabel(a.block)),'DODGE'],instruction:'The Lens names the probable attack. Avoid or perfect-parry the next strike.',items:[['LENS ACTIVE',this.flags.lens],['SUCCESSFUL READ',this.flags.lensRead]]};
+      case'final':return{step:7,title:'LAND THREE CLEAN HITS',keys:['ANY UNLOCKED ATTACK'],instruction:`Blocked attacks do not count. Clean hits: ${this.finalHits} / 3.`,items:[['HIT 1',this.finalHits>=1],['HIT 2',this.finalHits>=2],['HIT 3',this.finalHits>=3]]};
       default:return{step:1,title:'WAIT FOR THE REFRESHER',keys:[],instruction:'The Sage is still explaining the lesson.',items:[]};
     }
   }
@@ -572,7 +554,7 @@ class RrvvfoMission1{
   }
 
   updateLiveCoach(){
-    if(['basics','resource','shotsCharge','lensCharge','final','parry','lensPractice'].includes(this.phase))this.updateCoach();
+    if(['basics','resource','lensCharge','final','parry','lensPractice'].includes(this.phase))this.updateCoach();
     if(this.phase==='basics'&&!this.flags.grab){
       const player=this.battle?.fighters?.[0],sage=this.battle?.fighters?.[1];
       const distance=player&&sage?Math.hypot(sage.x-player.x,sage.z-player.z):0;
@@ -595,7 +577,6 @@ class RrvvfoMission1{
     this.battle.root.querySelectorAll('[data-arena-slot]').forEach(button=>button.classList.remove('tutorialTarget'));
     let slot=0;
     if(this.phase==='abilities')slot=this.flags.fire?3:1;
-    else if(this.phase==='shotsReady')slot=2;
     else if(this.phase==='lensReady')slot=4;
     if(slot)this.battle.root.querySelector(`[data-arena-slot="${slot}"]`)?.classList.add('tutorialTarget');
   }

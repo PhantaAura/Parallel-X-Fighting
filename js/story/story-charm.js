@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a40-core-fun-overhaul-20260801';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a402-field-skills-minimal-ui-20260801';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 
@@ -22,7 +22,7 @@ const CHECKPOINT_MOMENTS=Object.freeze({
 const TECHNIQUE_LABELS=Object.freeze({
   combatManual:['SAGE MANUAL','Combat rules, field techniques, and discoveries can now be reviewed.'],
   fieldObjectSwap:['FIELD OBJECT SWAP','Swap with marked objects during Story exploration.'],
-  fieldShotsOfAgony:['FIELD SHOTS OF AGONY','Use the technique to activate grouped targets.'],
+  fieldShotsOfAgony:['FIELD MASTERY UPDATED','A retired early field lesson has been converted to Object Swap mastery.'],
   fieldLensOfTruth:['FIELD LENS OF TRUTH','Reveal disguised routes and hidden evidence.'],
   vibrationSense:['VIBRATION SENSE','Reveal hidden movement and underground activity.'],
   lensMastery1:['LENS MASTERY • LEVEL 1','Prediction and hidden-target reading have improved.'],

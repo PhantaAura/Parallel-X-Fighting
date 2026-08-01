@@ -1,8 +1,8 @@
-import {sharedInput} from '../input-runtime.js?v=29a40-core-fun-overhaul-20260801';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
-  {type:'SHOT',icon:'✦',name:'Fire Blast / Shots of Agony'},
+  {type:'SHOT',icon:'✦',name:'Fire Blast'},
   {type:'POWER',icon:'☀',name:'Solar Weave'},
   {type:'TRICK',icon:'◉',name:'Object Swap / Lens of Truth'}
 ]);

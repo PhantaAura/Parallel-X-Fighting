@@ -1,0 +1,75 @@
+/* Prototype 2.9A.40.2 — Field Skills & Minimal UI */
+:root{--field-ui-bg:rgba(8,14,24,.82);--field-ui-border:rgba(255,255,255,.24)}
+
+/* Exploration is the world first. Persistent Story HUD becomes a compact breadcrumb. */
+#rrvvfoRoadHubUI .roadObjective,
+#rrvvfoMission2UI .chapter2Objective,
+#rrvvfoChapter3PreviewUI .c3Objective,
+#rrvvfoChapter4UI .c4Objective{
+  width:auto!important;max-width:min(360px,46vw)!important;padding:7px 10px!important;border:1px solid var(--field-ui-border)!important;border-left:4px solid #ffd45c!important;border-radius:8px!important;background:var(--field-ui-bg)!important;color:#fff!important;box-shadow:0 5px 18px #0008!important;clip-path:none!important;backdrop-filter:blur(8px);transition:opacity .18s ease,transform .18s ease!important
+}
+#rrvvfoRoadHubUI .roadObjective small,
+#rrvvfoMission2UI .chapter2Objective small,
+#rrvvfoChapter3PreviewUI .c3Objective small,
+#rrvvfoChapter4UI .c4Objective small{display:none!important}
+#rrvvfoRoadHubUI .roadObjective strong,
+#rrvvfoMission2UI .chapter2Objective strong,
+#rrvvfoChapter3PreviewUI .c3Objective strong,
+#rrvvfoChapter4UI .c4Objective strong{display:block!important;margin:0!important;color:#fff!important;font-size:12px!important;line-height:1.2!important;font-style:normal!important;letter-spacing:.03em!important}
+#rrvvfoRoadHubUI .roadObjective span,
+#rrvvfoMission2UI .chapter2Objective span,
+#rrvvfoChapter3PreviewUI .c3Objective span,
+#rrvvfoChapter4UI .c4Objective span{display:none!important}
+
+/* Detailed combat/build information belongs in menus, not permanent field HUD. */
+#rrvvfoRoadHubUI>.storyAttackSigns,
+#rrvvfoMission2UI .chapter2Hud>.storyAttackSigns,
+#rrvvfoChapter3PreviewUI .c3Hud>.storyAttackSigns,
+#rrvvfoChapter4UI .c4Hud>.storyAttackSigns{display:none!important}
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .arenaHotbar,
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .bottom{display:none!important}
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .top .side.r{opacity:0!important}
+#arenaModeScreen.storyEngineActive.storyEngineMode-exploration .top{grid-template-columns:1fr auto!important}
+
+/* Combat expands only the information the player needs. */
+#arenaModeScreen.storyEngineActive.storyEngineMode-combat .arenaHotbar{opacity:1!important}
+#arenaModeScreen.storyEngineActive.storyEngineMode-combat .top{opacity:1!important}
+#arenaModeScreen.flowCancelReady .arenaHotbar:before{content:'FLOW';position:absolute;left:50%;bottom:100%;transform:translate(-50%,-5px);padding:3px 8px;border-radius:999px;background:#fff3a8;color:#16110b;font-size:9px;font-weight:1000;letter-spacing:.12em;box-shadow:0 0 16px #ffe86a88;animation:fieldFlowPulse .3s ease}
+@keyframes fieldFlowPulse{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}45%{opacity:1;transform:translate(-50%,-6px) scale(1.08)}100%{opacity:.35;transform:translate(-50%,-5px) scale(1)}}
+
+/* Technique acquisition is a moment, not another permanent widget. */
+.fieldSkillMasteryCard{position:fixed;z-index:1900;left:50%;top:18%;width:min(520px,88vw);transform:translate(-50%,-16px) scale(.96);opacity:0;pointer-events:none;padding:13px 16px;border:1px solid #a7efff66;border-left:6px solid #ffe16f;border-radius:12px;background:linear-gradient(145deg,rgba(11,22,37,.96),rgba(6,10,17,.96));box-shadow:0 18px 56px #000b,0 0 26px #6ee7ff22;color:#fff;transition:opacity .18s ease,transform .18s ease}
+.fieldSkillMasteryCard.show{opacity:1;transform:translate(-50%,0) scale(1)}
+.fieldSkillMasteryCard>small{display:block;color:#9feeff;font-size:9px;font-weight:1000;letter-spacing:.18em}
+.fieldSkillMasteryCard>strong{display:flex;align-items:center;gap:9px;margin:4px 0;font-size:18px;letter-spacing:.03em}.fieldSkillMasteryCard>strong b{display:grid;place-items:center;width:30px;height:30px;border:1px solid #ffe16f;border-radius:50%;background:#ffe16f18}.fieldSkillMasteryCard>span{display:block;color:#d8e4ee;font-size:11px;line-height:1.35}
+
+/* Future techniques are deliberately mysterious before the Story earns them. */
+.futureTechnique{display:flex;gap:12px;align-items:center;margin:12px 0;padding:12px;border:1px dashed #77859a;border-radius:12px;background:#060a11aa;color:#dce6f0}.futureTechnique>b{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border:1px solid #8492a8;border-radius:50%;font-size:23px}.futureTechnique small,.futureTechnique strong,.futureTechnique p{display:block}.futureTechnique small{font-size:8px;letter-spacing:.13em;color:#93a5b8}.futureTechnique strong{margin:2px 0;font-size:13px}.futureTechnique p{margin:0;font-size:10px;color:#aab8c7}
+.rrvvfoBuildLab footer span{display:block;margin-top:3px;color:#9fb0c4;font-size:9px}
+
+/* Party status exists only when party combat actually needs it. */
+#rrvvfoChapter4UI [data-c4-team-status][hidden]{display:none!important}
+#rrvvfoChapter4UI [data-c4-team-status]:not([hidden]){max-width:min(520px,86vw)!important;backdrop-filter:blur(7px)}
+
+@media(max-width:700px){
+  #rrvvfoRoadHubUI .roadObjective,#rrvvfoMission2UI .chapter2Objective,#rrvvfoChapter3PreviewUI .c3Objective,#rrvvfoChapter4UI .c4Objective{max-width:62vw!important;padding:5px 8px!important}
+  #rrvvfoRoadHubUI .roadObjective strong,#rrvvfoMission2UI .chapter2Objective strong,#rrvvfoChapter3PreviewUI .c3Objective strong,#rrvvfoChapter4UI .c4Objective strong{font-size:10px!important}
+  .fieldSkillMasteryCard{top:max(8%,env(safe-area-inset-top));padding:10px 12px}
+}
+@media(prefers-reduced-motion:reduce){.fieldSkillMasteryCard,#arenaModeScreen.flowCancelReady .arenaHotbar:before{animation:none!important;transition:none!important}.fieldSkillMasteryCard{backdrop-filter:none}}
+
+/* One persistent menu affordance is enough during exploration. Everything else lives inside Story Menu. */
+#rrvvfoRoadHubUI .roadHudActions button:not([data-road-menu]),
+#rrvvfoChapter3PreviewUI .c3HudActions button:not([data-c3-menu-button]),
+#rrvvfoChapter4UI .c4HudActions button:not([data-c4-menu-button]){display:none!important}
+#rrvvfoRoadHubUI [data-road-menu],
+#rrvvfoMission2UI [data-c2-menu],
+#rrvvfoChapter3PreviewUI [data-c3-menu-button],
+#rrvvfoChapter4UI [data-c4-menu-button]{min-width:34px!important;width:34px!important;height:34px!important;padding:0!important;border:1px solid rgba(255,255,255,.24)!important;border-radius:50%!important;background:rgba(8,14,24,.76)!important;color:#fff!important;font-size:0!important;box-shadow:0 4px 14px #0007!important;backdrop-filter:blur(7px)}
+#rrvvfoRoadHubUI [data-road-menu]::before,
+#rrvvfoMission2UI [data-c2-menu]::before,
+#rrvvfoChapter3PreviewUI [data-c3-menu-button]::before,
+#rrvvfoChapter4UI [data-c4-menu-button]::before{content:'☰';font-size:14px;font-weight:1000;line-height:1}
+
+/* Field-skill details stay in menus instead of the field HUD. */
+.fieldSkillJournal{margin:12px 0;padding:10px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:#08111bbb;color:#eef7ff;text-align:left}.fieldSkillJournal>header{display:flex;justify-content:space-between;gap:10px;align-items:end;margin-bottom:8px}.fieldSkillJournal>header small{font-size:8px;letter-spacing:.16em;color:#8fdff7;font-weight:1000}.fieldSkillJournal>header strong{font-size:10px;letter-spacing:.06em}.fieldSkillJournal>div{display:grid;gap:6px}.fieldSkillJournal article{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:center;padding:7px;border-radius:8px;background:#ffffff08}.fieldSkillJournal article>b{display:grid;place-items:center;width:28px;height:28px;border:1px solid #ffe16f66;border-radius:50%;color:#ffe16f}.fieldSkillJournal article span small,.fieldSkillJournal article span strong,.fieldSkillJournal article span p{display:block}.fieldSkillJournal article span small{font-size:7px;letter-spacing:.1em;color:#8fa5b8}.fieldSkillJournal article span strong{font-size:10px}.fieldSkillJournal article span p{margin:2px 0 0;color:#b9c6d1;font-size:8px;line-height:1.35}.fieldSkillJournal article.locked{opacity:.46}

@@ -1,4 +1,4 @@
-import {DEFAULT_QOL_SETTINGS,SETTINGS_CATEGORIES,categoryDefaults,sanitizeQolSettings} from './qol-settings.js?v=29a40-core-fun-overhaul-20260801';
+import {DEFAULT_QOL_SETTINGS,SETTINGS_CATEGORIES,categoryDefaults,sanitizeQolSettings} from './qol-settings.js?v=29a402-field-skills-minimal-ui-20260801';
 
 const FIELDS={
   Gameplay:[['combatMessages','Combat Messages','select',['full','important','off']],['pursuitPrompts','Pursuit Prompts','select',['full','minimal','off']],['hubCamera','Hub Free Camera','select',['drag','off']],['hubCameraSensitivity','Camera Look Sensitivity','rangeScale'],['resetHubCamera','Reset Hub Camera','action'],['firstTimeHints','First-time Hints','check'],['resetHints','Reset Hints','action'],['holdConfirm','Hold Confirmation for Restarts','check'],['skipAnimations','Skip Menu Animations','check'],['reducedMotion','Reduced Menu Motion','check'],['showQuickContinue','Show Quick Continue','check']],

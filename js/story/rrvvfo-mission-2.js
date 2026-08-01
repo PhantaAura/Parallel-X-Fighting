@@ -1,16 +1,17 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a40-core-fun-overhaul-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a40-core-fun-overhaul-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a40-core-fun-overhaul-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a40-core-fun-overhaul-20260801';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a40-core-fun-overhaul-20260801';
-import {storyConfirm} from './story-ux.js?v=29a40-core-fun-overhaul-20260801';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a40-core-fun-overhaul-20260801';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a40-core-fun-overhaul-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a40-core-fun-overhaul-20260801';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a40-core-fun-overhaul-20260801';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a40-core-fun-overhaul-20260801';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a40-core-fun-overhaul-20260801';
-import {completeAdventureMission,discoverAdventureMission,enemyArchetype} from './core-fun.js?v=29a40-core-fun-overhaul-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a402-field-skills-minimal-ui-20260801';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a402-field-skills-minimal-ui-20260801';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -70,6 +71,8 @@ function buildUI(){
       <button class="chapter2MenuButton" type="button" data-c2-menu aria-haspopup="dialog" aria-controls="chapter2StoryMenu">☰ STORY MENU</button>
     </div>
 
+    <div class="storyEnemyRoleTag" data-c2-enemy-role hidden><span data-c2-enemy-role-icon>➜</span><div><small>OPPONENT STYLE</small><strong data-c2-enemy-role-name>RUSHDOWN</strong><p data-c2-enemy-role-detail></p></div></div>
+
     <div class="chapter2StoryMenu" id="chapter2StoryMenu" data-c2-menu-panel hidden role="dialog" aria-modal="true" aria-label="Chapter 2 story menu">
       <article>
         <header>
@@ -82,6 +85,7 @@ function buildUI(){
           <section class="storyXpPanel"><small>STORY XP</small><strong data-c2-xp>0 / 100</strong><div class="chapter2XpTrack"><i data-c2-xp-fill></i></div><span data-c2-xp-next>100 XP TO NEXT LEVEL</span></section>
         </div>
         <div class="storyRpgObjectiveCard"><small>CURRENT OBJECTIVE</small><strong data-c2-menu-objective>EXPLORE THE TOURNAMENT GROUNDS</strong><span data-c2-menu-detail>Talk to the people arriving for the tournament.</span></div>
+        <div data-c2-field-skills>${renderFieldSkillJournal({chapter:2})}</div>
         <div class="chapter2QuestJournal" data-c2-quest-journal>
           <section><header><small>MAIN QUESTS</small><strong>TOURNAMENT DAY</strong></header><div data-c2-main-quests></div></section>
           <section><header><small>SIDE QUESTS</small><strong>OPTIONAL</strong></header><div data-c2-side-quests></div></section>
@@ -89,6 +93,7 @@ function buildUI(){
         <div class="chapter2MenuActions">
           <button class="primary" type="button" data-c2-menu-resume>RETURN TO GAME</button>
           <button type="button" data-c2-manual>COMBAT MANUAL</button>
+          <button type="button" data-c2-menu-build>RRVVFO BUILD</button>
           <button type="button" data-c2-menu-restart>RESTART ACTIVE FIGHT</button>
           <button type="button" data-c2-exit>EXIT CHAPTER</button>
         </div>
@@ -277,6 +282,7 @@ class RrvvfoMission2{
     this.root.querySelector('[data-c2-menu]').addEventListener('click',()=>this.openStoryMenu());
     this.root.querySelectorAll('[data-c2-menu-close],[data-c2-menu-resume]').forEach(button=>button.addEventListener('click',()=>this.closeStoryMenu()));
     this.root.querySelector('[data-c2-manual]').addEventListener('click',()=>this.openManual());
+    this.root.querySelector('[data-c2-menu-build]').addEventListener('click',()=>this.openBuildLab());
     this.root.querySelector('[data-c2-tracker-close]').addEventListener('click',()=>this.toggleTracker(false));
     this.root.querySelector('[data-c2-menu-restart]').addEventListener('click',()=>this.restartFightFromMenu());
     this.root.querySelector('[data-c2-exit]').addEventListener('click',()=>this.requestExit());
@@ -341,7 +347,7 @@ class RrvvfoMission2{
       this.battle.fighters[0].id='rrvvfo';
       this.battle.fighters[1].id='qualifier-fighter';
       this.switchStage('tournament');
-      this.mode='story';this.battle.phase='story';this.battle.hideBanner();
+      this.mode='story';this.battle.phase='story';const rolePanel=this.root.querySelector('[data-c2-enemy-role]');if(rolePanel)rolePanel.hidden=true;this.battle.hideBanner();
       this.startTournamentFromCheckpoint();
     }else{
       this.enterHub({opening:true});
@@ -483,11 +489,11 @@ class RrvvfoMission2{
         };
         const palette=palettes[fighter.id];
         if(!palette)return next(context,fighter,rect);
-        const cx=rect.x+rect.width/2,scale=rect.height/190;
-        context.fillStyle='rgba(0,0,0,.34)';context.beginPath();context.ellipse(cx,rect.y+rect.height-3,35*scale,10*scale,0,0,Math.PI*2);context.fill();
-        context.fillStyle=palette.body;context.fillRect(cx-24*scale,rect.y+70*scale,48*scale,82*scale);
-        context.fillStyle=palette.skin;context.beginPath();context.arc(cx,rect.y+50*scale,20*scale,0,0,Math.PI*2);context.fill();
-        context.fillStyle=palette.hair;context.fillRect(cx-24*scale,rect.y+20*scale,48*scale,25*scale);
+        const cx=rect.x+rect.width/2,scale=rect.height/190,shape=enemyArchetypeShape(fighter.aiArchetype),bodyW=48*shape.width*scale,bodyH=82*shape.height*scale,head=20*shape.head*scale;
+        context.fillStyle='rgba(0,0,0,.34)';context.beginPath();context.ellipse(cx,rect.y+rect.height-3,35*shape.width*scale,10*scale,0,0,Math.PI*2);context.fill();
+        context.fillStyle=palette.body;context.fillRect(cx-bodyW/2,rect.y+70*scale,bodyW,bodyH);
+        context.fillStyle=palette.skin;context.beginPath();context.arc(cx,rect.y+50*scale,head,0,Math.PI*2);context.fill();
+        context.fillStyle=palette.hair;context.fillRect(cx-24*shape.head*scale,rect.y+20*scale,48*shape.head*scale,25*scale);
         context.fillStyle='#fff';context.font=`900 ${Math.max(8,11*scale)}px Inter,Arial,sans-serif`;context.textAlign='center';context.fillText(fighter.name.toUpperCase(),cx,rect.y+8*scale);
       },
       draw:next=>{next();if(this.mode==='hub'){this.drawHubExtras();this.positionAmbientSpeech()}if(this.currentFight?.final&&['fatigue','awakening-ready','awakening'].includes(this.finalPhase))this.drawFinalFatigue()},
@@ -505,6 +511,7 @@ class RrvvfoMission2{
     this.switchStage('tournament-hub');
     this.mode='hub';
     this.currentFight=null;
+    const rolePanel=this.root.querySelector('[data-c2-enemy-role]');if(rolePanel)rolePanel.hidden=true;
     this.battle.phase='play';
     this.battle.time=9999;
     this.battle.hideBanner();
@@ -1675,7 +1682,7 @@ class RrvvfoMission2{
       this.root.classList.add('isFight');
       this.battle.root.querySelector('[data-stage-name]').textContent=`LOCAL TOURNAMENT • ${config.name.toUpperCase()}`;
       this.setArenaNames('RRVVFO',config.name.toUpperCase());
-      if(config.archetype){const arch=enemyArchetype(config.archetype);this.battle.notice(`${arch.label} • ${arch.description}`,1.8)}
+      if(config.archetype){const arch=enemyArchetype(config.archetype),panel=this.root.querySelector('[data-c2-enemy-role]');if(panel){panel.hidden=false;panel.style.setProperty('--role-color',arch.color);panel.querySelector('[data-c2-enemy-role-icon]').textContent=enemyArchetypeIcon(arch.id);panel.querySelector('[data-c2-enemy-role-name]').textContent=arch.label;panel.querySelector('[data-c2-enemy-role-detail]').textContent=arch.description}this.battle.notice(`${enemyArchetypeIcon(arch.id)} ${arch.label} • ${arch.description}`,1.8)}
       this.root.querySelector('[data-tournament-run]').hidden=false;
       const assistText=assisted?' • STORY ASSIST ACTIVE':'';
       this.setObjective(
@@ -1779,7 +1786,7 @@ class RrvvfoMission2{
     if(this.mode!=='fight'||!this.currentFight||this.currentFight.final)return;
     const fight=this.currentFight;
     const rankResult=this.battle.finalizeBattleRank({won,scoreFor:fight.playerKOs,scoreAgainst:fight.foeKOs,label:fight.official?'TOURNAMENT FIGHT RANK':'FIGHT RANK',showToast:true});if((fight.official||fight.kind==='tournament')&&won&&['S','A'].includes(rankResult?.rank)){discoverAdventureMission('c2-ring-master');completeAdventureMission('c2-ring-master',{rank:rankResult.rank,reward:'VICTORY EFFECT • GOLD RING'})}
-    this.mode='story';this.battle.phase='story';
+    this.mode='story';this.battle.phase='story';const rolePanel=this.root.querySelector('[data-c2-enemy-role]');if(rolePanel)rolePanel.hidden=true;
     this.root.querySelector('[data-tournament-run]').hidden=true;
     if(!won){
       if(fight.official||fight.kind==='tournament')this.adventureWinStreak=0;
@@ -2269,14 +2276,21 @@ class RrvvfoMission2{
     return !this.aborted&&!this.storyMenuOpen&&!['dialogue','choice','qte','flame','clash','level','transition'].includes(this.mode);
   }
 
+  openBuildLab(){
+    const locked=Boolean(this.currentFight&&['fight','fight-ko'].includes(this.mode));
+    openRrvvfoBuildLab({storyChapter:2,storyProgress:loadLostYearProgress(),locked,lockReason:locked?'BUILD LOCKED • FINISH THE ACTIVE FIGHT':'',onChange:build=>{const player=this.battle?.fighters?.[0];if(player)applyRrvvfoBuildToFighter(player,build);this.battle?.notice?.(`BUILD EQUIPPED • ${build.label}`,1.1)},onClose:()=>this.root.querySelector('[data-c2-menu-build]')?.focus()});
+  }
+
   openStoryMenu(){
     if(!this.canOpenStoryMenu())return;
     this.storyMenuOpen=true;
     this.updateLevelHud();
     this.renderQuestJournal();
+    const skillPanel=this.root.querySelector('[data-c2-field-skills]');if(skillPanel)skillPanel.innerHTML=renderFieldSkillJournal({chapter:2});
     const panel=this.root.querySelector('[data-c2-menu-panel]');
     const restart=this.root.querySelector('[data-c2-menu-restart]');
     const activeFight=Boolean(this.currentFight&&['fight','fight-ko'].includes(this.mode));
+    const buildButton=this.root.querySelector('[data-c2-menu-build]');if(buildButton){buildButton.disabled=activeFight;buildButton.textContent=activeFight?'BUILD LOCKED • ACTIVE FIGHT':'RRVVFO BUILD'}
     restart.disabled=!activeFight;
     restart.textContent=activeFight?'RESTART ACTIVE FIGHT':'NO ACTIVE FIGHT';
     panel.hidden=false;

@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
 export const CHAPTER4_STATE_VERSION=5;
 
@@ -51,7 +51,7 @@ export function freshChapter4State(){
     pacing:normalizeRpgPacingState('chapter4'),
     variety:normalizeQuestVarietyState('chapter4'),
     villageDefenseComplete:false,teamRestSeen:false,charm:{echoChimesComplete:false},
-    ryuzankaro:{available:false,started:false,ingredients:[],swarmsCleared:[],bossDefeated:false,skipped:false,phase:'idle',checkpoint:'none',rewardsGranted:false},
+    ryuzankaro:{available:false,started:false,ingredients:[],swarmsCleared:[],apothecaryFormula:false,bossDefeated:false,skipped:false,phase:'idle',checkpoint:'none',rewardsGranted:false},
     rewards:{lensMastery:0,vibrationSense:false,objectSwapRange:0,teamBadge:false,ryuzankaroCodex:false},
     hollowWatcher:{defeated:false,patternsRecorded:0,highestConfidence:0},
     chapterComplete:false

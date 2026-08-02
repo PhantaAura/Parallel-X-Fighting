@@ -1,4 +1,12 @@
 # Parallels X: Clash of Souls
+## Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite
+
+- Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
+- Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
+- The real Sage is found fighting inside the facility; Project Hollow threatens the escape through lockdown/suppression rather than casually overpowering him.
+- The teleporter finale now uses Sage's blue clone as a mandatory technique-foundation story beat. It does **not** unlock Shots of Agony and is **not** framed as an Object Swap lesson.
+- The unstable teleport immediately leaves Rrvvfo unconscious in Echo Region for several days, giving Project Hollow time to begin its Chapter 4 operation.
+- Save schema remains 268 and Chapter 5 is untouched.
 
 > **Combat Rank Patch integrated:** Every completed fight receives an **S / A / B / C / D / E** grade. Prototype 2.9A.40 includes that mini patch in the cumulative build.
 
@@ -8,10 +16,27 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.40.4 — Buildings, Interiors & World Life**
+**Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite**
 
 This is a complete cumulative build. No older package is required.
 
+
+
+## 2.9A.40.7.1 Chapter 3 Sabotage Investigation Rewrite
+
+Chapter 3 now opens because Rrvvfo wants to identify the tournament saboteur. Three arena clues and three witness paths establish deliberate maintenance tampering before Strange Man warns that the witnesses are not what they seem. The real clinic medical worker then directly contradicts their earlier Plouke/maintenance statement, Strange Man vanishes and leaves his hat, and Rrvvfo follows the maintenance trail into a gradually revealed Project Hollow facility. Sage is confirmed to have investigated the same trail independently and remains clearly stronger than ordinary Hollow units; the crisis comes from lockdown, suppression systems, numbers, and getting Rrvvfo out. At the teleporter, the real Sage stays behind and creates a blue clone that accompanies Rrvvfo, teaches only the conceptual blue-clone principle, activates the unstable teleporter, and fades. Rrvvfo arrives in Echo Region, immediately loses consciousness, and several days pass before Chapter 4. `blueCloneTechniqueFoundationLearned` is mandatory future setup for Chapter 5's eventual unstable Shots of Agony invention but unlocks no move in Chapter 3. Save schema remains **268**.
+
+## 2.9A.40.7 Quest & Objective Overhaul
+
+This cumulative quest pass audits Chapters 1–4 with KEEP / TWEAK / THROW instead of rewriting good content for the sake of change. Chapter 1 keeps its route-choice, cart rescue, transport Object Swap, and roadside-fight structure. Chapter 2 turns Lost Bracket into either a three-record search or a two-record + Tournament Administration reconstruction and gives the Lost Fan both Wade and family-search solutions. Chapter 3 removes four weak marker chains and replaces them with short routing, echo-triangulation, observation, and route-choice activities. Chapter 4 gives the Old Man potion quest a skilled Old Apothecary Formula route that needs only two stable catalysts and lets any two of three mountain signal bearings triangulate the Hollow Watcher. Existing major fights, Ryuzankaro optionality, connected-world state, rewards, and Chapter 5 boundaries remain intact. Save schema stays **268**.
+
+## 2.9A.40.6 Revisit Loop & Exploration Rewards
+
+This cumulative revisit pass makes completed regions useful again. Later field skills can surface new old-area opportunities, Tournament Plaza and Echo Village gain safe post-clear fast-travel returns, Chapter 2 gains a hidden Rooftop Challenger revisit fight, and Chapter 4 gains a Vibration Sense secret beneath the Old Shrine. Revisit rewards are one-time, persist in connected-world state, and do not require a save-schema bump. Save schema remains **268** and Chapter 5 is untouched.
+
+## 2.9A.40.5 World Delight, Character Charm & Combat Feel
+
+This cumulative feel pass makes the connected Chapters 1–4 world react more like an RPG instead of only functioning as a route graph. Short contextual Rrvvfo/Bark/Wade banter now fires around major travel, tournament, mystery, team-defense, and solo moments; field-technique mastery cards include a character reaction and proper audiovisual cue; World Delight discoveries persist across Chapters 1–4 without becoming checklist chores; skilled routes such as the Old Water Lift and Old Apothecary Passage now get character/world reactions; and Chapter 4 adds a quiet Echo overlook discovery whose marker only appears when the player is already close. Combat feedback is stronger for Flow Cancel, perfect parry, pursuit finishers, Support interruption, Hollow Watcher phase changes, ally danger, and clean 3v3 clears. Save exports now preserve Field Skill and World Delight progression. Save schema remains **268** and Chapter 5 is not added.
 
 ## 2.9A.40.4 Buildings, Interiors & World Life
 

@@ -55,8 +55,9 @@ export function renderFieldSkillJournal({chapter=4,storage=null}={}){
 export function showFieldSkillMastery(id,{storage=null,duration=2600}={}){
   const skill=FIELD_SKILLS[id];if(!skill||typeof document==='undefined')return null;
   document.querySelector('[data-field-skill-card]')?.remove();
-  const card=document.createElement('aside');card.className='fieldSkillMasteryCard';card.dataset.fieldSkillCard='';card.innerHTML=`<small>${skill.kind} MASTERED</small><strong><b>${skill.icon}</b>${skill.label}</strong><span>${skill.mastery}</span>`;
-  document.body.appendChild(card);requestAnimationFrame(()=>card.classList.add('show'));
+  const reactions={objectSwapField:'RRVVFO • Okay... I can work with this.',precisionSwap:'RRVVFO • Smaller target. Same trick. Better aim.',barkStabilize:'BARK • If the ground moves, I move it back.',wadeCurrent:'WADE • Dead machine. Not dead anymore.',vibrationSense:'RRVVFO • ...I can feel something moving under there.'};
+  const card=document.createElement('aside');card.className='fieldSkillMasteryCard';card.dataset.fieldSkillCard='';card.innerHTML=`<small>${skill.kind} MASTERED</small><strong><b>${skill.icon}</b>${skill.label}</strong><span>${skill.mastery}</span><em>${reactions[id]||''}</em>`;
+  document.body.appendChild(card);requestAnimationFrame(()=>card.classList.add('show'));document.dispatchEvent(new CustomEvent('pxfieldskillmastered',{detail:{id,skill}}));document.dispatchEvent(new CustomEvent('pxstoryuicue',{detail:{cue:'unlock'}}));
   const state=loadFieldSkillState(storage);state.seenCards=[...new Set([...state.seenCards,id])];saveFieldSkillState(state,storage);
   setTimeout(()=>{card.classList.remove('show');setTimeout(()=>card.remove(),240)},Math.max(900,Number(duration)||2600));
   return card;

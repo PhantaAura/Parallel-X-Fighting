@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.21';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([
@@ -56,7 +56,7 @@ export const CHAPTER2_OPTIONAL_QUESTS=Object.freeze({
 export function createChapter2QuestState(){
   return{
     mandatory:{
-      bracket:{started:false,cards:[],fanClue:false,complete:false},
+      bracket:{started:false,cards:[],fanClue:false,adminReconstruction:false,complete:false},
       wadeRace:{started:false,complete:false,won:false,bestTime:null},
       barkRing:{started:false,supports:[],saboteurDefeated:false,complete:false},
       ploukeRumors:{clues:[],complete:false}
@@ -64,7 +64,7 @@ export function createChapter2QuestState(){
     optional:{
       food:{started:false,orders:0,complete:false,rewardClaimed:false},
       fakeChampion:{started:false,complete:false,rewardClaimed:false},
-      lostFan:{started:false,complete:false,rewardClaimed:false},
+      lostFan:{started:false,route:null,familyFound:false,complete:false,rewardClaimed:false},
       dummy:{started:false,parries:0,pursuit:false,grab:false,complete:false,rewardClaimed:false},
       prizeCart:{started:false,complete:false,rewardClaimed:false},
       challenger:{started:false,complete:false,rewardClaimed:false,choice:null}
@@ -108,7 +108,8 @@ export function normalizeChapter2QuestState(saved){
   const validCardIds=new Set(CHAPTER2_BRACKET_CARDS.map(card=>card.id));
   if(bracket.complete){
     bracket.started=true;
-    bracket.cards.splice(0,bracket.cards.length,...validCardIds);
+    const validCards=bracket.cards.filter(cardId=>validCardIds.has(cardId));
+    bracket.cards.splice(0,bracket.cards.length,...(bracket.adminReconstruction?validCards:validCardIds));
   }else{
     const validCards=bracket.cards.filter(cardId=>validCardIds.has(cardId));
     bracket.cards.splice(0,bracket.cards.length,...validCards);
@@ -145,7 +146,7 @@ export function chapter2QuestSummary(state){
   const optional=state?.optional||{};
   return{
     mandatory:[
-      {id:'bracket',title:'THE LOST BRACKET',done:Boolean(mandatory.bracket?.complete),detail:mandatory.bracket?.complete?'Bracket reconstructed':`${mandatory.bracket?.cards?.length||0} / 3 cards recovered`},
+      {id:'bracket',title:'THE LOST BRACKET',done:Boolean(mandatory.bracket?.complete),detail:mandatory.bracket?.complete?'Bracket reconstructed':mandatory.bracket?.adminReconstruction?`${mandatory.bracket?.cards?.length||0} cards + admin records`:`${mandatory.bracket?.cards?.length||0} / 3 physical records`},
       {id:'wadeRace',title:'WADE\'S SHORTCUT',done:Boolean(mandatory.wadeRace?.complete),detail:mandatory.wadeRace?.complete?(mandatory.wadeRace.won?'Beat Wade\'s route':'Completed Wade\'s route'):'Tour the grounds with Wade'},
       {id:'barkRing',title:'THE CRACKED RING',done:Boolean(mandatory.barkRing?.complete),detail:mandatory.barkRing?.complete?'Practice ring stabilized; culprit unresolved':`${mandatory.barkRing?.supports?.length||0} / 3 supports inspected`},
       {id:'exhibition',title:'FESTIVAL TECHNIQUE EXHIBITION',done:Boolean(state?.variety?.festivalExhibition?.complete),detail:state?.variety?.festivalExhibition?.complete?(state.variety.festivalExhibition.rank||'Exhibition cleared'):'Complete the public movement-and-technique course'},

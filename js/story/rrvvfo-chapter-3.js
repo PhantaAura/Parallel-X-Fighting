@@ -1,15 +1,16 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a404-buildings-interiors-world-life-20260802';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
-import {StoryMap} from './story-map.js?v=29a404-buildings-interiors-world-life-20260802';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a404-buildings-interiors-world-life-20260802';
-import {storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
-import {openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
-import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {StoryMap} from './story-map.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyConfirm} from './story-ux.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {openCombatManual} from './combat-manual.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {discoverWorldDelight} from './world-delight.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -26,10 +27,11 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a404-buildings-interiors-world-life-20260802';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
+} from './chapter3-content.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {chapter3ReplacementActivity} from './quest-overhaul.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -44,6 +46,17 @@ const STRANGE_MAN_HAT=Object.freeze({
   name:'Strange Man’s Hat',
   description:'The only thing left behind after its owner disappeared. Nobody at the tournament remembers seeing him.'
 });
+
+const SABOTAGE_EVIDENCE_POINTS=Object.freeze([
+  Object.freeze({id:'support',step:'ringEvidence1Found',evidence:'weakenedSupport',label:'DAMAGED RING SUPPORT',x:1280,z:120}),
+  Object.freeze({id:'component',step:'ringEvidence2Found',evidence:'unregisteredComponent',label:'UNREGISTERED COMPONENT',x:1450,z:280}),
+  Object.freeze({id:'access',step:'ringEvidence3Found',evidence:'maintenanceAccess',label:'OPEN MAINTENANCE PANEL',x:1160,z:-140})
+]);
+const SABOTAGE_WITNESSES=Object.freeze([
+  Object.freeze({id:'worker',step:'workerQuestioned',evidence:'workerTestimony',label:'QUESTION TOURNAMENT WORKER',x:760,z:560}),
+  Object.freeze({id:'security',step:'securityQuestioned',evidence:'securityTestimony',label:'QUESTION SECURITY',x:960,z:-240})
+]);
+const MAINTENANCE_ENTRY_POINT=Object.freeze({x:1190,z:40});
 let activeMission=null;
 
 const HUB_DISTRICTS=Object.freeze([
@@ -133,18 +146,19 @@ function unique(values){return[...new Set(values)]}
 function chapter3CaseBoard(state){
   const found=new Set(state?.evidence||[]),has=(...ids)=>ids.every(id=>found.has(id));
   const cards=[
-    {kicker:'WITNESS CONTRADICTION',title:'THE MEDICAL STORY CHANGED',detail:'The worker remembers different assignments and carries different badge information.',open:has('medicalTestimony','medicalBadgeMismatch')},
-    {kicker:'TOURNAMENT DATA',title:'THE RECORDS WERE COPIED',detail:'The bracket footage and fighter records do not agree with what happened in the arena.',open:found.has('copiedRecords')},
-    {kicker:'RING HARDWARE',title:'ENERGY WAS BEING COLLECTED',detail:'Devices beneath the supports stored energy from major tournament attacks.',open:found.has('ringCollector')},
-    {kicker:'ACCESS ROUTE',title:'SOMEONE USED FALSE CREDENTIALS',detail:'A maintenance badge and the repeated medical badge point toward the east support.',open:has('falseBadge','medicalBadgeMismatch')},
-    {kicker:'SAGE’S DETECTOR',title:'THE ENERGY TRAIL CONTINUES BELOW',detail:'The detector follows energy toward the existing maintenance entrance beneath the ring.',open:found.has('energyDetector')}
+    {kicker:'ARENA DAMAGE',title:'THE RING WAS SABOTAGED',detail:'The weakened support, unregistered component, and lower-maintenance access all point to deliberate interference.',open:has('weakenedSupport','unregisteredComponent','maintenanceAccess')},
+    {kicker:'WITNESSES',title:'SOMEONE USED MAINTENANCE DURING THE TOURNAMENT',detail:'Workers saw equipment moving while security says nobody was authorized below the arena.',open:has('workerTestimony','securityTestimony')},
+    {kicker:'PLOUKE LEAD',title:'SAGE MAY HAVE FOLLOWED THE SAME TRAIL',detail:'The medical worker originally saw Plouke heading toward maintenance after the fight.',open:found.has('medicalTestimony')},
+    {kicker:'UNRESOLVED CONTRADICTION',title:'THE MEDICAL STORY CHANGED',detail:'The same worker later denied ever knowing Plouke. Nothing confirms replacement, altered memory, disguise, or illusion.',open:found.has('medicalContradiction')},
+    {kicker:'UNDERGROUND',title:'THE TOURNAMENT WAS BEING OBSERVED',detail:'Hidden infrastructure records fighter behavior and energy from beneath the arena.',open:found.has('tournamentData')}
   ];
-  let theory='Question witnesses and compare physical evidence.';
-  if(found.has('ringCollector'))theory='Someone used the tournament to gather combat energy.';
-  if(has('copiedRecords','ringCollector'))theory='The altered records may be hiding who installed the collectors.';
-  if(has('falseBadge','medicalBadgeMismatch'))theory='Tournament identities and access credentials cannot be trusted.';
-  if(found.has('energyDetector'))theory='Follow the energy trail beneath the east support. Do not assume the witnesses are who they appear to be.';
-  return{cards,theory,contradiction:has('medicalTestimony','medicalBadgeMismatch')};
+  let theory='Inspect the damaged arena before repairs erase the evidence.';
+  if(has('weakenedSupport','unregisteredComponent','maintenanceAccess'))theory='The tournament was deliberately sabotaged from below the ring.';
+  if(has('workerTestimony','securityTestimony','medicalTestimony'))theory='The saboteur used maintenance access, and Sage may have noticed the same route.';
+  if(found.has('medicalContradiction'))theory='The witness problem is real. Follow physical evidence instead of trusting identities.';
+  if(found.has('sageTrail'))theory='Sage independently entered the same hidden route and was investigating it before Rrvvfo arrived.';
+  if(found.has('tournamentData'))theory='An organized group used the tournament to observe fighters. Their complete purpose is still unknown.';
+  return{cards,theory,contradiction:found.has('medicalContradiction')};
 }
 
 function buildUI(){
@@ -156,8 +170,8 @@ function buildUI(){
     <div class="c3Hud">
       <div class="c3Objective">
         <small>RRVVFO STORY • CHAPTER 3</small>
-        <strong data-c3-objective>SOMETHING UNDER THE RING</strong>
-        <span data-c3-detail>Find out where the Sage went after the tournament.</span>
+        <strong data-c3-objective>WHO SABOTAGED THE TOURNAMENT?</strong>
+        <span data-c3-detail>Inspect the damaged arena before the repair crews erase the evidence.</span>
       </div>
       ${storyAttackStripMarkup({compact:true})}
       <div class="c3HudActions">
@@ -167,7 +181,7 @@ function buildUI(){
       </div>
     </div>
     <div class="c3Transition" data-c3-transition>
-      <article><small>RRVVFO STORY</small><h1>CHAPTER 3</h1><strong>SOMETHING UNDER THE RING</strong><span>THE TOURNAMENT IS OVER. THE WORK ISN’T.</span></article>
+      <article><small>RRVVFO STORY</small><h1>CHAPTER 3</h1><strong>THE SABOTAGE INVESTIGATION</strong><span>THE TOURNAMENT IS OVER. SOMEBODY STILL HAS QUESTIONS TO ANSWER.</span></article>
     </div>
     <div class="c3AreaTitle" data-c3-area hidden>
       <small data-c3-area-kicker>THE LOST YEAR • AFTER THE TOURNAMENT</small>
@@ -221,23 +235,23 @@ function buildUI(){
     <div class="c3DoorOverlay" data-c3-door hidden>
       <article>
         <small>FINAL FACILITY SEQUENCE</small>
-        <h2 data-c3-door-title>THE SECURITY DOOR IS CLOSING</h2>
-        <p data-c3-door-text>Get the marked rock through the doorway.</p>
-        <div class="c3DoorVisual"><i data-c3-door-gap></i><b data-c3-rock>ROCK</b><span>TELEPORTER CHAMBER</span></div>
+        <h2 data-c3-door-title>THE TELEPORTER DOOR IS CLOSING</h2>
+        <p data-c3-door-text>Get through before Project Hollow seals the room.</p>
+        <div class="c3DoorVisual"><i data-c3-door-gap></i><b data-c3-rock>BLUE CLONE</b><span>TELEPORTER CHAMBER</span></div>
         <div class="c3DoorTimer"><i data-c3-door-meter></i></div>
-        <button type="button" class="primary" data-c3-door-action>THROW THE ROCK</button>
+        <button type="button" class="primary" data-c3-door-action>GET THROUGH</button>
         <small data-c3-door-prompt></small>
       </article>
     </div>
     <div class="c3Complete" data-c3-complete hidden>
       <article>
         <small>RRVVFO STORY • CHAPTER 3 COMPLETE</small>
-        <h2>REACH SHADOW’S LOOKOUT</h2>
-        <p>Rrvvfo uncovered the abandoned facility, defeated the Unfinished Echo, found Project Hollow, and was sent to a remote region closer to Shadow’s Lookout.</p>
+        <h2>THE SABOTAGE GOES DEEPER</h2>
+        <p>Rrvvfo proved the tournament was deliberately sabotaged, uncovered Project Hollow beneath the arena, escaped with one of Sage’s blue clones, and vanished into Echo Region for several days.</p>
         <div class="c3Rewards">
           <span>AFTER-HOURS TOURNAMENT STAGE</span>
           <span>ABANDONED RESONANCE FACILITY STAGE</span>
-          <span>UNFINISHED ECHO PROFILE</span>
+          <span>BLUE CLONE TECHNIQUE FOUNDATION</span>
           <span>PROJECT HOLLOW LORE ENTRY</span>
           <span>STORY PROGRESS • 3 / 8 CHAPTERS</span>
         </div>
@@ -309,7 +323,7 @@ class RrvvfoChapter3{
     this.battle=createStoryBattle({stageId,opponent:{id:'sage',name:'The Sage',cpu:true}});
     this.engine=attachStoryEngine(this.battle,{
       chapterLabel:'RRVVFO CHAPTER 3',
-      stageName:'SOMETHING UNDER THE RING',
+      stageName:'THE SABOTAGE INVESTIGATION',
       rootClasses:['storyChapter3Hub','storyChapter3Full'],
       getMode:()=>{
         if(this.engine?.dialogue)return'dialogue';
@@ -378,20 +392,15 @@ class RrvvfoChapter3{
         return next(fighter,foe,dt);
       },
       castAbility:(next,slot)=>{
-        if(this.mode==='door-qte'&&slot===3)return next(slot);
-        if(this.mode==='hub'&&chapter3NextRequired(this.state)==='strangeManLead'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected){
-          if(slot===4){this.inspectStrangeManHatWithLens();return true}
-          battle.notice('USE THE LENS ON THE STRANGE MAN’S HAT',1.1);return false;
-        }
-        if(this.mode==='hub'&&chapter3NextRequired(this.state)==='lensTrail'){
-          if(slot===4){this.useInvestigationLens();return true}
-          battle.notice('USE THE LENS TO FOLLOW THE DETECTOR',1.1);return false;
-        }
+        if(this.mode==='hub'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected&&slot===4){this.inspectStrangeManHatWithLens();return true}
         if(this.mode==='fight'){
           if(slot===5){battle.notice('FIRE AWAKENING HAS NOT STABILIZED',1.2);return false}
           return next(slot);
         }
-        battle.notice(this.mode==='dungeon'?'SAVE YOUR ENERGY FOR THE DEFENSE SYSTEM':'ABILITIES ARE NOT NEEDED HERE',1.1);
+        if(this.mode==='door-qte'){
+          battle.notice('THE ESCAPE IS ABOUT THE CLOSING DOOR • NOT OBJECT SWAP',1.1);return false;
+        }
+        battle.notice(this.mode==='dungeon'?'SAVE YOUR ENERGY FOR THE LOCKDOWN':'ABILITIES ARE NOT NEEDED HERE',1.1);
         return false;
       },
       applyDamage:(next,attacker,target,damage,meta={})=>{
@@ -466,7 +475,7 @@ class RrvvfoChapter3{
   }
 
   restoreOrBegin(){
-    if(this.state.chapterComplete||this.state.location==='remote-region'){
+    if(this.state.chapterComplete||this.state.rrvvfoUnconscious||this.state.location==='remote-region'){
       this.enterRemoteRegion({restored:true});
       return;
     }
@@ -476,7 +485,6 @@ class RrvvfoChapter3{
     }
     this.enterAfterHoursHub({opening:!this.state.requiredCompleted.includes('opening')});
   }
-
   switchStage(stageId){
     if(this.battle.active)this.battle.stopMatch();
     this.battle.setStage(stageId);
@@ -499,7 +507,7 @@ class RrvvfoChapter3{
   }
 
   syncRpgPacing(){
-    const phase=this.area==='remote'?'departure':this.area==='facility'?(this.state.underground.projectHollowRead?'aftermath':'crisis'):(this.state.hubState>=2?'development':'arrival');
+    const phase=this.area==='remote'?'departure':this.area==='facility'?(this.state.projectHollowNameRevealed?'crisis':'development'):(this.state.hubState>=2?'development':'arrival');
     const wave=this.area==='facility'?3:this.state.hubState>=4?3:this.state.hubState>=2?2:this.pacing.orientationComplete?1:0;
     setRpgPacingPhase(this.pacing,phase,{wave});
     this.root.dataset.rpgPhase=this.pacing.phase;this.root.dataset.rpgWave=String(rpgPacingQuestWave(this.pacing));
@@ -519,11 +527,11 @@ class RrvvfoChapter3{
     this.switchStage('after-hours-tournament');
     this.mode='hub';this.currentFight=null;this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();
     this.battle.root.classList.add('storyChapter3Hub');this.battle.root.classList.remove('storyChapter3Combat');
-    this.engine.setLabels({stageName:'AFTER-HOURS TOURNAMENT',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','THE SAGE']});
+    this.engine.setLabels({stageName:'AFTER-HOURS TOURNAMENT',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','']});
     this.preparePlayer(spawn);
     this.syncRpgPacing();
     this.updateLensAvailability();
-    this.showAreaTitle('AFTER-HOURS TOURNAMENT','THE LOST YEAR • SOMETHING UNDER THE RING');
+    this.showAreaTitle('AFTER-HOURS TOURNAMENT','CHAPTER 3 • SABOTAGE INVESTIGATION');
     this.saveState();
     if(opening)this.showOpeningScene();
     else{this.updateObjective();this.refreshTracker()}
@@ -531,20 +539,18 @@ class RrvvfoChapter3{
 
   showOpeningScene(){
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You entered the tournament under a fake name, fought me, nearly destroyed the arena, and now you are acting like I am the problem?',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'I did not nearly destroy it. The arena was already falling apart.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'What does that even mean?',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'...',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'Stay here.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'He really should know that never works.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Someone messed with that ring.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'And if they replace everything, there goes half the evidence.',tail:'down'}
     ],()=>{
+      this.state.chapter3Started=true;
+      this.state.sabotageInvestigationStarted=true;
       this.completeRequired('opening');
+      this.completeRequired('sabotageInvestigationStarted');
       this.mode='hub';this.battle.phase='play';
       this.updateObjective();
-      this.toast('MAIN OBJECTIVE','WHERE DID PLOUKE GO?','Question the people still working after the tournament.');
+      this.toast('MAIN OBJECTIVE','INVESTIGATE THE TOURNAMENT SABOTAGE','Inspect the damaged arena before the repair crews replace the evidence.');
     });
   }
-
   updateExploration(){
     const player=this.battle.fighters[0];
     if(this.mode==='interior')clampInteriorPlayer(player,this.interiorId);
@@ -556,8 +562,8 @@ class RrvvfoChapter3{
         const wasReady=this.pacing.orientationComplete;
         if(!wasReady&&completePacingOrientation('chapter3',this.pacing)){
           setRpgPacingPhase(this.pacing,'development',{wave:1});
-          this.toast('INVESTIGATION OPENED','THE CLOSED GROUNDS MAKE SENSE NOW','The medical worker is the first reliable lead.');
-          document.dispatchEvent(new CustomEvent('pxstorybanter',{detail:{onceKey:'c3-orientation-complete',lines:[['RRVVFO','The tournament feels different when nobody is cheering.'],['SAGE','Good. Listen to what remains.']]}}));
+          this.toast('INVESTIGATION CONTEXT','THE CLOSED GROUNDS ARE DIFFERENT NOW','Repair crews are replacing evidence. Inspect the damaged arena while it is still readable.');
+          document.dispatchEvent(new CustomEvent('pxstorybanter',{detail:{onceKey:'c3-orientation-complete',lines:[['RRVVFO','The tournament feels different when nobody is cheering.'],['RRVVFO','And somebody used that noise to hide what they did.']]}}));
         }
         this.syncRpgPacing();this.saveState();this.updateObjective();this.showAreaTitle(district.name,'AFTER-HOURS TOURNAMENT');
       }
@@ -579,40 +585,21 @@ class RrvvfoChapter3{
     if(this.area==='facility')return this.facilityInteractions();
     const next=chapter3NextRequired(this.state);
     const items=[];
-    // Enterable tournament buildings share the same physical region between Chapters 2 and 3.
     items.push({kind:'building-enter',buildingId:'tournament-admin',label:'ENTER TOURNAMENT ADMINISTRATION',x:-120,z:-490});
     items.push({kind:'building-enter',buildingId:'tournament-backstage',label:'ENTER FIGHTER BACKSTAGE',x:1010,z:-360});
-    // The clinic remains a real revisitable place instead of appearing only when the main quest points at it.
     items.push({kind:'building-enter',buildingId:'tournament-medical',label:'ENTER MEDICAL CENTER',x:640,z:-430});
-    if(next==='fighterNobodyRecorded'){
-      const step=this.state.recordingStep;
-      if(step===0)items.push({kind:'forgotten-fighter',label:'THE UNRECORDED FIGHTER',x:-900,z:-420});
-      else if(step===1)items.push({kind:'public-booth',label:'CHECK PUBLIC REPLAY BOOTH',x:260,z:-690});
-      else if(step===2)items.push({kind:'security-reconstruction',label:'RECONSTRUCT THE MISSING FOOTAGE',x:330,z:-650});
-      else if(step===4)items.push({kind:'restore-recording',label:'RESTORE THE PUBLIC RECORDING',x:260,z:-690});
+
+    if(['ringEvidence1Found','ringEvidence2Found','ringEvidence3Found','sabotageConfirmed'].includes(next)){
+      for(const point of SABOTAGE_EVIDENCE_POINTS)if(!this.state.sabotageEvidence.includes(point.id))items.push({kind:'sabotage-evidence',label:`INSPECT • ${point.label}`,x:point.x,z:point.z,point});
     }
-    if(next==='bracketRecords')items.push({kind:'bracket',label:'RESTORE BRACKET RECORDS',x:930,z:-540});
-    if(next==='lockedNightShift'){
-      const point=NIGHT_ROUTE[this.state.nightRouteIndex]||NIGHT_ROUTE.at(-1);
-      items.push({kind:'night-route',label:`REACH ${point.label}`,x:point.x,z:point.z,point});
-    }
-    if(next==='crackedRing'){
-      const point=RING_COLLECTORS.find(entry=>!this.state.ringCollectors.includes(entry.id))||RING_COLLECTORS[0];
-      items.push({kind:'ring-evidence-sweep',label:'OPEN THE RING EVIDENCE BOARD',x:point.x,z:point.z,point});
-    }
-    if(next==='ploukeBag'){
-      const point=BAG_SEARCH.find(entry=>!this.state.bagLocations.includes(entry.id))||BAG_SEARCH[0];
-      items.push({kind:'bag-evidence-board',label:'REVIEW THE PLOUKE BAG LEADS',x:point.x,z:point.z,point});
+    if(['workerQuestioned','securityQuestioned','medicalWorkerFirstConversationComplete'].includes(next)){
+      for(const witness of SABOTAGE_WITNESSES)if(!this.state.witnesses[witness.id])items.push({kind:'sabotage-witness',label:witness.label,x:witness.x,z:witness.z,witness});
     }
     if(next==='strangeManWarningSeen')items.push({kind:'strange-man',label:'QUESTION THE STRANGE MAN',x:STRANGE_MAN_POINT.x,z:STRANGE_MAN_POINT.z});
     if(next==='strangeManHatCollected')items.push({kind:'strange-man-hat',label:'PICK UP THE STRANGE MAN’S HAT',x:STRANGE_MAN_POINT.x,z:STRANGE_MAN_POINT.z});
-    if(next==='strangeManLead')items.push({kind:'east-support-clue',label:'INVESTIGATE THE EAST SUPPORT',x:EAST_SUPPORT_CLUE.x,z:EAST_SUPPORT_CLUE.z});
-    if(next==='lensTrail'){
-      const point=LENS_TRAIL[this.state.lensTrailIndex]||LENS_TRAIL.at(-1);
-      items.push({kind:'lens-point',label:'USE LENS OF TRUTH HERE',x:point.x,z:point.z,point});
-    }
-    if(next==='sageExplanation')items.push({kind:'elevator',label:'CONFRONT THE SAGE',x:1190,z:40});
-    if(next==='facilityEntered')items.push({kind:'enter-facility',label:'ENTER UNDERGROUND FACILITY',x:1190,z:40});
+    if(next==='maintenanceInvestigationStarted')items.push({kind:'maintenance-entry',label:'INVESTIGATE TOURNAMENT MAINTENANCE',x:EAST_SUPPORT_CLUE.x,z:EAST_SUPPORT_CLUE.z});
+    if(next==='hiddenInfrastructureFound')items.push({kind:'enter-facility',label:'DESCEND INTO TOURNAMENT MAINTENANCE',x:MAINTENANCE_ENTRY_POINT.x,z:MAINTENANCE_ENTRY_POINT.z});
+
     const optionalWave=rpgPacingQuestWave(this.pacing),waveOne=new Set(['oneLastMatch','finalAnnouncement','lateFan','medicalFollowup']),waveTwo=new Set(['unpaidSnacks','poukiEquipment','fakePloukes']),waveThree=new Set(['prizeEnvelope','cleanupEchoes','controlledFlame']);
     for(const quest of CHAPTER3_OPTIONAL_QUESTS){
       if(optionalWave<1)continue;
@@ -620,36 +607,35 @@ class RrvvfoChapter3{
       if(optionalWave===2&&!waveOne.has(quest.id)&&!waveTwo.has(quest.id))continue;
       const saved=this.state.optional[quest.id];
       if(saved.complete)continue;
-      // Medical Follow-Up lives inside the clinic with the worker; never spawn a duplicate outdoor marker.
       if(quest.id==='medicalFollowup')continue;
+      if(chapter3ReplacementActivity(quest.id))continue;
       if(['finalAnnouncement','cleanupEchoes','fakePloukes','lateFan'].includes(quest.id)&&saved.started){
         const source=OPTIONAL_MULTI_POINTS[quest.id]||[];
         const completed=quest.id==='finalAnnouncement'?this.state.optionalProgress.speakers:quest.id==='cleanupEchoes'?this.state.optionalProgress.cleanupFragments:quest.id==='fakePloukes'?this.state.optionalProgress.fakePloukes:this.state.optionalProgress.autographs;
         for(const point of source)if(!completed.includes(point.id))items.push({kind:'optional-multi',questId:quest.id,label:point.label,x:point.x,z:point.z,point});
       }else{
-        const point=OPTIONAL_POINTS[quest.id];
-        if(point)items.push({kind:'optional',questId:quest.id,label:`OPTIONAL • ${point.label}`,x:point.x,z:point.z});
+        const point=OPTIONAL_POINTS[quest.id];if(point)items.push({kind:'optional',questId:quest.id,label:`OPTIONAL • ${point.label}`,x:point.x,z:point.z});
       }
     }
     return items;
   }
-
   facilityInteractions(){
     const next=chapter3NextRequired(this.state);
     const map={
-      auxiliaryPower:{kind:'power',label:'RESTORE AUXILIARY POWER',x:-720,z:0},
-      recordedAttacks:{kind:'recorded-attacks',label:'ENTER RECORDED-ATTACK CORRIDOR',x:-300,z:0},
-      sageSeparated:{kind:'separation',label:'APPROACH SECURITY WALL',x:40,z:0},
-      dummyDefeated:{kind:'dummy',label:'CONFRONT RUNAWAY TRAINING DUMMY',x:300,z:0},
-      subjectRFile:{kind:'records',label:'READ SUBJECT R FILES',x:580,z:-260},
-      echoDefeated:{kind:'echo',label:'ACTIVATE CENTRAL DEFENSE CHAMBER',x:760,z:0},
-      projectHollow:{kind:'hollow-terminal',label:'ACCESS POST-BOSS TERMINAL',x:790,z:300},
-      teleporterFound:{kind:'teleporter-door',label:'INVESTIGATE STRANGE TELEPORTER',x:930,z:0},
-      teleporterActivated:{kind:'teleporter',label:'ACTIVATE THE TELEPORTER',x:1035,z:0}
+      hiddenInfrastructureFound:{kind:'maintenance-sweep',label:'INSPECT THE UNAUTHORIZED INFRASTRUCTURE',x:-720,z:0},
+      sageTrailFound:{kind:'sage-trail',label:'FOLLOW THE DAMAGE THROUGH MAINTENANCE',x:-360,z:0},
+      findSageObjectiveStarted:{kind:'sage-trail-confirm',label:'FOLLOW SAGE’S TRAIL DEEPER',x:-120,z:0},
+      projectHollowFacilityEntered:{kind:'facility-threshold',label:'OPEN THE HIDDEN SECURITY DOOR',x:100,z:0},
+      tournamentDataDiscovered:{kind:'tournament-data',label:'ACCESS THE TOURNAMENT DATA STATION',x:360,z:-120},
+      projectHollowNameRevealed:{kind:'hollow-reveal',label:'OPEN THE CENTRAL IDENTITY FILE',x:560,z:160},
+      realSageFound:{kind:'real-sage',label:'REACH THE FIGHTING AHEAD',x:760,z:0},
+      facilityLockdownStarted:{kind:'lockdown',label:'SURVIVE THE FACILITY LOCKDOWN',x:820,z:180},
+      teleporterEscapeStarted:{kind:'teleporter-escape',label:'REACH THE TELEPORTER ROOM',x:930,z:0},
+      sageBlueCloneCreated:{kind:'teleporter-door',label:'GET THROUGH THE CLOSING DOOR',x:980,z:0},
+      teleporterActivated:{kind:'teleporter',label:'LET THE BLUE CLONE START THE TELEPORTER',x:1035,z:0}
     };
     return map[next]?[map[next]]:[];
   }
-
   tryInteract(){
     if(!['hub','dungeon','interior'].includes(this.mode)||!this.nearby)return;
     const item=this.nearby;
@@ -657,75 +643,94 @@ class RrvvfoChapter3{
     if(item.kind==='interior-exit'){this.exitStoryInterior();return}
     if(item.kind==='interior-actor'){this.useInteriorActor(item);return}
     const handlers={
-      medical:()=>this.beginMedicalLead(),
+      'sabotage-evidence':()=>this.inspectSabotageEvidence(item.point),
+      'sabotage-witness':()=>this.questionSabotageWitness(item.witness),
       'strange-man':()=>this.beginStrangeManWarning(),
-      'medical-revisit':()=>this.revisitMedicalWorker(),
       'strange-man-hat':()=>this.collectStrangeManHat(),
-      'east-support-clue':()=>this.investigateEastSupportClue(),
-      'forgotten-fighter':()=>this.beginForgottenFighter(),
-      'public-booth':()=>this.usePublicBooth(),
-      'security-reconstruction':()=>this.reconstructSecurityFootage(),
-      'restore-recording':()=>this.restorePublicRecording(),
-      bracket:()=>this.beginBracketPuzzle(),
-      'night-route':()=>this.advanceNightRoute(item.point),
-      'ring-evidence-sweep':()=>this.beginRingEvidenceSweep(),
-      'bag-evidence-board':()=>this.beginBagEvidenceBoard(),
-      'lens-point':()=>this.useInvestigationLens(),
-      elevator:()=>this.sageExplanation(),
+      'maintenance-entry':()=>this.investigateMaintenanceEntry(),
       'enter-facility':()=>this.confirmFacilityEntry(),
       optional:()=>this.startOptionalQuest(item.questId),
       'optional-multi':()=>this.advanceOptionalMulti(item.questId,item.point),
-      power:()=>this.beginPowerPuzzle(),
-      'recorded-attacks':()=>this.beginRecordedAttackPuzzle(),
-      separation:()=>this.separateSage(),
-      dummy:()=>this.startFight({kind:'dummy',id:'practice-dummy',name:'Runaway Training Dummy',hpScale:1.08,xp:150}),
-      records:()=>this.readRecordsLab(),
-      echo:()=>this.startFight({kind:'echo',id:'unfinished-echo',name:'Unfinished Echo',hpScale:1.45,xp:260}),
-      'hollow-terminal':()=>this.readProjectHollow(),
-      'teleporter-door':()=>this.findTeleporter(),
+      'maintenance-sweep':()=>this.inspectHiddenInfrastructure(),
+      'sage-trail':()=>this.inspectSageTrail(),
+      'sage-trail-confirm':()=>this.commitFindSageObjective(),
+      'facility-threshold':()=>this.enterHiddenFacilityThreshold(),
+      'tournament-data':()=>this.inspectTournamentData(),
+      'hollow-reveal':()=>this.revealProjectHollow(),
+      'real-sage':()=>this.findRealSage(),
+      lockdown:()=>this.beginLockdownFight(),
+      'teleporter-escape':()=>this.beginTeleporterEscape(),
+      'teleporter-door':()=>this.startDoorSequence(),
       teleporter:()=>this.activateTeleporter()
     };
     handlers[item.kind]?.();
   }
+  beginMedicalLead(){this.beginMedicalWitness()}
 
-  beginMedicalLead(){
+  beginMedicalWitness(){
+    if(!this.state.sabotageConfirmed||this.state.witnesses.medical)return;
     this.showDialogue([
-      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'Plouke never entered the recovery tent. He looked injured, but walked straight toward the restricted maintenance entrance.',tail:'down'},
-      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'An engineer left the arena carrying a glowing glass container. Maintenance clothes, tournament badge—nothing else stood out.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Start with the person carrying the glowing evidence. That usually narrows it down.',tail:'down'},
-      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'Help me return three mixed equipment bags, then I can unlock the records request.',tail:'down'}
-    ],()=>this.showMedicalSort());
+      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'Plouke never came to the medical tent after his fight. I saw him heading toward maintenance instead.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Why the hell was he going down there?',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'...He probably noticed something too.',tail:'down'}
+    ],()=>{
+      this.state.witnesses.medical=true;
+      this.addEvidence('medicalTestimony');
+      this.completeRequired('medicalWorkerFirstConversationComplete');
+      this.mode=this.interiorId?'interior':'hub';this.battle.phase='play';
+      this.updateObjective();this.saveState();
+    });
+  }
+  showMedicalSort(){
+    // Legacy 40.6/40.7 saves may still call this helper. The old equipment-fetch
+    // gate was removed by the sabotage rewrite; redirect directly to the witness.
+    this.beginMedicalWitness();
   }
 
-  showMedicalSort(){
-    const items=[
-      {id:'hamual-belt',label:'HAMUAL’S BELT',detail:'Largest reinforced belt.'},
-      {id:'daniel-wrap',label:'DANIEL’S WRIST WRAP',detail:'Plain wrap with careful knotwork.'},
-      {id:'glove',label:'DAMAGED TOURNAMENT GLOVE',detail:'Return to general equipment.'}
-    ].filter(item=>!this.state.medicalSort.includes(item.id));
-    if(!items.length){
-      this.addEvidence('medicalTestimony');
-      this.completeRequired('medicalLead');
-      this.mode=this.interiorId?'interior':'hub';this.battle.phase='play';
-      this.showDialogue([
-        {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'The records room logged a private access request during the final match. Find out why tournament records were copied.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Finally. A clue with a room attached to it.',tail:'down'}
-      ],()=>{this.mode=this.interiorId?'interior':'hub';this.battle.phase='play';this.updateObjective()});
-      return;
-    }
-    this.showTask({
-      kicker:'MAIN INVESTIGATION • MEDICAL AREA',
-      title:'RETURN THE MIXED EQUIPMENT',
-      text:`Choose the next item to return. ${this.state.medicalSort.length} / 3 complete.`,
-      buttons:items.map(item=>({label:item.label,value:item.id,detail:item.detail})),
-      onChoose:value=>{
-        this.state.medicalSort=unique([...this.state.medicalSort,value]);
-        this.saveState();this.showMedicalSort();
+  inspectSabotageEvidence(point){
+    if(!point||this.state.sabotageEvidence.includes(point.id))return;
+    const lines={
+      support:[
+        {speaker:'RRVVFO',speakerClass:'p1',text:'This support didn’t just crack. Somebody cut the load point before the match.',tail:'down'},
+        {speaker:'REPAIR NOTE',speakerClass:'neutral',text:'FAILURE DIRECTION: FROM BELOW THE FIGHTING FLOOR.',tail:'down'}
+      ],
+      component:[
+        {speaker:'RRVVFO',speakerClass:'p1',text:'This piece is wired into the ring, but it has no tournament serial number.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'So somebody added their own hardware.',tail:'down'}
+      ],
+      access:[
+        {speaker:'MAINTENANCE PANEL',speakerClass:'neutral',text:'LOWER ACCESS OPENED DURING FINAL TOURNAMENT WINDOW.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Nobody was supposed to be under there during the fights.',tail:'down'}
+      ]
+    };
+    this.showDialogue(lines[point.id]||[],()=>{
+      this.state.sabotageEvidence=unique([...this.state.sabotageEvidence,point.id]);
+      this.addEvidence(point.evidence);this.completeRequired(point.step);
+      if(this.state.sabotageEvidence.length>=3&&!this.state.sabotageConfirmed){
+        this.state.sabotageConfirmed=true;this.completeRequired('sabotageConfirmed');
+        this.showDialogue([{speaker:'RRVVFO',speakerClass:'p1',text:'Yeah. Someone definitely did this.',tail:'down'}],()=>{this.mode='hub';this.battle.phase='play';this.updateObjective();this.saveState()});
+        return;
       }
+      this.mode='hub';this.battle.phase='play';this.updateObjective();this.saveState();
     });
   }
 
-
+  questionSabotageWitness(witness){
+    if(!witness||this.state.witnesses[witness.id])return;
+    const lines=witness.id==='worker'?
+      [
+        {speaker:'TOURNAMENT WORKER',speakerClass:'neutral',text:'I saw somebody moving equipment around the maintenance areas during the tournament. Didn’t recognize them.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'So somebody was working down there while we were fighting.',tail:'down'}
+      ]:[
+        {speaker:'SECURITY',speakerClass:'neutral',text:'Nobody was officially authorized to enter the lower maintenance sections during the tournament.',tail:'down'},
+        {speaker:'SECURITY',speakerClass:'neutral',text:'The access log still says someone opened them.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'That’s useful and also terrible.',tail:'down'}
+      ];
+    this.showDialogue(lines,()=>{
+      this.state.witnesses[witness.id]=true;this.addEvidence(witness.evidence);this.completeRequired(witness.step);
+      this.mode='hub';this.battle.phase='play';this.updateObjective();this.saveState();
+    });
+  }
   beginStrangeManWarning(){
     if(chapter3NextRequired(this.state)!=='strangeManWarningSeen')return;
     this.showDialogue([
@@ -744,27 +749,27 @@ class RrvvfoChapter3{
   }
 
   revisitMedicalWorker(){
-    if(!this.state.strangeManWarningSeen||chapter3NextRequired(this.state)!=='medicalWorkerRevisited')return;
+    if(!this.state.strangeManWarningSeen||this.state.medicalWorkerRevisited)return;
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Hey, I need to ask you about the ring again.',tail:'down'},
-      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'Again? I’ve never spoken to you.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You told me you treated someone near the east support.',tail:'down'},
-      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'I wasn’t assigned to the east support.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Your badge has a different name than it did earlier.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Okay... either I hit my head harder than I thought, or something’s seriously wrong here.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You said Plouke skipped the medical tent and went toward maintenance.',tail:'down'},
+      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'Plouke?',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'...Yeah.',tail:'down'},
+      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'I’ve never treated or spoken to anyone named Plouke.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You literally told me that a few minutes ago.',tail:'down'},
+      {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'I think you have me confused with someone else.',tail:'down'}
     ],()=>{
-      this.state.medicalWorkerRevisited=true;
+      this.state.medicalWorkerRevisited=true;this.addEvidence('medicalContradiction');
       this.completeRequired('medicalWorkerRevisited');
-      this.mode=this.interiorId?'interior':'hub';this.battle.phase='play';this.updateObjective();
+      this.mode=this.interiorId?'interior':'hub';this.battle.phase='play';this.updateObjective();this.saveState();
     });
   }
-
   collectStrangeManHat(){
     if(chapter3NextRequired(this.state)!=='strangeManHatCollected')return;
     this.state.strangeManHatCollected=true;
     this.state.keyItems=unique([...(this.state.keyItems||[]),STRANGE_MAN_HAT.id]);
     this.completeRequired('strangeManHatCollected');
     this.showDialogue([
+      {speaker:'NARRATION',speakerClass:'neutral',text:'The Strange Man is gone. No footprints lead away, no route is obvious, and nearby workers insist they never saw anyone standing here.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'You warn me about fake people, vanish, and leave your hat?',tail:'down'}
     ],()=>this.showTask({
       kicker:'KEY ITEM ACQUIRED',
@@ -788,7 +793,7 @@ class RrvvfoChapter3{
     player.visualAction='lensActivate';player.visualActionTime=.6;
     this.battle.burst(player.x,player.z,'#d4fbff',32,75);
     this.showDialogue([
-      {speaker:'NARRATION',speakerClass:'neutral',text:'Rrvvfo scratches his eye and activates the Lens of Truth over the Strange Man’s hat.',tail:'down'}
+      {speaker:'NARRATION',speakerClass:'neutral',text:'Rrvvfo scratches his right eye three times and activates the unstable Lens of Truth over the Strange Man’s hat.',tail:'down'}
     ],()=>this.runHatLensContradictions());
   }
 
@@ -829,21 +834,22 @@ class RrvvfoChapter3{
     this.lensContradictionTimers=[];
   }
 
-  investigateEastSupportClue(){
-    if(chapter3NextRequired(this.state)!=='strangeManLead')return;
+  investigateMaintenanceEntry(){
+    if(chapter3NextRequired(this.state)!=='maintenanceInvestigationStarted')return;
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'A second medical-worker badge. Different name, same face.',tail:'down'},
-      {speaker:'SECURITY BADGE',speakerClass:'neutral',text:'RESTRICTED MAINTENANCE ACCESS • EAST SUPPORT.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'And the access strip points beneath the ring. Of course it does.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Okay.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Someone rigged the tournament.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'People keep changing their stories.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'And the Sage went toward maintenance.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Yeah. I’m checking maintenance.',tail:'down'}
     ],()=>{
-      this.state.strangeManLeadFound=true;
-      this.addEvidence('medicalBadgeMismatch');
-      this.completeRequired('strangeManLead');
-      this.mode='hub';this.battle.phase='play';this.updateObjective();
-      this.toast('INVESTIGATION CLUE','REPEATED MEDICAL BADGE','The east-support access strip connects the warning to the existing maintenance route.');
+      this.state.maintenanceInvestigationStarted=true;this.completeRequired('maintenanceInvestigationStarted');
+      this.mode='hub';this.battle.phase='play';this.updateObjective();this.saveState();
     });
   }
 
+  // Compatibility alias for any stale interaction restored from an older build.
+  investigateEastSupportClue(){this.investigateMaintenanceEntry()}
   connectedRegionId(){return this.area==='facility'?'resonance':this.area==='remote'?'echo':'tournament'}
   interiorInteractions(){
     const exit=interiorExitPoint(this.interiorId),actors=interiorActorPoints(this.interiorId);return[exit,...actors].filter(Boolean);
@@ -858,38 +864,36 @@ class RrvvfoChapter3{
   }
 
   exitStoryInterior(){
-    if(!this.interiorId)return;const building=buildingDefinition(this.interiorId),back=this.interiorReturn||{},spawn=building?.entry?.returnSpawn||back.spawn||HUB_SPAWN;this.interiorId='';this.mode='hub';this.area=back.area||'hub';this.currentDistrict=back.district||this.currentDistrict;this.preparePlayer(spawn);this.map?.setRegion('tournament',this.connectedZoneId());this.engine.setLabels({stageName:'AFTER-HOURS TOURNAMENT',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','THE SAGE']});this.battle.notice('BACK OUTSIDE',.8);this.updateObjective();
+    if(!this.interiorId)return;const building=buildingDefinition(this.interiorId),back=this.interiorReturn||{},spawn=building?.entry?.returnSpawn||back.spawn||HUB_SPAWN;this.interiorId='';this.mode='hub';this.area=back.area||'hub';this.currentDistrict=back.district||this.currentDistrict;this.preparePlayer(spawn);this.map?.setRegion('tournament',this.connectedZoneId());this.engine.setLabels({stageName:'AFTER-HOURS TOURNAMENT',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','']});this.battle.notice('BACK OUTSIDE',.8);this.updateObjective();
   }
 
   useInteriorActor(actor){
     if(this.interiorId==='tournament-medical'&&actor.id==='medical-worker'){
-      const next=chapter3NextRequired(this.state);
-      if(next==='medicalLead'&&this.pacing.orientationComplete){this.beginMedicalLead();return}
-      if(next==='medicalWorkerRevisited'){this.revisitMedicalWorker();return}
+      if(this.state.sabotageConfirmed&&!this.state.witnesses.medical){this.beginMedicalWitness();return}
+      if(this.state.strangeManWarningSeen&&!this.state.medicalWorkerRevisited){this.revisitMedicalWorker();return}
       const followup=this.state.optional?.medicalFollowup;
-      const followupAvailable=(rpgPacingQuestWave(this.pacing)>=1)&&this.state.requiredCompleted.includes('medicalLead')&&!followup?.complete;
+      const followupAvailable=(rpgPacingQuestWave(this.pacing)>=1)&&this.state.witnesses.medical&&!followup?.complete;
       if(followupAvailable){this.startOptionalQuest('medicalFollowup');return}
     }
     const line=interiorLifeLine(this.interiorId,actor.id,{chapter:3,phase:this.pacing?.phase||''});this.showDialogue([{speaker:actor.label||'TOURNAMENT STAFF',speakerClass:'neutral',text:line,tail:'down'}],()=>{this.mode='interior';this.battle.phase='play'});
   }
-
   connectedZoneId(){
     if(this.mode==='interior'&&this.interiorId)return buildingDefinition(this.interiorId)?.zone||'central';
     if(this.area==='remote')return'lowerTrail';
     if(this.area==='facility'){
-      const next=chapter3NextRequired(this.state);if(['auxiliaryPower'].includes(next))return'power';if(['recordedAttacks'].includes(next))return'corridor';if(['sageSeparated','dummyDefeated'].includes(next))return'security';if(['subjectRFile'].includes(next))return'records';if(['echoDefeated'].includes(next))return'core';if(['projectHollow'].includes(next))return'terminal';if(['teleporterFound','doorClosing','rockThrown','objectSwap','teleporterActivated','remoteRegion'].includes(next))return'teleporter';return'maintenance';
+      const next=chapter3NextRequired(this.state);
+      if(['hiddenInfrastructureFound','sageTrailFound','findSageObjectiveStarted'].includes(next))return'maintenance';
+      if(['projectHollowFacilityEntered','tournamentDataDiscovered'].includes(next))return'corridor';
+      if(['projectHollowNameRevealed','realSageFound'].includes(next))return'records';
+      if(['facilityLockdownStarted','teleporterEscapeStarted'].includes(next))return'core';
+      return'teleporter';
     }
     const map={arena:'stadium',vendor:'market',camp:'practice',medical:'medical',office:'registration',bracket:'backstage',media:'service',storage:'service',security:'security',staff:'backstage',elevator:'stadium'};return map[this.currentDistrict]||'central';
   }
-
   updateLensAvailability(){
-    const next=chapter3NextRequired(this.state);
-    const hatLens=next==='strangeManLead'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected;
-    const trail=next==='lensTrail';
-    const show=hatLens||trail;
-    this.engine?.setHotbarAvailability(show?[4]:[],{show});
+    const canInspectHat=this.area==='hub'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected;
+    this.engine?.setHotbarAvailability(canInspectHat?[4]:[],{show:canInspectHat});
   }
-
   beginForgottenFighter(){
     this.showDialogue([
       {speaker:'EARLY CONTESTANT',speakerClass:'neutral',text:'My match is missing from the replay booth. It was my first real tournament, and nobody I know could attend.',tail:'down'},
@@ -1029,6 +1033,7 @@ class RrvvfoChapter3{
     ],()=>{
       this.state.staffShortcut=true;this.state.rewards.staffShortcut=true;
       if(!this.replayMode)saveLostYearProgress(discoverWorldShortcut(loadLostYearProgress(),'c3-service-cut'));
+      discoverWorldDelight('c3-night-service');
       this.addEvidence('falseBadge');
       this.completeRequired('lockedNightShift');
       this.mode='hub';this.battle.phase='play';this.updateObjective();
@@ -1142,54 +1147,20 @@ class RrvvfoChapter3{
   }
 
   useInvestigationLens(){
-    if(chapter3NextRequired(this.state)!=='lensTrail'||this.area!=='hub')return;
-    const point=LENS_TRAIL[this.state.lensTrailIndex];
-    const player=this.battle.fighters[0];
-    if(!point||distance(player,point)>170){this.battle.notice('THE DETECTOR IS POINTING SOMEWHERE ELSE',1.2);return}
-    player.visualAction='lensActivate';player.visualActionTime=.48;
-    this.battle.burst(player.x,player.z,'#d4fbff',28,70);
-    this.state.lensTrailIndex++;
-    this.saveState();
-    if(this.state.lensTrailIndex<LENS_TRAIL.length){
-      this.toast('ENERGY TRAIL',point.label,`${this.state.lensTrailIndex} / ${LENS_TRAIL.length} trail segments followed. Lens use costs no energy here.`);
-      this.updateObjective();return;
-    }
-    this.completeRequired('lensTrail');
-    this.engine.setHotbarAvailability([],{show:false});
-    this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'The whole trail ends at the maintenance elevator.',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'Then the overload exposed exactly what I hoped it would.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You are explaining everything before touching that door.',tail:'down'}
-    ],()=>{this.mode='hub';this.battle.phase='play';this.updateObjective()});
+    // The old mandatory detector trail was removed. Lens remains optional on
+    // the Strange Man’s hat so it deepens the mystery without gating progress.
+    if(this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected)this.inspectStrangeManHatWithLens();
   }
-
   sageExplanation(){
-    this.showDialogue([
-      {speaker:'SAGE',speakerClass:'neutral',text:'Battle energy normally fades. During the tournament, someone was collecting it first.',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'I entered as Plouke so the operator would not recognize me. I also needed to see whether you could activate Fire Awakening intentionally.',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'Your burst was brief. The final clash overloaded the collectors and exposed the path—but also created the strongest sample.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'So your genius plan was to give the person stealing energy even more energy?',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'My genius plan was to break their machine.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Did it break?',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'Parts of it.',tail:'down'}
-    ],async()=>{
-      this.completeRequired('sageExplanation');
-      const enter=await storyConfirm({
-        title:'ENTER THE UNDERGROUND FACILITY?',
-        message:'Entering advances Chapter 3. Unfinished tournament quests remain available through Chapter Replay.',
-        confirmLabel:'ENTER FACILITY',
-        cancelLabel:'KEEP EXPLORING'
-      });
-      if(enter)this.enterFacility();
-      else{this.mode='hub';this.battle.phase='play';this.updateObjective();this.saveState()}
-    });
+    // Compatibility alias: Sage is no longer confronted before maintenance.
+    // Rrvvfo follows sabotage evidence first and finds the real Sage underground.
+    this.investigateMaintenanceEntry();
   }
-
   async confirmFacilityEntry(){
     const enter=await storyConfirm({
-      title:'ENTER THE UNDERGROUND FACILITY?',
-      message:'Entering advances Chapter 3. Unfinished tournament quests remain available through Chapter Replay.',
-      confirmLabel:'ENTER FACILITY',
+      title:'DESCEND INTO TOURNAMENT MAINTENANCE?',
+      message:'This advances the sabotage investigation beneath the arena. Unfinished tournament side content remains available through Chapter Replay.',
+      confirmLabel:'DESCEND',
       cancelLabel:'KEEP EXPLORING'
     });
     if(enter)this.enterFacility();
@@ -1207,16 +1178,12 @@ class RrvvfoChapter3{
       ],()=>this.startFight({kind:'optional',id:'forgotten-fighter',name:'Early Contestant',hpScale:.88,xp:85,optionalQuest:id}));
       return;
     }
-    if(['finalAnnouncement','cleanupEchoes','fakePloukes','lateFan'].includes(id)){
-      this.toast('OPTIONAL QUEST STARTED',quest.title,'Follow the new markers around the tournament grounds.');
-      this.mode='hub';this.battle.phase='play';this.updateObjective();return;
-    }
+    if(chapter3ReplacementActivity(id)){this.runReplacementQuest(id);return}
     if(id==='controlledFlame'){this.showFlameTask();return}
     const scenes={
       unpaidSnacks:[
         {speaker:'FOOD VENDOR',speakerClass:'neutral',text:'Plouke ordered enough food for a team and paid for none of it.',tail:'down'},
-        {speaker:'SAGE',speakerClass:'neutral',text:'Investigative expense.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'You are paying before the investigation becomes a criminal case.',tail:'down'}
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Of course he did. Put it on the list of things I’m yelling at him about when I find him.',tail:'down'}
       ],
       poukiEquipment:[
         {speaker:'POUKI',speakerClass:'neutral',text:'Part of my equipment disappeared after the Bark match.',tail:'down'},
@@ -1228,11 +1195,44 @@ class RrvvfoChapter3{
         {speaker:'RRVVFO',speakerClass:'p1',text:'The cleaning machine collected it with the flyers. For once, not a conspiracy.',tail:'down'}
       ],
       medicalFollowup:[
-        {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'You found the last equipment bag. Nobody will admit the enormous glitter boot belongs to them.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Leave it here. Eventually the owner will miss half a costume.',tail:'down'}
+        {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'The repair crews found another unregistered component near the clinic wall. I logged it before anyone could move it.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Good. At least one thing around here remembers the same story twice.',tail:'down'}
       ]
     };
     this.showDialogue(scenes[id]||[{speaker:'RRVVFO',speakerClass:'p1',text:'One more tournament problem solved.',tail:'down'}],()=>this.finishOptionalQuest(id));
+  }
+
+
+  runReplacementQuest(id){
+    const activity=chapter3ReplacementActivity(id);if(!activity)return;
+    const configs={
+      finalAnnouncement:{
+        text:'The announcement desk has one live chain left. Which routing reaches the West Gate without sending the message through a dead speaker?',
+        progress:'READ THE WIRES • One route keeps the message inside the public speaker loop.',
+        buttons:[{label:'NORTH → CENTER → WEST GATE',value:'north-center-gate',primary:true},{label:'BACKSTAGE → MEDICAL → MARKET',value:'backstage'},{label:'SERVICE → LOCKER → EAST',value:'service'}]
+      },
+      cleanupEchoes:{
+        text:'Three residual energy echoes remain. Two match the tournament ring rhythm. Which one belongs to the hidden service system instead?',
+        progress:'COMPARE • Timing matters more than brightness.',
+        buttons:[{label:'MAIN ARENA ECHO',value:'arena'},{label:'MARKET ECHO',value:'market'},{label:'SERVICE-TUNNEL ECHO',value:'service',primary:true}]
+      },
+      fakePloukes:{
+        text:'All three costumes look convincing. Which behavior proves one of them is copying Plouke from crowd rumors instead of actually understanding him?',
+        progress:'OBSERVE • Plouke controls position; he does not pose for attention.',
+        buttons:[{label:'THE ONE WATCHING THE RING EDGE',value:'edge',primary:true},{label:'THE ONE STANDING STILL',value:'still'},{label:'THE ONE CHECKING HIS SHOES',value:'shoes'}]
+      },
+      lateFan:{
+        text:'The public gates are closing. Which route gets the fan out without dragging them through the whole empty festival?',
+        progress:this.state.staffShortcut?'STAFF SHORTCUT DISCOVERED • Use what you already learned.':'REMEMBER THE HUB • The West Gate route is still public.',
+        buttons:[{label:'WEST GATE SHORTCUT',value:'west',primary:true},{label:'BACKSTAGE LOCKERS',value:'backstage'},{label:'UNDERGROUND SERVICE DOOR',value:'underground'}]
+      }
+    };
+    const config=configs[id];if(!config)return;
+    this.toast('OPTIONAL ACTIVITY',activity.title,'Solve the situation instead of following a chain of collection markers.');
+    this.showTask({kicker:`OPTIONAL • ${activity.kind.toUpperCase()}`,title:activity.title,text:config.text,progress:config.progress,buttons:config.buttons,onChoose:value=>{
+      if(value!==activity.correct){this.toast('NOT QUITE',activity.title,'That route creates more work. Read the scene and try another approach.');this.mode='hub';this.battle.phase='play';setTimeout(()=>{if(!this.aborted&&!this.state.optional[id]?.complete)this.runReplacementQuest(id)},220);return}
+      this.state.optional[id].progress=1;this.saveState();this.finishOptionalQuest(id);
+    }});
   }
 
   advanceOptionalMulti(id,point){
@@ -1293,38 +1293,138 @@ class RrvvfoChapter3{
   }
 
   enterFacility({restored=false}={}){
-    if(!restored){discoverAdventureMission('c3-clean-entry');if((this.state.evidence||[]).length>=CHAPTER3_EVIDENCE.length)completeAdventureMission('c3-clean-entry',{rank:'A',reward:'ARCHIVE • EAST SUPPORT'})}
+    if(!restored)discoverAdventureMission('c3-clean-entry');
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'facility'}));
     this.area='facility';this.state.location='facility';
     if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'resonance','maintenance',{entrance:'tournament-maintenance-elevator'}));
-    this.map?.setRegion('resonance','maintenance');
-    if(!this.state.requiredCompleted.includes('facilityEntered'))this.completeRequired('facilityEntered');
+    this.map?.setRegion('resonance',this.connectedZoneId());
     this.switchStage('resonance-facility');
     this.mode='dungeon';this.currentFight=null;this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();
     this.battle.root.classList.add('storyChapter3Hub');this.battle.root.classList.remove('storyChapter3Combat');
-    this.engine.setLabels({stageName:'ABANDONED RESONANCE FACILITY',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','FACILITY']});
+    const hidden=this.state.projectHollowFacilityEntered;
+    this.engine.setLabels({stageName:hidden?'HIDDEN UNDERGROUND FACILITY':'TOURNAMENT MAINTENANCE',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO',hidden?'FACILITY':'']});
     const spawn=restored?this.facilityCheckpointSpawn():FACILITY_SPAWN;
-    this.preparePlayer(spawn);
-    this.syncRpgPacing();
-    this.engine.setHotbarAvailability([],{show:false});
-    this.showAreaTitle('ABANDONED RESONANCE FACILITY','UNDERGROUND • OPERATOR GONE');
+    this.preparePlayer(spawn);this.syncRpgPacing();this.engine.setHotbarAvailability([],{show:false});
+    this.showAreaTitle(hidden?'HIDDEN UNDERGROUND FACILITY':'TOURNAMENT MAINTENANCE',hidden?'UNAUTHORIZED INFRASTRUCTURE':'BENEATH THE ARENA');
     this.saveState();this.updateObjective();this.refreshTracker();
+    if(restored){
+      const resumeStep=chapter3NextRequired(this.state);
+      if(resumeStep==='rrvvfoEnteredTeleporterRoom'){
+        this.state.rrvvfoEnteredTeleporterRoom=true;this.completeRequired('rrvvfoEnteredTeleporterRoom');
+        setTimeout(()=>{if(!this.aborted)this.resumeBlueCloneSequence()},180);
+      }else if(['blueCloneIdentityRevealed','blueCloneLessonSeen','blueCloneTechniqueFoundationLearned'].includes(resumeStep)){
+        setTimeout(()=>{if(!this.aborted)this.resumeBlueCloneSequence()},180);
+      }
+    }
     if(!restored)this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Cables from the arena. Fight recordings. Energy tanks. Somebody built a laboratory under the tournament.',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'And removed the strongest sample before we arrived.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Then we find out what they left behind.',tail:'down'}
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Repair rooms. Storage. Utility lines. This part actually looks like tournament maintenance.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Which means whatever doesn’t belong should stand out.',tail:'down'}
     ],()=>{this.mode='dungeon';this.battle.phase='play'});
   }
-
   facilityCheckpointSpawn(){
     const next=chapter3NextRequired(this.state);
-    if(['projectHollow','teleporterFound','doorClosing','rockThrown','objectSwap','teleporterActivated'].includes(next))return{x:760,z:120};
-    if(['subjectRFile','echoDefeated'].includes(next))return{x:500,z:-180};
-    if(['dummyDefeated'].includes(next))return{x:170,z:0};
-    if(['recordedAttacks','sageSeparated'].includes(next))return{x:-420,z:0};
+    if(['sageBlueCloneCreated','rrvvfoEnteredTeleporterRoom','blueCloneIdentityRevealed','blueCloneLessonSeen','blueCloneTechniqueFoundationLearned','teleporterActivated','blueCloneDisappeared'].includes(next))return{x:900,z:0};
+    if(['facilityLockdownStarted','teleporterEscapeStarted'].includes(next))return{x:760,z:100};
+    if(['projectHollowNameRevealed','realSageFound'].includes(next))return{x:520,z:120};
+    if(['projectHollowFacilityEntered','tournamentDataDiscovered'].includes(next))return{x:100,z:0};
+    if(['sageTrailFound','findSageObjectiveStarted'].includes(next))return{x:-380,z:0};
     return FACILITY_SPAWN;
   }
 
+  inspectHiddenInfrastructure(){
+    if(chapter3NextRequired(this.state)!=='hiddenInfrastructureFound')return;
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'These cables are newer than the tournament walls.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Hidden camera. Unmarked power line. Robot parts.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Somebody built into the tournament without the tournament knowing.',tail:'down'}
+    ],()=>{this.state.hiddenInfrastructureFound=true;this.completeRequired('hiddenInfrastructureFound');this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState()});
+  }
+
+  inspectSageTrail(){
+    if(chapter3NextRequired(this.state)!=='sageTrailFound')return;
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'A busted surveillance robot... and that piece of fake Plouke fabric.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'...Sage.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'So he found this place too.',tail:'down'}
+    ],()=>{this.state.sageTrailFound=true;this.addEvidence('sageTrail');this.completeRequired('sageTrailFound');this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState()});
+  }
+
+  commitFindSageObjective(){
+    if(chapter3NextRequired(this.state)!=='findSageObjectiveStarted')return;
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Whatever this place is, Sage was moving deeper into it.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Fine. I’ll follow the mess he left behind.',tail:'down'}
+    ],()=>{this.state.findSageObjectiveStarted=true;this.completeRequired('findSageObjectiveStarted');this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState()});
+  }
+
+  enterHiddenFacilityThreshold(){
+    if(chapter3NextRequired(this.state)!=='projectHollowFacilityEntered')return;
+    this.showDialogue([
+      {speaker:'SECURITY DOOR',speakerClass:'neutral',text:'TOURNAMENT CREDENTIALS NOT RECOGNIZED.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Because this isn’t tournament security.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Someone hid an entire second facility behind maintenance.',tail:'down'}
+    ],()=>{
+      this.state.projectHollowFacilityEntered=true;this.completeRequired('projectHollowFacilityEntered');
+      completeAdventureMission('c3-clean-entry',{rank:'S',reward:'TITLE • CLEAN ENTRY'});
+      this.engine.setLabels({stageName:'HIDDEN UNDERGROUND FACILITY',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','FACILITY']});
+      this.showAreaTitle('HIDDEN UNDERGROUND FACILITY','SURVEILLANCE • ROBOT MAINTENANCE • FIGHTER DATA');
+      this.mode='dungeon';this.battle.phase='play';this.map?.setRegion('resonance',this.connectedZoneId());this.updateObjective();this.saveState();
+    });
+  }
+
+  inspectTournamentData(){
+    if(chapter3NextRequired(this.state)!=='tournamentDataDiscovered')return;
+    this.showDialogue([
+      {speaker:'DATA TERMINAL',speakerClass:'neutral',text:'TOURNAMENT COMBAT DATA • ROUND ANALYSIS • FIGHTER RESPONSE RECORDS • ENERGY OBSERVATION.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'They were watching the fights...',tail:'down'},
+      {speaker:'SECURITY UNIT',speakerClass:'rival',text:'UNAUTHORIZED OBSERVER DETECTED. RECORD RESPONSE PATTERN.',tail:'down'}
+    ],()=>this.startFight({kind:'scanner',id:'hollow-scanner',name:'Project Hollow Scanner',hpScale:1.08,xp:150}));
+  }
+
+  revealProjectHollow(){
+    if(chapter3NextRequired(this.state)!=='projectHollowNameRevealed')return;
+    this.showDialogue([
+      {speaker:'CENTRAL TERMINAL',speakerClass:'neutral',text:'ARENA SABOTAGE: COMPLETE. FIGHTER OBSERVATION: COMPLETE. HIGH-OUTPUT SUBJECTS: FLAGGED.',tail:'down'},
+      {speaker:'CENTRAL TERMINAL',speakerClass:'rival',text:'PROJECT HOLLOW.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Project Hollow...',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'So this wasn’t just somebody cheating at a tournament.',tail:'down'}
+    ],()=>{this.state.projectHollowNameRevealed=true;this.completeRequired('projectHollowNameRevealed');this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState()});
+  }
+
+  findRealSage(){
+    if(chapter3NextRequired(this.state)!=='realSageFound')return;
+    this.showDialogue([
+      {speaker:'NARRATION',speakerClass:'neutral',text:'Ahead, the real Sage tears through Project Hollow units faster than the facility can replace them.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'SAGE!',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'Took you long enough.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'YOU KNEW ABOUT THIS PLACE?!',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'For a little while.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'AND YOU DIDN’T TELL ME?!',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'You were busy.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'I WAS LOOKING FOR WHO SABOTAGED THE TOURNAMENT!',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'Then congratulations.',tail:'down'}
+    ],()=>{this.state.realSageFound=true;this.completeRequired('realSageFound');this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState()});
+  }
+
+  beginLockdownFight(){
+    if(chapter3NextRequired(this.state)!=='facilityLockdownStarted')return;
+    this.showDialogue([
+      {speaker:'FACILITY',speakerClass:'rival',text:'COMPROMISE CONFIRMED. LOCKDOWN. DATA EVACUATION. RESONANCE SUPPRESSION ACTIVE.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'They’re trying to trap you.',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'They’re trying. Keep moving.',tail:'down'},
+      {speaker:'NARRATION',speakerClass:'neutral',text:'Sage destroys the nearest units, but new shutters and suppression fields keep sealing routes around Rrvvfo.',tail:'down'}
+    ],()=>this.startFight({kind:'lockdown-unit',id:'hollow-containment',name:'Hollow Containment Unit',hpScale:1.22,xp:190}));
+  }
+
+  beginTeleporterEscape(){
+    if(chapter3NextRequired(this.state)!=='teleporterEscapeStarted')return;
+    this.showDialogue([
+      {speaker:'FACILITY',speakerClass:'rival',text:'TELEPORTER WING: FINAL EVACUATION ROUTE. SECURITY DOORS CLOSING.',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'That room is your way out. Move.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You’re coming too.',tail:'down'},
+      {speaker:'SAGE',speakerClass:'neutral',text:'Move first. Argue later.',tail:'down'}
+    ],()=>{this.state.teleporterEscapeStarted=true;this.completeRequired('teleporterEscapeStarted');this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState()});
+  }
   beginPowerPuzzle(){
     const order=['heat','security','records'];
     const index=this.state.underground.conduits.length;
@@ -1406,22 +1506,39 @@ class RrvvfoChapter3{
     const player=this.battle.fighters[0],foe=this.battle.fighters[1];
     player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(-420,70);void this.battle.ensureFighterAsset(player,'rrvvfo');
     applyStoryProgressionToFighter(player,loadLostYearProgress());player.en=75;player.guard=100;
-    foe.id=config.id;foe.name=config.name;foe.accent=config.kind==='echo'?'#72d9e7':'#a98c5e';foe.cpu=true;foe.visualScale=config.kind==='echo'?1.18:1;foe.reset(420,-70);foe.asset=null;
-    applyStoryLevelToFighter(foe,playerLevel+(config.kind==='echo'?2:0));
+    const hollow=['scanner','lockdown-unit'].includes(config.kind);
+    foe.id=config.id;foe.name=config.name;foe.accent=hollow?'#74d7e4':config.kind==='echo'?'#72d9e7':'#a98c5e';foe.cpu=true;foe.visualScale=config.kind==='echo'?1.18:hollow?1.08:1;foe.reset(420,-70);foe.asset=null;
+    applyStoryLevelToFighter(foe,playerLevel+(config.kind==='echo'?2:hollow?1:0));
     foe.maxHp=Math.round(foe.maxHp*(config.hpScale||1));foe.hp=foe.maxHp;foe.en=80;foe.guard=100;
     this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:foe.id,stageId:this.battle.stage.id,mode:'story'});
     if(config.kind==='echo'&&this.state.rewards.echoResistance)player.storyDefenseMultiplier*=.92;
-    this.battle.time=9999;
-    this.engine.setHotbarAvailability([1,2,3,4,5],{show:true});
-    this.engine.setLabels({stageName:config.kind==='echo'?'CENTRAL DEFENSE CHAMBER':'FACILITY TRAINING CHAMBER',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO',config.name.toUpperCase()]});
-    this.setObjective(config.kind==='echo'?'DEFEAT THE UNFINISHED ECHO':'DEFEAT THE RUNAWAY TRAINING DUMMY',config.kind==='echo'?'Copied abilities preserve copied weaknesses. Force rapid pattern changes.':'The dummy cycles through Hamual’s power pattern, Daniel’s balanced timing, and Wade’s speed pattern.');
-    this.battle.notice(config.kind==='echo'?'BOSS • THE UNFINISHED ECHO':'MINIBOSS • RUNAWAY TRAINING DUMMY',2);
+    this.battle.time=9999;this.engine.setHotbarAvailability([1,2,3,4,5],{show:true});
+    const labels={
+      scanner:['SURVEILLANCE CHAMBER','BREAK THE SCANNER','It records repeated responses. Vary your approach before it settles into a defense.','PROJECT HOLLOW • OBSERVATION UNIT'],
+      'lockdown-unit':['LOCKDOWN CORRIDOR','BREAK THROUGH THE CONTAINMENT UNIT','Sage is clearing the swarm outside. Defeat the unit sealing Rrvvfo’s route.','PROJECT HOLLOW • CONTAINMENT UNIT'],
+      echo:['CENTRAL DEFENSE CHAMBER','DEFEAT THE UNFINISHED ECHO','Copied abilities preserve copied weaknesses. Force rapid pattern changes.','BOSS • THE UNFINISHED ECHO'],
+      dummy:['FACILITY TRAINING CHAMBER','DEFEAT THE RUNAWAY TRAINING DUMMY','The dummy cycles through tournament patterns.','MINIBOSS • RUNAWAY TRAINING DUMMY'],
+      optional:['AFTER-HOURS PRACTICE','WIN THE OPTIONAL MATCH','This fight is optional.','OPTIONAL MATCH']
+    };
+    const [stage,title,detail,notice]=labels[config.kind]||labels.dummy;
+    this.engine.setLabels({stageName:stage,chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO',config.name.toUpperCase()]});
+    this.setObjective(title,detail);this.battle.notice(notice,2);
   }
-
   updateFight(dt){
     if(!this.currentFight)return;
     this.fightElapsed+=dt;this.currentFight.elapsed=this.fightElapsed;
     const foe=this.battle.fighters[1];
+    if(this.currentFight.kind==='scanner'){
+      const phase=Math.floor(this.fightElapsed/5)%3;
+      const label=['RECORDING MOVEMENT','RECORDING GUARD HABITS','RECORDING ATTACK TIMING'][phase];
+      if(label!==this.lastFightPattern){this.lastFightPattern=label;this.battle.notice(`SCANNER • ${label}`,1.05)}
+      return;
+    }
+    if(this.currentFight.kind==='lockdown-unit'){
+      const label=Math.floor(this.fightElapsed/6)%2?'SUPPRESSION PULSE':'DOOR ANCHOR';
+      if(label!==this.lastFightPattern){this.lastFightPattern=label;this.battle.notice(`CONTAINMENT • ${label}`,1.05)}
+      return;
+    }
     if(this.currentFight.kind==='dummy'){
       const pattern=['HAMUAL • BALANCED','DANIEL • PRESSURE','WADE • OVERSHOOT'][Math.floor(this.fightElapsed/7)%3];
       if(pattern!==this.lastFightPattern){this.lastFightPattern=pattern;this.battle.notice(`DUMMY PATTERN • ${pattern}`,1.15)}
@@ -1430,17 +1547,13 @@ class RrvvfoChapter3{
     if(this.currentFight.kind==='echo'){
       const pattern=this.echoPattern().toUpperCase();
       if(pattern!==this.lastFightPattern){
-        this.lastFightPattern=pattern;
-        this.currentFight.patternIndex++;
+        this.lastFightPattern=pattern;this.currentFight.patternIndex++;
         if(this.currentFight.patternIndex>1&&pattern==='RRVVFO'){
-          foe.hp=Math.max(1,foe.hp-4);
-          this.battle.burst(foe.x,foe.z,'#ff7a63',18,70);
-          this.battle.notice('COMPOSITE SWITCH FAILED • ECHO SELF-DAMAGE',1.25);
+          foe.hp=Math.max(1,foe.hp-4);this.battle.burst(foe.x,foe.z,'#ff7a63',18,70);this.battle.notice('COMPOSITE SWITCH FAILED • ECHO SELF-DAMAGE',1.25);
         }else this.battle.notice(`ECHO PATTERN • ${pattern}`,1.05);
       }
     }
   }
-
   echoPattern(){
     const foe=this.battle.fighters[1];
     const ratio=foe?.maxHp?foe.hp/foe.maxHp:1;
@@ -1462,55 +1575,39 @@ class RrvvfoChapter3{
     if(!won){
       const losses=(this.fightLosses[fight.kind]||0)+1;this.fightLosses[fight.kind]=losses;
       this.showTask({
-        kicker:'ENCOUNTER LOST',
-        title:`${fight.name.toUpperCase()} WINS`,
-        text:losses>=2?'Retry with Story Assist: Rrvvfo gains a small advantage without changing the story.':'Retry from the chamber entrance. No dungeon progress is lost.',
-        buttons:[
-          {label:'RETRY',value:'retry',primary:true},
-          ...(losses>=2?[{label:'RETRY WITH STORY ASSIST',value:'assist'}]:[]),
-          {label:fight.kind==='optional'?'RETURN TO TOURNAMENT':'RETURN TO FACILITY',value:'leave'}
-        ],
+        kicker:'ENCOUNTER LOST',title:`${fight.name.toUpperCase()} WINS`,
+        text:losses>=2?'Retry with Story Assist: Rrvvfo gains a small advantage without changing the story.':'Retry from the nearby checkpoint. No investigation progress is lost.',
+        buttons:[{label:'RETRY',value:'retry',primary:true},...(losses>=2?[{label:'RETRY WITH STORY ASSIST',value:'assist'}]:[]),{label:fight.kind==='optional'?'RETURN TO TOURNAMENT':'RETURN TO FACILITY',value:'leave'}],
         onChoose:value=>{
-          if(value==='leave'){
-            this.closeTask();this.currentFight=null;this.engine.setHotbarAvailability([],{show:false});
-            if(fight.kind==='optional')this.enterAfterHoursHub({spawn:{x:-1040,z:-400}});
-            else this.enterFacility({restored:true});
-            return;
-          }
-          this.closeTask();this.startFight({...fight});
-          if(value==='assist'){
-            this.battle.fighters[0].storyAttackMultiplier*=1.15;
-            this.battle.fighters[0].storyDefenseMultiplier*=.88;
-          }
+          if(value==='leave'){this.closeTask();this.currentFight=null;this.engine.setHotbarAvailability([],{show:false});if(fight.kind==='optional')this.enterAfterHoursHub({spawn:{x:-1040,z:-400}});else this.enterFacility({restored:true});return}
+          this.closeTask();this.startFight({...fight});if(value==='assist'){this.battle.fighters[0].storyAttackMultiplier*=1.15;this.battle.fighters[0].storyDefenseMultiplier*=.88}
         }
-      });
-      return;
+      });return;
     }
-    this.fightLosses[fight.kind]=0;
-    if(!this.replayMode)addStoryXp(fight.xp||0,{source:`${fight.name.toUpperCase()} DEFEATED`});
+    this.fightLosses[fight.kind]=0;if(!this.replayMode)addStoryXp(fight.xp||0,{source:`${fight.name.toUpperCase()} DEFEATED`});
     this.currentFight=null;this.engine.setHotbarAvailability([],{show:false});
-    if(fight.kind==='optional'){
-      this.finishOptionalQuest(fight.optionalQuest);
-      this.enterAfterHoursHub({spawn:{x:-1040,z:-400}});
-      return;
+    if(fight.kind==='optional'){this.finishOptionalQuest(fight.optionalQuest);this.enterAfterHoursHub({spawn:{x:-1040,z:-400}});return}
+    if(fight.kind==='scanner'){
+      this.state.tournamentDataDiscovered=true;this.addEvidence('tournamentData');this.completeRequired('tournamentDataDiscovered');
+      this.showDialogue([
+        {speaker:'PROJECT HOLLOW SCANNER',speakerClass:'rival',text:'REPEATED RESPONSE MODEL INCOMPLETE.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'You can record what I do. That doesn’t mean you understand why I do it.',tail:'down'}
+      ],()=>this.enterFacility({restored:true}));return;
+    }
+    if(fight.kind==='lockdown-unit'){
+      this.state.facilityLockdownStarted=true;this.completeRequired('facilityLockdownStarted');
+      this.showDialogue([
+        {speaker:'SAGE',speakerClass:'neutral',text:'The robots aren’t the problem. The building keeps trying to close around you.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Then let’s stop standing in it.',tail:'down'}
+      ],()=>this.enterFacility({restored:true}));return;
     }
     if(fight.kind==='dummy'){
-      this.state.underground.dummyDefeated=true;this.completeRequired('dummyDefeated');
-      this.showDialogue([
-        {speaker:'RUNAWAY TRAINING DUMMY',speakerClass:'rival',text:'HAMUAL—DANIEL—WADE—PATTERN FAILURE.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'It copied Wade’s speed and also copied the part where stopping becomes optional.',tail:'down'},
-        {speaker:'SAGE',speakerClass:'neutral',text:'Records laboratory is open. Try not to insult the machine after defeating it.',tail:'down'}
-      ],()=>this.enterFacility({restored:true}));
-      return;
+      this.state.underground.dummyDefeated=true;
+      this.showDialogue([{speaker:'RRVVFO',speakerClass:'p1',text:'Old training unit. Not part of the main route anymore.',tail:'down'}],()=>this.enterFacility({restored:true}));return;
     }
-    this.state.underground.echoDefeated=true;this.completeRequired('echoDefeated');
-    this.showDialogue([
-      {speaker:'UNFINISHED ECHO',speakerClass:'rival',text:'COMPOSITE—PATTERN—CANNOT—STABILIZE.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'It copied every move and none of the decisions between them.',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'Then the operator was studying more than power.',tail:'down'}
-    ],()=>this.enterFacility({restored:true}));
+    this.state.underground.echoDefeated=true;
+    this.showDialogue([{speaker:'RRVVFO',speakerClass:'p1',text:'That thing copied patterns, not people.',tail:'down'}],()=>this.enterFacility({restored:true}));
   }
-
   readRecordsLab(){
     this.showDialogue([
       {speaker:'RECORDS TERMINAL',speakerClass:'neutral',text:'WADE: High movement speed. Low stopping stability. Useful for mobility testing.',tail:'down'},
@@ -1542,124 +1639,146 @@ class RrvvfoChapter3{
   }
 
   findTeleporter(){
+    // Compatibility alias for saves made before the blue-clone escape rewrite.
+    if(chapter3NextRequired(this.state)==='teleporterEscapeStarted')this.beginTeleporterEscape();
+    else if(chapter3NextRequired(this.state)==='sageBlueCloneCreated')this.startDoorSequence();
+  }
+  startDoorSequence(){
+    if(chapter3NextRequired(this.state)!=='sageBlueCloneCreated')return;
+    this.mode='door-qte';this.battle.phase='story';this.door={active:true,stage:'reach',deadline:performance.now()+9000,swapStarted:false,retryCount:this.door.retryCount||0};
+    const player=this.battle.fighters[0];player.reset(850,0);player.en=100;player.guard=100;
+    this.hideSecondFighter();snapHubCamera(this.battle,player,{distance:930});
+    const panel=this.root.querySelector('[data-c3-door]');panel.hidden=false;
+    this.root.querySelector('[data-c3-door-title]').textContent='THE TELEPORTER DOOR IS CLOSING';
+    this.root.querySelector('[data-c3-door-text]').textContent='The real Sage shoves Rrvvfo toward the doorway while Project Hollow closes in.';
+    this.root.querySelector('[data-c3-door-action]').textContent='GET THROUGH';
+    this.root.querySelector('[data-c3-door-prompt]').textContent=`${this.engine.prompt('interact','E')} • MOVE`;
+    this.root.querySelector('[data-c3-door-action]').disabled=false;this.root.querySelector('[data-c3-door-action]').focus();
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'That technology does not match anything else in this facility.',tail:'down'},
-      {speaker:'SAGE',speakerClass:'neutral',text:'The recently used destination still carries the stolen final-match sample.',tail:'down'},
-      {speaker:'SECURITY SYSTEM',speakerClass:'rival',text:'TELEPORTER ACCESS DENIED. SECURITY DOOR CLOSING.',tail:'down'}
+      {speaker:'SAGE',speakerClass:'neutral',text:'Get in!',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'HEY—!',tail:'down'},
+      {speaker:'NARRATION',speakerClass:'neutral',text:'Rrvvfo reaches back instead of abandoning him. Sage splits off a blue duplicate as the opening shrinks.',tail:'down'}
+    ],()=>{this.mode='door-qte';this.battle.phase='story';panel.hidden=false;this.saveState()});
+  }
+  advanceDoorSequence(){
+    if(!this.door.active)return;
+    if(this.door.stage==='reach'){
+      this.state.sageBlueCloneCreated=true;this.completeRequired('sageBlueCloneCreated');
+      this.state.rrvvfoEnteredTeleporterRoom=true;this.completeRequired('rrvvfoEnteredTeleporterRoom');
+      this.door.stage='clone';this.door.deadline=performance.now()+7000;
+      this.battle.burst(955,0,'#64cfff',28,80);
+      this.root.querySelector('[data-c3-door-title]').textContent='PULL THE BLUE SAGE THROUGH';
+      this.root.querySelector('[data-c3-door-text]').textContent='Rrvvfo is inside. The real Sage remains outside fighting while the blue duplicate reaches the shrinking opening.';
+      this.root.querySelector('[data-c3-door-action]').textContent='PULL CLONE THROUGH';
+      this.root.querySelector('[data-c3-door-prompt]').textContent=`${this.engine.prompt('interact','E')} • GRAB`;
+      this.saveState();return;
+    }
+    if(this.door.stage==='clone'){
+      this.door.active=false;this.door.stage='complete';
+      this.root.querySelector('[data-c3-door]').hidden=true;this.root.querySelector('[data-c3-door-action]').disabled=false;
+      this.finishBlueCloneDoorSequence();
+    }
+  }
+
+  finishBlueCloneDoorSequence(){
+    this.showDialogue([
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Sage—',tail:'down'},
+      {speaker:'NARRATION',speakerClass:'neutral',text:'The Sage beside him begins glowing blue. Beyond the sealed door, the real Sage is still fighting.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'...Wait.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You’re the clone.',tail:'down'}
     ],()=>{
-      this.state.underground.teleporterFound=true;
-      this.completeRequired('teleporterFound');this.completeRequired('doorClosing');
-      this.startDoorSequence();
+      this.state.blueCloneIdentityRevealed=true;this.completeRequired('blueCloneIdentityRevealed');
+      this.showBlueCloneLesson();
     });
   }
 
-  startDoorSequence(){
-    this.mode='door-qte';this.battle.phase='play';this.door={active:true,stage:'throw',deadline:performance.now()+9000,swapStarted:false,retryCount:this.door.retryCount||0};
-    const player=this.battle.fighters[0],rock=this.battle.fighters[1];
-    player.reset(760,0);player.en=100;player.guard=100;
-    rock.id='swap-rock';rock.name='Marked Rock';rock.cpu=false;rock.reset(1035,0);rock.y=-1400;rock.hp=100;
-    snapHubCamera(this.battle,player,{distance:930});
-    const panel=this.root.querySelector('[data-c3-door]');panel.hidden=false;
-    this.root.querySelector('[data-c3-door-title]').textContent='THE SECURITY DOOR IS CLOSING';
-    this.root.querySelector('[data-c3-door-text]').textContent='Throw the marked rock through the shrinking doorway.';
-    this.root.querySelector('[data-c3-door-action]').textContent='THROW THE ROCK';
-    this.root.querySelector('[data-c3-door-prompt]').textContent=`${this.engine.prompt('interact','E')} • THROW`;
-    this.root.querySelector('[data-c3-door-action]').focus();
-    this.saveState();
+  resumeBlueCloneSequence(){
+    const next=chapter3NextRequired(this.state);
+    if(next==='blueCloneIdentityRevealed'){this.finishBlueCloneDoorSequence();return}
+    if(['blueCloneLessonSeen','blueCloneTechniqueFoundationLearned'].includes(next)){this.showBlueCloneLesson();return}
+    this.mode='dungeon';this.battle.phase='play';this.updateObjective();
   }
 
-  advanceDoorSequence(){
-    if(!this.door.active)return;
-    if(this.door.stage==='throw'){
-      this.door.stage='swap';this.door.deadline=performance.now()+7000;
-      this.state.underground.rockThrown=true;this.completeRequired('rockThrown');
-      this.battle.burst(1035,0,'#d8c39c',18,55);
-      this.root.querySelector('[data-c3-rock]').classList.add('thrown');
-      this.root.querySelector('[data-c3-door-title]').textContent='OBJECT SWAP THROUGH THE DOOR';
-      this.root.querySelector('[data-c3-door-text]').textContent='The rock is through. Use Rrvvfo’s real Object Swap before the door seals.';
-      this.root.querySelector('[data-c3-door-action]').textContent='OBJECT SWAP';
-      this.root.querySelector('[data-c3-door-prompt]').textContent=`${this.engine.prompt('ability3','PRESS 3')} • OBJECT SWAP`;
-      this.saveState();return;
-    }
-    if(this.door.stage==='swap'&&!this.door.swapStarted){
-      this.door.swapStarted=true;
-      const rock=this.battle.fighters[1];rock.y=0;rock.x=1045;rock.z=0;
-      const player=this.battle.fighters[0];player.en=100;player.cooldowns.objectSwap=0;
-      const cast=this.engine.invokeRuntime('castAbility',[3]);
-      if(!cast){this.door.swapStarted=false;this.battle.notice('OBJECT SWAP NOT READY • TRY AGAIN',1.1);return}
-      this.root.querySelector('[data-c3-door-action]').disabled=true;
-    }
+  showBlueCloneLesson(){
+    this.showDialogue([
+      {speaker:'SAGE CLONE',speakerClass:'neutral',text:'Try to master this technique, kid.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'The clone thing?',tail:'down'},
+      {speaker:'SAGE CLONE',speakerClass:'neutral',text:'Something like it.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'What about the real you?!',tail:'down'},
+      {speaker:'SAGE CLONE',speakerClass:'neutral',text:'He’ll be fine.',tail:'down'},
+      {speaker:'SAGE CLONE',speakerClass:'neutral',text:'I’m gonna be gone for a while.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'What does THAT mean?!',tail:'down'}
+    ],()=>{
+      this.state.blueCloneLessonSeen=true;this.state.blueCloneTechniqueFoundationLearned=true;
+      this.completeRequired('blueCloneLessonSeen');this.completeRequired('blueCloneTechniqueFoundationLearned');
+      this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState();
+      this.toast('STORY FOUNDATION','BLUE CLONE PRINCIPLE','Rrvvfo saw one source divide into an independently acting manifestation. No technique was unlocked.');
+    });
   }
-
   updateDoorSequence(){
     if(!this.door.active)return;
     const remaining=Math.max(0,this.door.deadline-performance.now());
-    const ratio=remaining/(this.door.stage==='throw'?9000:7000);
+    const duration=this.door.stage==='reach'?9000:7000;
+    const ratio=remaining/duration;
     this.root.querySelector('[data-c3-door-meter]').style.width=`${clamp(ratio*100,0,100)}%`;
     this.root.querySelector('[data-c3-door-gap]').style.width=`${clamp(18+ratio*72,18,90)}%`;
-    const player=this.battle.fighters[0];
-    if(this.door.swapStarted&&player.x>900){
-      this.door.active=false;this.door.stage='complete';
-      this.root.querySelector('[data-c3-door]').hidden=true;
-      this.root.querySelector('[data-c3-door-action]').disabled=false;
-      this.state.underground.objectSwapComplete=true;this.completeRequired('objectSwap');
-      this.mode='dungeon';this.battle.phase='play';this.hideSecondFighter();snapHubCamera(this.battle,player,{distance:940});
-      this.showDialogue([
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Door closed. Sage is on the wrong side. Teleporter is on this side. That seems fair.',tail:'down'},
-        {speaker:'SAGE',speakerClass:'neutral',text:'Do not touch anything until I reach you.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'That instruction has the same problem as “stay here.”',tail:'down'}
-      ],()=>{this.mode='dungeon';this.battle.phase='play';this.updateObjective();this.saveState()});
-      return;
-    }
     if(remaining<=0)this.retryDoorSequence();
   }
-
   retryDoorSequence(){
     this.door.retryCount++;this.state.underground.doorAttempts++;
-    this.root.querySelector('[data-c3-door]').hidden=true;
-    this.root.querySelector('[data-c3-door-action]').disabled=false;
-    this.root.querySelector('[data-c3-rock]').classList.remove('thrown');
-    this.battle.notice('DOOR SEALED • RETRYING FROM THE NEARBY CHECKPOINT',1.6);
-    setTimeout(()=>{if(!this.aborted)this.startDoorSequence()},650);
+    this.root.querySelector('[data-c3-door]').hidden=true;this.root.querySelector('[data-c3-door-action]').disabled=false;
+    this.battle.notice('DOOR SEALED • RETRYING THE ESCAPE BEAT',1.6);
+    this.mode='dungeon';this.battle.phase='play';
+    // Roll back only the two QTE-local checkpoints; all investigation progress remains.
+    this.state.sageBlueCloneCreated=false;this.state.rrvvfoEnteredTeleporterRoom=false;
+    this.state.requiredCompleted=this.state.requiredCompleted.filter(id=>!['sageBlueCloneCreated','rrvvfoEnteredTeleporterRoom'].includes(id));
+    this.saveState();setTimeout(()=>{if(!this.aborted)this.startDoorSequence()},650);
   }
-
   activateTeleporter(){
+    if(chapter3NextRequired(this.state)!=='teleporterActivated')return;
     this.showDialogue([
-      {speaker:'TELEPORTER',speakerClass:'neutral',text:'DESTINATION DATA CORRUPTED. RECENT ROUTE DETECTED.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'I am only checking the panel.',tail:'down'},
-      {speaker:'TELEPORTER',speakerClass:'rival',text:'ACTIVATING.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Of course it is.',tail:'down'}
+      {speaker:'SAGE CLONE',speakerClass:'neutral',text:'Destination is unstable. That’s the available option.',tail:'down'},
+      {speaker:'PROJECT HOLLOW',speakerClass:'rival',text:'TELEPORTER DOOR BREACH IN PROGRESS.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'WAIT—WHERE’S THIS EVEN GOING?!',tail:'down'},
+      {speaker:'NARRATION',speakerClass:'neutral',text:'As Project Hollow breaks through, the blue clone fades normally. The real Sage is no longer visible from Rrvvfo’s side.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Oh, come on—',tail:'down'}
     ],()=>{
-      this.state.underground.teleporterActivated=true;this.completeRequired('teleporterActivated');
+      this.state.teleporterActivated=true;this.state.blueCloneDisappeared=true;
+      this.completeRequired('teleporterActivated');this.completeRequired('blueCloneDisappeared');this.saveState();
       this.enterRemoteRegion();
     });
   }
-
   enterRemoteRegion({restored=false}={}){
     this.area='remote';this.state.location='remote-region';
-    if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo','lowerTrail',{entrance:'resonance-teleporter'}));
-    this.map?.setRegion('echo','lowerTrail');
-    if(!this.state.requiredCompleted.includes('remoteRegion'))this.completeRequired('remoteRegion');
-    this.switchStage('remote-highlands');
-    this.mode='remote';this.currentFight=null;this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();
+    if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo','lowerTrail',{entrance:'unstable-resonance-teleport'}));
+    this.map?.setRegion('echo','lowerTrail');this.switchStage('remote-highlands');
+    this.mode='remote';this.currentFight=null;this.battle.phase='story';this.battle.time=9999;this.battle.hideBanner();
     this.battle.root.classList.add('storyChapter3Hub');this.battle.root.classList.remove('storyChapter3Combat');
-    this.engine.setLabels({stageName:'REMOTE HIGHLANDS',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','']});
-    this.preparePlayer(REMOTE_SPAWN);
-    this.showAreaTitle('REMOTE HIGHLANDS','UNKNOWN REGION • TELEPORTER ROUTE');
-    this.saveState();
+    this.engine.setLabels({stageName:'REMOTE ECHO REGION',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','']});
+    this.preparePlayer(REMOTE_SPAWN);this.showAreaTitle('REMOTE ECHO REGION','UNSTABLE TELEPORT • UNKNOWN LANDING');this.saveState();
     if(restored&&this.state.chapterComplete){this.showCompletionPanel();return}
+    if(restored&&this.state.rrvvfoUnconscious){
+      if(!this.state.echoOperationTimeSkipStarted){this.state.echoOperationTimeSkipStarted=true;this.completeRequired('echoOperationTimeSkipStarted')}
+      this.commitCompletion();return;
+    }
     this.showDialogue([
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Okay. Definitely not the tournament.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'But Shadow’s place should be closer from here.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Assuming that thing did not send me somewhere completely stupid.',tail:'down'}
+      {speaker:'NARRATION',speakerClass:'neutral',text:'The unstable long-distance teleport throws Rrvvfo into an unfamiliar mountain region. The connection collapses behind him.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Where...?',tail:'down'},
+      {speaker:'NARRATION',speakerClass:'neutral',text:'He catches only a glimpse of distant mountains and the floating lookout before the teleport shock overwhelms him.',tail:'down'}
     ],()=>{
-      this.completeRequired('shadowObjective');
-      this.setObjective('REACH SHADOW’S LOOKOUT','The distant tower lies beyond the Chapter 3 boundary. This objective continues later.');
-      this.toast('NEW OBJECTIVE','REACH SHADOW’S LOOKOUT','Chapter 3 ends here. The route continues in a future chapter.');
-      setTimeout(()=>{if(!this.aborted)this.commitCompletion()},1350);
+      this.state.rrvvfoTeleportedToEchoRegion=true;this.state.rrvvfoUnconscious=true;
+      this.completeRequired('rrvvfoTeleportedToEchoRegion');this.completeRequired('rrvvfoUnconscious');
+      const player=this.battle.fighters[0];player.visualAction='knockdown';player.visualActionTime=2.4;this.saveState();
+      this.showDialogue([
+        {speaker:'NARRATION',speakerClass:'neutral',text:'Several days pass while Rrvvfo remains unconscious.',tail:'down'},
+        {speaker:'PROJECT HOLLOW SYSTEM',speakerClass:'rival',text:'TARGET ARRIVED. RECOVERY PERIOD: ESTIMATED MULTIPLE DAYS.',tail:'down'},
+        {speaker:'PROJECT HOLLOW SYSTEM',speakerClass:'rival',text:'BEGIN ECHO REGION OPERATION.',tail:'down'}
+      ],()=>{
+        this.state.echoOperationTimeSkipStarted=true;this.completeRequired('echoOperationTimeSkipStarted');this.saveState();
+        this.commitCompletion();
+      });
     });
   }
-
   commitCompletion(){
     if(this.completed)return;
     this.completeRequired('chapterSaved');
@@ -1673,7 +1792,7 @@ class RrvvfoChapter3{
       saveLostYearProgress({...progress,chapter3State:this.savedState,lastCheckpoint:this.savedCheckpoint||'rrvvfo-03-complete'});
     }else{
       const completedMissions=unique([...(progress.completedMissions||[]),MISSION_ID]);
-      const unlocks=unique([...(progress.unlocks||[]),'afterHoursTournament','resonanceFacility','unfinishedEchoProfile','projectHollowLore','remoteRegionPreview']);
+      const unlocks=unique([...(progress.unlocks||[]),'afterHoursTournament','resonanceFacility','projectHollowLore','remoteRegionPreview','blueCloneTechniqueFoundation']);
       saveLostYearProgress({...progress,completedMissions,unlocks,chapter3State:this.state,lastCheckpoint:'rrvvfo-03-complete'});
     }
     this.onComplete();
@@ -1695,60 +1814,56 @@ class RrvvfoChapter3{
   calculateHubState(){
     if(this.area==='remote')return 6;
     if(this.area==='facility')return 5;
-    if(this.state.requiredCompleted.includes('ploukeBag'))return 4;
-    if(this.state.requiredCompleted.includes('lockedNightShift'))return 3;
-    if(this.state.requiredCompleted.includes('fighterNobodyRecorded'))return 2;
+    if(this.state.maintenanceInvestigationStarted)return 4;
+    if(this.state.medicalWorkerRevisited||this.state.strangeManWarningSeen)return 3;
+    if(this.state.sabotageConfirmed)return 2;
     return 1;
   }
-
   addEvidence(id){
     if(CHAPTER3_EVIDENCE.some(entry=>entry.id===id))this.state.evidence=unique([...this.state.evidence,id]);
   }
 
   updateObjective(){
     const next=chapter3NextRequired(this.state);this.syncRpgPacing();
-    if(this.aftermathSeconds>0){this.setObjective('LET THE DISCOVERY LAND','The alarms have changed the facility. Look around while the next route becomes clear.');this.refreshTracker();return}
-    if(next==='medicalLead'&&!this.pacing.orientationComplete){
-      const progress=pacingOrientationProgress('chapter3',this.pacing);
-      this.setObjective('WALK THE CLOSED TOURNAMENT GROUNDS',`${progress.districts} / ${progress.districtTarget} districts compared • Visit the Main Arena and one other district.`);this.refreshTracker();return;
-    }
+    const evidenceCount=this.state.sabotageEvidence.length,witnessCount=Object.values(this.state.witnesses||{}).filter(Boolean).length;
     const objectives={
-      opening:['CONFRONT THE SAGE','The tournament has ended, but the arena is still unstable.'],
-      medicalLead:['QUESTION THE MEDICAL WORKER','The first reliable witness is inside the Tournament Medical Center.'],
-      fighterNobodyRecorded:['THE FIGHTER NOBODY RECORDED',this.recordingObjectiveDetail()],
-      bracketRecords:['RESTORE THE MISSING BRACKET RECORDS','Use the real Chapter 2 match order to expose the copied data.'],
-      lockedNightShift:['LOCKED ON THE NIGHT SHIFT',`Traverse the staff route and free the workers. ${this.state.nightRouteIndex} / ${NIGHT_ROUTE.length}`],
-      crackedRing:['INSPECT THE DEVICES UNDER THE RING',`Identify the hidden collectors. ${this.state.ringCollectors.length} / 3`],
-      ploukeBag:['FIND THE SAGE’S PLOUKE BAG',`Search the after-hours tournament grounds. ${this.state.bagLocations.length} / 5`],
-      strangeManWarningSeen:['QUESTION THE STRANGE MAN','He is waiting alone near the outer edge of the tournament grounds.'],
-      medicalWorkerRevisited:['Speak to the medical worker again.','The Strange Man said the second conversation would be different.'],
-      strangeManHatCollected:['Return to the Strange Man.','He was standing alone near the outer wall.'],
-      strangeManLead:['Investigate the Strange Man’s warning.','The changed medical badge points back toward the east support.'],
-      lensTrail:['FOLLOW THE HIDDEN ENERGY TRAIL',`Stand at the detector marker and use Lens of Truth. ${this.state.lensTrailIndex} / ${LENS_TRAIL.length}`],
-      sageExplanation:['GET THE FULL EXPLANATION','Confront the Sage at the maintenance elevator.'],
-      facilityEntered:['ENTER THE UNDERGROUND FACILITY','The maintenance elevator leads beneath the arena.'],
-      auxiliaryPower:['RESTORE AUXILIARY POWER','Route heat, security, and records energy through matching conduits.'],
-      recordedAttacks:['PASS THE RECORDED ATTACK CORRIDOR',`Recognize copied attack patterns. ${this.state.underground.recordedPatterns.length} / 5`],
-      sageSeparated:['CONTINUE INTO THE CENTRAL FACILITY','Approach the security wall.'],
-      dummyDefeated:['DEFEAT THE RUNAWAY TRAINING DUMMY','The upgraded dummy blocks the records laboratory.'],
-      subjectRFile:['READ THE FIGHTER EVALUATIONS','The laboratory contains a priority file for Subject R.'],
-      echoDefeated:['DEFEAT THE UNFINISHED ECHO','Exploit the weaknesses copied with every tournament pattern.'],
-      projectHollow:['ACCESS THE CENTRAL TERMINAL','Find out what the operator left behind.'],
-      teleporterFound:['FIND THE STRANGE TELEPORTER','The unmatched technology lies behind the final security door.'],
-      doorClosing:['REACH THE TELEPORTER CHAMBER','The facility is sealing the door.'],
-      rockThrown:['THROW THE MARKED ROCK','Get a valid Object Swap target through the doorway.'],
-      objectSwap:['OBJECT SWAP THROUGH THE DOOR','Use Rrvvfo’s real Object Swap before the door closes.'],
-      teleporterActivated:['ACTIVATE THE TELEPORTER','Inspect the recently used destination.'],
-      remoteRegion:['SURVIVE THE TELEPORT','Rrvvfo is being sent somewhere unknown.'],
-      shadowObjective:['REACH SHADOW’S LOOKOUT','Find a route toward the distant landmark.'],
-      chapterSaved:['CHAPTER 3 COMPLETE','Saving the Remote Region checkpoint.']
+      opening:['RETURN TO THE DAMAGED ARENA','The tournament is over, but the sabotage was never solved.'],
+      sabotageInvestigationStarted:['INVESTIGATE THE TOURNAMENT SABOTAGE','Inspect the arena before repair crews replace the evidence.'],
+      ringEvidence1Found:['INSPECT THE DAMAGED ARENA',`${evidenceCount} / 3 sabotage clues found.`],
+      ringEvidence2Found:['INSPECT THE DAMAGED ARENA',`${evidenceCount} / 3 sabotage clues found.`],
+      ringEvidence3Found:['INSPECT THE DAMAGED ARENA',`${evidenceCount} / 3 sabotage clues found.`],
+      sabotageConfirmed:['CONFIRM THE SABOTAGE','Compare the three physical clues.'],
+      workerQuestioned:['QUESTION TOURNAMENT WORKERS',`${witnessCount} / 3 witness accounts collected.`],
+      securityQuestioned:['QUESTION TOURNAMENT WORKERS',`${witnessCount} / 3 witness accounts collected.`],
+      medicalWorkerFirstConversationComplete:['QUESTION TOURNAMENT WORKERS',`${witnessCount} / 3 witness accounts collected • Medical Center is enterable.`],
+      strangeManWarningSeen:['QUESTION THE STRANGE MAN','A lone man is waiting near the outer edge of the repaired grounds.'],
+      medicalWorkerRevisited:['SPEAK TO THE MEDICAL WORKER AGAIN','The Strange Man said the second conversation would not match the first.'],
+      strangeManHatCollected:['RETURN TO THE STRANGE MAN','He vanished. Something remains where he was standing.'],
+      maintenanceInvestigationStarted:['INVESTIGATE THE STRANGE MAN’S WARNING','The physical evidence and Plouke sighting both point toward tournament maintenance.'],
+      hiddenInfrastructureFound:['DESCEND INTO TOURNAMENT MAINTENANCE','Follow the east-support access beneath the arena.'],
+      sageTrailFound:['INSPECT THE UNAUTHORIZED INFRASTRUCTURE','Find what does not belong in ordinary tournament maintenance.'],
+      findSageObjectiveStarted:['FOLLOW SAGE’S TRAIL','A damaged robot and Plouke-disguise fragment prove Sage was investigating this route too.'],
+      projectHollowFacilityEntered:['OPEN THE HIDDEN SECURITY DOOR','The unauthorized infrastructure continues beyond normal tournament maintenance.'],
+      tournamentDataDiscovered:['SEARCH THE HIDDEN FACILITY','Find out what the underground systems were recording.'],
+      projectHollowNameRevealed:['IDENTIFY WHO BUILT THIS PLACE','The fighter data belongs to an organized operation.'],
+      realSageFound:['FIND THE REAL SAGE','Fighting can be heard deeper in the facility.'],
+      facilityLockdownStarted:['SURVIVE THE LOCKDOWN','Project Hollow is sealing routes and deploying containment units.'],
+      teleporterEscapeStarted:['REACH THE TELEPORTER ROOM','The facility is evacuating data. Sage is clearing a route for Rrvvfo.'],
+      sageBlueCloneCreated:['GET THROUGH THE CLOSING DOOR','The real Sage stays outside. Get Rrvvfo and the blue clone through.'],
+      rrvvfoEnteredTeleporterRoom:['GET THE BLUE CLONE INSIDE','Rrvvfo is through. The duplicate is still at the shrinking opening.'],
+      blueCloneIdentityRevealed:['LOOK AT THE SAGE BESIDE YOU','Something about him is visibly wrong.'],
+      blueCloneLessonSeen:['LISTEN TO THE BLUE CLONE','Sage left Rrvvfo with a technique principle, not a finished move.'],
+      blueCloneTechniqueFoundationLearned:['REMEMBER THE PRINCIPLE','One source can divide into independently acting manifestations.'],
+      teleporterActivated:['LET THE BLUE CLONE START THE TELEPORTER','Project Hollow is breaking through the door.'],
+      blueCloneDisappeared:['SURVIVE THE UNSTABLE TELEPORT','The clone is gone and the destination is unknown.'],
+      rrvvfoTeleportedToEchoRegion:['SURVIVE THE UNSTABLE TELEPORT','The route throws Rrvvfo far from the tournament.'],
+      rrvvfoUnconscious:['RRVVFO IS DOWN','The unstable teleport has left him unconscious in the remote region.'],
+      echoOperationTimeSkipStarted:['SEVERAL DAYS PASS','Project Hollow begins an operation in Echo Region while Rrvvfo cannot interfere.'],
+      chapterSaved:['CHAPTER 3 COMPLETE','Saving the Echo Region handoff for Chapter 4.']
     };
-    const [title,detail]=objectives[next]||['CHAPTER 3 COMPLETE','Reach Shadow’s Lookout in the next chapter.'];
-    this.setObjective(title,detail);
-    this.updateLensAvailability();
-    this.refreshTracker();
+    const [title,detail]=objectives[next]||['CHAPTER 3 COMPLETE','Rrvvfo wakes in Echo Region at the start of Chapter 4.'];
+    this.setObjective(title,detail);this.updateLensAvailability();this.refreshTracker();
   }
-
   recordingObjectiveDetail(){
     const step=this.state.recordingStep;
     if(step===0)return'Speak to the early contestant in Fighter Camp.';
@@ -1759,13 +1874,17 @@ class RrvvfoChapter3{
   }
 
   objectivePoint(){
-    if(this.mode==='interior'&&this.interiorId){const next=chapter3NextRequired(this.state),actor=interiorActorPoints(this.interiorId)[0];if(this.interiorId==='tournament-medical'&&['medicalLead','medicalWorkerRevisited'].includes(next))return actor;return interiorExitPoint(this.interiorId)}
-    if(this.area==='remote')return{x:1020,z:-560,label:'SHADOW’S LOOKOUT'};
-    const interactions=this.availableInteractions();
-    const player=this.battle?.fighters?.[0]||{x:0,z:0};
-    return [...interactions].sort((a,b)=>distance(player,a)-distance(player,b))[0]||null;
+    const next=chapter3NextRequired(this.state);
+    if(this.mode==='interior'&&this.interiorId){
+      const actor=interiorActorPoints(this.interiorId)[0];
+      if(this.interiorId==='tournament-medical'&&['medicalWorkerFirstConversationComplete','medicalWorkerRevisited'].includes(next))return actor;
+      return interiorExitPoint(this.interiorId);
+    }
+    if(this.area==='remote')return null;
+    if(['medicalWorkerFirstConversationComplete','medicalWorkerRevisited'].includes(next))return{x:640,z:-430,label:'TOURNAMENT MEDICAL CENTER'};
+    const interactions=this.availableInteractions();const player=this.battle?.fighters?.[0]||{x:0,z:0};
+    return[...interactions].sort((a,b)=>distance(player,a)-distance(player,b))[0]||null;
   }
-
   mapPoints(){
     if(this.mode==='interior'&&this.interiorId)return interiorMapPoints(this.interiorId);
     if(this.area!=='hub')return[];
@@ -1915,7 +2034,7 @@ class RrvvfoChapter3{
       return;
     }
     if(this.door.active){
-      if(event.key==='Enter'||event.code==='KeyE'||event.code==='Digit3'){event.preventDefault();this.advanceDoorSequence()}
+      if(event.key==='Enter'||event.code==='KeyE'){event.preventDefault();this.advanceDoorSequence()}
       return;
     }
     if(this.storyMenuOpen){
@@ -1930,10 +2049,10 @@ class RrvvfoChapter3{
     if(event.key.toLowerCase()==='m'&&['hub','dungeon','remote','interior','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openManual();return}
     if(event.key.toLowerCase()==='t'&&['hub','dungeon','remote','interior'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openTracker();return}
     if(['hub','dungeon','interior'].includes(this.mode)&&(event.key==='Enter'||event.code==='KeyE')){event.preventDefault();event.stopImmediatePropagation();this.tryInteract()}
-    if(this.mode==='hub'&&event.code==='Digit4'){
-      if(chapter3NextRequired(this.state)==='strangeManLead'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected){event.preventDefault();this.inspectStrangeManHatWithLens()}
-      else if(chapter3NextRequired(this.state)==='lensTrail'){event.preventDefault();this.useInvestigationLens()}
-    }
+    if(this.mode==='hub'&&event.code==='Digit4'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected){event.preventDefault();this.inspectStrangeManHatWithLens()}
+  }
+
+  drawChapterWorld(){
   }
 
   drawChapterWorld(){
@@ -1983,7 +2102,7 @@ class RrvvfoChapter3{
       r.box({x:p.x,y:13,z:p.z,sx:100,sy:7,sz:72,color:'#15131a'});
       r.box({x:p.x,y:29,z:p.z,sx:52,sy:30,sz:45,color:'#1e1b24'});
     }
-    if(next==='strangeManLead'){
+    if(next==='maintenanceInvestigationStarted'){
       r.box({x:EAST_SUPPORT_CLUE.x,y:18,z:EAST_SUPPORT_CLUE.z,sx:42,sy:5,sz:30,color:'#d8edf4'});
       r.billboard({x:EAST_SUPPORT_CLUE.x,y:42,z:EAST_SUPPORT_CLUE.z,size:18+Math.sin(time*5)*2,color:'#7eeaff',alpha:.68});
     }
@@ -1997,7 +2116,10 @@ class RrvvfoChapter3{
       r.box({x,y:82,z:index%2?-500:500,sx:42,sy:96,sz:42,color:colors[index%3],alpha:.34});
       r.billboard({x,y:115,z:index%2?-500:500,size:32*pulse,color:colors[index%3],alpha:.2});
     }
-    if(this.state.underground.echoDefeated)r.disc({x:760,y:7,z:0,rx:110,rz:70,color:'#7ad8e8',alpha:.12});
+    if(this.state.sageBlueCloneCreated&&!this.state.blueCloneDisappeared){
+      r.box({x:970,y:70,z:-75,sx:48,sy:112,sz:40,color:'#3d9cff',alpha:.62});
+      r.billboard({x:970,y:125,z:-75,size:68+Math.sin(time*5)*5,color:'#73d7ff',alpha:.28});
+    }
     r.box({x:1035,y:105,z:0,sx:38,sy:210,sz:190,color:'#7b55a4',alpha:.64});
     r.billboard({x:1035,y:140,z:0,size:105+Math.sin(time*4)*8,color:'#a98cff',alpha:.22});
   }

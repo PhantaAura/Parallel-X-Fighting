@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a404-buildings-interiors-world-life-20260802';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a404-buildings-interiors-world-life-20260802';
-import {Fighter} from '../js/fighter.js?v=29a404-buildings-interiors-world-life-20260802';
+import {EffectSystem} from '../js/effects.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {Fighter} from '../js/fighter.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,26 +17,29 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a404-buildings-interiors-world-life-20260802';
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a404-buildings-interiors-world-life-20260802';
-import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
-import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a404-buildings-interiors-world-life-20260802';
-import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a404-buildings-interiors-world-life-20260802';
-import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
-import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CONNECTED_WORLD_VERSION,WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,connectedZoneNeighbors,discoverWorldLandmark,discoverWorldShortcut,freshConnectedWorldState,normalizeConnectedWorldState,recordInteriorVisit,recordWorldVisit,renderTravelJournal,setWorldDoorState,worldDoorState,worldInteriorKnown,worldMapSummary,worldShortcutKnown,worldZoneKnown} from '../js/story/connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
-import {STORY_BUILDINGS,STORY_INTERIOR_VERSION,buildingDefinition,buildingIdsForChapter,buildingMapTitle,canEnterBuilding,interiorActorPoints,interiorMapPoints,interiorTransition,lockedDoorLine,resolveExteriorBuildingCollision} from '../js/story/story-interiors.js?v=29a404-buildings-interiors-world-life-20260802';
-import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a404-buildings-interiors-world-life-20260802';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
-import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a404-buildings-interiors-world-life-20260802';
-import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a404-buildings-interiors-world-life-20260802';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CONNECTED_WORLD_VERSION,WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,connectedZoneNeighbors,discoverWorldLandmark,discoverWorldShortcut,freshConnectedWorldState,normalizeConnectedWorldState,recordInteriorVisit,recordWorldVisit,renderTravelJournal,setWorldDoorState,worldDoorState,worldInteriorKnown,worldMapSummary,worldShortcutKnown,worldZoneKnown} from '../js/story/connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {STORY_BUILDINGS,STORY_INTERIOR_VERSION,buildingDefinition,buildingIdsForChapter,buildingMapTitle,canEnterBuilding,interiorActorPoints,interiorMapPoints,interiorTransition,lockedDoorLine,resolveExteriorBuildingCollision} from '../js/story/story-interiors.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {FIELD_SKILL_REACTIONS,WORLD_DELIGHT_DISCOVERIES,WORLD_DELIGHT_VERSION,delightForChapter,discoverWorldDelight,loadWorldDelightState,normalizeWorldDelightState,worldDelightKnown} from '../js/story/world-delight.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {FAST_TRAVEL_NODES,REVISIT_LOOP_VERSION,REVISIT_OPPORTUNITIES,claimRevisitOpportunity,fastTravelDestination,fastTravelNodeAvailable,markFastTravelArrival,renderRevisitJournal,revisitOpportunityStatus,revisitState,syncFastTravelNodes,unlockFastTravelNode} from '../js/story/revisit-loop.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER3_REPLACEMENT_ACTIVITIES,QUEST_AUDIT,QUEST_OVERHAUL_VERSION,chapter2BracketRoute,chapter3ReplacementActivity,chapter4PotionReady,chapter4PotionRoute,chapter4SignalRoute,chapter4SignalsReady,questAuditSummary} from '../js/story/quest-overhaul.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -45,27 +48,27 @@ import {DEFAULT_QOL_SETTINGS,QOL_SETTINGS_KEY,loadQolSettings,saveQolSettings,sa
 import {NotificationSystem} from '../js/notification-system.js';
 import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringifySave,validateSaveImport} from '../js/save-manager.js';
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
-import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a404-buildings-interiors-world-life-20260802';
-import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a404-buildings-interiors-world-life-20260802';
+import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a404-buildings-interiors-world-life-20260802';
+import {LoadingManager} from '../js/loading-manager.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
-import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a404-buildings-interiors-world-life-20260802';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a404-buildings-interiors-world-life-20260802';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a404-buildings-interiors-world-life-20260802';
-import {STAGES} from '../js/stages.js?v=29a404-buildings-interiors-world-life-20260802';
-import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a404-buildings-interiors-world-life-20260802';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {STAGES} from '../js/stages.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 
-const RELEASE_CACHE_ID='29a404-buildings-interiors-world-life-20260802';
-const EXPECTED_BUILD='Prototype 2.9A.40.4 — Buildings, Interiors & World Life';
-const TOTAL_TESTS=442;
+const RELEASE_CACHE_ID='29a4071-chapter3-sabotage-investigation-20260802';
+const EXPECTED_BUILD='Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite';
+const TOTAL_TESTS=482;
 const TEST_TIMEOUT_MS=30000;
 class SmokeTimeoutError extends Error{constructor(name){super(`Timed out after ${TEST_TIMEOUT_MS/1000} seconds: ${name}`);this.name='SmokeTimeoutError';this.code='PX_SMOKE_TIMEOUT'}}
 const FETCH_TIMEOUT_MS=12000;
@@ -606,16 +609,16 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(source.includes("this.root.querySelector('[data-tournament-run]').hidden=false"),'Run does not stay visible in tournament fights');
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
-await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a404-buildings-interiors-world-life-20260802');
-  assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
+await test('Chapter 3 contains the sabotage investigation, Project Hollow reveal, blue-clone escape, and blackout handoff',async()=>{
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a4071-chapter3-sabotage-investigation-20260802');
+  assert(typeof chapterModule.startRrvvfoChapter3==='function','the rewritten Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
-  for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
-  assert(source.includes("this.engine.invokeRuntime('castAbility',[3])"),'the closing door does not use the real Object Swap ability');
-  assert(source.includes("this.mode==='door-qte'&&slot===3"),'the Chapter 3 ability filter blocks Object Swap at the closing door');
-  assert(source.includes("if(slot===5){battle.notice('FIRE AWAKENING HAS NOT STABILIZED'"),'Chapter 3 incorrectly allows full Fire Awakening');
-  assert(source.includes("fight.kind==='optional'?'RETURN TO TOURNAMENT':'RETURN TO FACILITY'"),'the optional hub fight can return the player to the locked facility');
-  assert(source.includes('REACH SHADOW’S LOOKOUT')&&source.includes('PROJECT HOLLOW'),'Chapter 3 ending discoveries are incomplete');
+  for(const token of ['SABOTAGE_EVIDENCE_POINTS','SABOTAGE_WITNESSES','investigateMaintenanceEntry','inspectHiddenInfrastructure','inspectSageTrail','findRealSage','beginLockdownFight','startDoorSequence','showBlueCloneLesson','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`rewritten Chapter 3 omitted ${token}`);
+  assert(source.includes('Someone messed with that ring.')&&source.includes('Yeah. Someone definitely did this.'),'Chapter 3 no longer begins from tournament sabotage');
+  assert(source.includes('sageBlueCloneCreated')&&source.includes('blueCloneTechniqueFoundationLearned'),'blue-clone escape/foundation is missing');
+  assert(source.includes('THE ESCAPE IS ABOUT THE CLOSING DOOR • NOT OBJECT SWAP'),'teleporter escape does not protect the blue-clone lesson from Object Swap framing');
+  assert(source.includes('RECOVERY PERIOD: ESTIMATED MULTIPLE DAYS')&&source.includes('BEGIN ECHO REGION OPERATION'),'multi-day Echo handoff is missing');
+  assert(!source.includes('REACH SHADOW’S LOOKOUT'),'Chapter 3 still hands control directly into the Chapter 4 lookout objective');
   assert(!/CHAPTER 3 DEMO|PLAYABLE DEMO|DEVELOPMENT PREVIEW|NEXT BUILD/.test(source),'Chapter 3 still exposes demo language');
   assert(!/\bSOVAR\b/i.test(source),'the hidden operator identity is revealed too early');
   assert(source.includes('STRANGE MAN')&&source.includes("Strange Man’s Hat"),'the approved Strange Man investigation is missing');
@@ -629,14 +632,14 @@ await test('Chapter 3 stages are valid and the reused tournament hub has a true 
   assert(night.bounds.minX===daytime.bounds.minX&&night.bounds.maxX===daytime.bounds.maxX,'the after-hours hub does not reuse the tournament footprint');
   assert(night.camera.clear!==daytime.camera.clear&&night.camera.fogColor!==daytime.camera.fogColor,'the after-hours hub still uses the daytime atmosphere');
 });
-await test('Chapter 3 data preserves the required structure and migrates duplicate save data safely',()=>{
+await test('Chapter 3 data preserves the rewritten sabotage structure and migrates duplicate save data safely',()=>{
   assert(CHAPTER3_MISSION_ID==='rrvvfo-03','Chapter 3 uses the wrong mission id');
-  assert(CHAPTER3_REQUIRED_STEPS.length===29,'required Chapter 3 story spine changed');
-  assert(CHAPTER3_MANDATORY_STORIES.length===3&&CHAPTER3_OPTIONAL_QUESTS.length===10&&CHAPTER3_EVIDENCE.length===6,'Chapter 3 content counts changed');
+  assert(CHAPTER3_REQUIRED_STEPS.length===33,'rewritten Chapter 3 must contain the full 33-step sabotage/escape spine');
+  assert(CHAPTER3_MANDATORY_STORIES.length===3&&CHAPTER3_OPTIONAL_QUESTS.length===10&&CHAPTER3_EVIDENCE.length===9,'Chapter 3 rewritten content counts changed');
   assert(CHAPTER3_BRACKET_ORDER.join(' | ')==='HAILEY → PLOUKE | RRVVFO → HAMUAL | RRVVFO → DANIEL | RRVVFO → WADE | RRVVFO → PLOUKE','Chapter 2 bracket continuity is wrong');
   const state=normalizeChapter3State({requiredCompleted:['opening','opening'],evidence:['medicalTestimony','medicalTestimony'],optionalProgress:{speakers:['vendor','vendor']}});
-  assert(state.requiredCompleted.length===1&&state.evidence.length===1&&state.optionalProgress.speakers.length===1,'Chapter 3 save migration retained duplicates');
-  assert(chapter3NextRequired(state)==='medicalLead'&&chapter3CompletionPercent(state)>0&&!chapter3Complete(state),'partial Chapter 3 state was misread');
+  assert(state.requiredCompleted.length===2&&state.evidence.length===1&&state.optionalProgress.speakers.length===1,'Chapter 3 save migration retained duplicates or failed to seed sabotage investigation');
+  assert(chapter3NextRequired(state)==='ringEvidence1Found'&&chapter3CompletionPercent(state)>0&&!chapter3Complete(state),'partial rewritten Chapter 3 state was misread');
   const completed=freshChapter3State();for(const step of CHAPTER3_REQUIRED_STEPS)markChapter3Required(completed,step);
   assert(chapter3Complete(completed)&&chapter3CompletionPercent(completed)===100,'complete Chapter 3 state was not recognized');
 });
@@ -657,7 +660,7 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a404-buildings-interiors-world-life-20260802');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a4071-chapter3-sabotage-investigation-20260802');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','enterLookout','startShadowArrival'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
@@ -1107,26 +1110,28 @@ await test('Procedural chapter audio crossfades and adds distinct ambience accen
   assert(audio.includes('fadeMusicBus(oldBus,.34)')&&audio.includes('stopMusic({fade=.34}={})'),'music crossfade timing was not polished');
 });
 
-await test('Chapter 3 Strange Man sequence preserves order, flags, and facility migration',()=>{
-  const base=normalizeChapter3State({requiredCompleted:['opening','medicalLead','fighterNobodyRecorded','bracketRecords','lockedNightShift','crackedRing','ploukeBag']});
-  assert(chapter3NextRequired(base)==='strangeManWarningSeen','Strange Man does not enter after the required witness investigation');
+await test('Chapter 3 Strange Man sequence preserves sabotage order, flags, hat, and legacy facility migration',()=>{
+  const base=normalizeChapter3State({requiredCompleted:['opening','sabotageInvestigationStarted','ringEvidence1Found','ringEvidence2Found','ringEvidence3Found','sabotageConfirmed','workerQuestioned','securityQuestioned','medicalWorkerFirstConversationComplete']});
+  assert(chapter3NextRequired(base)==='strangeManWarningSeen','Strange Man does not enter after sabotage evidence and witness questioning');
   const mid=normalizeChapter3State({strangeManWarningSeen:true,medicalWorkerRevisited:true,strangeManHatCollected:true,keyItems:['strange-mans-hat']});
   assert(mid.requiredCompleted.includes('strangeManWarningSeen')&&mid.requiredCompleted.includes('medicalWorkerRevisited')&&mid.requiredCompleted.includes('strangeManHatCollected'),'Strange Man flags did not reconcile into required checkpoints');
   const migrated=normalizeChapter3State({requiredCompleted:['opening','medicalLead','fighterNobodyRecorded','bracketRecords','lockedNightShift','crackedRing','ploukeBag','lensTrail','sageExplanation','facilityEntered'],location:'facility'});
-  assert(migrated.strangeManLeadFound&&migrated.keyItems.includes('strange-mans-hat')&&chapter3NextRequired(migrated)!=='strangeManWarningSeen','older facility save was sent backward or lost the key item');
+  assert(migrated.strangeManHatCollected&&migrated.keyItems.includes('strange-mans-hat')&&migrated.projectHollowFacilityEntered&&chapter3NextRequired(migrated)==='tournamentDataDiscovered','older facility save was sent backward or lost the rewritten key-item/facility state');
 });
 
-await test('Chapter 3 Strange Man dialogue, hat, Lens contradictions, and east-support clue are packaged',async()=>{
+await test('Chapter 3 Strange Man dialogue, exact medical contradiction, hat, and Lens uncertainty are packaged',async()=>{
   const source=await (await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of [
     'You’re wasting your time.',
     'The people you’re talking to aren’t the real people.',
-    'Again? I’ve never spoken to you.',
+    'You said Plouke skipped the medical tent and went toward maintenance.',
+    'I’ve never treated or spoken to anyone named Plouke.',
+    'You literally told me that a few minutes ago.',
     'You warn me about fake people, vanish, and leave your hat?',
     'Great. Even my eye doesn’t know what happened.',
     'strangeManWarningSeen','medicalWorkerRevisited','strangeManHatCollected','strangeManHatLensInspected',
-    'STRANGE_MAN_HAT','EAST_SUPPORT_CLUE','medicalBadgeMismatch'
-  ])assert(source.includes(token),`Strange Man implementation omitted ${token}`);
+    'STRANGE_MAN_HAT','EAST_SUPPORT_CLUE','medicalContradiction'
+  ])assert(source.includes(token),`Strange Man sabotage investigation omitted ${token}`);
 });
 
 await test('2.9A.25 chapter results use real optional quest state and one merged clear screen',async()=>{
@@ -1159,7 +1164,7 @@ await test('2.9A.25 hub collision blocks structures and keeps Echo Village spawn
 
 await test('2.9A.25 Chapter 3 consolidates evidence instead of forcing repeated plaza laps',async()=>{
   const source=await fetchFresh('../js/story/rrvvfo-chapter-3.js').then(r=>r.text());
-  for(const token of ['ring-evidence-sweep','bag-evidence-board','beginRingEvidenceSweep','beginBagEvidenceBoard'])assert(source.includes(token),`Chapter 3 evidence pass omitted ${token}`);
+  for(const token of ['SABOTAGE_EVIDENCE_POINTS','inspectSabotageEvidence','sabotageEvidence','sabotageConfirmed'])assert(source.includes(token),`Chapter 3 evidence pass omitted ${token}`);
 });
 
 await test('2.9A.25 Chapter 4 makes teamwork playable with QTE roles, waves, allies, and optional swarms',async()=>{
@@ -1254,7 +1259,7 @@ await test('2.9A.27 Chapter 2 observation reduces rumor errands without removing
 
 await test('2.9A.27 Chapter 3 consolidates footage reconstruction and keeps the facility payoff',async()=>{
   const source=await fetchFresh('../js/story/rrvvfo-chapter-3.js').then(r=>r.text());
-  for(const token of ['security-reconstruction','reconstructSecurityFootage','RECONSTRUCT THE MISSING FOOTAGE','FACILITY LOCKDOWN'])assert(source.includes(token),`Chapter 3 pacing omitted ${token}`);
+  for(const token of ['reconstructSecurityFootage','RECONSTRUCT THE INCIDENT','FACILITY LOCKDOWN','inspectTournamentData'])assert(source.includes(token),`Chapter 3 investigation pacing omitted ${token}`);
 });
 
 await test('2.9A.27 Chapter 4 adds team rest, ally commands, and changed cavern return',async()=>{
@@ -1569,7 +1574,7 @@ await test('2.9A.31.3 Chapter 4 playtesting can enter a clean temporary Echo Vil
   for(const token of ['data-playtest-chapter-hub="4"','entry:\'hub\''])assert(polish.includes(token),`playtest hub menu omitted ${token}`);
   assert(story.includes("event.detail?.entry==='hub'"),'Story router does not preserve the hub jump');
   for(const token of ['playtestHub','enterPlaytestVillageHub','Fresh temporary Chapter 4 hub state'])assert(chapter4.includes(token),`Chapter 4 clean hub jump omitted ${token}`);
-  for(const token of ['Hamual’s power pattern','Daniel’s balanced timing','Wade’s speed pattern'])assert(chapter3.includes(token),`dummy pattern explanation omitted ${token}`);
+  for(const token of ['Project Hollow Scanner','RECORD RESPONSE PATTERN','Hollow Containment Unit'])assert(chapter3.includes(token),`rewritten Chapter 3 facility combat omitted ${token}`);
 });
 
 await test('2.9A.31.3 portrait combat retains compact critical cues without Training overlap',async()=>{
@@ -1762,10 +1767,10 @@ await test('2.9A.35 Chapter 2 reveals the festival and optional quests in story 
   assert(source.includes("if(!this.pacing.orientationComplete)"),'announcer does not respect first-visit orientation');
 });
 
-await test('2.9A.35 Chapter 3 delays the first lead and stages optional investigations',async()=>{
+await test('2.9A.35 Chapter 3 lets sabotage evidence start immediately while staging optional investigations by orientation',async()=>{
   const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
-  for(const token of ['WALK THE CLOSED TOURNAMENT GROUNDS','LET THE DISCOVERY LAND','beginInvestigationAftermath','optionalWave','waveOne','waveTwo','waveThree'])assert(source.includes(token),`Chapter 3 RPG pacing omitted ${token}`);
-  assert(source.includes("next==='medicalLead'&&this.pacing.orientationComplete"),'medical lead opens before the player understands the closed grounds');
+  for(const token of ['INVESTIGATE THE TOURNAMENT SABOTAGE','completePacingOrientation','beginInvestigationAftermath','optionalWave','waveOne','waveTwo','waveThree','if(optionalWave<1)continue'])assert(source.includes(token),`Chapter 3 RPG pacing omitted ${token}`);
+  assert(source.includes("['ringEvidence1Found','ringEvidence2Found','ringEvidence3Found','sabotageConfirmed'].includes(next)"),'mandatory sabotage evidence is incorrectly hidden behind optional orientation');
 });
 
 await test('2.9A.35 Chapter 4 introduces Echo Village before the party mission begins',async()=>{
@@ -1842,7 +1847,7 @@ await test('2.9A.36 older Chapter 4 saves beyond the caverns never move backward
 });
 
 await test('2.9A.36 active build packages playful exploration without changing save schema',async()=>{
-  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
+  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.36 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.36 changed the save schema unexpectedly');
   assert(html.includes(RELEASE_CACHE_ID),'2.9A.36 cache identity is not synchronized');
@@ -1913,7 +1918,7 @@ await test('2.9A.37 chapter results include RPG afterglow instead of rushing the
 });
 
 await test('2.9A.37 active build packages reliability and RPG flow without changing save schema',async()=>{
-  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802'),fetchSource('../js/story/story-reliability.js')]);
+  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802'),fetchSource('../js/story/story-reliability.js')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.37 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.37 changed save schema unexpectedly');
   assert(html.includes('story-rpg-flow-29a37.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.37 active page is not synchronized');
@@ -2006,7 +2011,7 @@ await test('2.9A.38 mastery records are included in safe save export and import'
 });
 
 await test('2.9A.38 active build integrates mastery results Training rewards and Extras records',async()=>{
-  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802')]);
+  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.38 build label is not centralized');assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.38 changed save schema unexpectedly');
   assert(html.includes('mastery-records-29a38.css')&&html.includes('MASTERY & RECORDS')&&html.includes(RELEASE_CACHE_ID),'2.9A.38 page does not expose Adventure Records');
   for(const token of ['createBattleMasterySession','recordBattleMasteryEvent','finalizeBattleMastery','data-mastery-result','recordMasteryChallenge'])assert(arena.includes(token),`Arena mastery integration omitted ${token}`);
@@ -2044,7 +2049,7 @@ await test('2.9A.39 Chapter 4 adds optional party recovery without adding a mand
 });
 
 await test('2.9A.39.1 active build preserves RPG polish with the new Chapter 4 ending',async()=>{
-  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802')]);
+  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD&&build.SAVE_SCHEMA_VERSION===268,'2.9A.39.1 build identity or save schema is wrong');
   assert(html.includes('full-experience-29a39.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.39.1 presentation/cache is not synchronized');
   assert(charm.includes('storyExperienceBeat')&&charm.includes('pxstoryfightrank'),'Story charm does not consume the new pacing/rank events');
@@ -2133,7 +2138,7 @@ await test('2.9A.40.2 Flow Cancel and build passives give audiovisual feedback i
 });
 
 await test('2.9A.40.2 current release identity keeps save schema 268 and the new cache synchronized',async()=>{
-  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802'),fetchSource('../index.html')]);
+  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802'),fetchSource('../index.html')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.2 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.2 changed save schema unexpectedly');
   assert(index.includes('field-minimal-29a402.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.2 index is missing the minimal-UI release identity');
@@ -2141,7 +2146,7 @@ await test('2.9A.40.2 current release identity keeps save schema 268 and the new
 
 
 await test('2.9A.40.3 connected world defines four distinct regions and the released Story bridge graph',()=>{
-  assert(CONNECTED_WORLD_VERSION===2,'40.4 connected-world state version is not active');
+  assert(CONNECTED_WORLD_VERSION===3,'40.6 connected-world state version is not active');
   for(const id of ['training','tournament','resonance','echo'])assert(WORLD_REGIONS[id]?.zones,`missing connected region ${id}`);
   assert(WORLD_REGION_LINKS.some(link=>link.from==='training'&&link.to==='tournament'),'Tournament Road no longer bridges Chapters 1 and 2');
   assert(WORLD_REGION_LINKS.some(link=>link.from==='tournament'&&link.to==='resonance'),'Chapter 3 maintenance descent is missing');
@@ -2265,7 +2270,7 @@ await test('2.9A.40.4 Chapter 2 interiors keep keyboard controller and Story-men
 
 await test('2.9A.40.4 Chapter 3 moves the medical-worker investigation into the real clinic',async()=>{
   const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
-  for(const token of ['ENTER MEDICAL CENTER',"this.interiorId==='tournament-medical'",'medical-worker','Tournament Medical Center','resolveExteriorBuildingCollision',"startOptionalQuest('medicalFollowup')","if(quest.id==='medicalFollowup')continue","['hub','dungeon','remote','interior','fight']"])assert(source.includes(token),`Chapter 3 clinic integration omitted ${token}`);
+  for(const token of ['ENTER MEDICAL CENTER',"this.interiorId==='tournament-medical'",'medical-worker','tournament-medical','resolveExteriorBuildingCollision',"startOptionalQuest('medicalFollowup')","if(quest.id==='medicalFollowup')continue","['hub','dungeon','remote','interior','fight']"])assert(source.includes(token),`Chapter 3 clinic integration omitted ${token}`);
   assert(!source.includes('first reliable witness is in the recovery tent'),'retired fake recovery-tent objective is still present');
 });
 
@@ -2291,18 +2296,290 @@ await test('2.9A.40.4 interior-map tabs obey hidden state so local building maps
 });
 
 await test('2.9A.40.4 current release synchronizes interiors connected maps and save schema 268',async()=>{
-  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802'),fetchSource('../index.html'),fetchSource('../css/connected-world-29a403.css')]);
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802'),fetchSource('../index.html'),fetchSource('../css/connected-world-29a403.css')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.4 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.4 changed save schema unexpectedly');
   assert(index.includes('connected-world-29a403.css')&&index.includes('buildings-interiors-29a404.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.4 index is missing connected-world/interior presentation cache identity');
   for(const token of ['connectedTravelJournal','connectedMapTabs','mapDiscoveryHint','worldShortcutToast'])assert(css.includes(token),`connected-world CSS omitted ${token}`);
 });
 
-const initialOrdered=registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean);
-publishResults(initialOrdered,'Initial run complete');
+
+await test('2.9A.40.5 World Delight persists discoveries once without turning them into repeatable checklist rewards',()=>{
+  const storage=memoryStorage();
+  const first=discoverWorldDelight('c4-water-lift',{storage,quiet:true}),again=discoverWorldDelight('c4-water-lift',{storage,quiet:true}),state=loadWorldDelightState(storage);
+  assert(WORLD_DELIGHT_VERSION===1,'World Delight state version changed unexpectedly');
+  assert(first.first&&!again.first,'World Delight discovery did not distinguish first discovery from repeat use');
+  assert(state.discovered.filter(id=>id==='c4-water-lift').length===1,'World Delight duplicated a discovery');
+  assert(worldDelightKnown('c4-water-lift',storage),'World Delight known-state helper lost a saved discovery');
+  assert(normalizeWorldDelightState({discovered:['bad','c1-cliff-overlook']}).discovered.join(',')==='c1-cliff-overlook','World Delight normalization retained an unknown discovery');
+  assert(SAVE_EXPORT_KEYS.includes('pxWorldDelightV1')&&SAVE_EXPORT_KEYS.includes('pxFieldSkillsV1'),'field/world delight progression is missing from save export');
+});
+
+await test('2.9A.40.5 spreads world-delight discoveries across all four released chapters',()=>{
+  for(const chapter of [1,2,3,4])assert(delightForChapter(chapter).length>=1,`Chapter ${chapter} has no World Delight discovery`);
+  for(const id of ['c1-cliff-overlook','c2-rooftop-route','c3-night-service','c4-water-lift','c4-apothecary-pass','c4-echo-overlook'])assert(WORLD_DELIGHT_DISCOVERIES[id],`missing delight discovery ${id}`);
+});
+
+await test('2.9A.40.5 field techniques get theatrical learned-by-doing reactions instead of silent journal unlocks',async()=>{
+  const source=await fetchSource('../js/story/field-skills.js');
+  for(const token of ['pxfieldskillmastered','Okay... I can work with this.','Dead machine. Not dead anymore.','fieldSkillMasteryCard'])assert(source.includes(token),`field-technique celebration omitted ${token}`);
+  for(const id of ['objectSwapField','precisionSwap','barkStabilize','wadeCurrent','vibrationSense'])assert(FIELD_SKILL_REACTIONS[id]?.line,`${id} lacks a mastery reaction`);
+});
+
+await test('2.9A.40.5 reactive party banter covers travel tournament mystery team defense and solo contrast',async()=>{
+  const source=await fetchSource('../js/story/story-charm.js');
+  for(const token of ['CHECKPOINT_BANTER','rrvvfo-road-cart-saved','rrvvfo-02-round-1','rrvvfo-03-projectHollow','rrvvfo-04-villageDefended','rrvvfo-04-mountainEntered'])assert(source.includes(token),`reactive banter omitted ${token}`);
+  assert(source.includes('lineDuration:1650'),'banter is not kept short enough for exploration flow');
+});
+
+await test('2.9A.40.5 Flow Cancel perfect parry and pursuit finishers receive stronger audiovisual combat feedback',async()=>{
+  const [arena,polish]=await Promise.all([fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js')]);
+  for(const token of ["type:'flowCancel'","type:'pursuitFinisher'",'(perfect?9:3)','cameraShake'])assert(arena.includes(token),`combat-juice pass omitted ${token}`);
+  for(const token of ["flowCancel:'FLOW CANCEL'","pursuitFinisher:'PURSUIT FINISHER'","supportInterrupt:'SUPPORT INTERRUPTED'"])assert(polish.includes(token),`Story combat callout omitted ${token}`);
+});
+
+await test('2.9A.40.5 Chapter 4 Support interruption is a readable satisfying player action',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ['SUPPORT INTERRUPTED','cameraShake','pxarenafeedback',"type:'supportInterrupt'",'support.supportCast=.9'])assert(source.includes(token),`Support-interrupt juice omitted ${token}`);
+});
+
+await test('2.9A.40.5 Hollow Watcher phase shifts react theatrically without changing its learn-the-dance rules',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ['PHASE 1 • ACTION SCAN','PHASE 2 • RANGE SCAN','PHASE 3 • ROUTE SCAN','Now it cares where I attack from.','watcherPhaseForHp','PATTERN BROKEN • WATCHER EXPOSED'])assert(source.includes(token),`Watcher personality/readability pass omitted ${token}`);
+});
+
+await test('2.9A.40.5 Chapter 4 squad set piece reacts to ally danger and a clean three-ninja clear',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ['allyDangerWarned','LOW HP','SQUAD PRESSURE INCREASED','All three still standing.','c4-defense-perfect-team'])assert(source.includes(token),`Chapter 4 squad personality omitted ${token}`);
+});
+
+await test('2.9A.40.5 secrets stay subtle: Echo overlook only marks itself when the player is close',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  assert(source.includes("kind:'delight:c4-echo-overlook'"),'Echo overlook discovery is missing');
+  assert(source.includes("item.kind?.startsWith('delight')&&distance(this.battle.fighters[0],item)>120"),'secret discovery marker is visible from too far away');
+  assert(source.includes("discoverWorldDelight(route.shortcut==='c4-water-lift'?'c4-water-lift':'c4-apothecary-pass')"),'existing skilled shortcuts do not feed World Delight');
+});
+
+await test('2.9A.40.5 current release keeps save schema 268 and synchronizes World Delight presentation',async()=>{
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802'),fetchSource('../index.html'),fetchSource('../css/world-delight-29a405.css')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.5 build label is not centralized');
+  assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.5 changed save schema unexpectedly');
+  assert(index.includes('world-delight-29a405.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.5 index is missing World Delight release identity');
+  for(const token of ['storyCombatCallout.flowCancel','storyCombatCallout.supportInterrupt','worldDelightPulse','fieldSkillMasteryCard em'])assert(css.includes(token),`World Delight CSS omitted ${token}`);
+});
+
+await test('2.9A.40.6 revisit loop exposes four cross-chapter opportunities with field-skill gates',()=>{
+  assert(REVISIT_LOOP_VERSION===1,'revisit loop version changed unexpectedly');
+  for(const id of ['c1-precision-cache','c2-rooftop-challenger','c3-service-archive','c4-shrine-resonance'])assert(REVISIT_OPPORTUNITIES[id],`missing revisit opportunity ${id}`);
+  const progress={completedMissions:['rrvvfo-road'],unlocks:[],worldState:freshConnectedWorldState()};
+  assert(revisitOpportunityStatus(progress,'c1-precision-cache',{fieldSkills:{mastered:[]}})==='locked','Precision cache ignored its field-skill gate');
+  assert(revisitOpportunityStatus(progress,'c1-precision-cache',{fieldSkills:{mastered:['precisionSwap']}})==='ready','Precision cache did not become available after Precision Lock');
+});
+
+await test('2.9A.40.6 connected-world v3 migrates revisit and fast-travel state without save-schema change',()=>{
+  const state=normalizeConnectedWorldState({version:2,revisitRewards:['c1-precision-cache'],fastTravelNodes:['tournamentPlaza']},{});
+  assert(CONNECTED_WORLD_VERSION===3&&state.version===3,'connected-world state did not migrate to v3');
+  assert(state.revisitRewards.includes('c1-precision-cache'),'revisit reward was lost during migration');
+  assert(state.fastTravelNodes.includes('tournamentPlaza'),'fast-travel node was lost during migration');
+});
+
+await test('2.9A.40.6 revisit rewards are one-time and become permanent Story unlocks',()=>{
+  const progress={completedMissions:['rrvvfo-road'],unlocks:[],worldState:freshConnectedWorldState()};
+  const fieldSkills={mastered:['precisionSwap']};
+  const first=claimRevisitOpportunity(progress,'c1-precision-cache',{fieldSkills});
+  assert(first.claimed&&first.progress.unlocks.includes('revisitSwapBattery'),'first revisit reward did not grant its persistent unlock');
+  const second=claimRevisitOpportunity(first.progress,'c1-precision-cache',{fieldSkills});
+  assert(!second.claimed,'revisit reward can be farmed repeatedly');
+  assert(revisitState(first.progress).claimed.filter(id=>id==='c1-precision-cache').length===1,'revisit reward duplicated in world state');
+});
+
+await test('2.9A.40.6 fast travel unlocks only after the destination chapter has been cleared',()=>{
+  let progress={completedMissions:['rrvvfo-02'],worldState:freshConnectedWorldState()};
+  assert(fastTravelNodeAvailable(progress,'tournamentPlaza'),'Tournament Plaza should unlock after Chapter 2');
+  assert(!fastTravelNodeAvailable(progress,'echoVillage'),'Echo Village unlocked before Chapter 4 clear');
+  progress=syncFastTravelNodes(progress);
+  assert(revisitState(progress).fastTravel.includes('tournamentPlaza'),'Tournament Plaza did not persist as a fast-travel node');
+  assert(!revisitState(progress).fastTravel.includes('echoVillage'),'Echo Village persisted too early');
+});
+
+await test('2.9A.40.6 fast travel arrival updates connected-world location without creating a chapter replay',()=>{
+  let progress={completedMissions:['rrvvfo-02'],worldState:freshConnectedWorldState()};
+  progress=syncFastTravelNodes(progress);
+  assert(fastTravelDestination(progress,'tournamentPlaza')?.zone==='central','Tournament fast-travel destination is wrong');
+  progress=markFastTravelArrival(progress,'tournamentPlaza');
+  assert(progress.worldState.currentRegion==='tournament'&&progress.worldState.currentZone==='central','fast travel did not update connected-world location');
+  assert(progress.worldState.lastEntrance==='fast-travel:tournamentPlaza','fast-travel entrance marker was not recorded');
+});
+
+await test('2.9A.40.6 Story route home surfaces revisit opportunities and safe region returns',async()=>{
+  const source=await fetchSource('../js/story/lost-year-story.js');
+  for(const token of ['renderRevisitJournal','data-fast-travel','fastTravel(id)','revisit:true','markFastTravelArrival'])assert(source.includes(token),`Story route revisit integration omitted ${token}`);
+  const html=renderRevisitJournal({completedMissions:['rrvvfo-02'],worldState:freshConnectedWorldState()},{fieldSkills:{mastered:[]}});
+  assert(html.includes('REVISIT LOOP')&&html.includes('TOURNAMENT PLAZA'),'revisit journal does not expose discovered fast travel');
+});
+
+await test('2.9A.40.6 Tournament revisit mode adds a real hidden post-clear Rooftop Challenger',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-mission-2.js');
+  for(const token of ['this.revisitMode','FAST TRAVEL • TOURNAMENT PLAZA','SECRET • ROOFTOP CHALLENGER','revisit-rooftop','claimRevisitOpportunity'])assert(source.includes(token),`Tournament revisit content omitted ${token}`);
+});
+
+await test('2.9A.40.6 Echo revisit mode adds a Vibration Sense shrine reward without reopening Chapter 4 story',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ['this.revisitMode','FAST TRAVEL • ECHO VILLAGE','OLD SHRINE RESONANCE','c4-shrine-resonance','claimRevisitOpportunity'])assert(source.includes(token),`Echo revisit content omitted ${token}`);
+});
+
+await test('2.9A.40.6 release identity keeps schema 268 and loads revisit-loop presentation',async()=>{
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802'),fetchSource('../index.html'),fetchSource('../css/revisit-loop-29a406.css')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD,'40.6 build label is not centralized');
+  assert(build.SAVE_SCHEMA_VERSION===268,'40.6 changed save schema unexpectedly');
+  assert(index.includes('revisit-loop-29a406.css')&&index.includes(RELEASE_CACHE_ID),'40.6 index omitted revisit-loop presentation/cache');
+  for(const token of ['revisitJournal','revisitCard','revisitTravel'])assert(css.includes(token),`revisit-loop CSS omitted ${token}`);
+});
+
+await test('2.9A.40.7 quest audit covers Chapters 1-4 and explicitly removes marker-chain design where it was weakest',()=>{
+  assert(QUEST_OVERHAUL_VERSION===1,'quest-overhaul version changed unexpectedly');
+  const summary=questAuditSummary();
+  for(const chapter of ['chapter1','chapter2','chapter3','chapter4'])assert(summary[chapter],`quest audit omitted ${chapter}`);
+  assert(QUEST_AUDIT.chapter3.throw.length===4,'Chapter 3 marker-chain cleanup does not cover all four retired collection chains');
+  assert(QUEST_AUDIT.chapter1.throw.length===0,'Chapter 1 incorrectly throws away already-varied route content');
+});
+
+await test('2.9A.40.7 Chapter 2 bracket supports physical recovery or a two-record Administration reconstruction',()=>{
+  const state=createChapter2QuestState();
+  state.mandatory.bracket.cards=['fan-card','vendor-card'];
+  assert(!chapter2BracketRoute(state).ready,'two physical records alone completed the bracket');
+  state.mandatory.bracket.adminReconstruction=true;
+  assert(chapter2BracketRoute(state).ready,'Administration reconstruction did not complete a two-record route');
+  state.mandatory.bracket.adminReconstruction=false;state.mandatory.bracket.cards.push('veteran-card');
+  assert(chapter2BracketRoute(state).ready,'all three physical records no longer complete the bracket');
+});
+
+await test('2.9A.40.7 Chapter 2 normalization preserves skilled Administration and family-route quest state',()=>{
+  const state=normalizeChapter2QuestState({mandatory:{bracket:{started:true,cards:['fan-card','vendor-card'],adminReconstruction:true,complete:true}},optional:{lostFan:{started:true,route:'family',familyFound:true,complete:true}}});
+  assert(state.mandatory.bracket.cards.length===2&&state.mandatory.bracket.adminReconstruction,'Administration bracket route was flattened back into three fake recovered cards');
+  assert(state.optional.lostFan.route==='family'&&state.optional.lostFan.familyFound,'lost-fan alternate route did not survive normalization');
+});
+
+await test('2.9A.40.7 Chapter 2 runtime uses the connected Administration interior and a second solution for Wade’s fan',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-mission-2.js');
+  for(const token of ['chapter2BracketRoute','two recovered records + Administration archive','FAN’S FAMILY','completeLostFanFamilyRoute','Two solutions: find Wade, or search Market Street'])assert(source.includes(token),`Chapter 2 quest overhaul omitted ${token}`);
+});
+
+await test('2.9A.40.7 Chapter 3 replaces four marker chains with distinct scene-reading activities',()=>{
+  for(const id of ['finalAnnouncement','cleanupEchoes','fakePloukes','lateFan'])assert(chapter3ReplacementActivity(id),`missing Chapter 3 replacement activity ${id}`);
+  assert(CHAPTER3_REPLACEMENT_ACTIVITIES.finalAnnouncement.kind==='signal-routing','final announcement did not become signal routing');
+  assert(CHAPTER3_REPLACEMENT_ACTIVITIES.fakePloukes.kind==='observation','fake Ploukes did not become an observation challenge');
+});
+
+await test('2.9A.40.7 Chapter 3 runtime no longer spawns the retired collection-marker chains',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['runReplacementQuest','chapter3ReplacementActivity(quest.id))continue','Solve the situation instead of following a chain of collection markers','WEST GATE SHORTCUT','SERVICE-TUNNEL ECHO'])assert(source.includes(token),`Chapter 3 replacement runtime omitted ${token}`);
+});
+
+await test('2.9A.40.7 old incomplete Chapter 3 marker-chain saves restart safely at the redesigned activity',()=>{
+  const state=normalizeChapter3State({version:2,optional:{finalAnnouncement:{started:true,complete:false,progress:2},fakePloukes:{started:true,complete:false,progress:1}}});
+  assert(state.version===4,'Chapter 3 state version did not migrate to the sabotage-rewrite format');
+  assert(!state.optional.finalAnnouncement.started&&state.optional.finalAnnouncement.progress===0,'old final-announcement marker chain did not reset safely');
+  assert(!state.optional.fakePloukes.started&&state.optional.fakePloukes.progress===0,'old fake-Plouke marker chain did not reset safely');
+});
+
+await test('2.9A.40.7 Old Man’s Potions supports either four field trials or a skilled apothecary formula route',()=>{
+  const normal={ryuzankaro:{ingredients:['emberBloom','rootstone','thunderDew'],apothecaryFormula:false}};
+  assert(!chapter4PotionReady(normal),'three normal catalysts completed the four-trial route');
+  normal.ryuzankaro.ingredients.push('triadSeed');assert(chapter4PotionReady(normal),'four normal field trials do not complete the potion route');
+  const skilled={ryuzankaro:{ingredients:['rootstone','triadSeed'],apothecaryFormula:true}};
+  assert(chapter4PotionReady(skilled),'Old Apothecary Formula did not create the intended two-catalyst skilled route');
+  assert(chapter4PotionRoute(skilled).required===2,'skilled potion route still reports four required catalysts');
+});
+
+await test('2.9A.40.7 Chapter 4 mountain investigation triangulates from any two signal bearings instead of requiring a three-marker sweep',()=>{
+  assert(!chapter4SignalsReady({mountainSignals:['bridge-echo']}),'one signal incorrectly triangulated the Watcher');
+  const route=chapter4SignalRoute({mountainSignals:['bridge-echo','hollow-relay']});
+  assert(route.ready&&route.required===2,'two signal bearings did not triangulate the Watcher');
+});
+
+await test('2.9A.40.7 Chapter 4 runtime exposes skilled potion and two-bearing mountain routes while keeping Ryuzankaro optional',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ['OLD APOTHECARY FORMULA','any two stable catalysts','chapter4PotionReady','chapter4SignalsReady','Two bearings were enough','choose any two paths'])assert(source.includes(token),`Chapter 4 quest route overhaul omitted ${token}`);
+  assert(source.includes("value:'skip'"),'Ryuzankaro route stopped being optional');
+});
+
+
+await test('2.9A.40.7.1 Chapter 3 opens on deliberate ring sabotage instead of Sage suspicion',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['Someone messed with that ring.','And if they replace everything, there goes half the evidence.','INVESTIGATE THE TOURNAMENT SABOTAGE','Yeah. Someone definitely did this.'])assert(source.includes(token),`sabotage opening omitted ${token}`);
+  for(const retired of ['WHERE DID PLOUKE GO','FIND SAGE PLOUKE BAG','SAGE SABOTAGED'])assert(!source.includes(retired),`retired Sage-suspicion framing leaked back in: ${retired}`);
+});
+
+await test('2.9A.40.7.1 ring evidence and witnesses form a concrete sabotage case before Strange Man appears',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['Somebody cut the load point before the match.','no tournament serial number','LOWER ACCESS OPENED DURING FINAL TOURNAMENT WINDOW','TOURNAMENT WORKER','Nobody was officially authorized to enter the lower maintenance sections','Plouke never came to the medical tent after his fight. I saw him heading toward maintenance instead.'])assert(source.includes(token),`sabotage evidence/witness pass omitted ${token}`);
+});
+
+await test('2.9A.40.7.1 Strange Man contradiction references the medical worker’s real first statement',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['The people you’re talking to aren’t the real people.','You said Plouke skipped the medical tent and went toward maintenance.','I’ve never treated or spoken to anyone named Plouke.','I think you have me confused with someone else.'])assert(source.includes(token),`medical contradiction omitted ${token}`);
+  assert(source.includes('strangeManHatLensInspected')&&source.includes('Great. Even my eye doesn’t know what happened.'),'hat/Lens mystery is not persistent');
+});
+
+await test('2.9A.40.7.1 maintenance descent reveals Project Hollow gradually instead of naming it at the entrance',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['TOURNAMENT MAINTENANCE','These cables are newer than the tournament walls.','Hidden camera. Unmarked power line. Robot parts.','HIDDEN UNDERGROUND FACILITY','TOURNAMENT COMBAT DATA • ROUND ANALYSIS • FIGHTER RESPONSE RECORDS • ENERGY OBSERVATION.','PROJECT HOLLOW.'])assert(source.includes(token),`gradual Project Hollow reveal omitted ${token}`);
+});
+
+await test('2.9A.40.7.1 Sage trail proves he independently investigated the hidden facility',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['A busted surveillance robot... and that piece of fake Plouke fabric.','So he found this place too.','Whatever this place is, Sage was moving deeper into it.'])assert(source.includes(token),`Sage investigation trail omitted ${token}`);
+  const steps=CHAPTER3_REQUIRED_STEPS;
+  assert(steps.indexOf('sageTrailFound')>steps.indexOf('hiddenInfrastructureFound')&&steps.indexOf('findSageObjectiveStarted')>steps.indexOf('sageTrailFound'),'Find Sage starts before sabotage/maintenance evidence establishes his trail');
+});
+
+await test('2.9A.40.7.1 real Sage remains dominant while lockdown and suppression create the escape danger',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['the real Sage tears through Project Hollow units faster than the facility can replace them','FACILITY LOCKDOWN','suppression','That room is your way out. Move.'])assert(source.includes(token),`Sage/lockdown power logic omitted ${token}`);
+  assert(source.includes('Project Hollow Scanner')&&source.includes('Hollow Containment Unit'),'Chapter 3 lacks its earlier observation/containment robot progression');
+});
+
+await test('2.9A.40.7.1 blue-clone escape is mandatory story foundation and never unlocks a clone move or Shots of Agony',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['PULL THE BLUE SAGE THROUGH','You’re the clone.','Try to master this technique, kid.','The clone thing?','Something like it.','blueCloneTechniqueFoundationLearned','No technique was unlocked.'])assert(source.includes(token),`blue-clone foundation omitted ${token}`);
+  assert(!source.includes('SHOTS OF AGONY — PROTOTYPE')&&!source.includes('TECHNIQUE INVENTED • SHOTS OF AGONY'),'Chapter 3 accidentally unlocks future Shots of Agony');
+});
+
+await test('2.9A.40.7.1 teleporter escape explicitly rejects Object Swap as the lesson and lets the clone disappear normally',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  assert(source.includes('THE ESCAPE IS ABOUT THE CLOSING DOOR • NOT OBJECT SWAP'),'door sequence still frames Object Swap as the Chapter 3 lesson');
+  assert(source.includes('the blue clone fades normally')&&source.includes('blueCloneDisappeared'),'blue clone disappearance is missing');
+  assert(!source.includes('OBJECT SWAP THROUGH THE DOOR'),'old Object Swap lesson objective remains');
+});
+
+await test('2.9A.40.7.1 Echo arrival knocks Rrvvfo out for several days before Chapter 4 can begin',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['The connection collapses behind him.','Several days pass while Rrvvfo remains unconscious.','RECOVERY PERIOD: ESTIMATED MULTIPLE DAYS.','BEGIN ECHO REGION OPERATION.','rrvvfoUnconscious','echoOperationTimeSkipStarted'])assert(source.includes(token),`Echo blackout handoff omitted ${token}`);
+  assert(!source.includes('REACH SHADOW’S LOOKOUT'),'Chapter 3 still gives Chapter 4 exploration control early');
+});
+
+await test('2.9A.40.7.1 old completed and mid-facility Chapter 3 saves migrate into one coherent sabotage timeline',()=>{
+  const mid=normalizeChapter3State({version:3,requiredCompleted:['opening','medicalLead','fighterNobodyRecorded','bracketRecords','lockedNightShift','crackedRing','ploukeBag','lensTrail','sageExplanation','facilityEntered'],location:'facility'});
+  assert(mid.version===4&&mid.strangeManHatCollected&&mid.projectHollowFacilityEntered&&chapter3NextRequired(mid)==='tournamentDataDiscovered','mid-facility legacy save did not migrate coherently');
+  const oldComplete=normalizeChapter3State({version:3,requiredCompleted:['opening','medicalLead','fighterNobodyRecorded','bracketRecords','lockedNightShift','crackedRing','ploukeBag','lensTrail','sageExplanation','facilityEntered','auxiliaryPower','recordedAttacks','sageSeparated','dummyDefeated','subjectRFile','echoDefeated','projectHollow','teleporterFound','doorClosing','rockThrown','objectSwap','teleporterActivated','remoteRegion','shadowObjective','chapterSaved']});
+  assert(oldComplete.blueCloneTechniqueFoundationLearned&&oldComplete.rrvvfoUnconscious&&oldComplete.echoOperationTimeSkipStarted&&chapter3Complete(oldComplete),'old completed Chapter 3 save did not migrate through the blue-clone/blackout handoff');
+});
+
+await test('2.9A.40.7.1 current release keeps save schema 268 and centralizes the Chapter 3 sabotage rewrite',async()=>{
+  const [build,index,questSource]=await Promise.all([import('../js/build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802'),fetchSource('../index.html'),fetchSource('../js/story/quest-overhaul.js')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD,'40.7.1 build label is not centralized');
+  assert(build.SAVE_SCHEMA_VERSION===268,'40.7.1 changed save schema unexpectedly');
+  assert(index.includes(RELEASE_CACHE_ID),'40.7.1 index omitted release cache identity');
+  for(const token of ['QUEST_AUDIT','CHAPTER3_REPLACEMENT_ACTIVITIES','chapter4PotionRoute','chapter4SignalRoute'])assert(questSource.includes(token),`quest-overhaul module omitted ${token}`);
+});
+
+const finalOrdered=registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean);
+publishResults(finalOrdered,'Initial run complete');
 globalThis.__SMOKE_RUNNER__={
   rerunFailed:()=>runBatch(registry.filter(entry=>!results.find(result=>result.name===entry.name)?.pass),'Retry failed tests'),
   rerunAll:()=>runBatch(registry,'Run all tests again'),
   getResults:()=>registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean)
 };
 harness.runnerReady(globalThis.__SMOKE_RUNNER__);
+

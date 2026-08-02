@@ -11,18 +11,19 @@ import {
   repairChapter4Progress,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a404-buildings-interiors-world-life-20260802';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a404-buildings-interiors-world-life-20260802';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a404-buildings-interiors-world-life-20260802';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a404-buildings-interiors-world-life-20260802';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a404-buildings-interiors-world-life-20260802';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a404-buildings-interiors-world-life-20260802';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
-import {inspectStoryReliability} from './story-reliability.js?v=29a404-buildings-interiors-world-life-20260802';
-import {renderTravelJournal} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
+} from './lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {inspectStoryReliability} from './story-reliability.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {renderTravelJournal} from './connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -152,7 +153,7 @@ class LostYearStoryScreen{
           <div class="routeProgressStatus"><strong>${progressPercent}% STORY COMPLETE</strong><span>${completedFullChapters} / ${RRVVFO_PLANNED_CHAPTER_COUNT} full chapters complete${c4?' • Chapter 4 complete':c3?' • Chapter 3 complete':''}</span></div>
           <div class="routeProgressTrack" style="--route-progress:${progressPercent}%"><i></i></div>
           <div class="storyRecoveryCard"><small>AUTO-SAVE RECOVERY • SAVE HEALTH ${reliability.health}</small><strong>${chapter4Conflict?'CHAPTER 4 SAVE REPAIR':storyCheckpointLabel(this.progress.lastCheckpoint)}</strong><span>${chapter4Conflict?'The save marks Chapter 4 complete without the ending checkpoints. Start Chapter 4 to repair only this chapter; Chapters 1–3 and RPG growth stay untouched.':reliability.issues.length?reliability.issues[0]:'Continue resumes from this checkpoint. Major fights and QTEs use safe retries instead of restarting the full chapter.'}</span></div>
-          ${storyStatsMarkup(this.progress)}${storyAttackStripMarkup()}${renderTravelJournal(this.progress)}
+          ${storyStatsMarkup(this.progress)}${storyAttackStripMarkup()}${renderTravelJournal(this.progress)}${renderRevisitJournal(this.progress)}
           <div class="routeHomeActions">
             <button type="button" class="primary" data-continue-route ${next?'':'disabled'}><strong>${primary}</strong><span>${next?'Loads the next unfinished section.':'Use Chapter Select to replay released content.'}</span></button>
             <button type="button" data-open-manual ${manualReady?'':'disabled'}><strong>SAGE MANUAL</strong><span>${manualReady?'Review controls and techniques.':'Unlocks during Chapter 1.'}</span></button>
@@ -184,11 +185,20 @@ class LostYearStoryScreen{
     this.routeHome.querySelector('[data-continue-route]')?.addEventListener('click',()=>chapter4Conflict?this.repairAndStartChapter4():this.continueRoute());
     this.routeHome.querySelector('[data-open-manual]')?.addEventListener('click',()=>openCombatManual());
     this.routeHome.querySelector('[data-free-explore]:not(:disabled)')?.addEventListener('click',()=>this.startStep('rrvvfo-road','freeExplore'));
+    this.routeHome.querySelectorAll('[data-fast-travel]').forEach(button=>button.addEventListener('click',()=>this.fastTravel(button.dataset.fastTravel)));
     this.routeHome.querySelectorAll('[data-chapter-number]:not(:disabled)').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.chapterNumber))));
     this.routeHome.querySelectorAll('[data-replay-chapter]').forEach(button=>button.addEventListener('click',()=>this.startChapter(Number(button.dataset.replayChapter),{replay:true})));
     this.routeHome.querySelector('[data-repair-chapter4]')?.addEventListener('click',()=>this.repairAndStartChapter4({confirmed:true}));
     this.routeHome.querySelector('[data-reset-chapter4]')?.addEventListener('click',()=>this.repairAndStartChapter4());
     if(focus)(this.routeHome.querySelector('[data-continue-route]:not(:disabled)')||this.routeHome.querySelector('[data-chapter-number]:not(:disabled)'))?.focus();
+  }
+
+
+  fastTravel(id){
+    let progress=syncFastTravelNodes(loadLostYearProgress()),destination=fastTravelDestination(progress,id);if(!destination)return;
+    progress=markFastTravelArrival(progress,id);this.progress=saveLostYearProgress(progress);
+    if(id==='tournamentPlaza'){this.startStep('rrvvfo-02','fastTravel',{revisit:true});return}
+    if(id==='echoVillage'){this.startStep('rrvvfo-04','fastTravel',{revisit:true});return}
   }
 
   async repairAndStartChapter4({confirmed=false}={}){

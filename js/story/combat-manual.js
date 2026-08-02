@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a404-buildings-interiors-world-life-20260802';
+import {BUILD_VERSION} from '../build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

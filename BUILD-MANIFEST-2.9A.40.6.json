@@ -1,0 +1,21 @@
+{
+  "build": "Prototype 2.9A.40.6 \u2014 Revisit Loop & Exploration Rewards",
+  "cache": "29a406-revisit-loop-exploration-rewards-20260802",
+  "saveSchema": 268,
+  "smoke": "461/461 PASS",
+  "gameJsModules": 97,
+  "testJsModules": 2,
+  "relativeImports": 307,
+  "htmlIds": 259,
+  "duplicateHtmlIds": 0,
+  "jsonManifests": 57,
+  "features": [
+    "revisit journal",
+    "field-skill-gated old-area opportunities",
+    "post-clear Tournament Plaza fast travel",
+    "post-clear Echo Village fast travel",
+    "Rooftop Challenger revisit fight",
+    "Old Shrine Vibration Sense revisit reward"
+  ],
+  "chapter5Touched": false
+}

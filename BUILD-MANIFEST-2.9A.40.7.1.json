@@ -1,0 +1,25 @@
+{
+  "build": "Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite",
+  "cache": "29a4071-chapter3-sabotage-investigation-20260802",
+  "saveSchema": 268,
+  "smoke": "482/482 PASS",
+  "gameJsModules": 98,
+  "testJsModules": 2,
+  "relativeImports": 312,
+  "htmlIds": 259,
+  "duplicateHtmlIds": 0,
+  "jsonManifests": 60,
+  "chapter3StateVersion": 4,
+  "features": [
+    "Sabotage-first Chapter 3 opening with three ring evidence points",
+    "Concrete worker/security/medical witness chain and exact medical contradiction",
+    "Persistent Strange Man warning, hat and optional Lens uncertainty",
+    "Gradual maintenance-to-Project-Hollow conspiracy reveal",
+    "Real Sage encounter with lockdown/suppression threat rather than power nerf",
+    "Mandatory real-Sage / blue-clone teleporter separation",
+    "Persistent blueCloneTechniqueFoundationLearned future-story flag with no move unlock",
+    "Unstable teleport and multi-day Echo Region blackout handoff",
+    "Legacy Chapter 3 save migration into state v4"
+  ],
+  "chapter5Touched": false
+}

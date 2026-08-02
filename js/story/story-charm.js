@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 
@@ -17,6 +17,17 @@ const CHECKPOINT_MOMENTS=Object.freeze({
   'rrvvfo-04-mountainEntered':{kind:'banter',lines:[['WADE','I could climb with you.'],['BARK','You said that already.'],['RRVVFO','He is hoping the mountain changes its answer.']]},
   'rrvvfo-04-hollowWatcherDefeated':{kind:'arrival',kicker:'THREAT CLEARED',title:'HOLLOW WATCHER DOWN',detail:'The machine learned Rrvvfo’s habits. It did not learn why he changes them.',tone:'danger'},
   'rrvvfo-04-lookoutReached':{kind:'arrival',kicker:'DESTINATION REACHED',title:'SHADOW’S LOOKOUT',detail:'No bridge. One pebble. One perfectly timed Object Swap.',tone:'echo'}
+});
+
+
+const CHECKPOINT_BANTER=Object.freeze({
+  'rrvvfo-road-cart-saved':[['TOURNAMENT DRIVER','I was already planning how to explain losing the whole cart.'],['RRVVFO','Tell them you planned around me showing up.']],
+  'rrvvfo-02-round-1':[['WADE','One win and people already know your name.'],['BARK','They knew his name before the fight.'],['RRVVFO','Yeah, but now they say it louder.']],
+  'rrvvfo-02-final':[['BARK','Last round. Stop looking at the crowd.'],['WADE','Counterpoint: the crowd is looking at him.'],['RRVVFO','Both of you are making this worse.']],
+  'rrvvfo-03-projectHollow':[['RRVVFO','So all of that weird tournament stuff has a name now.'],['RRVVFO','Not sure that makes it better.']],
+  'rrvvfo-04-barkWadeArrive':[['WADE','Three ninjas again. This should go perfectly.'],['BARK','That sentence guarantees it will not.'],['RRVVFO','Good. We are all caught up.']],
+  'rrvvfo-04-villageDefended':[['WADE','Nobody say I almost got knocked out.'],['BARK','You just said it.'],['RRVVFO','And now the village knows too.']],
+  'rrvvfo-04-mountainEntered':[['RRVVFO','...It got quiet fast.']]
 });
 
 const TECHNIQUE_LABELS=Object.freeze({
@@ -125,7 +136,7 @@ class StoryCharmController{
     document.dispatchEvent(new CustomEvent('pxstoryuicue',{detail:{cue:item.type==='level'?'levelUp':'unlock'}}));
     this.timer=setTimeout(()=>this.finish(node,240),item.duration||3900);
   }
-  onCheckpoint({checkpoint}={}){const moment=CHECKPOINT_MOMENTS[checkpoint]||storyExperienceBeat(checkpoint);if(moment)this.enqueue({...moment,onceKey:`checkpoint:${checkpoint}`})}
+  onCheckpoint({checkpoint}={}){const moment=CHECKPOINT_MOMENTS[checkpoint]||storyExperienceBeat(checkpoint);if(moment)this.enqueue({...moment,onceKey:`checkpoint:${checkpoint}`});const banter=CHECKPOINT_BANTER[checkpoint];if(banter)setTimeout(()=>this.enqueue({kind:'banter',lines:banter,onceKey:`checkpoint-banter:${checkpoint}`,lineDuration:1650}),650)}
   onProgression(detail={}){
     const levelFrom=Number(detail.oldLevel)||0,levelTo=Number(detail.newLevel)||0;
     if(levelTo>levelFrom){

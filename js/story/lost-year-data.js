@@ -1,5 +1,5 @@
-import {inspectStoryReliability} from './story-reliability.js?v=29a404-buildings-interiors-world-life-20260802';
-import {normalizeConnectedWorldState} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
+import {inspectStoryReliability} from './story-reliability.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {normalizeConnectedWorldState} from './connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;

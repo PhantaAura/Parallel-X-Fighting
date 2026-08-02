@@ -1,6 +1,6 @@
 {
-  "name": "Parallels X: Clash of Souls — Prototype 2.9A.40.4",
-  "version": "Prototype 2.9A.40.4 — Buildings, Interiors & World Life",
+  "name": "Parallels X: Clash of Souls — Prototype 2.9A.40.7.1",
+  "version": "Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite",
   "type": "full repository build",
   "requires_previous_patch": false,
   "foundation": "Prototype 2.3.5b rival sprite reimport",
@@ -70,9 +70,13 @@
     "2.9A.40.1 Builds & Combat Readability: in-Story and Custom Build Lab, combat-safe build locks, readable enemy roles and silhouettes, interruptible Support casts, cross-input squad target cycling, player-facing chapter identity cards, experiential Flow Cancel teaching, and chapter-appropriate Adventure Mission results",
     "2.9A.40.2 Field Skills & Minimal UI: world-first exploration HUD, puzzle-learned field techniques, Chapter 1 Object Swap field progression, Chapter 4 party field mastery, future Shots of Agony lock, and lightweight Flow/passive feedback",
     "2.9A.40.3 Connected World & Exploration Framework: persistent four-region world graph, illustrated Local/Region/World maps, permanent shortcuts, nonlinear Echo Village routes, travel journal, and interior architecture foundation",
-    "2.9A.40.4 Buildings, Interiors & World Life: real enterable tournament/Echo buildings, solid exterior collision, local interior maps, persistent visits/door state, contextual locked doors, and Chapter 3 medical-worker clinic continuity"
+    "2.9A.40.4 Buildings, Interiors & World Life: real enterable tournament/Echo buildings, solid exterior collision, local interior maps, persistent visits/door state, contextual locked doors, and Chapter 3 medical-worker clinic continuity",
+    "2.9A.40.5 World Delight, Character Charm & Combat Feel: persistent delight discoveries, short reactive party banter, theatrical field-skill mastery, stronger Flow Cancel/parry/pursuit/Support feedback, and Chapter 4 Watcher/squad personality polish",
+    "2.9A.40.6 Revisit Loop & Exploration Rewards: post-clear region returns, field-skill-gated old-area discoveries, one-time revisit rewards, Rooftop Challenger, Old Shrine resonance secret, and connected-world fast-travel nodes",
+    "2.9A.40.7 Quest & Objective Overhaul: KEEP/TWEAK/THROW quest audit, multi-route Chapter 2 resolutions, Chapter 3 deduction replacements, skilled Chapter 4 potion route, and two-bearing signal triangulation",
+    "2.9A.40.7.1 Chapter 3 Sabotage Investigation Rewrite: sabotage-first mystery, concrete witness contradiction, gradual Project Hollow reveal, real Sage lockdown sequence, mandatory blue-clone technique foundation, and multi-day Echo blackout handoff"
   ],
-  "cache_tag": "29a404-buildings-interiors-world-life-20260802",
+  "cache_tag": "29a4071-chapter3-sabotage-investigation-20260802",
   "save_schema": 268,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo’s atlas across Chapter 2–4 fight transitions and rejects stale asynchronous sprite loads",
@@ -131,11 +135,39 @@
       "cache": "29a404-buildings-interiors-world-life-20260802",
       "saveSchema": 268,
       "smoke": "442/442"
+    },
+    {
+      "build": "2.9A.40.5",
+      "title": "World Delight, Character Charm & Combat Feel",
+      "cache": "29a405-world-delight-character-charm-combat-feel-20260802",
+      "saveSchema": 268,
+      "smoke": "452/452"
+    },
+    {
+      "build": "2.9A.40.6",
+      "title": "Revisit Loop & Exploration Rewards",
+      "cache": "29a406-revisit-loop-exploration-rewards-20260802",
+      "saveSchema": 268,
+      "smoke": "461/461"
+    },
+    {
+      "build": "2.9A.40.7",
+      "title": "Quest & Objective Overhaul",
+      "cache": "29a407-quest-objective-overhaul-20260802",
+      "saveSchema": 268,
+      "smoke": "472/472"
+    },
+    {
+      "build": "2.9A.40.7.1",
+      "title": "Chapter 3 Sabotage Investigation Rewrite",
+      "cache": "29a4071-chapter3-sabotage-investigation-20260802",
+      "saveSchema": 268,
+      "smoke": "482/482"
     }
   ],
-  "currentBuild": "Prototype 2.9A.40.4 — Buildings, Interiors & World Life",
-  "cacheId": "29a404-buildings-interiors-world-life-20260802",
+  "currentBuild": "Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite",
+  "cacheId": "29a4071-chapter3-sabotage-investigation-20260802",
   "saveSchema": 268,
-  "latestBuild": "Prototype 2.9A.40.4 — Buildings, Interiors & World Life",
-  "latestCacheId": "29a404-buildings-interiors-world-life-20260802"
+  "latestBuild": "Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite",
+  "latestCacheId": "29a4071-chapter3-sabotage-investigation-20260802"
 }

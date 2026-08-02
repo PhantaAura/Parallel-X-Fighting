@@ -1,0 +1,21 @@
+{
+  "build": "Prototype 2.9A.40.7 — Quest & Objective Overhaul",
+  "cache": "29a407-quest-objective-overhaul-20260802",
+  "saveSchema": 268,
+  "smoke": "472/472 PASS",
+  "gameJsModules": 98,
+  "testJsModules": 2,
+  "relativeImports": 312,
+  "htmlIds": 259,
+  "duplicateHtmlIds": 0,
+  "jsonManifests": 59,
+  "features": [
+    "KEEP / TWEAK / THROW quest audit for Chapters 1–4",
+    "Chapter 2 multi-route Lost Bracket reconstruction",
+    "Chapter 2 Wade-or-family Lost Fan resolution",
+    "Chapter 3 routing / triangulation / observation replacements for four marker chains",
+    "Chapter 4 normal or skilled Old Man potion route",
+    "Chapter 4 any-two-of-three Hollow signal triangulation"
+  ],
+  "chapter5Touched": false
+}

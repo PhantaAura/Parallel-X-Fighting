@@ -1,18 +1,19 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a404-buildings-interiors-world-life-20260802';
-import {sharedInput} from '../input-runtime.js?v=29a404-buildings-interiors-world-life-20260802';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
-import {StoryMap} from './story-map.js?v=29a404-buildings-interiors-world-life-20260802';
-import {recordWorldVisit,discoverWorldShortcut} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
-import {storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a404-buildings-interiors-world-life-20260802';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
-import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
-import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {sharedInput} from '../input-runtime.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {StoryMap} from './story-map.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {recordWorldVisit,discoverWorldShortcut} from './connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyConfirm} from './story-ux.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {discoverWorldDelight} from './world-delight.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -441,7 +442,7 @@ class RrvvfoRoadHub{
     if(this.routeChoice&&this.step==='route-travel'&&player.x>430&&this.routeGimmickReady()){
       this.roadCleared=true;this.step='gate';this.battle.notice(`${this.routeChoice.toUpperCase()} ROUTE CLEARED`,1.4);if(this.routeChoice==='cliff')completeAdventureMission('c1-high-road',{rank:'A',reward:'TITLE • ROAD RUNNER'});
       this.setObjective('REACH THE SWAP RELAY','The routes reconnect here. Read the three marked positions and use Object Swap to open the route.');
-      let worldProgress={...loadLostYearProgress(),roadRoute:this.routeChoice,lastCheckpoint:'rrvvfo-road-route'};worldProgress=recordWorldVisit(worldProgress,'training','riverside',{entrance:`${this.routeChoice||'main'}-route`});if(this.routeChoice==='cliff')worldProgress=discoverWorldShortcut(worldProgress,'c1-cliff-cut');saveLostYearProgress(worldProgress);return;
+      let worldProgress={...loadLostYearProgress(),roadRoute:this.routeChoice,lastCheckpoint:'rrvvfo-road-route'};worldProgress=recordWorldVisit(worldProgress,'training','riverside',{entrance:`${this.routeChoice||'main'}-route`});if(this.routeChoice==='cliff'){worldProgress=discoverWorldShortcut(worldProgress,'c1-cliff-cut');discoverWorldDelight('c1-cliff-overlook')}saveLostYearProgress(worldProgress);return;
     }
     if(this.step==='cart'&&player.x>235&&!this.manualPending){
       this.step='cart-dialogue';

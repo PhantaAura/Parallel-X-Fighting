@@ -1,0 +1,15 @@
+/* 2.9A.40.5 — World Delight, Character Charm & Combat Feel */
+body.storyFeedback-flowCancel #gameWrap,
+body.storyFeedback-supportInterrupt #gameWrap,
+body.storyFeedback-pursuitFinisher #gameWrap{filter:saturate(1.12) contrast(1.035)}
+.storyCombatCallout.flowCancel{border-color:#9ff6ff;box-shadow:0 0 34px rgba(120,238,255,.38)}
+.storyCombatCallout.supportInterrupt{border-color:#d8ff9a;box-shadow:0 0 38px rgba(190,255,120,.34)}
+.storyCombatCallout.pursuitFinisher{border-color:#ffd58a;box-shadow:0 0 42px rgba(255,183,86,.34)}
+.fieldSkillMasteryCard em{display:block;margin-top:.55rem;font-style:normal;font-weight:800;color:#fff7c4;letter-spacing:.04em}
+.storyPartyBanter strong{letter-spacing:.06em}
+.storyPartyBanter p{line-height:1.35}
+.storyChapter4Combat [data-c4-team-status] [data-ally]{transition:transform .16s ease,filter .16s ease}
+.storyChapter4Combat [data-c4-team-status] [data-ally].danger{transform:scale(1.04);filter:brightness(1.25)}
+body.worldDelightPulse #gameWrap{animation:worldDelightPulse .42s ease-out}
+@keyframes worldDelightPulse{0%{filter:brightness(1)}35%{filter:brightness(1.12) saturate(1.12)}100%{filter:brightness(1)}}
+@media (prefers-reduced-motion:reduce){body.worldDelightPulse #gameWrap{animation:none}.storyChapter4Combat [data-c4-team-status] [data-ally]{transition:none}}

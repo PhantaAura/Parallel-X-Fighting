@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a404-buildings-interiors-world-life-20260802';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',
@@ -8,6 +8,8 @@ export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxMasteryRecordsV1',
   'pxRrvvfoBuildV1',
   'pxAdventureProgressV1',
+  'pxFieldSkillsV1',
+  'pxWorldDelightV1',
   'pxArenaControlsV1',
   'pxDialoguePrefsV1',
   'pxControllerSettingsV1',

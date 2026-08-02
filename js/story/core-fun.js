@@ -1,4 +1,4 @@
-import {storyTechniqueAvailable} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyTechniqueAvailable} from './field-skills.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 const BUILD_KEY='pxRrvvfoBuildV1';
 const ADVENTURE_KEY='pxAdventureProgressV1';
 

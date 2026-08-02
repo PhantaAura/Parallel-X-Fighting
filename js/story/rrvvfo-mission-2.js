@@ -1,20 +1,23 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a404-buildings-interiors-world-life-20260802';
-import {sharedInput} from '../input-runtime.js?v=29a404-buildings-interiors-world-life-20260802';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
-import {storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a404-buildings-interiors-world-life-20260802';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
-import {StoryMap} from './story-map.js?v=29a404-buildings-interiors-world-life-20260802';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a404-buildings-interiors-world-life-20260802';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a404-buildings-interiors-world-life-20260802';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {sharedInput} from '../input-runtime.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyConfirm} from './story-ux.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {StoryMap} from './story-map.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {discoverWorldDelight} from './world-delight.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {chapter2BracketRoute} from './quest-overhaul.js?v=29a4071-chapter3-sabotage-investigation-20260802';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -223,13 +226,14 @@ function buildUI(){
 }
 
 class RrvvfoMission2{
-  constructor({onComplete=()=>{},onExit=()=>{},replay=false}={}){
+  constructor({onComplete=()=>{},onExit=()=>{},replay=false,revisit=false}={}){
     this.onComplete=onComplete;
     this.onExit=onExit;
     this.root=buildUI();
     this.progress=loadLostYearProgress();
     this.completedBefore=this.progress.completedMissions?.includes(MISSION_ID);
     this.replayMode=Boolean(replay&&this.completedBefore);
+    this.revisitMode=Boolean(revisit&&this.completedBefore);
     this.savedChapter2State={...(this.progress.chapter2State||{})};
     this.savedCheckpoint=this.progress.lastCheckpoint;
     this.state=this.replayMode
@@ -322,6 +326,7 @@ class RrvvfoMission2{
       {id:'wade',label:'WADE',x:250,z:20,color:'#3181cd',hair:'#f5d72e',kind:'wade'},
       {id:'fake-champion',label:'LOUD CHAMPION',x:420,z:600,color:'#b74d45',hair:'#f2c84f',kind:'fakeChampion'},
       {id:'lost-fan',label:'LOST WADE FAN',x:520,z:-690,color:'#f2bf56',hair:'#315f9a',kind:'lostFan'},
+      {id:'fan-family',label:'FAN’S FAMILY',x:-360,z:650,color:'#d98b5f',hair:'#3a2924',kind:'fanFamily'},
       {id:'mechanic',label:'ARENA MECHANIC',x:-980,z:760,color:'#3f7f73',hair:'#253a37',kind:'mechanic'},
       {id:'cashier',label:'TOURNAMENT CASHIER',x:600,z:-380,color:'#8b62b2',hair:'#2b2432',kind:'cashier'},
       {id:'challenger',label:'REJECTED CHALLENGER',x:-1450,z:520,color:'#5f73a5',hair:'#242b3b',kind:'challenger'},
@@ -344,7 +349,10 @@ class RrvvfoMission2{
     });
     this.patchBattle();
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART MATCH?',message:'Restart the active tournament fight at 0–0?',confirmLabel:'RESTART'});
-    if(this.replayMode){
+    if(this.revisitMode){
+      this.enterHub({opening:false,spawn:{x:260,z:80}});
+      this.battle.notice('FAST TRAVEL • TOURNAMENT PLAZA',1.2);
+    }else if(this.replayMode){
       // A replay is opt-in from the dedicated REPLAY button. The replay gets a clean
       // Chapter 2 state, while the completed route save remains untouched underneath.
       this.enterHub({opening:true});
@@ -640,7 +648,9 @@ class RrvvfoMission2{
   }
 
   regionMapPoints(){
-    return CHAPTER2_DISTRICTS.map(d=>({x:d.x,z:d.z,label:d.name,kind:'landmark',color:d.id===this.currentDistrict?'#ff5b4e':'#d9a629'}));
+    const points=CHAPTER2_DISTRICTS.map(d=>({x:d.x,z:d.z,label:d.name,kind:'landmark',color:d.id===this.currentDistrict?'#ff5b4e':'#d9a629'}));
+    if(this.revisitMode&&revisitOpportunityStatus(loadLostYearProgress(),'c2-rooftop-challenger')==='ready')points.push({x:-430,z:760,label:'ROOFTOP CHALLENGER',kind:'optional',color:'#8a63ce'});
+    return points;
   }
 
   ensureRegionMap(){
@@ -696,10 +706,10 @@ class RrvvfoMission2{
       const missing=missingChapter2BracketCards(this.state.hubQuests);
       this.setObjective(
         'REBUILD THE LOST BRACKET',
-        `${q.bracket.cards.length} / 3 recovered • ${missing.map(card=>card.source).join(' • ')||'Return to the announcer'}`
+        q.bracket.cards.length>=2&&!q.bracket.adminReconstruction?`2 records found • recover the last OR reconstruct it inside Tournament Administration`:`${chapter2BracketRoute(this.state.hubQuests).label} • ${missing.map(card=>card.source).join(' • ')||'Return to the announcer'}`
       );
     }else if(!this.state.sageVanished){
-      this.setObjective('RETURN TO THE ANNOUNCER','The missing cards are recovered. Bring them back to Registration Plaza.');
+      this.setObjective('RETURN TO THE ANNOUNCER','The bracket is reconstructed. Registration can finally continue.');
     }else if(!this.state.firstBrawlComplete){
       this.setObjective('FIND OUT WHERE SAGE WENT','The practice-ring fighter saw him leave. Speak to the fighter.');
     }else if(!this.state.metBarkWade){
@@ -728,6 +738,7 @@ class RrvvfoMission2{
       if(npc.id==='bark'||npc.id==='wade')return this.state.firstBrawlComplete;
       if(npc.id==='fake-champion')return rpgPacingQuestWave(this.pacing)>=3&&this.state.tournamentStarted&&!q.optional.fakeChampion.complete;
       if(npc.id==='lost-fan')return rpgPacingQuestWave(this.pacing)>=2&&this.state.metBarkWade&&!q.optional.lostFan.complete;
+      if(npc.id==='fan-family')return q.optional.lostFan.started&&!q.optional.lostFan.complete&&!q.optional.lostFan.familyFound;
       if(npc.id==='mechanic')return rpgPacingQuestWave(this.pacing)>=2&&q.mandatory.barkRing.complete&&!q.optional.dummy.complete;
       if(npc.id==='cashier')return rpgPacingQuestWave(this.pacing)>=3&&this.state.tournamentStarted&&!q.optional.prizeCart.complete;
       if(npc.id==='challenger')return rpgPacingQuestWave(this.pacing)>=1&&q.mandatory.bracket.complete&&!q.optional.challenger.complete;
@@ -799,6 +810,10 @@ class RrvvfoMission2{
         if(quests.shortcuts.includes(shortcut.id)&&distance(player,shortcut)<125)candidates.push({...shortcut,kind:'shortcut'});
       }
     }
+    if(this.revisitMode&&revisitOpportunityStatus(loadLostYearProgress(),'c2-rooftop-challenger')==='ready'){
+      const rooftop={id:'revisit-rooftop-challenger',label:'SECRET • ROOFTOP CHALLENGER',x:-430,z:760,kind:'revisitRooftop'};
+      if(distance(player,rooftop)<145)candidates.push(rooftop);
+    }
     const buildingDoors=[
       {buildingId:'tournament-admin',label:'ENTER TOURNAMENT ADMINISTRATION',x:-120,z:-490},
       {buildingId:'tournament-medical',label:'ENTER MEDICAL CENTER',x:640,z:-430},
@@ -835,6 +850,14 @@ class RrvvfoMission2{
   }
 
   useInteriorActor(actor){
+    const bracket=this.state.hubQuests.mandatory.bracket;
+    if(this.interiorId==='tournament-admin'&&actor.id==='admin-clerk'&&bracket.started&&!bracket.complete&&bracket.cards.length>=2&&!bracket.adminReconstruction){
+      this.showDialogue([
+        {speaker:'ADMIN CLERK',speakerClass:'neutral',text:'You recovered enough physical records to narrow the missing slot. The registration archive can reconstruct the last entry.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'So I don’t have to chase one more piece of paper around the festival?',tail:'down'},
+        {speaker:'ADMIN CLERK',speakerClass:'neutral',text:'That is why records offices exist.',tail:'down'}
+      ],()=>{bracket.adminReconstruction=true;bracket.complete=true;markQuestComplete(this.state.hubQuests,'bracket');this.saveChapterState();this.questToast('MAIN QUEST COMPLETE','THE LOST BRACKET','Bracket reconstructed from two recovered records + Administration archive.');this.mode='interior';this.battle.phase='play';this.triggerSageDisappearance();this.updateHubObjective()});return;
+    }
     const line=interiorLifeLine(this.interiorId,actor.id,{chapter:2,phase:this.pacing?.phase||'',tournamentStarted:this.state.tournamentStarted});this.showDialogue([{speaker:actor.label||'TOURNAMENT STAFF',speakerClass:'neutral',text:line,tail:'down'}],()=>{this.mode='interior';this.battle.phase='play'});
   }
 
@@ -892,6 +915,7 @@ class RrvvfoMission2{
     else if(npc.kind==='ringSupport')this.inspectRingSupport(npc);
     else if(npc.kind==='fakeChampion')this.beginFakeChampionQuest();
     else if(npc.kind==='lostFan')this.beginLostFanQuest();
+    else if(npc.kind==='fanFamily')this.completeLostFanFamilyRoute();
     else if(npc.kind==='mechanic')this.beginDummyQuest();
     else if(npc.kind==='cashier')this.beginPrizeCartQuest();
     else if(npc.kind==='challenger')this.beginRejectedChallengerQuest();
@@ -901,6 +925,7 @@ class RrvvfoMission2{
     else if(npc.kind==='bracket')this.inspectBracket();
     else if(npc.kind==='photoStand')this.useFestivalPhotoStand();
     else if(npc.kind==='exhibition')this.beginFestivalExhibition();
+    else if(npc.kind==='revisitRooftop')this.startFight({id:'rejected-challenger',name:'Rooftop Challenger',hpScale:1.18,xp:0,kind:'revisit-rooftop',story:false,archetype:'trickster',intro:'SECRET REMATCH • ROOFTOP CHALLENGER'});
     else if(npc.kind==='bracketFanCard')this.catchWadeCard();
     else if(npc.kind==='bracketRoof')this.collectBracketCard('vendor-card',[
       {speaker:'RRVVFO',speakerClass:'p1',text:'Bark’s card landed on the upper market walkway.',tail:'down'},
@@ -943,15 +968,16 @@ class RrvvfoMission2{
     }
     if(!bracket.started){
       this.showDialogue([
-        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Disaster! Three contestant cards escaped the bracket board!',tail:'down'},
+        {speaker:'ANNOUNCER',speakerClass:'rival',text:'Disaster! The bracket records split across the festival!',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'Aren’t you the announcer I used to watch in those World Tournaments on TV when I was younger? So I guess your clumsiness wasn’t a character.',tail:'down'},
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'HEY! HURTFUL!',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'I’m helping you. I can be as rude as I want.',tail:'down'}
-      ],()=>{bracket.started=true;this.state.hubQuests.activeQuest='bracket';this.saveChapterState();this.questToast('MAIN QUEST STARTED','THE LOST BRACKET','Recover 3 contestant cards.');this.updateHubObjective()});
+      ],()=>{bracket.started=true;this.state.hubQuests.activeQuest='bracket';this.saveChapterState();this.questToast('MAIN QUEST STARTED','THE LOST BRACKET','Reconstruct the bracket from different leads. Find all 3 records, or recover 2 and use Tournament Administration.');this.updateHubObjective()});
       return;
     }
-    if(!bracket.complete&&bracket.cards.length<3){this.showDialogue([{speaker:'ANNOUNCER',speakerClass:'rival',text:`Still missing ${3-bracket.cards.length} card${3-bracket.cards.length===1?'':'s'}! The entire bracket is becoming a circle!`,tail:'down'}]);return}
-    if(!bracket.complete&&bracket.cards.length>=3){
+    const route=chapter2BracketRoute(this.state.hubQuests);
+    if(!bracket.complete&&!route.ready){this.showDialogue([{speaker:'ANNOUNCER',speakerClass:'rival',text:bracket.cards.length>=2?'Two physical records are enough if you can reconstruct the last entry inside Tournament Administration.':`Still missing ${3-bracket.cards.length} record${3-bracket.cards.length===1?'':'s'}! Find different clues instead of running one giant fetch route.`,tail:'down'}]);return}
+    if(!bracket.complete&&route.ready){
       this.showDialogue([
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'Wade, Bark, and the unreadable qualifier! The bracket lives!',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'I’m about to win.',tail:'down'},
@@ -975,7 +1001,7 @@ class RrvvfoMission2{
   collectBracketCard(cardId,lines){
     const bracket=this.state.hubQuests.mandatory.bracket;
     if(bracket.cards.includes(cardId)){this.showDialogue([{speaker:'RRVVFO',speakerClass:'p1',text:'I already got the card from here.',tail:'down'}]);return}
-    this.showDialogue(lines,()=>{bracket.cards.push(cardId);this.saveChapterState();this.questToast('QUEST UPDATED','THE LOST BRACKET',`${bracket.cards.length} / 3 cards recovered.`);this.updateHubObjective()});
+    this.showDialogue(lines,()=>{bracket.cards.push(cardId);this.saveChapterState();this.questToast('QUEST UPDATED','THE LOST BRACKET',chapter2BracketRoute(this.state.hubQuests).label);this.updateHubObjective()});
   }
 
   talkToVendor(){
@@ -1257,6 +1283,7 @@ class RrvvfoMission2{
     this.battle.burst(player.x,player.z,'#d9f7ff',24,75);
     this.showAreaTitle(shortcut.arrival);
     this.battle.notice(shortcut.label,1.1);
+    discoverWorldDelight('c2-rooftop-route');
     this.nearby=null;this.root.querySelector('[data-c2-prompt]').hidden=true;
   }
 
@@ -1373,16 +1400,28 @@ class RrvvfoMission2{
         {speaker:'RRVVFO',speakerClass:'p1',text:'Wade? Uh, me and him used to train together. Why?',tail:'down'},
         {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'Please help me find him.',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'Wade’s gonna be hard to find since he rarely stays still.',tail:'down'}
-      ],()=>{quest.started=true;this.state.hubQuests.activeQuest='lostFan';this.saveChapterState();this.questToast('SIDE QUEST STARTED','WADE’S BIGGEST FAN','Bring Wade to the lost fan.');this.resumeHub()});
+      ],()=>{quest.started=true;this.state.hubQuests.activeQuest='lostFan';this.saveChapterState();this.questToast('SIDE QUEST STARTED','WADE’S BIGGEST FAN','Two solutions: find Wade, or search Market Street for the fan’s family.');this.resumeHub()});
     }else this.showDialogue([{speaker:'LOST WADE FAN',speakerClass:'neutral',text:'Did you find Wade?',tail:'down'}]);
   }
 
   completeLostFanQuest(){
+    this.state.hubQuests.optional.lostFan.route='wade';
     this.showDialogue([
       {speaker:'WADE',speakerClass:'neutral',text:'Hey, bud! It’s me, Wade. Here, have this pin on me.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Hey, isn’t that your father at the food court?',tail:'down'},
       {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'Oh, yeah! Thank you!',tail:'down'}
     ],()=>this.finishOptionalQuest('lostFan',{hp:6},'+6 permanent Story HP'));
+  }
+
+
+  completeLostFanFamilyRoute(){
+    const quest=this.state.hubQuests.optional.lostFan;if(!quest?.started||quest.complete)return;
+    quest.route='family';quest.familyFound=true;this.saveChapterState();
+    this.showDialogue([
+      {speaker:'FAN’S FATHER',speakerClass:'neutral',text:'There you are! We thought you ran all the way to the arena.',tail:'down'},
+      {speaker:'LOST WADE FAN',speakerClass:'neutral',text:'I was looking for Wade.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Found your family faster. Wade would’ve somehow turned this into a race.',tail:'down'}
+    ],()=>this.finishOptionalQuest('lostFan',{hp:6},'+6 permanent Story HP • FAMILY ROUTE'));
   }
 
   beginDummyQuest(){
@@ -1698,7 +1737,7 @@ class RrvvfoMission2{
 
   startFight(config){
     const official=Boolean(config.kind==='tournament'||config.kind==='final');
-    const optional=Boolean(['practice','bark-spar','grunt','fake-champion','dummy','challenger'].includes(config.kind));
+    const optional=Boolean(['practice','bark-spar','grunt','fake-champion','dummy','challenger','revisit-rooftop'].includes(config.kind));
     const enemyLevel=this.enemyLevelFor(config);
     const playerStats=storyStatsForLevel(this.level,this.progress.storyBonusStats||{});
     const bossHpBonus=config.final?.10:0;
@@ -1902,6 +1941,12 @@ class RrvvfoMission2{
           {speaker:'REJECTED CHALLENGER',speakerClass:'neutral',text:'I have to leave early, but I’ll be rooting for you.',tail:'down'},
           {speaker:'RRVVFO',speakerClass:'p1',text:'Good luck on your travels.',tail:'down'}
         ],()=>this.chooseChallengerReward());
+      }else if(fight.kind==='revisit-rooftop'){
+        const result=claimRevisitOpportunity(loadLostYearProgress(),'c2-rooftop-challenger');if(result.claimed)saveLostYearProgress(result.progress);
+        this.showDialogue([
+          {speaker:'ROOFTOP CHALLENGER',speakerClass:'neutral',text:'You actually came back up here. Most tournament winners never look behind them.',tail:'down'},
+          {speaker:'RRVVFO',speakerClass:'p1',text:'I looked up. Close enough.',tail:'down'}
+        ],()=>{this.battle.notice(result.claimed?result.reward:'ROOFTOP CHALLENGE CLEARED',1.5);this.enterHub({spawn:{x:-430,z:700}})});
       }else if(fight.kind==='grunt'){
         this.state.gruntDefeated=unique([...this.state.gruntDefeated,fight.id]);this.saveChapterState();
         this.showDialogue([

@@ -1,4 +1,4 @@
-export const CONNECTED_WORLD_VERSION=2;
+export const CONNECTED_WORLD_VERSION=3;
 
 const freezeDeep=value=>{
   if(value&&typeof value==='object'&&!Object.isFrozen(value)){
@@ -110,7 +110,7 @@ export const WORLD_SHORTCUTS=freezeDeep({
 });
 
 function unique(values){return[...new Set(Array.isArray(values)?values.filter(Boolean):[])];}
-export function freshConnectedWorldState(){return{version:CONNECTED_WORLD_VERSION,currentRegion:'training',currentZone:'dojo',discoveredRegions:['training'],discoveredZones:['training:dojo'],landmarks:[],shortcuts:[],interiors:[],interiorVisitCounts:{},doorStates:{},visitCounts:{},lastEntrance:'start'};}
+export function freshConnectedWorldState(){return{version:CONNECTED_WORLD_VERSION,currentRegion:'training',currentZone:'dojo',discoveredRegions:['training'],discoveredZones:['training:dojo'],landmarks:[],shortcuts:[],interiors:[],interiorVisitCounts:{},doorStates:{},visitCounts:{},revisitRewards:[],fastTravelNodes:[],lastEntrance:'start'};}
 
 function completed(progress,id){return Boolean(progress?.completedMissions?.includes(id));}
 function inferDiscoveries(progress,state){
@@ -127,7 +127,7 @@ function inferDiscoveries(progress,state){
 
 export function normalizeConnectedWorldState(value={},progress={}){
   const base=freshConnectedWorldState(),source=value&&typeof value==='object'?value:{};
-  const merged={...base,...source,version:CONNECTED_WORLD_VERSION,discoveredRegions:unique(source.discoveredRegions||base.discoveredRegions),discoveredZones:unique(source.discoveredZones||base.discoveredZones),landmarks:unique(source.landmarks),shortcuts:unique(source.shortcuts),interiors:unique(source.interiors),interiorVisitCounts:{...(source.interiorVisitCounts||{})},doorStates:{...(source.doorStates||{})},visitCounts:{...(source.visitCounts||{})}};
+  const merged={...base,...source,version:CONNECTED_WORLD_VERSION,discoveredRegions:unique(source.discoveredRegions||base.discoveredRegions),discoveredZones:unique(source.discoveredZones||base.discoveredZones),landmarks:unique(source.landmarks),shortcuts:unique(source.shortcuts),interiors:unique(source.interiors),interiorVisitCounts:{...(source.interiorVisitCounts||{})},doorStates:{...(source.doorStates||{})},visitCounts:{...(source.visitCounts||{})},revisitRewards:unique(source.revisitRewards),fastTravelNodes:unique(source.fastTravelNodes)};
   const inferred=inferDiscoveries(progress,merged);merged.discoveredRegions=inferred.regions;merged.discoveredZones=inferred.zones;
   if(!WORLD_REGIONS[merged.currentRegion])merged.currentRegion='training';
   if(!WORLD_REGIONS[merged.currentRegion]?.zones?.[merged.currentZone])merged.currentZone=Object.keys(WORLD_REGIONS[merged.currentRegion].zones)[0];

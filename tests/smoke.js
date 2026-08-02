@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a402-field-skills-minimal-ui-20260801';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a404-buildings-interiors-world-life-20260802';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a402-field-skills-minimal-ui-20260801';
-import {Fighter} from '../js/fighter.js?v=29a402-field-skills-minimal-ui-20260801';
+import {EffectSystem} from '../js/effects.js?v=29a404-buildings-interiors-world-life-20260802';
+import {Fighter} from '../js/fighter.js?v=29a404-buildings-interiors-world-life-20260802';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,24 +17,26 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a402-field-skills-minimal-ui-20260801';
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a402-field-skills-minimal-ui-20260801';
-import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
-import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a402-field-skills-minimal-ui-20260801';
-import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a402-field-skills-minimal-ui-20260801';
-import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
-import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
-import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a402-field-skills-minimal-ui-20260801';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
-import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a402-field-skills-minimal-ui-20260801';
-import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a402-field-skills-minimal-ui-20260801';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a404-buildings-interiors-world-life-20260802';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a404-buildings-interiors-world-life-20260802';
+import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
+import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a404-buildings-interiors-world-life-20260802';
+import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a404-buildings-interiors-world-life-20260802';
+import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
+import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CONNECTED_WORLD_VERSION,WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,connectedZoneNeighbors,discoverWorldLandmark,discoverWorldShortcut,freshConnectedWorldState,normalizeConnectedWorldState,recordInteriorVisit,recordWorldVisit,renderTravelJournal,setWorldDoorState,worldDoorState,worldInteriorKnown,worldMapSummary,worldShortcutKnown,worldZoneKnown} from '../js/story/connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
+import {STORY_BUILDINGS,STORY_INTERIOR_VERSION,buildingDefinition,buildingIdsForChapter,buildingMapTitle,canEnterBuilding,interiorActorPoints,interiorMapPoints,interiorTransition,lockedDoorLine,resolveExteriorBuildingCollision} from '../js/story/story-interiors.js?v=29a404-buildings-interiors-world-life-20260802';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a404-buildings-interiors-world-life-20260802';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a404-buildings-interiors-world-life-20260802';
+import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a404-buildings-interiors-world-life-20260802';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -43,27 +45,27 @@ import {DEFAULT_QOL_SETTINGS,QOL_SETTINGS_KEY,loadQolSettings,saveQolSettings,sa
 import {NotificationSystem} from '../js/notification-system.js';
 import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringifySave,validateSaveImport} from '../js/save-manager.js';
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
-import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a402-field-skills-minimal-ui-20260801';
-import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a402-field-skills-minimal-ui-20260801';
+import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a404-buildings-interiors-world-life-20260802';
+import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a404-buildings-interiors-world-life-20260802';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a402-field-skills-minimal-ui-20260801';
+import {LoadingManager} from '../js/loading-manager.js?v=29a404-buildings-interiors-world-life-20260802';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
-import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a402-field-skills-minimal-ui-20260801';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a402-field-skills-minimal-ui-20260801';
-import {STAGES} from '../js/stages.js?v=29a402-field-skills-minimal-ui-20260801';
-import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a402-field-skills-minimal-ui-20260801';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
+import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a404-buildings-interiors-world-life-20260802';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a404-buildings-interiors-world-life-20260802';
+import {STAGES} from '../js/stages.js?v=29a404-buildings-interiors-world-life-20260802';
+import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a404-buildings-interiors-world-life-20260802';
 
-const RELEASE_CACHE_ID='29a402-field-skills-minimal-ui-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.40.2 — Field Skills & Minimal UI';
-const TOTAL_TESTS=419;
+const RELEASE_CACHE_ID='29a404-buildings-interiors-world-life-20260802';
+const EXPECTED_BUILD='Prototype 2.9A.40.4 — Buildings, Interiors & World Life';
+const TOTAL_TESTS=442;
 const TEST_TIMEOUT_MS=30000;
 class SmokeTimeoutError extends Error{constructor(name){super(`Timed out after ${TEST_TIMEOUT_MS/1000} seconds: ${name}`);this.name='SmokeTimeoutError';this.code='PX_SMOKE_TIMEOUT'}}
 const FETCH_TIMEOUT_MS=12000;
@@ -605,7 +607,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the complete investigation, facility, and Remote Region route',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a402-field-skills-minimal-ui-20260801');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a404-buildings-interiors-world-life-20260802');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the full Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['beginForgottenFighter','advanceNightRoute','searchBagLocation','confirmFacilityEntry','Runaway Training Dummy','Unfinished Echo','startDoorSequence','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`full Chapter 3 omitted ${token}`);
@@ -655,7 +657,7 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a402-field-skills-minimal-ui-20260801');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a404-buildings-interiors-world-life-20260802');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','enterLookout','startShadowArrival'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
@@ -1840,7 +1842,7 @@ await test('2.9A.36 older Chapter 4 saves beyond the caverns never move backward
 });
 
 await test('2.9A.36 active build packages playful exploration without changing save schema',async()=>{
-  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
+  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.36 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.36 changed the save schema unexpectedly');
   assert(html.includes(RELEASE_CACHE_ID),'2.9A.36 cache identity is not synchronized');
@@ -1911,7 +1913,7 @@ await test('2.9A.37 chapter results include RPG afterglow instead of rushing the
 });
 
 await test('2.9A.37 active build packages reliability and RPG flow without changing save schema',async()=>{
-  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801'),fetchSource('../js/story/story-reliability.js')]);
+  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802'),fetchSource('../js/story/story-reliability.js')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.37 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.37 changed save schema unexpectedly');
   assert(html.includes('story-rpg-flow-29a37.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.37 active page is not synchronized');
@@ -2004,7 +2006,7 @@ await test('2.9A.38 mastery records are included in safe save export and import'
 });
 
 await test('2.9A.38 active build integrates mastery results Training rewards and Extras records',async()=>{
-  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801')]);
+  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.38 build label is not centralized');assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.38 changed save schema unexpectedly');
   assert(html.includes('mastery-records-29a38.css')&&html.includes('MASTERY & RECORDS')&&html.includes(RELEASE_CACHE_ID),'2.9A.38 page does not expose Adventure Records');
   for(const token of ['createBattleMasterySession','recordBattleMasteryEvent','finalizeBattleMastery','data-mastery-result','recordMasteryChallenge'])assert(arena.includes(token),`Arena mastery integration omitted ${token}`);
@@ -2042,7 +2044,7 @@ await test('2.9A.39 Chapter 4 adds optional party recovery without adding a mand
 });
 
 await test('2.9A.39.1 active build preserves RPG polish with the new Chapter 4 ending',async()=>{
-  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801')]);
+  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD&&build.SAVE_SCHEMA_VERSION===268,'2.9A.39.1 build identity or save schema is wrong');
   assert(html.includes('full-experience-29a39.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.39.1 presentation/cache is not synchronized');
   assert(charm.includes('storyExperienceBeat')&&charm.includes('pxstoryfightrank'),'Story charm does not consume the new pacing/rank events');
@@ -2131,10 +2133,169 @@ await test('2.9A.40.2 Flow Cancel and build passives give audiovisual feedback i
 });
 
 await test('2.9A.40.2 current release identity keeps save schema 268 and the new cache synchronized',async()=>{
-  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a402-field-skills-minimal-ui-20260801'),fetchSource('../index.html')]);
+  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802'),fetchSource('../index.html')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.2 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.2 changed save schema unexpectedly');
   assert(index.includes('field-minimal-29a402.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.2 index is missing the minimal-UI release identity');
+});
+
+
+await test('2.9A.40.3 connected world defines four distinct regions and the released Story bridge graph',()=>{
+  assert(CONNECTED_WORLD_VERSION===2,'40.4 connected-world state version is not active');
+  for(const id of ['training','tournament','resonance','echo'])assert(WORLD_REGIONS[id]?.zones,`missing connected region ${id}`);
+  assert(WORLD_REGION_LINKS.some(link=>link.from==='training'&&link.to==='tournament'),'Tournament Road no longer bridges Chapters 1 and 2');
+  assert(WORLD_REGION_LINKS.some(link=>link.from==='tournament'&&link.to==='resonance'),'Chapter 3 maintenance descent is missing');
+  assert(WORLD_REGION_LINKS.some(link=>link.from==='resonance'&&link.to==='echo'&&link.oneWay),'damaged teleporter no longer bridges Chapter 3 to Echo Region');
+});
+
+await test('2.9A.40.3 major hubs use loops and branches instead of one-direct-path graphs',()=>{
+  const degree=(region,id)=>connectedZoneNeighbors(region,id).length;
+  assert(degree('tournament','central')>=3,'Tournament central district is still a one-path hub');
+  assert(degree('echo','central')>=3,'Echo Village central is still a one-path hub');
+  assert(WORLD_REGIONS.training.links.some(([a,b])=>['mainRoad','forest','cliff'].includes(a)||['mainRoad','forest','cliff'].includes(b)),'Tournament Road lost its branch routes');
+  assert(WORLD_REGIONS.echo.links.length>=14,'Echo Region graph is too linear for the Chapter 4 exploration target');
+});
+
+await test('2.9A.40.3 connected-world state migrates old Chapter 1-4 completion without a schema bump',()=>{
+  const old={completedMissions:['rrvvfo-00','rrvvfo-01','rrvvfo-road','rrvvfo-02','rrvvfo-03','rrvvfo-04']};
+  const state=normalizeConnectedWorldState({},old);
+  for(const region of ['training','tournament','resonance','echo'])assert(state.discoveredRegions.includes(region),`legacy completion failed to reveal ${region}`);
+  for(const key of ['training:outskirts','tournament:stadium','resonance:teleporter','echo:lookout'])assert(state.discoveredZones.includes(key),`legacy completion failed to infer ${key}`);
+});
+
+await test('2.9A.40.3 visits preserve exact region zone entrance and discovery history',()=>{
+  let progress={worldState:freshConnectedWorldState()};
+  progress=recordWorldVisit(progress,'tournament','market',{entrance:'west-market'});
+  progress=recordWorldVisit(progress,'tournament','stadium',{entrance:'market-stadium'});
+  const state=progress.worldState;
+  assert(state.currentRegion==='tournament'&&state.currentZone==='stadium','current connected-world position is wrong');
+  assert(state.lastEntrance==='market-stadium','last entrance is not remembered');
+  assert(state.discoveredZones.includes('tournament:market')&&state.discoveredZones.includes('tournament:stadium'),'visits did not persist mapped areas');
+  assert(state.visitCounts['tournament:stadium']===1,'visit count did not persist');
+});
+
+await test('2.9A.40.3 permanent shortcuts persist endpoints and appear in Travel Journal state',()=>{
+  let progress={worldState:freshConnectedWorldState()};
+  progress=discoverWorldShortcut(progress,'c4-water-lift');
+  assert(worldShortcutKnown(progress.worldState,'c4-water-lift'),'opened shortcut was not remembered');
+  assert(worldZoneKnown(progress.worldState,'echo','water')&&worldZoneKnown(progress.worldState,'echo','upperRidge'),'shortcut endpoints were not discovered');
+  const html=renderTravelJournal(progress);
+  assert(html.includes('1 permanent shortcut')&&html.includes('ECHO REGION'),'Travel Journal does not summarize the opened route');
+});
+
+await test('2.9A.40.3 Chapter 1 route choice records branches and the skilled cliff cut',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-road-hub.js');
+  for(const token of ["recordWorldVisit","'training'","'forest'","'cliff'","'mainRoad'","discoverWorldShortcut","c1-cliff-cut"])assert(source.includes(token),`Chapter 1 connected route omitted ${token}`);
+});
+
+await test('2.9A.40.3 Chapter 2 festival persists district travel and Wade-made permanent cuts',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-mission-2.js');
+  for(const token of ['ensureRegionMap','connectedZoneId','recordWorldVisit','c2-market-stadium','c2-practice-registration','c2-stadium-west'])assert(source.includes(token),`Chapter 2 connected hub omitted ${token}`);
+  for(const id of ['c2-market-stadium','c2-practice-registration','c2-stadium-west'])assert(WORLD_SHORTCUTS[id]?.region==='tournament',`${id} is not a tournament shortcut`);
+});
+
+await test('2.9A.40.3 Chapter 3 reuses the tournament at night then crosses Resonance into Echo Region',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ["recordWorldVisit(loadLostYearProgress(),'tournament'","setRegion('resonance'","setRegion('echo'","c3-service-cut"])assert(source.includes(token),`Chapter 3 world continuity omitted ${token}`);
+});
+
+await test('2.9A.40.3 Chapter 4 adds real nonlinear village shortcuts including the skilled potion route',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ['OLD WATER LIFT','OLD APOTHECARY PASSAGE','c4-water-lift','c4-apothecary-pass','wadeCurrent','precisionSwap','useWorldShortcut'])assert(source.includes(token),`Chapter 4 nonlinear route omitted ${token}`);
+  assert(WORLD_SHORTCUTS['c4-apothecary-pass'].from==='apothecary'&&WORLD_SHORTCUTS['c4-apothecary-pass'].to==='cavernApproach','potion-route shortcut does not bypass the long village loop');
+});
+
+await test('2.9A.40.3 Story Map supports Local Region World discovery views without exposing hidden routes early',async()=>{
+  const source=await fetchSource('../js/story/story-map.js');
+  for(const token of ['LOCAL','REGION','WORLD','drawRegionCanvas','drawWorldCanvas','discoveredZones','state.shortcuts','Unvisited areas stay vague'])assert(source.includes(token),`connected Story Map omitted ${token}`);
+  const summary=worldMapSummary({worldState:freshConnectedWorldState()});
+  assert(summary.find(item=>item.id==='training')?.known,'starting region should be known');
+  assert(!summary.find(item=>item.id==='echo')?.known,'Echo Region should not be revealed on a new save');
+});
+
+await test('2.9A.40.4 activates useful interiors while contextual locked doors stay contextual',()=>{
+  assert(STORY_INTERIOR_VERSION===2,'40.4 interior architecture version is not active');
+  for(const id of ['tournament-medical','tournament-admin','tournament-backstage','echo-apothecary','echo-home-west','echo-home-east']){assert(buildingDefinition(id),`active interior missing ${id}`);assert(canEnterBuilding(id,{chapter:buildingDefinition(id).chapters[0]}),`${id} is not enterable in its Story chapter`)}
+  assert(buildingMapTitle('tournament-medical').includes('INTERIOR MAP'),'building map title is missing');
+  assert(interiorTransition({buildingId:'echo-apothecary'})?.returnZone==='apothecary','interior transition cannot return to its exterior zone');
+  assert(lockedDoorLine(1).includes('house'),'contextual locked-door dialogue is missing');
+});
+
+
+await test('2.9A.40.4 medical center is a real roomed interior with the Chapter 3 medical worker inside',()=>{
+  const clinic=buildingDefinition('tournament-medical');
+  assert(clinic.rooms.some(room=>room.id==='recovery')&&clinic.rooms.some(room=>room.id==='storage'),'medical center is missing recovery/storage rooms');
+  assert(interiorActorPoints('tournament-medical').some(actor=>actor.id==='medical-worker'),'medical worker is not inside the clinic');
+  assert(interiorMapPoints('tournament-medical').some(point=>point.kind==='interior-exit'),'clinic map lacks an exit marker');
+});
+
+await test('2.9A.40.4 Chapter 2 and Chapter 4 expose chapter-appropriate enterable buildings',()=>{
+  const c2=buildingIdsForChapter(2),c4=buildingIdsForChapter(4);
+  for(const id of ['tournament-medical','tournament-admin','tournament-backstage'])assert(c2.includes(id),`Chapter 2 building list omitted ${id}`);
+  for(const id of ['echo-apothecary','echo-home-west','echo-home-east'])assert(c4.includes(id),`Chapter 4 building list omitted ${id}`);
+});
+
+await test('2.9A.40.4 dynamically drawn building shells have real runtime collision',()=>{
+  const player={x:640,z:-540,moveVX:120,moveVZ:80,kvx:20,kvz:20};
+  const hit=resolveExteriorBuildingCollision(player,['tournament-medical']);
+  assert(hit,'medical center shell did not collide');
+  assert(player.z<=-672||player.z>=-408||player.x<=468||player.x>=812,'collision failed to eject the player from the clinic shell');
+  assert(Math.abs(player.moveVX)<120&&Math.abs(player.moveVZ)<80,'building impact did not damp movement');
+});
+
+await test('2.9A.40.4 connected-world state remembers interior visits and persistent door state',()=>{
+  let progress={worldState:freshConnectedWorldState()};
+  progress=recordInteriorVisit(progress,'tournament-medical',{regionId:'tournament',zoneId:'medical',entrance:'front-door'});
+  progress=setWorldDoorState(progress,'tournament-medical','entered');
+  assert(worldInteriorKnown(progress.worldState,'tournament-medical'),'interior discovery did not persist');
+  assert(progress.worldState.interiorVisitCounts['tournament-medical']===1,'interior visit count did not persist');
+  assert(worldDoorState(progress.worldState,'tournament-medical')==='entered','door state did not persist');
+  assert(renderTravelJournal(progress).includes('1 interior entered'),'Travel Journal does not report interior discovery');
+});
+
+await test('2.9A.40.4 Story Map keeps an entered building on LOCAL view until the player exits',async()=>{
+  const source=await fetchSource('../js/story/story-map.js');
+  for(const token of ['localOnly=false','localOnly=true',"!this.localOnly",'INTERIOR MAP','EXIT THROUGH THE DOOR TO RETURN OUTSIDE'])assert(source.includes(token),`interior map mode omitted ${token}`);
+});
+
+await test('2.9A.40.4 Chapter 2 interiors keep keyboard controller and Story-menu exploration controls alive',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-mission-2.js');
+  for(const token of ["this.mode==='hub'||this.mode==='interior'",'ENTER MEDICAL CENTER','ENTER TOURNAMENT ADMINISTRATION','ENTER FIGHTER BACKSTAGE','resolveExteriorBuildingCollision',"['hub','interior','fight','spectator']"])assert(source.includes(token),`Chapter 2 interior integration omitted ${token}`);
+});
+
+await test('2.9A.40.4 Chapter 3 moves the medical-worker investigation into the real clinic',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-3.js');
+  for(const token of ['ENTER MEDICAL CENTER',"this.interiorId==='tournament-medical'",'medical-worker','Tournament Medical Center','resolveExteriorBuildingCollision',"startOptionalQuest('medicalFollowup')","if(quest.id==='medicalFollowup')continue","['hub','dungeon','remote','interior','fight']"])assert(source.includes(token),`Chapter 3 clinic integration omitted ${token}`);
+  assert(!source.includes('first reliable witness is in the recovery tent'),'retired fake recovery-tent objective is still present');
+});
+
+await test('2.9A.40.4 Chapter 4 has real Echo interiors plus locked background doors and exterior collision',async()=>{
+  const source=await fetchSource('../js/story/rrvvfo-chapter-4.js');
+  for(const token of ['ENTER OLD APOTHECARY','ENTER WEST ECHO HOME','ENTER EAST ECHO HOME','KNOCK ON NORTH HOME','CHECK OLD STOREHOUSE','lockedDoorLine','resolveExteriorBuildingCollision','resolveExteriorStructureCollision'])assert(source.includes(token),`Chapter 4 building pass omitted ${token}`);
+  assert(source.includes("oldMan:{x:390,z:460"),'old man is still standing inside the solid apothecary shell');
+});
+
+await test('2.9A.40.4 interior actors react to chapter and world state instead of repeating one static line',async()=>{
+  const source=await fetchSource('../js/story/story-interiors.js');
+  for(const token of ["chapter===3",'tournamentStarted','defended','after hours','ordinary conversation'])assert(source.includes(token),`world-life dialogue omitted ${token}`);
+});
+
+await test('2.9A.40.4 tournament landmarks render solid clinic and backstage building exteriors',async()=>{
+  const source=await fetchSource('../js/story/hub-landmark-art.js');
+  for(const token of ['enterable medical center','backstage annex','x:640,y:82,z:-540','x:1010,y:80,z:-470'])assert(source.includes(token),`solid tournament building art omitted ${token}`);
+});
+
+await test('2.9A.40.4 interior-map tabs obey hidden state so local building maps cannot leak Region World controls',async()=>{
+  const css=await fetchSource('../css/buildings-interiors-29a404.css');
+  assert(css.includes('.connectedMapTabs button[hidden]')&&css.includes('display:none!important'),'interior map hidden-tab safety rule is missing');
+});
+
+await test('2.9A.40.4 current release synchronizes interiors connected maps and save schema 268',async()=>{
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a404-buildings-interiors-world-life-20260802'),fetchSource('../index.html'),fetchSource('../css/connected-world-29a403.css')]);
+  assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.4 build label is not centralized');
+  assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.4 changed save schema unexpectedly');
+  assert(index.includes('connected-world-29a403.css')&&index.includes('buildings-interiors-29a404.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.4 index is missing connected-world/interior presentation cache identity');
+  for(const token of ['connectedTravelJournal','connectedMapTabs','mapDiscoveryHint','worldShortcutToast'])assert(css.includes(token),`connected-world CSS omitted ${token}`);
 });
 
 const initialOrdered=registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean);

@@ -1,4 +1,5 @@
-import {inspectStoryReliability} from './story-reliability.js?v=29a402-field-skills-minimal-ui-20260801';
+import {inspectStoryReliability} from './story-reliability.js?v=29a404-buildings-interiors-world-life-20260802';
+import {normalizeConnectedWorldState} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;
@@ -116,7 +117,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],keyItems:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},storyCharmState:{discoveries:[],activities:[],celebrations:[]},chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],keyItems:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},storyCharmState:{discoveries:[],activities:[],celebrations:[]},worldState:normalizeConnectedWorldState({},{}),chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},updatedAt:Date.now()};
 }
 
 let lastSaveFailure=null;
@@ -137,6 +138,7 @@ export function loadLostYearProgress(storage=availableStoryStorage()){
       keyItems:Array.isArray(parsed.keyItems)?[...new Set(parsed.keyItems.filter(item=>typeof item==='string'))]:[],
       storyBonusStats:{...fallback.storyBonusStats,...(parsed.storyBonusStats||{})},
       storyCharmState:{...fallback.storyCharmState,...(parsed.storyCharmState||{}),discoveries:[...new Set(parsed.storyCharmState?.discoveries||[])],activities:[...new Set(parsed.storyCharmState?.activities||[])],celebrations:[...new Set(parsed.storyCharmState?.celebrations||[])]},
+      worldState:normalizeConnectedWorldState(parsed.worldState||{},parsed),
       routeStarted:Boolean(parsed.routeStarted||parsed.completedMissions?.length),
       lastCheckpoint:typeof parsed.lastCheckpoint==='string'?parsed.lastCheckpoint:'rrvvfo-00'
     };

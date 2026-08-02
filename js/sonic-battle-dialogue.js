@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyConfirm} from './story/story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

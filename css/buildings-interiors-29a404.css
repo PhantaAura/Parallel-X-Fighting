@@ -1,0 +1,13 @@
+/* Prototype 2.9A.40.4 — Buildings, Interiors & World Life */
+/* Interior maps intentionally collapse to LOCAL view. Older UI layers use display:flex
+   on map-tab buttons, so hidden needs an explicit win in the cascade. */
+.storyMapOverlay .connectedMapTabs button[hidden]{display:none!important}
+.storyMapOverlay .connectedMapHeaderText small{max-width:40ch}
+.storyMapOverlay .connectedMapMeta span{min-width:0}
+.storyMapOverlay .connectedMapMeta span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* A building interior should read as a compact room map, not a second world-map dashboard. */
+.storyMapOverlay .connectedMapTabs button[data-map-tab="local"].isActive{background:#f7d985}
+.storyMapOverlay .connectedMapCard:has(.connectedMapTabs button[data-map-tab="region"][hidden]){background:#eee7d7}
+.storyMapOverlay .connectedMapCard:has(.connectedMapTabs button[data-map-tab="region"][hidden]) canvas{background:#ddd4c1}
+@media(max-width:700px){.storyMapOverlay .connectedMapMeta{gap:4px}.storyMapOverlay .connectedMapMeta span{font-size:8px}}
+@media(prefers-reduced-motion:reduce){.storyMapOverlay *{scroll-behavior:auto!important}}

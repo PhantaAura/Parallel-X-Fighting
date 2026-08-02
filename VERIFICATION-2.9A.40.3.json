@@ -1,0 +1,28 @@
+{
+  "build": "Prototype 2.9A.40.3 \u2014 Connected World & Exploration Framework",
+  "cache": "29a403-connected-world-exploration-20260802",
+  "saveSchema": 268,
+  "smoke": {
+    "passed": 431,
+    "failed": 0,
+    "total": 431
+  },
+  "static": {
+    "gameJs": 95,
+    "testJs": 2,
+    "importsResolved": 290,
+    "htmlIds": 259,
+    "duplicateHtmlIds": 0
+  },
+  "connectedWorld": {
+    "version": 1,
+    "regions": [
+      "training",
+      "tournament",
+      "resonance",
+      "echo"
+    ],
+    "chapter5Implemented": false
+  },
+  "status": "PASS"
+}

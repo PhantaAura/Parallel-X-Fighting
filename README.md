@@ -8,11 +8,19 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.40.2 — Field Skills & Minimal UI**
+**Prototype 2.9A.40.4 — Buildings, Interiors & World Life**
 
 This is a complete cumulative build. No older package is required.
 
 
+## 2.9A.40.4 Buildings, Interiors & World Life
+
+This cumulative pass turns the connected-world interior foundation into real RPG buildings. Tournament Administration, the Tournament Medical Center, Fighter Backstage, the Old Apothecary, and two Echo homes are now enterable spaces with solid exterior collision, local interior maps, persistent visit history, and state-aware NPC dialogue. Chapter 3's medical worker now genuinely lives inside the clinic for the main clue, required revisit, and optional follow-up instead of spawning as an inaccessible/outdoor duplicate. Background buildings can remain locked and use short contextual Rrvvfo responses rather than fake empty interiors. Save schema remains **268** and Chapter 5 is not added.
+
+
+## 2.9A.40.3 Connected World & Exploration Framework
+
+This cumulative architecture pass gives Chapters 1–4 a persistent connected-world model instead of treating geography as disposable chapter-only maps. Story maps now have Local / Region / World views, discovered regions and areas persist in the existing save, permanent shortcuts are remembered, Chapter 2/3 share tournament geography across different Story states, and Chapter 4 gains real nonlinear village routes including the Old Water Lift and a skilled Old Apothecary Passage for the optional potion route. A building/interior registry is included as the safe foundation for 2.9A.40.4; the actual clinic, homes, shops, and offices are intentionally not claimed as enterable yet. Save schema remains **268** and Chapter 5 is not added.
 
 ## 2.9A.40.2 Field Skills & Minimal UI
 

@@ -1,12 +1,12 @@
 "use strict";
-import {FIGHTER_META,FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from './roster.js?v=29a402-field-skills-minimal-ui-20260801';
+import {FIGHTER_META,FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from './roster.js?v=29a404-buildings-interiors-world-life-20260802';
 import {STAGES,drawStage} from './stages.js';
-import {CUSTOM_CONTROLLER_ACTIONS} from './input.js?v=29a402-field-skills-minimal-ui-20260801';
-import {sharedInput as input} from './input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CUSTOM_CONTROLLER_ACTIONS} from './input.js?v=29a404-buildings-interiors-world-life-20260802';
+import {sharedInput as input} from './input-runtime.js?v=29a404-buildings-interiors-world-life-20260802';
 import {decideCPU} from './ai.js';
 import {TimerRegistry,clamp,resetCombo} from './combat.js';
 import {EffectSystem} from './effects.js';
-import {Fighter} from './fighter.js?v=29a402-field-skills-minimal-ui-20260801';
+import {Fighter} from './fighter.js?v=29a404-buildings-interiors-world-life-20260802';
 import {moveList} from './movesets.js';
 import {trainingState,recordInput,clearTraining,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from './training.js';
 import {byId as $} from './ui.js';
@@ -15,35 +15,35 @@ import {applyCamera,createCameraState,updateCamera} from './camera-system.js';
 import {clearCinematic,createCinematicState,drawCinematicOverlay,updateCinematic} from './ultimate-system.js';
 import {AudioManager} from './audio-manager.js';
 import {HapticsManager,MobilePlatformController,loadTouchSettings,saveTouchSettings} from './mobile-platform.js';
-import {TouchControls} from './touch-controls.js?v=29a402-field-skills-minimal-ui-20260801';
-import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js?v=29a402-field-skills-minimal-ui-20260801';
-import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=29a402-field-skills-minimal-ui-20260801';
+import {TouchControls} from './touch-controls.js?v=29a404-buildings-interiors-world-life-20260802';
+import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js?v=29a404-buildings-interiors-world-life-20260802';
+import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=29a404-buildings-interiors-world-life-20260802';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
-import {ControllerManager} from './controller-manager.js?v=29a402-field-skills-minimal-ui-20260801';
-import {BUILD_VERSION} from './build-info.js?v=29a402-field-skills-minimal-ui-20260801';
-import {initializeStoryPolish} from './story/story-polish.js?v=29a402-field-skills-minimal-ui-20260801';
-import {initializeStoryCharm} from './story/story-charm.js?v=29a402-field-skills-minimal-ui-20260801';
-import {initializeMobileStoryUi} from './story/mobile-story-ui.js?v=29a402-field-skills-minimal-ui-20260801';
+import {ControllerManager} from './controller-manager.js?v=29a404-buildings-interiors-world-life-20260802';
+import {BUILD_VERSION} from './build-info.js?v=29a404-buildings-interiors-world-life-20260802';
+import {initializeStoryPolish} from './story/story-polish.js?v=29a404-buildings-interiors-world-life-20260802';
+import {initializeStoryCharm} from './story/story-charm.js?v=29a404-buildings-interiors-world-life-20260802';
+import {initializeMobileStoryUi} from './story/mobile-story-ui.js?v=29a404-buildings-interiors-world-life-20260802';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=29a402-field-skills-minimal-ui-20260801';
+import {MainMenu} from './main-menu.js?v=29a404-buildings-interiors-world-life-20260802';
 import {MatchStatistics} from './match-statistics.js';
-import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=29a402-field-skills-minimal-ui-20260801';
+import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=29a404-buildings-interiors-world-life-20260802';
 import {ResultsScreen} from './results-screen.js';
-import {loadQolSettings,saveQolSettings} from './qol-settings.js?v=29a402-field-skills-minimal-ui-20260801';
+import {loadQolSettings,saveQolSettings} from './qol-settings.js?v=29a404-buildings-interiors-world-life-20260802';
 import {NotificationSystem} from './notification-system.js';
 import {adaptiveMoveList,renderAdaptiveMoveList} from './move-list.js';
-import {SettingsPanel} from './settings-panel.js?v=29a402-field-skills-minimal-ui-20260801';
-import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=29a402-field-skills-minimal-ui-20260801';
+import {SettingsPanel} from './settings-panel.js?v=29a404-buildings-interiors-world-life-20260802';
+import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=29a404-buildings-interiors-world-life-20260802';
 import {LoadingManager} from './loading-manager.js';
 import {applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from './training-presets.js';
 import {FirstTimeHints} from './first-time-hints.js';
-import {cooldownText,fighterHudModel} from './hud-model.js?v=29a402-field-skills-minimal-ui-20260801';
-import {AbilityHotbar} from './ability-hotbar.js?v=29a402-field-skills-minimal-ui-20260801';
-import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {ResponsiveGameLayout} from './responsive-game-layout.js?v=29a402-field-skills-minimal-ui-20260801';
-import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=29a402-field-skills-minimal-ui-20260801';
-import {FullscreenManager} from './fullscreen-manager.js?v=29a402-field-skills-minimal-ui-20260801';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
+import {cooldownText,fighterHudModel} from './hud-model.js?v=29a404-buildings-interiors-world-life-20260802';
+import {AbilityHotbar} from './ability-hotbar.js?v=29a404-buildings-interiors-world-life-20260802';
+import {loadAbilityHotbarSettings,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {ResponsiveGameLayout} from './responsive-game-layout.js?v=29a404-buildings-interiors-world-life-20260802';
+import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=29a404-buildings-interiors-world-life-20260802';
+import {FullscreenManager} from './fullscreen-manager.js?v=29a404-buildings-interiors-world-life-20260802';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;
 const U={start:$('startScreen'),main:$('mainMenuScreen'),menu:$('menuScreen'),game:$('gameScreen'),mode:$('mode'),diff:$('difficulty'),stage:$('stage'),rt:$('roundTime'),rounds:$('rounds'),cine:$('cinematics'),reduced:$('reducedShake'),spriteToggle:$('rrvvfoSprites'),spriteQuality:$('rrvvfoQuality'),spriteDebug:$('rrvvfoSpriteDebug'),prototypeExpose:$('showPrototypeAppearances'),prototypeBuildNote:$('prototypeAppearanceBuildNote'),spriteLoading:$('spriteLoading'),appearancePanels:[$('rrvvfoAppearancePanel1'),$('rrvvfoAppearancePanel2')],appearanceSelects:[$('rrvvfoAppearance1'),$('rrvvfoAppearance2')],appearancePreviews:[$('rrvvfoPreview1'),$('rrvvfoPreview2')],controller1:$('controllerStyle1'),controller2:$('controllerStyle2'),controllerCustom:$('customController'),customSide:$('customSide'),customBindings:$('customBindings'),controllerGuide:$('controllerGuide'),roster:$('roster'),slot1:$('slot1'),slot2:$('slot2'),n1:$('name1'),n2:$('name2'),m1:$('moves1'),m2:$('moves2'),s2l:$('slot2label'),notice:$('notice'),p1n:$('p1name'),p2n:$('p2name'),p1h:$('p1hp'),p2h:$('p2hp'),p1e:$('p1en'),p2e:$('p2en'),p1g:$('p1guard'),p2g:$('p2guard'),p1d:$('p1defense'),p2d:$('p2defense'),p1hpText:$('p1hpText'),p2hpText:$('p2hpText'),p1enText:$('p1enText'),p2enText:$('p2enText'),p1guardText:$('p1guardText'),p2guardText:$('p2guardText'),p1status:$('p1status'),p2status:$('p2status'),timer:$('timer'),rl:$('roundLabel'),msg:$('msg'),mt:$('msgTitle'),mx:$('msgText'),mb:$('msgButton'),pause:$('pause')};
@@ -147,7 +147,7 @@ function closeSettingsPanel(){settingsPanel.close();$('settingsPanel').classList
 async function requestCloseSettings(){if(settingsPanel.dirty&&!await confirmation.open({title:'Discard Unsaved Changes?',message:'Changes not applied will be lost.',accept:'DISCARD'}))return;closeSettingsPanel()}
 function handleSettingsAction(action){
   if(action==='audioTest'){audio.test();return}
-  if(action==='resetHubCamera'){import('./story/hub-camera.js?v=29a402-field-skills-minimal-ui-20260801').then(({resetAllHubCameras})=>{resetAllHubCameras();notifications.push('HUB CAMERA RESET',{important:true,key:'camera-reset'})});return}
+  if(action==='resetHubCamera'){import('./story/hub-camera.js?v=29a404-buildings-interiors-world-life-20260802').then(({resetAllHubCameras})=>{resetAllHubCameras();notifications.push('HUB CAMERA RESET',{important:true,key:'camera-reset'})});return}
   if(action==='resetHints'){firstTimeHints.reset();notifications.push('FIRST-TIME HINTS RESET',{important:true,key:'hints-reset'});return}
   if(action==='touchPanel'){openTouchSettings();return}
   if(action==='controllerTest'){$('controllerTestButton').click();return}
@@ -164,7 +164,7 @@ function controlsModel(side){const device=input.lastInputDevice[side-1],style=in
 function openControlsPanel(){const sides=mode==='local'?[1,2]:[1],models=sides.map(controlsModel);$('controlsPanelBody').innerHTML=`<div class="controlsSummary">${models.map(model=>`<section><h3>PLAYER ${model.side} — ${model.style.toUpperCase()}</h3><dl>${model.rows.map(([name,value])=>`<div><dt>${name}</dt><dd>${value}</dd></div>`).join('')}</dl></section>`).join('')}</div><p class="moveListNote">Controller assignments: Player 1 — ${controllerManager.settings.assignments[0]===null?'Keyboard / Auto':`Controller ${controllerManager.settings.assignments[0]+1}`} • Player 2 — ${controllerManager.settings.assignments[1]===null?'Keyboard / Auto':`Controller ${controllerManager.settings.assignments[1]+1}`}</p>`;$('controlsPanel').classList.remove('hidden');$('closeControlsPanel').focus()}
 function closeControlsPanel(){$('controlsPanel').classList.add('hidden');if(paused)showPauseOverlay()}
 function openExtrasPanel(section='version'){$('extrasPanel').classList.remove('hidden');showExtra(section)}
-function showExtra(section){const content=$('extrasContent');if(section==='manual'){import('./story/combat-manual.js?v=29a402-field-skills-minimal-ui-20260801').then(({openCombatManual})=>{openCombatManual({grantPublic:true,onClose:()=>{$('extrasPanel').classList.remove('hidden')}});$('extrasPanel').classList.add('hidden')});return}if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style} <small>• ${FIGHTER_STATUS[id]?.label||'PROTOTYPE'}</small></p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls'){openControlsPanel();return}else if(section==='mastery'){import('./mastery-records.js?v=29a402-field-skills-minimal-ui-20260801').then(({loadMasteryRecords,renderMasteryRecords})=>{content.innerHTML=renderMasteryRecords(loadMasteryRecords(resilientStorage))});return}else if(section==='builds'||section==='adventure'){import('./story/core-fun.js?v=29a402-field-skills-minimal-ui-20260801').then(({renderCoreFunExtras,bindRrvvfoBuildLab})=>{content.innerHTML=renderCoreFunExtras({storage:resilientStorage});const lab=content.querySelector('[data-extras-build-lab]');if(lab)bindRrvvfoBuildLab(lab,{storage:resilientStorage,onChange:()=>{content.innerHTML=renderCoreFunExtras({storage:resilientStorage});const next=content.querySelector('[data-extras-build-lab]');if(next)bindRrvvfoBuildLab(next,{storage:resilientStorage})}})});return}else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Living Tournament Hub • Chapters 1–4 • Story RPG stats • Side quests • Tournament intermissions • Kinetic combat</p>`}
+function showExtra(section){const content=$('extrasContent');if(section==='manual'){import('./story/combat-manual.js?v=29a404-buildings-interiors-world-life-20260802').then(({openCombatManual})=>{openCombatManual({grantPublic:true,onClose:()=>{$('extrasPanel').classList.remove('hidden')}});$('extrasPanel').classList.add('hidden')});return}if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style} <small>• ${FIGHTER_STATUS[id]?.label||'PROTOTYPE'}</small></p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls'){openControlsPanel();return}else if(section==='mastery'){import('./mastery-records.js?v=29a404-buildings-interiors-world-life-20260802').then(({loadMasteryRecords,renderMasteryRecords})=>{content.innerHTML=renderMasteryRecords(loadMasteryRecords(resilientStorage))});return}else if(section==='builds'||section==='adventure'){import('./story/core-fun.js?v=29a404-buildings-interiors-world-life-20260802').then(({renderCoreFunExtras,bindRrvvfoBuildLab})=>{content.innerHTML=renderCoreFunExtras({storage:resilientStorage});const lab=content.querySelector('[data-extras-build-lab]');if(lab)bindRrvvfoBuildLab(lab,{storage:resilientStorage,onChange:()=>{content.innerHTML=renderCoreFunExtras({storage:resilientStorage});const next=content.querySelector('[data-extras-build-lab]');if(next)bindRrvvfoBuildLab(next,{storage:resilientStorage})}})});return}else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Living Tournament Hub • Chapters 1–4 • Story RPG stats • Side quests • Tournament intermissions • Kinetic combat</p>`}
 
 const STARTED_KEY='pxQolStartSeen';
 const LAST_ACTIVITY_KEY='pxQolLastActivity';
@@ -486,7 +486,7 @@ async function startGameInternal(){
     if(['cpu','local'].includes(requestedMode)){
       hideMenuLayers();
       cleanupMatchForNavigation();
-      const {startConfiguredArenaBattle}=await import('./arena/arena-mode.js?v=29a402-field-skills-minimal-ui-20260801');
+      const {startConfiguredArenaBattle}=await import('./arena/arena-mode.js?v=29a404-buildings-interiors-world-life-20260802');
       saveLastActivity();
       loadingManager.task('match','done');
       loadingManager.finish('3D BATTLE READY');

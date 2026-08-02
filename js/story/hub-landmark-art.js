@@ -79,6 +79,21 @@ export function drawTournamentLandmarks(r,time,{afterHours=false}={}){
   for(let i=-2;i<=2;i++)lantern(r,-120+i*72,126,-492,light,.58);
   r.box({x:-120,y:102,z:-501,sx:124,sy:48,sz:10,color:'#3a2922'});
 
+  // 40.4 enterable medical center: solid clinic shell with a readable front door and recovery-window glow.
+  r.box({x:640,y:82,z:-540,sx:300,sy:160,sz:220,color:afterHours?'#65716d':'#d8d4c5',alpha:.99});
+  tournamentRoof(r,640,190,-540,350,270,afterHours?'#405257':'#5c9fa4');
+  r.box({x:640,y:72,z:-425,sx:92,sy:136,sz:18,color:'#332f2b'});
+  r.box({x:640,y:150,z:-423,sx:118,sy:18,sz:24,color:'#7bc4c7'});
+  for(const x of [545,735]){r.box({x,y:102,z:-428,sx:58,sy:68,sz:10,color:afterHours?'#8ab2b3':'#b9e4df',alpha:afterHours?.24:.48});r.billboard({x,y:102,z:-438,size:22,color:'#9ce9e0',alpha:afterHours?.18:.26})}
+  r.disc({x:640,y:160,z:-430,rx:18,rz:18,color:'#f4f0dc',alpha:.82});
+
+  // 40.4 backstage annex: a practical fighter entrance rather than an invisible interaction point.
+  r.box({x:1010,y:80,z:-470,sx:310,sy:155,sz:210,color:afterHours?'#55565a':'#b4a994',alpha:.99});
+  tournamentRoof(r,1010,185,-470,360,260,afterHours?'#382f39':'#6c586c');
+  r.box({x:1010,y:70,z:-360,sx:100,sy:132,sz:18,color:'#302a29'});
+  r.box({x:1010,y:148,z:-358,sx:132,sy:18,sz:22,color:'#d2aa4f'});
+  for(const x of [910,1110])r.box({x,y:100,z:-362,sx:54,sy:60,sz:10,color:afterHours?'#6f7580':'#d8c9b0',alpha:.35});
+
   // Arena facade: tiered roof silhouette, colonnade, dark entries, and trophy crest.
   r.box({x:1370,y:135,z:40,sx:510,sy:270,sz:430,color:stone,alpha:.99});
   tournamentRoof(r,1370,286,40,650,535,roof);

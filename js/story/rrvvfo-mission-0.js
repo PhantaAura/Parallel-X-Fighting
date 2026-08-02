@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
-import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a404-buildings-interiors-world-life-20260802';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
+import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

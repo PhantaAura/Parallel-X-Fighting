@@ -1,6 +1,6 @@
-const RELEASE_CACHE_ID='29a402-field-skills-minimal-ui-20260801';
-const EXPECTED_BUILD='Prototype 2.9A.40.2 — Field Skills & Minimal UI';
-const TOTAL_TESTS=419;
+const RELEASE_CACHE_ID='29a404-buildings-interiors-world-life-20260802';
+const EXPECTED_BUILD='Prototype 2.9A.40.4 — Buildings, Interiors & World Life';
+const TOTAL_TESTS=442;
 const IMPORT_TIMEOUT_MS=600000;
 const STALL_TIMEOUT_MS=35000;
 

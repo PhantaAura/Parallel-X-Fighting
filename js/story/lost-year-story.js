@@ -11,17 +11,18 @@ import {
   repairChapter4Progress,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a402-field-skills-minimal-ui-20260801';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a402-field-skills-minimal-ui-20260801';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a402-field-skills-minimal-ui-20260801';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a402-field-skills-minimal-ui-20260801';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a402-field-skills-minimal-ui-20260801';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a402-field-skills-minimal-ui-20260801';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
-import {inspectStoryReliability} from './story-reliability.js?v=29a402-field-skills-minimal-ui-20260801';
+} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a404-buildings-interiors-world-life-20260802';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a404-buildings-interiors-world-life-20260802';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a404-buildings-interiors-world-life-20260802';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a404-buildings-interiors-world-life-20260802';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a404-buildings-interiors-world-life-20260802';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a404-buildings-interiors-world-life-20260802';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
+import {inspectStoryReliability} from './story-reliability.js?v=29a404-buildings-interiors-world-life-20260802';
+import {renderTravelJournal} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -151,7 +152,7 @@ class LostYearStoryScreen{
           <div class="routeProgressStatus"><strong>${progressPercent}% STORY COMPLETE</strong><span>${completedFullChapters} / ${RRVVFO_PLANNED_CHAPTER_COUNT} full chapters complete${c4?' • Chapter 4 complete':c3?' • Chapter 3 complete':''}</span></div>
           <div class="routeProgressTrack" style="--route-progress:${progressPercent}%"><i></i></div>
           <div class="storyRecoveryCard"><small>AUTO-SAVE RECOVERY • SAVE HEALTH ${reliability.health}</small><strong>${chapter4Conflict?'CHAPTER 4 SAVE REPAIR':storyCheckpointLabel(this.progress.lastCheckpoint)}</strong><span>${chapter4Conflict?'The save marks Chapter 4 complete without the ending checkpoints. Start Chapter 4 to repair only this chapter; Chapters 1–3 and RPG growth stay untouched.':reliability.issues.length?reliability.issues[0]:'Continue resumes from this checkpoint. Major fights and QTEs use safe retries instead of restarting the full chapter.'}</span></div>
-          ${storyStatsMarkup(this.progress)}${storyAttackStripMarkup()}
+          ${storyStatsMarkup(this.progress)}${storyAttackStripMarkup()}${renderTravelJournal(this.progress)}
           <div class="routeHomeActions">
             <button type="button" class="primary" data-continue-route ${next?'':'disabled'}><strong>${primary}</strong><span>${next?'Loads the next unfinished section.':'Use Chapter Select to replay released content.'}</span></button>
             <button type="button" data-open-manual ${manualReady?'':'disabled'}><strong>SAGE MANUAL</strong><span>${manualReady?'Review controls and techniques.':'Unlocks during Chapter 1.'}</span></button>

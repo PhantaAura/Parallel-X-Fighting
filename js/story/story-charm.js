@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a402-field-skills-minimal-ui-20260801';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a404-buildings-interiors-world-life-20260802';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 

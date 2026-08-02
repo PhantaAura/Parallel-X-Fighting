@@ -1,0 +1,32 @@
+{
+  "build": "Prototype 2.9A.40.4 — Buildings, Interiors & World Life",
+  "cache": "29a404-buildings-interiors-world-life-20260802",
+  "saveSchema": 268,
+  "smoke": {
+    "passed": 442,
+    "failed": 0,
+    "total": 442
+  },
+  "static": {
+    "gameJs": 95,
+    "testJs": 2,
+    "importsResolved": 293,
+    "htmlIds": 259,
+    "duplicateHtmlIds": 0
+  },
+  "worldInteriors": {
+    "version": 2,
+    "connectedWorldVersion": 2,
+    "releasedBuildings": 6,
+    "buildingIds": [
+      "tournament-medical",
+      "tournament-admin",
+      "tournament-backstage",
+      "echo-apothecary",
+      "echo-home-west",
+      "echo-home-east"
+    ],
+    "chapter5Implemented": false
+  },
+  "status": "PASS"
+}

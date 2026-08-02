@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
+import {sharedInput} from '../input-runtime.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast'},

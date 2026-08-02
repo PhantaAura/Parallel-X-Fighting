@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a402-field-skills-minimal-ui-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
+import {CONTROL_MAPS} from '../input.js?v=29a404-buildings-interiors-world-life-20260802';
+import {sharedInput} from '../input-runtime.js?v=29a404-buildings-interiors-world-life-20260802';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

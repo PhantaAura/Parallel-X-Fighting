@@ -1,23 +1,25 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
-import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
-import {StoryMap} from './story-map.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
-import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a404-buildings-interiors-world-life-20260802';
+import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
+import {StoryMap} from './story-map.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
+import {openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
+import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a402-field-skills-minimal-ui-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
-import {masterFieldSkill} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
+} from './chapter4-content.js?v=29a404-buildings-interiors-world-life-20260802';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
+import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a404-buildings-interiors-world-life-20260802';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -31,8 +33,9 @@ const LOOKOUT_BOUNDS=Object.freeze({minX:920,maxX:1320,minZ:-505,maxZ:-155});
 const LOOKOUT_ENTRANCE=Object.freeze({x:1120,z:-205,label:'SHADOW’S ENTRANCE',yBase:LOOKOUT_HEIGHT});
 const VILLAGE_POINTS=Object.freeze({
   gate:{x:-760,z:30,label:'ECHO VILLAGE'},teleporter:{x:-620,z:-430,label:'DAMAGED TELEPORTER'},beacon:{x:-350,z:540,label:'ECHO BEACON'},
-  cavern:{x:1030,z:470,label:'ECHO CAVERNS'},oldMan:{x:260,z:610,label:'ABANDONED POTION BUILDING'},
-  recovery:{x:160,z:150,label:'RECOVERY AREA'},partyRoute:{x:640,z:360,label:'DAMAGED CAVERN ROUTE'},cavernShortcut:{x:390,z:600,label:'OLD CAVERN SHORTCUT'},mountain:{x:1260,z:-430,label:'MOUNTAIN GATE'},chimes:{x:-40,z:520,label:'ECHO CHIMES'}
+  cavern:{x:1030,z:470,label:'ECHO CAVERNS'},oldMan:{x:390,z:460,label:'ABANDONED POTION BUILDING'},
+  recovery:{x:160,z:150,label:'RECOVERY AREA'},partyRoute:{x:640,z:360,label:'DAMAGED CAVERN ROUTE'},cavernShortcut:{x:390,z:600,label:'OLD CAVERN SHORTCUT'},mountain:{x:1260,z:-430,label:'MOUNTAIN GATE'},chimes:{x:-40,z:520,label:'ECHO CHIMES'},
+  waterLift:{x:-65,z:-25,label:'OLD WATER LIFT'},upperLift:{x:860,z:-260,label:'UPPER RIDGE LIFT'},apothecaryPass:{x:315,z:660,label:'OLD APOTHECARY PASSAGE'},apothecaryExit:{x:735,z:-565,label:'HIDDEN STORAGE EXIT'}
 });
 let activeMission=null;
 
@@ -109,10 +112,10 @@ class RrvvfoChapter4{
     this.playtestHub=Boolean(playtestHub);
     this.state=this.replayMode?freshChapter4State():this.savedState;
     if(this.playtestHub)this.state=freshChapter4State();
-    this.mode='boot';this.area='region';this.dialogue=null;this.pacing=this.state.pacing;this.aftermathSeconds=0;this.aborted=false;this.completed=false;this.nearby=null;this.interactHeld=false;this.playerFlip=false;
+    this.mode='boot';this.area='region';this.interiorId='';this.interiorReturn=null;this.dialogue=null;this.pacing=this.state.pacing;this.aftermathSeconds=0;this.aborted=false;this.completed=false;this.nearby=null;this.interactHeld=false;this.playerFlip=false;
     this.storyMenuOpen=false;this.storyMenuPaused=false;this.trackerOpen=false;this.choiceOpen=false;this.choiceCallback=null;this.toastTimer=0;this.areaTimer=0;
     this.currentFight=null;this.fightElapsed=0;this.fightLosses={};this.lastWatcherAction='';this.watcherRepeat=0;this.patternRecorded=0;this.watcherPhase=1;this.watcherMemory={action:'',signature:'',patternName:'',spacing:'',approach:'',repeat:0,confidence:0,lastHitAt:0,lastInterval:0,learned:false,exposedUntil:0,variety:[],recent:[]};
-    this.vibrationPulse=0;this.vibrationCooldown=0;this.vibrationCombat=false;this.windClock=0;this.supportClock=0;this.lookoutLandingSeconds=0;this.lookoutPromptCueShown=false;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.squadAttackClock=0;this.targetCycleHeld=false;this.teamCommand='focus';this.waveBannerTimer=0;this.currentEnemyRole=null;
+    this.vibrationPulse=0;this.vibrationCooldown=0;this.vibrationCombat=false;this.windClock=0;this.supportClock=0;this.lookoutLandingSeconds=0;this.lookoutPromptCueShown=false;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.squadAttackClock=0;this.targetCycleHeld=false;this.teamCommand='focus';this.waveBannerTimer=0;this.currentEnemyRole=null;this.lastConnectedZone='';
     this.qte={active:false,type:'',step:0,sequence:[],deadline:0,meter:0,onComplete:null};this.qteInputHeld=false;
     this.root.querySelector('[data-c4-journal]').addEventListener('click',()=>this.openTracker());
     this.root.querySelector('[data-c4-map]').addEventListener('click',()=>this.map?.open());
@@ -152,7 +155,7 @@ class RrvvfoChapter4{
     const stageId=this.stageForLocation(this.state.location);
     this.battle=createStoryBattle({stageId,opponent:{id:'hollow-grunt',name:'Project Hollow Grunt',cpu:true}});
     this.engine=attachStoryEngine(this.battle,{chapterLabel:'RRVVFO CHAPTER 4',stageName:'ECHO REGION',rootClasses:['storyChapter4','storyChapter4Hub'],getMode:()=>{
-      if(this.engine?.dialogue)return'dialogue';if(['explore','cavern','mountain'].includes(this.mode))return'exploration';if(this.mode==='fight')return'combat';return this.mode;
+      if(this.engine?.dialogue)return'dialogue';if(['explore','cavern','mountain','interior'].includes(this.mode))return'exploration';if(this.mode==='fight')return'combat';return this.mode;
     }});
     this.patchBattle();this.engine.start({phase:'story',time:9999,hideBanner:true,applyProgression:true,names:['RRVVFO','']});
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART ACTIVE ENCOUNTER?',message:'Restart the current Chapter 4 encounter? Completed checkpoints remain saved.',confirmLabel:'RESTART'});
@@ -206,7 +209,7 @@ class RrvvfoChapter4{
           this.qteInputHeld=held;
           return this.engine.commandForMode({},'qte');
         }
-        if(['explore','cavern','mountain'].includes(this.mode)){
+        if(['explore','cavern','mountain','interior'].includes(this.mode)){
           const interact=Boolean(command.interact);if(interact&&!this.interactHeld)this.tryInteract();this.interactHeld=interact;
           return this.engine.commandForMode(command,'exploration',{allowJump:true,allowDash:true,allowInteract:true});
         }
@@ -245,7 +248,7 @@ class RrvvfoChapter4{
           if(value){this.advanceQte(value);return true}
           return false;
         }
-        if(['explore','cavern','mountain'].includes(this.mode)){
+        if(['explore','cavern','mountain','interior'].includes(this.mode)){
           if(slot===4&&this.state.rewards.vibrationSense){this.useVibrationSense();return true}
           if(slot===3&&this.area==='mountain'){this.battle.notice('OBJECT SWAP • NO MARKED TARGET IN RANGE',1.1);return false}
           this.battle.notice(this.state.rewards.vibrationSense?'SLOT 4 • VIBRATION SENSE':'ABILITIES RESPOND TO MARKED OBJECTIVES',1.1);return false;
@@ -287,9 +290,9 @@ class RrvvfoChapter4{
         else if(target===player&&player.hp<=0){player.hp=1;queueMicrotask(()=>this.finishFight(false))}
         return connected;
       },
-      updateCamera:()=>updateHubCamera(battle,{frameFight:this.mode==='fight'||this.lookoutLandingSeconds>0,allowLook:['explore','cavern','mountain'].includes(this.mode),hubDistance:this.area==='cavern'?980:this.area==='mountain'?1080:this.area==='lookout'?(this.lookoutLandingSeconds>0?660:820):1140,fightBaseDistance:920,fightMaxDistance:1190}),
+      updateCamera:()=>updateHubCamera(battle,{frameFight:this.mode==='fight'||this.lookoutLandingSeconds>0,allowLook:['explore','cavern','mountain','interior'].includes(this.mode),hubDistance:this.mode==='interior'?760:this.area==='cavern'?980:this.area==='mountain'?1080:this.area==='lookout'?(this.lookoutLandingSeconds>0?660:820):1140,fightBaseDistance:920,fightMaxDistance:1190}),
       flipFor:(next,fighter)=>{
-        if(['explore','cavern','mountain'].includes(this.mode)&&fighter===battle.fighters[0]){
+        if(['explore','cavern','mountain','interior'].includes(this.mode)&&fighter===battle.fighters[0]){
           const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);if(speed>.05){const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z),ahead=battle.renderer.project(fighter.x+(fighter.moveX||fighter.aimX||1)*120,80+fighter.y,fighter.z+(fighter.moveZ||fighter.aimZ||0)*120);this.playerFlip=ahead.x<self.x}return this.playerFlip;
         }return next(fighter);
       },
@@ -306,7 +309,7 @@ class RrvvfoChapter4{
       update:(next,dt)=>{
         next(dt);if(!battle.active||this.aborted)return;this.toastTimer=Math.max(0,this.toastTimer-dt);this.areaTimer=Math.max(0,this.areaTimer-dt);this.vibrationPulse=Math.max(0,this.vibrationPulse-dt);this.vibrationCooldown=Math.max(0,this.vibrationCooldown-dt);this.windClock+=dt;this.supportClock+=dt;
         if(!this.toastTimer)this.root.querySelector('[data-c4-toast]').hidden=true;if(!this.areaTimer)this.root.querySelector('[data-c4-area]').hidden=true;
-        if(['explore','cavern','mountain'].includes(this.mode)){const player=battle.fighters[0];player.hp=Math.max(1,Math.min(player.maxHp,player.hp));player.en=Math.max(0,Math.min(100,player.en));player.guard=Math.max(0,Math.min(100,player.guard));battle.time=9999;this.updateExploration(dt)}
+        if(['explore','cavern','mountain','interior'].includes(this.mode)){const player=battle.fighters[0];player.hp=Math.max(1,Math.min(player.maxHp,player.hp));player.en=Math.max(0,Math.min(100,player.en));player.guard=Math.max(0,Math.min(100,player.guard));battle.time=9999;this.updateExploration(dt)}
         else if(this.mode==='fight'){battle.time=9999;this.updateFight(dt)}
         else if(this.mode==='qte')this.updateQte();
         this.root.querySelector('[data-c4-vibration-overlay]').hidden=!(this.vibrationCombat||this.vibrationPulse>0);this.map?.draw();
@@ -343,12 +346,12 @@ class RrvvfoChapter4{
   switchStage(stageId){if(this.battle.active)this.battle.stopMatch();this.battle.setStage(stageId);this.battle.start();this.battle.root.querySelector('[data-result]')?.classList.add('hidden')}
   preparePlayer(point){const player=this.battle.fighters[0];player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(point.x,point.z);void this.battle.ensureFighterAsset(player,'rrvvfo');applyStoryProgressionToFighter(player,loadLostYearProgress());player.en=72;player.guard=100;snapHubCamera(this.battle,player,{distance:this.area==='cavern'?980:this.area==='mountain'?1080:this.area==='lookout'?820:1140});this.hideOpponent()}
   hideOpponent(){const foe=this.battle.fighters[1];foe.y=-1400;foe.x=this.battle.fighters[0].x-140;foe.z=this.battle.fighters[0].z-140;foe.hp=100;foe.attackState=null;foe.asset=null}
-  rebuildMap(){this.map?.destroy();const bounds=this.battle.stage.bounds;this.map=new StoryMap({title:this.area==='cavern'?'ECHO CAVERNS MAP':this.area==='mountain'?'MOUNTAIN PATH MAP':this.area==='lookout'?'SHADOW’S LOOKOUT':'ECHO REGION MAP',bounds,getPlayer:()=>this.battle?.fighters?.[0]||null,getObjective:()=>this.objectivePoint(),getPoints:()=>this.mapPoints()})}
+  rebuildMap(){this.map?.destroy();const bounds=this.battle.stage.bounds;this.map=new StoryMap({title:this.area==='cavern'?'ECHO CAVERNS MAP':this.area==='mountain'?'MOUNTAIN PATH MAP':this.area==='lookout'?'SHADOW’S LOOKOUT':'ECHO REGION MAP',regionId:'echo',zoneId:this.connectedZoneId(),bounds,getPlayer:()=>this.battle?.fighters?.[0]||null,getObjective:()=>this.objectivePoint(),getPoints:()=>this.mapPoints(),getZoneId:()=>this.connectedZoneId(),getProgress:()=>loadLostYearProgress(),getWorldState:()=>loadLostYearProgress().worldState})}
 
   enterVillage({opening=false,spawn=SPAWNS.village}={}){
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'echoVillage'}));
     this.area='village';this.state.location=this.state.requiredCompleted.includes('villageReached')?'echo-village':'echo-region';this.switchStage('echo-village');this.mode='explore';this.currentFight=null;this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();this.battle.root.classList.add('storyChapter4Hub');this.battle.root.classList.remove('storyChapter4Combat');
-    this.syncRpgPacing();this.engine.setLabels({stageName:'ECHO REGION',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.preparePlayer(spawn);this.engine.setHotbarAvailability(this.state.rewards.vibrationSense?[4]:[],{show:this.state.rewards.vibrationSense});this.showAreaTitle(this.state.requiredCompleted.includes('villageReached')?'ECHO VILLAGE • RESONANCE SETTLEMENT':'LOWER ECHO REGION','CHAPTER 4 • ANCIENT MOUNTAIN COUNTRY');document.dispatchEvent(new CustomEvent('pxstoryarrival',{detail:{title:this.state.requiredCompleted.includes('villageReached')?'ECHO VILLAGE':'LOWER ECHO REGION',detail:'Ancient mountain country',tone:'echo',onceKey:`c4-area:${this.state.requiredCompleted.includes('villageReached')?'village':'region'}`}}));this.rebuildMap();this.saveState();if(opening)this.showOpening();else{this.updateObjective();this.refreshTracker()}
+    this.syncRpgPacing();this.engine.setLabels({stageName:'ECHO REGION',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.preparePlayer(spawn);this.engine.setHotbarAvailability(this.state.rewards.vibrationSense?[4]:[],{show:this.state.rewards.vibrationSense});this.showAreaTitle(this.state.requiredCompleted.includes('villageReached')?'ECHO VILLAGE • RESONANCE SETTLEMENT':'LOWER ECHO REGION','CHAPTER 4 • ANCIENT MOUNTAIN COUNTRY');if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo',this.connectedZoneId(),{entrance:'chapter4-arrival'}));document.dispatchEvent(new CustomEvent('pxstoryarrival',{detail:{title:this.state.requiredCompleted.includes('villageReached')?'ECHO VILLAGE':'LOWER ECHO REGION',detail:'Ancient mountain country',tone:'echo',onceKey:`c4-area:${this.state.requiredCompleted.includes('villageReached')?'village':'region'}`}}));this.rebuildMap();this.saveState();if(opening)this.showOpening();else{this.updateObjective();this.refreshTracker()}
   }
 
   showOpening(){
@@ -382,7 +385,7 @@ class RrvvfoChapter4{
   enterCaverns({restored=false}={}){
     if(!restored&&!this.state.variety.fieldRouteComplete){this.toast('ROUTE BLOCKED','USE THE PARTY FIELD ACTIONS','Bark, Wade, and Rrvvfo must repair the damaged approach first.');this.updateObjective();return}
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'echoCavern'}));
-    this.area='cavern';this.state.location='echo-caverns';this.switchStage('echo-caverns');this.mode='cavern';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();this.engine.setLabels({stageName:'ECHO CAVERNS',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.preparePlayer(restored?SPAWNS.cavern:{x:-980,z:0});this.engine.setHotbarAvailability([],{show:false});this.showAreaTitle('ECHO CAVERNS','PUZZLE ROUTE • ELEMENTAL SEALS');this.rebuildMap();this.saveState();if(!this.state.requiredCompleted.includes('cavernsEntered')){this.showDialogue([
+    this.area='cavern';this.state.location='echo-caverns';this.switchStage('echo-caverns');this.mode='cavern';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();this.engine.setLabels({stageName:'ECHO CAVERNS',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.preparePlayer(restored?SPAWNS.cavern:{x:-980,z:0});this.engine.setHotbarAvailability([],{show:false});this.showAreaTitle('ECHO CAVERNS','PUZZLE ROUTE • ELEMENTAL SEALS');if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo','caverns',{entrance:'cavern-approach'}));this.rebuildMap();this.saveState();if(!this.state.requiredCompleted.includes('cavernsEntered')){this.showDialogue([
       {speaker:'WADE',speakerClass:'p2',text:'The cave is making my footsteps sound faster.',tail:'down'},
       {speaker:'BARK',speakerClass:'neutral',text:'That is because you keep running ahead.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Three doors. Fire, earth, and lightning. At least this place knows who showed up.',tail:'down'}
@@ -401,13 +404,20 @@ class RrvvfoChapter4{
 
   enterMountain({restored=false}={}){
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'echoMountain'}));
-    this.area='mountain';this.state.location='echo-mountain';this.switchStage('echo-mountain');this.mode='mountain';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();this.engine.setLabels({stageName:'MOUNTAIN PATH',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.preparePlayer(restored?SPAWNS.mountain:{x:-1240,z:0});this.engine.setHotbarAvailability(this.state.rewards.vibrationSense?[4]:[],{show:this.state.rewards.vibrationSense});this.showAreaTitle('MOUNTAIN PATH','SOLO ROUTE • TRACE THE SIGNALS');this.rebuildMap();this.saveState();if(!this.state.requiredCompleted.includes('mountainEntered')){this.completeRequired('mountainEntered');const lines=this.state.ryuzankaro.bossDefeated?[
+    this.area='mountain';this.state.location='echo-mountain';this.switchStage('echo-mountain');this.mode='mountain';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();this.engine.setLabels({stageName:'MOUNTAIN PATH',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.preparePlayer(restored?SPAWNS.mountain:{x:-1240,z:0});this.engine.setHotbarAvailability(this.state.rewards.vibrationSense?[4]:[],{show:this.state.rewards.vibrationSense});this.showAreaTitle('MOUNTAIN PATH','SOLO ROUTE • TRACE THE SIGNALS');if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo','foothills',{entrance:'mountain-gate'}));this.rebuildMap();this.saveState();if(!this.state.requiredCompleted.includes('mountainEntered')){this.completeRequired('mountainEntered');const lines=this.state.ryuzankaro.bossDefeated?[
       {speaker:'BARK',speakerClass:'neutral',text:'We can’t climb that mountain right now.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'I could.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'...',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'This place might still be a target. We should stay and protect it.',tail:'down'}
     ]:[{speaker:'BARK',speakerClass:'neutral',text:'The grunts were searching this village for a reason.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'They might come back.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'This place might be a target. We should stay here.',tail:'down'}];this.showDialogue(lines,()=>{this.mode='mountain';this.battle.phase='play';this.updateObjective();this.toast('SOLO OBJECTIVE','CLIMB TOWARD SHADOW’S LOOKOUT','Use echoes and Project Hollow signals to find the route.')})}else this.updateObjective();
   }
 
   updateExploration(dt){
+    if(this.mode==='interior'){
+      const player=this.battle.fighters[0];clampInteriorPlayer(player,this.interiorId);
+      this.nearby=this.availableInteractions().filter(item=>distance(player,item)<150).sort((a,b)=>distance(player,a)-distance(player,b))[0]||null;
+      const prompt=this.root.querySelector('[data-c4-prompt]');prompt.hidden=!this.nearby;if(this.nearby){this.root.querySelector('[data-c4-prompt-title]').textContent=this.nearby.label;this.root.querySelector('[data-c4-prompt-detail]').textContent=this.engine.prompt('interact','E').toUpperCase()}return;
+    }
     const player=this.battle.fighters[0];
+    if(this.area==='village'){resolveExteriorBuildingCollision(player,['echo-apothecary','echo-home-west','echo-home-east']);resolveExteriorStructureCollision(player,[{x:-300,z:610,sx:160,sz:155},{x:470,z:610,sx:160,sz:155}]);}
+    const worldZone=this.connectedZoneId();if(!this.replayMode&&worldZone&&worldZone!==this.lastConnectedZone){this.lastConnectedZone=worldZone;saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo',worldZone,{entrance:`chapter4-${this.area}`}));}
     if(this.area==='lookout'){
       // The lookout is a real elevated walkable surface. Keep the fighter firmly grounded
       // at sanctuary height so a restored checkpoint cannot drift, fall, or feel floaty.
@@ -430,8 +440,14 @@ class RrvvfoChapter4{
   }
 
   availableInteractions(){
+    if(this.mode==='interior')return this.interiorInteractions();
     const next=chapter4NextRequired(this.state),items=[];
     if(this.area==='village'){
+      items.push({kind:'building-enter:echo-apothecary',label:'ENTER OLD APOTHECARY',x:260,z:500});
+      items.push({kind:'building-enter:echo-home-west',label:'ENTER WEST ECHO HOME',x:-100,z:520});
+      items.push({kind:'building-enter:echo-home-east',label:'ENTER EAST ECHO HOME',x:80,z:520});
+      items.push({kind:'locked-door:locked-north-home',label:'KNOCK ON NORTH HOME',x:-300,z:515});
+      items.push({kind:'locked-door:locked-storehouse',label:'CHECK OLD STOREHOUSE',x:470,z:505});
       if(next==='villageReached')items.push({kind:'village-gate',...VILLAGE_POINTS.gate});
       if(next==='barkWadeArrive'){
         if(!this.pacing.interactions.includes('resonance-wall'))items.push({kind:'village-intro:resonance-wall',x:-520,z:210,label:'READ THE RESONANCE WALL'});
@@ -448,6 +464,8 @@ class RrvvfoChapter4{
       if(this.state.requiredCompleted.includes('beaconRestored')&&!this.state.charm?.echoChimesComplete)items.push({kind:'echo-chimes',...VILLAGE_POINTS.chimes,label:'PLAY THE ECHO CHIMES'});
       if(next==='mountainDecision'&&chapter4VillageDefenseComplete(this.state)&&!this.state.teamRestSeen)items.push({kind:'team-rest',...VILLAGE_POINTS.recovery,label:'REST WITH BARK & WADE'});
       if(next==='mountainDecision'&&chapter4VillageDefenseComplete(this.state))items.push({kind:'mountain-gate',...VILLAGE_POINTS.mountain,label:'LEAVE FOR THE MOUNTAIN'});
+      if(hasFieldSkill('wadeCurrent')){items.push({kind:'world-shortcut:c4-water-lift-up',...VILLAGE_POINTS.waterLift,label:'POWER THE OLD WATER LIFT'});items.push({kind:'world-shortcut:c4-water-lift-down',...VILLAGE_POINTS.upperLift,label:'RIDE WATER LIFT DOWN'})}
+      if(this.state.ryuzankaro.started&&hasFieldSkill('precisionSwap')){items.push({kind:'world-shortcut:c4-apothecary-out',...VILLAGE_POINTS.apothecaryPass,label:'SECRET • OLD APOTHECARY PASSAGE'});items.push({kind:'world-shortcut:c4-apothecary-back',...VILLAGE_POINTS.apothecaryExit,label:'RETURN THROUGH APOTHECARY PASSAGE'})}
     }
     if(this.area==='cavern'){
       if(next==='liftPartsRecovered'||this.state.ryuzankaro.started){
@@ -466,7 +484,12 @@ class RrvvfoChapter4{
     return items;
   }
 
-  tryInteract(){if(!this.nearby||!['explore','cavern','mountain'].includes(this.mode))return;const item=this.nearby;const [kind,id]=item.kind.split(':');
+  tryInteract(){if(!this.nearby||!['explore','cavern','mountain','interior'].includes(this.mode))return;const item=this.nearby;const [kind,id]=item.kind.split(':');
+    if(kind==='building-enter'){this.enterStoryInterior(id);return}
+    if(kind==='interior-exit'){this.exitStoryInterior();return}
+    if(kind==='interior-actor'){this.useInteriorActor(item);return}
+    if(kind==='locked-door'){this.showDialogue([{speaker:'RRVVFO',speakerClass:'p1',text:lockedDoorLine(id.length),tail:'down'}],()=>{this.mode='explore';this.battle.phase='play'});return}
+
     if(kind==='village-gate')this.reachVillage();
     else if(kind==='village-intro')this.inspectVillageLandmark(id);
     else if(kind==='beacon')this.repairBeacon(id);
@@ -479,6 +502,7 @@ class RrvvfoChapter4{
     else if(kind==='old-man')this.startOldManQuest();
     else if(kind==='echo-chimes')this.playEchoChimes();
     else if(kind==='team-rest')this.restWithTeam();
+    else if(kind==='world-shortcut')this.useWorldShortcut(id);
     else if(kind==='ingredient')this.collectIngredient(id);
     else if(kind==='mix-potion')this.revealRyuzankaro();
     else if(kind==='mountain-gate')this.chooseMountainDeparture();
@@ -503,6 +527,38 @@ class RrvvfoChapter4{
       document.dispatchEvent(new CustomEvent('pxstorycelebration',{detail:{type:'activity',tone:'technique',kicker:'PARTY RECOVERY',title:'READY FOR THE MOUNTAIN',detail:'HP, Energy, and Guard restored. The solo route remains optional until you leave.',items:this.replayMode?['BARK + WADE CHECK-IN','REPLAY • NO XP']:['BARK + WADE CHECK-IN','+45 STORY XP'],onceKey:'c4-party-rest'}}));
       this.updateObjective();
     });
+  }
+
+  interiorInteractions(){return[interiorExitPoint(this.interiorId),...interiorActorPoints(this.interiorId)].filter(Boolean)}
+
+  enterStoryInterior(buildingId){
+    const building=buildingDefinition(buildingId);if(!building)return;const player=this.battle.fighters[0];this.interiorReturn={area:this.area,spawn:{x:player.x,z:player.z}};this.interiorId=buildingId;this.mode='interior';this.battle.phase='play';this.currentFight=null;player.reset(building.entry.spawn.x,building.entry.spawn.z);snapHubCamera(this.battle,player,{distance:760});
+    if(!this.replayMode){let progress=loadLostYearProgress();progress=recordInteriorVisit(progress,buildingId,{regionId:building.region,zoneId:building.zone,entrance:'front-door'});saveLostYearProgress(progress)}
+    this.map?.setLocalArea({title:buildingMapTitle(buildingId),bounds:interiorBounds(buildingId)});this.engine.setLabels({stageName:building.label,chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.showAreaTitle(building.label,'ECHO VILLAGE INTERIOR');this.battle.notice('INTERIOR • EXPLORE OR RETURN THROUGH THE DOOR',1.1);this.updateObjective();
+  }
+
+  exitStoryInterior(){
+    if(!this.interiorId)return;const building=buildingDefinition(this.interiorId),back=this.interiorReturn||{},spawn=building?.entry?.returnSpawn||back.spawn||SPAWNS.village;this.interiorId='';this.mode='explore';this.area=back.area||'village';this.preparePlayer(spawn);this.map?.setRegion('echo',this.connectedZoneId());this.engine.setLabels({stageName:this.area==='village'?'ECHO VILLAGE':'ECHO REGION',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.battle.notice('BACK OUTSIDE',.8);this.updateObjective();
+  }
+
+  useInteriorActor(actor){
+    const defended=chapter4VillageDefenseComplete(this.state),line=interiorLifeLine(this.interiorId,actor.id,{chapter:4,defended,phase:this.pacing?.phase||''});const extra=this.interiorId==='echo-apothecary'&&this.state.ryuzankaro.started?' The old man already took the ingredients he knew how to identify. The stranger ones are still outside the village.':'';this.showDialogue([{speaker:actor.label||'ECHO VILLAGER',speakerClass:'neutral',text:`${line}${extra}`,tail:'down'}],()=>{this.mode='interior';this.battle.phase='play'});
+  }
+
+  connectedZoneId(){
+    if(this.mode==='interior'&&this.interiorId)return buildingDefinition(this.interiorId)?.zone||'central';
+    if(this.area==='cavern')return'caverns';if(this.area==='lookout')return'lookout';if(this.area==='mountain'){const p=this.battle?.fighters?.[0];return Number(p?.x||0)>820?'summit':Number(p?.x||0)>-500?'mountain':'foothills'}
+    const p=this.battle?.fighters?.[0]||SPAWNS.village;if(!this.state.requiredCompleted.includes('villageReached')||p.x<-700)return p.z<-250?'lowerTrail':'villageGate';if(p.x>1040&&p.z<0)return'foothills';if(p.x>760&&p.z>250)return'cavernApproach';if(p.x>640&&p.z<0)return'upperRidge';if(p.z>520&&p.x>120)return'apothecary';if(p.x<-390&&p.z>120)return'wall';if(p.x<80&&p.z<140)return'water';if(p.x<20&&p.z>360)return'residential';return'central';
+  }
+
+  useWorldShortcut(id){
+    const player=this.battle?.fighters?.[0];if(!player)return;
+    const routes={
+      'c4-water-lift-up':{shortcut:'c4-water-lift',to:VILLAGE_POINTS.upperLift,zone:'upperRidge',title:'OLD WATER LIFT',detail:'Wade’s current wakes a direct loop between the channel and upper ridge.'},
+      'c4-water-lift-down':{shortcut:'c4-water-lift',to:VILLAGE_POINTS.waterLift,zone:'water',title:'OLD WATER LIFT',detail:'The powered lift makes the village loop permanent.'},
+      'c4-apothecary-out':{shortcut:'c4-apothecary-pass',to:VILLAGE_POINTS.apothecaryExit,zone:'upperRidge',title:'OLD APOTHECARY PASSAGE',detail:'Precision Lock reveals the collapsed service passage behind the potion building.'},
+      'c4-apothecary-back':{shortcut:'c4-apothecary-pass',to:VILLAGE_POINTS.apothecaryPass,zone:'apothecary',title:'OLD APOTHECARY PASSAGE',detail:'A skilled route skips the long village loop during the potion quest.'}
+    };const route=routes[id];if(!route)return;let progress=loadLostYearProgress();progress=discoverWorldShortcut(progress,route.shortcut);progress=recordWorldVisit(progress,'echo',route.zone,{entrance:route.shortcut});if(!this.replayMode)saveLostYearProgress(progress);player.x=route.to.x;player.z=route.to.z;player.moveVX=0;player.moveVZ=0;this.battle.burst(player.x,player.z,'#9fe8ff',22,70);this.battle.notice(`SHORTCUT OPEN • ${route.title}`,1.3);this.toast('DISCOVERY',route.title,route.detail);this.lastConnectedZone=route.zone;this.map?.draw(true);
   }
 
   inspectVillageLandmark(id){
@@ -532,7 +588,7 @@ class RrvvfoChapter4{
   }
 
   finishPartyFieldRoute(){
-    this.state.variety.fieldRouteComplete=true;this.state.variety.persistentChanges=[...new Set([...(this.state.variety.persistentChanges||[]),'echo-cavern-route-repaired'])];this.saveState();
+    this.state.variety.fieldRouteComplete=true;this.state.variety.persistentChanges=[...new Set([...(this.state.variety.persistentChanges||[]),'echo-cavern-route-repaired'])];if(!this.replayMode)saveLostYearProgress(discoverWorldShortcut(loadLostYearProgress(),'c4-cavern-return'));this.saveState();
     this.mode='explore';this.battle.phase='play';this.battle.burst(VILLAGE_POINTS.partyRoute.x,VILLAGE_POINTS.partyRoute.z,'#b8ecff',42,110);
     document.dispatchEvent(new CustomEvent('pxstorycelebration',{detail:{type:'activity',tone:'technique',kicker:'PARTY FIELD ROUTE COMPLETE',title:'ECHO CAVERN APPROACH REPAIRED',detail:'The route remains open and the team’s work is visible in Echo Village.',items:['BARK • SUPPORT','WADE • POWER','RRVVFO • OBJECT SWAP'],onceKey:'activity:party-field-route'}}));
     this.showDialogue([{speaker:'ECHO VILLAGER',speakerClass:'neutral',text:'The old route is carrying sound again. We will keep it open.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'I did the electricity part.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'We noticed.',tail:'down'}],()=>{this.mode='explore';this.battle.phase='play';this.updateObjective()});
@@ -712,7 +768,7 @@ class RrvvfoChapter4{
     this.engine.setLabels({stageName:'SHADOW’S LOOKOUT',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});
     this.preparePlayer({x:930,z:-330});const player=this.battle.fighters[0];player.y=LOOKOUT_HEIGHT;player.vy=0;player.grounded=true;player.kvy=0;
     resetHubCameraLook(this.battle);this.lookoutLandingSeconds=restored?.85:LOOKOUT_LANDING_SECONDS;this.lookoutPromptCueShown=false;
-    this.engine.setHotbarAvailability([],{show:false});this.showAreaTitle('SHADOW’S LOOKOUT','FLOATING SANCTUARY • NO GROUND CONNECTION');this.rebuildMap();this.saveState();this.updateObjective();
+    this.engine.setHotbarAvailability([],{show:false});this.showAreaTitle('SHADOW’S LOOKOUT','FLOATING SANCTUARY • NO GROUND CONNECTION');if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo','lookout',{entrance:'summit-object-swap'}));this.rebuildMap();this.saveState();this.updateObjective();
     this.battle.notice(restored?'CHECKPOINT RESTORED • SHADOW’S LOOKOUT':'NO BRIDGE • NO SUPPORT • YOU MADE IT',restored?1.1:1.45);
   }
 
@@ -910,7 +966,7 @@ class RrvvfoChapter4{
 
   showWaveBanner(index,total,name){const node=this.root?.querySelector('[data-c4-wave-banner]');if(!node)return;node.textContent=`WAVE ${index}/${total} • ${String(name||'ENEMY').toUpperCase()}`;node.classList.add('show');this.waveBannerTimer=1.65}
 
-  updateEnemyRoleHud(){const panel=this.root?.querySelector('[data-c4-enemy-role]'),role=this.currentEnemyRole,active=this.mode==='fight'&&Boolean(role);if(!panel)return;panel.hidden=!active;if(!active){const touchTarget=document.getElementById('touchInteract');if(touchTarget){touchTarget.textContent='INTERACT';touchTarget.classList.remove('target-cycle');if(!['explore','cavern','mountain'].includes(this.mode))touchTarget.classList.remove('storyVisible')}return;}panel.style.setProperty('--role-color',role.color);const icon=this.root.querySelector('[data-c4-enemy-role-icon]');if(icon)icon.textContent=enemyArchetypeIcon(role.id);this.root.querySelector('[data-c4-enemy-role-name]').textContent=role.label;this.root.querySelector('[data-c4-enemy-role-detail]').textContent=role.description}
+  updateEnemyRoleHud(){const panel=this.root?.querySelector('[data-c4-enemy-role]'),role=this.currentEnemyRole,active=this.mode==='fight'&&Boolean(role);if(!panel)return;panel.hidden=!active;if(!active){const touchTarget=document.getElementById('touchInteract');if(touchTarget){touchTarget.textContent='INTERACT';touchTarget.classList.remove('target-cycle');if(!['explore','cavern','mountain','interior'].includes(this.mode))touchTarget.classList.remove('storyVisible')}return;}panel.style.setProperty('--role-color',role.color);const icon=this.root.querySelector('[data-c4-enemy-role-icon]');if(icon)icon.textContent=enemyArchetypeIcon(role.id);this.root.querySelector('[data-c4-enemy-role-name]').textContent=role.label;this.root.querySelector('[data-c4-enemy-role-detail]').textContent=role.description}
 
   updateTeamCombatHud(){const panel=this.root?.querySelector('[data-c4-team-status]'),active=this.mode==='fight'&&this.teamAllies.length>0;if(!panel)return;panel.hidden=!active;if(!active)return;for(const ally of this.teamAllies){const node=panel.querySelector(`[data-ally="${ally.id}"]`);if(node)node.textContent=this.currentFight?.squadMode?`${ally.name} • ${ally.down?'DOWN':`${Math.ceil(ally.hp)}/${ally.maxHp} HP`} • ${ally.role}`:`${ally.name} • ${Math.max(0,1.9-this.supportClock).toFixed(1)}s • ${this.teamCommand.toUpperCase()}`}const label=panel.querySelector('[data-c4-squad-label]');if(label)label.textContent=this.currentFight?.squadMode?`${this.currentFight.squadMode.toUpperCase()} • ${this.teamCommand.toUpperCase()}`:'TEAM SUPPORT';const enemies=panel.querySelector('[data-c4-squad-enemies]');if(enemies)enemies.textContent=this.currentFight?.squadMode?`ENEMIES • ${this.squadAliveEnemies().length} STANDING • ${this.engine.prompt('interact','E')} / TAB • CYCLE TARGET`:'C • CHANGE TEAM COMMAND';panel.title=this.currentFight?.squadMode?'Interact/Tab cycles living enemies • C changes team command':'Press C during team battles: Focus → Protect → Interrupt';const touchTarget=document.getElementById('touchInteract');if(touchTarget){const squad=Boolean(this.currentFight?.squadMode);touchTarget.textContent=squad?'TARGET':'INTERACT';touchTarget.classList.toggle('storyVisible',squad);touchTarget.classList.toggle('target-cycle',squad)}}
 
@@ -933,7 +989,7 @@ class RrvvfoChapter4{
       const losses=(this.fightLosses[fight.kind]||0)+1;this.fightLosses[fight.kind]=losses;
       this.showChoice({kicker:'ENCOUNTER LOST',title:`${fight.name.toUpperCase()} WINS`,text:losses>=2?'Retry with Story Assist for a small damage and defense advantage.':'Retry from the encounter checkpoint.',buttons:[{label:'RETRY',value:'retry',primary:true},...(losses>=2?[{label:'RETRY WITH STORY ASSIST',value:'assist'}]:[]),{label:'RETURN TO AREA',value:'leave'}],onChoose:value=>{
         if(value==='leave'){
-          this.currentFight=null;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.currentEnemyRole=null;this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
+          this.currentFight=null;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.currentEnemyRole=null;this.lastConnectedZone='';this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
           if(fight.kind==='watcher')this.enterMountain({restored:true});else if(fight.returnArea==='cavern')this.enterCaverns({restored:true});else this.enterVillage({spawn:SPAWNS.village});
         }else{
           this.startFight({...fight.restartConfig});
@@ -943,7 +999,7 @@ class RrvvfoChapter4{
     }
     this.fightLosses[fight.kind]=0;if(!this.replayMode&&fight.xp)addStoryXp(fight.xp,{source:`${fight.name.toUpperCase()} DEFEATED`});
     fight.squadPerfect=Boolean(fight.squadMode&&this.teamAllies.length&&this.teamAllies.every(ally=>!ally.down&&ally.hp>0));if(fight.kind==='village-defense'&&fight.squadPerfect&&!this.replayMode)completeAdventureMission('c4-squad-control',{rank:'A',reward:'TITLE • TEAM CAPTAIN'});
-    this.currentFight=null;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.currentEnemyRole=null;this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
+    this.currentFight=null;this.teamAllies=[];this.squadEnemies=[];this.squadTargetIndex=0;this.currentEnemyRole=null;this.lastConnectedZone='';this.updateWatcherHud();this.updateEnemyRoleHud();this.updateTeamCombatHud();this.engine.setHotbarAvailability([],{show:false});
     if(fight.kind==='ingredient-swarm'){
       this.state.ryuzankaro.swarmsCleared=unique([...this.state.ryuzankaro.swarmsCleared,fight.ingredientReward]);
       this.completeIngredientPickup(fight.ingredientReward);return;
@@ -961,7 +1017,7 @@ class RrvvfoChapter4{
 
   useVibrationSense(){if(!this.state.rewards.vibrationSense)return false;if(this.vibrationCooldown>0){this.battle.notice(`VIBRATION SENSE • ${this.vibrationCooldown.toFixed(1)}s`,.9);return false}this.vibrationPulse=2.2;this.vibrationCooldown=5.5;this.battle.burst(this.battle.fighters[0].x,this.battle.fighters[0].z,'#d9f9ff',32,120);this.battle.notice('VIBRATION SENSE • HIDDEN MOVEMENT REVEALED',1.2);return true}
 
-  drawChapterWorld(){if(!this.battle?.renderer||this.aborted)return;const r=this.battle.renderer,time=performance.now()/1000;if(this.area==='village')this.drawVillage(r,time);else if(this.area==='cavern')this.drawCaverns(r,time);else if(this.area==='mountain'||this.area==='lookout')this.drawMountain(r,time);else if(this.area==='sky')this.drawSky(r,time);if(this.mode==='fight'&&this.currentEnemyRole){const foe=this.battle.fighters[1],pulse=1+Math.sin(time*6)*.08;r.disc({x:foe.x,y:6,z:foe.z,rx:48*pulse,rz:32*pulse,color:this.currentEnemyRole.color,alpha:.16});if(this.currentFight?.kind==='watcher'){const memory=this.watcherMemory,exposed=performance.now()<memory.exposedUntil,color=exposed?'#fff0a8':memory.learned?'#63dce3':this.watcherPhase===3?'#ff9f80':'#8fe8ff';r.disc({x:foe.x,y:8,z:foe.z,rx:(72+this.watcherPhase*8)*pulse,rz:(48+this.watcherPhase*5)*pulse,color,alpha:exposed?.34:memory.learned?.28:.12});for(let i=0;i<this.watcherPhase;i++){const a=time*(.8+i*.2)+i*2.1;r.billboard({x:foe.x+Math.cos(a)*(66+i*12),y:78+i*20,z:foe.z+Math.sin(a)*(46+i*8),size:18+i*3,color,alpha:.45})}}}if(this.mode==='fight'&&this.teamAllies.length){this.drawTeamAllies(r,time);if(this.currentFight?.squadMode)this.drawSquadEnemies(r,time)}if(['explore','cavern','mountain'].includes(this.mode))for(const item of this.availableInteractions())this.drawMarker(r,item,time)}
+  drawChapterWorld(){if(!this.battle?.renderer||this.aborted)return;const r=this.battle.renderer,time=performance.now()/1000;if(this.mode==='interior'&&this.interiorId)drawStoryInterior(r,this.interiorId,time);else if(this.area==='village')this.drawVillage(r,time);else if(this.area==='cavern')this.drawCaverns(r,time);else if(this.area==='mountain'||this.area==='lookout')this.drawMountain(r,time);else if(this.area==='sky')this.drawSky(r,time);if(this.mode==='fight'&&this.currentEnemyRole){const foe=this.battle.fighters[1],pulse=1+Math.sin(time*6)*.08;r.disc({x:foe.x,y:6,z:foe.z,rx:48*pulse,rz:32*pulse,color:this.currentEnemyRole.color,alpha:.16});if(this.currentFight?.kind==='watcher'){const memory=this.watcherMemory,exposed=performance.now()<memory.exposedUntil,color=exposed?'#fff0a8':memory.learned?'#63dce3':this.watcherPhase===3?'#ff9f80':'#8fe8ff';r.disc({x:foe.x,y:8,z:foe.z,rx:(72+this.watcherPhase*8)*pulse,rz:(48+this.watcherPhase*5)*pulse,color,alpha:exposed?.34:memory.learned?.28:.12});for(let i=0;i<this.watcherPhase;i++){const a=time*(.8+i*.2)+i*2.1;r.billboard({x:foe.x+Math.cos(a)*(66+i*12),y:78+i*20,z:foe.z+Math.sin(a)*(46+i*8),size:18+i*3,color,alpha:.45})}}}if(this.mode==='fight'&&this.teamAllies.length){this.drawTeamAllies(r,time);if(this.currentFight?.squadMode)this.drawSquadEnemies(r,time)}if(['explore','cavern','mountain','interior'].includes(this.mode))for(const item of this.availableInteractions())this.drawMarker(r,item,time)}
   drawVillage(r,time){
     const pacingColor=this.pacing.phase==='aftermath'?'#8fe8ff':this.pacing.phase==='crisis'?'#ff745d':'#d9bd72';r.billboard({x:-350,y:310,z:540,size:24+Math.sin(time*2)*2,color:pacingColor,alpha:.24});
     // Ancient, low-tech settlement: hand-cut stone, timber, ropes, bells, water, and resonance craft.
@@ -1003,11 +1059,14 @@ class RrvvfoChapter4{
     for(let i=0;i<4;i++){r.box({x:-40+i*75,y:8,z:150,sx:58,sy:6,sz:98,color:i%2?'#9b6f4d':'#6e7f5a'});r.gableRoof({x:-40+i*75,y:105,z:150,sx:82,sy:25,sz:115,color:i%2?'#b36b55':'#5d7f71',alpha:.82})}
     // Wind chimes and bells make the village react to the region's wind.
     for(let i=0;i<10;i++){const x=-700+i*150,z=i%2?700:-650;r.segment({x,y:80,z},{x,y:160,z},{width:5,height:5,color:'#6a4d34'});r.cone({x,y:171+Math.sin(time*2+i)*4,z,rx:18,sy:28,color:'#c6a65b'});r.segment({x,y:175,z},{x,y:205,z},{width:2,height:2,color:'#e1cf9a'})}
+    // 40.4: solid village shells with real doors. Enterable houses load interiors; background doors stay locked.
+    for(const house of [{x:-100,z:610,roof:'#5d7f71'},{x:80,z:610,roof:'#b36b55'},{x:-300,z:610,roof:'#6f647e'},{x:470,z:610,roof:'#7a6857'}]){r.box({x:house.x,y:70,z:house.z,sx:160,sy:140,sz:155,color:'#765b42'});r.gableRoof({x:house.x,y:170,z:house.z,sx:205,sy:62,sz:205,color:house.roof});drawBuildingDoor(r,{x:house.x,z:house.z-82,open:[-100,80].includes(house.x),tone:'#d9bd72'});r.box({x:house.x-48,y:95,z:house.z-80,sx:34,sy:42,sz:8,color:'#8edee8',alpha:.38})}
+    drawBuildingDoor(r,{x:260,z:505,open:true,tone:'#9fd58a'});
     // Project Hollow hardware deliberately clashes with the old settlement.
     if(!this.state.villageDefenseComplete){for(const [x,z,i] of [[-620,-430,0],[720,-470,1],[920,410,2]]){r.box({x,y:48,z,sx:88,sy:96,sz:70,color:'#252d39'});r.segment({x,y:95,z},{x:x+110,y:18,z:z+70},{width:9,height:9,color:'#1c222c'});r.billboard({x,y:112,z,size:28,color:'#63dce3',alpha:.38+Math.sin(time*5+i)*.08})}}
     // Companion and old-man silhouettes.
     if(this.state.requiredCompleted.includes('barkWadeArrive')){const exhausted=this.state.ryuzankaro.bossDefeated;this.drawCompanion(r,exhausted?90:-20,exhausted?170:50,'#ad8655','B',exhausted);this.drawCompanion(r,exhausted?220:80,exhausted?180:-20,'#4b9fe2','W',exhausted)}
-    if(ryuzankaroQuestAvailable(this.state)&&!ryuzankaroQuestResolved(this.state))this.drawOldMan(r,260,610);
+    if(ryuzankaroQuestAvailable(this.state)&&!ryuzankaroQuestResolved(this.state))this.drawOldMan(r,VILLAGE_POINTS.oldMan.x,VILLAGE_POINTS.oldMan.z);
     for(let i=0;i<16;i++){const x=((time*(18+i%4*4)+i*210)%3200)-1600,z=-820+(i%6)*290;r.billboard({x,y:72,z,size:5,color:'#ffe0a8',alpha:.10})}
   }
   drawTeamAllies(r,time){
@@ -1079,21 +1138,21 @@ class RrvvfoChapter4{
 
   updateObjective(){const next=chapter4NextRequired(this.state);this.syncRpgPacing();if(this.aftermathSeconds>0){this.setObjective('STAY WITH THE VILLAGE FOR A MOMENT','Villagers are returning outside, Bark and Wade are recovering, and the repaired route is opening.');this.refreshTracker();this.saveState();return}const objectives={opening:['WAKE UP IN ECHO REGION','Get your bearings near the damaged teleporter.'],villageReached:['REACH ECHO VILLAGE','Follow the stone path through the lower region.'],barkWadeArrive:['LEARN HOW ECHO VILLAGE LIVES',`${pacingOrientationProgress('chapter4',this.pacing).interactions} / 2 village landmarks understood.`],beaconRestored:['RESTORE THE ECHO BEACON',`${this.state.beaconNodes.length} / ${CHAPTER4_BEACON_NODES.length} team repairs complete.`],cavernsEntered:this.state.variety.fieldRouteComplete?['ENTER ECHO CAVERNS','The repaired party route now reaches the cavern entrance.']:['REPAIR THE CAVERN APPROACH',`${this.state.variety.fieldActions.length} / ${CHAPTER4_PARTY_FIELD_ACTIONS.length} party field actions complete.`],liftPartsRecovered:['RECOVER THE MOUNTAIN-LIFT PARTS',`${this.state.liftParts.length} / ${CHAPTER4_LIFT_PARTS.length} parts recovered. Open all three elemental doors.`],villageDefended:['DEFEND ECHO VILLAGE','Project Hollow forces are attacking while the lift is repaired.'],mountainDecision:[this.state.ryuzankaro.started?'FINISH THE OLD MAN’S POTIONS':'CHOOSE YOUR NEXT ROUTE',this.state.ryuzankaro.started?`${this.state.ryuzankaro.ingredients.length} / ${CHAPTER4_INGREDIENTS.length} ingredients collected.`:'Optional: investigate the old man. Main route: leave through the repaired mountain gate.'],mountainEntered:['ENTER THE MOUNTAIN PATH','Bark and Wade will remain in Echo Village.'],mountainSignals:['TRACE THE MOUNTAIN SIGNALS',`${this.state.mountainSignals.length} / ${CHAPTER4_MOUNTAIN_SIGNALS.length} signals traced.`],hollowWatcherDefeated:['DEFEAT THE HOLLOW WATCHER','Its scan rises when move and timing repeat. Vary either one to break the prediction.'],lookoutReached:['REACH THE FLOATING LOOKOUT','The lookout cannot be climbed. Find the highlighted summit pebble and throw it onto the platform.'],shadowArrival:['ENTER SHADOW’S LOOKOUT','Approach the entrance. Rrvvfo has finally reached Shadow.'],chapterSaved:['CHAPTER COMPLETE','Chapter 5 begins when Rrvvfo wakes inside Shadow’s Lookout.']};const [title,detail]=objectives[next]||['ECHO REGION','Continue toward Shadow’s Lookout.'];this.setObjective(title,detail);this.refreshTracker();this.saveState()}
 
-  objectivePoint(){const next=chapter4NextRequired(this.state);if(this.area==='village'){if(next==='villageReached')return{...VILLAGE_POINTS.gate};if(next==='barkWadeArrive'){if(!this.pacing.interactions.includes('resonance-wall'))return{x:-520,z:210,label:'RESONANCE WALL'};if(!this.pacing.interactions.includes('water-channel'))return{x:-80,z:30,label:'WATER CHANNEL'}}if(next==='beaconRestored'){const p=CHAPTER4_BEACON_NODES.find(item=>!this.state.beaconNodes.includes(item.id));return p||VILLAGE_POINTS.beacon}if(next==='cavernsEntered')return VILLAGE_POINTS.cavern;if(next==='villageDefended')return{x:360,z:50,label:'DEFEND THE VILLAGE'};if(next==='mountainDecision')return this.state.ryuzankaro.started&&!this.state.ryuzankaro.bossDefeated?VILLAGE_POINTS.oldMan:VILLAGE_POINTS.mountain;if(this.state.ryuzankaro.started){const p=CHAPTER4_INGREDIENTS.find(item=>item.area==='village'&&!this.state.ryuzankaro.ingredients.includes(item.id));if(p)return p}}
+  objectivePoint(){if(this.mode==='interior'&&this.interiorId)return interiorExitPoint(this.interiorId);const next=chapter4NextRequired(this.state);if(this.area==='village'){if(next==='villageReached')return{...VILLAGE_POINTS.gate};if(next==='barkWadeArrive'){if(!this.pacing.interactions.includes('resonance-wall'))return{x:-520,z:210,label:'RESONANCE WALL'};if(!this.pacing.interactions.includes('water-channel'))return{x:-80,z:30,label:'WATER CHANNEL'}}if(next==='beaconRestored'){const p=CHAPTER4_BEACON_NODES.find(item=>!this.state.beaconNodes.includes(item.id));return p||VILLAGE_POINTS.beacon}if(next==='cavernsEntered')return VILLAGE_POINTS.cavern;if(next==='villageDefended')return{x:360,z:50,label:'DEFEND THE VILLAGE'};if(next==='mountainDecision')return this.state.ryuzankaro.started&&!this.state.ryuzankaro.bossDefeated?VILLAGE_POINTS.oldMan:VILLAGE_POINTS.mountain;if(this.state.ryuzankaro.started){const p=CHAPTER4_INGREDIENTS.find(item=>item.area==='village'&&!this.state.ryuzankaro.ingredients.includes(item.id));if(p)return p}}
     if(this.area==='cavern'){const door=CHAPTER4_CAVERN_DOORS.find(item=>!this.state.cavernDoors.includes(item.id));if(door)return door;const part=CHAPTER4_LIFT_PARTS.find(item=>!this.state.liftParts.includes(item.id));if(part)return part;return{x:-1040,z:0,label:'CAVERN EXIT'}}
     if(this.area==='mountain'){if(next==='mountainSignals')return CHAPTER4_MOUNTAIN_SIGNALS.find(item=>!this.state.mountainSignals.includes(item.id));if(next==='hollowWatcherDefeated')return{x:760,z:0,label:'HOLLOW WATCHER'};return{x:1010,z:-250,label:'SUMMIT PEBBLE • OBJECT SWAP TARGET'}}if(this.area==='lookout')return{...LOOKOUT_ENTRANCE,label:'SHADOW’S ENTRANCE'};return null}
-  mapPoints(){if(this.area==='village')return[{...VILLAGE_POINTS.teleporter,color:'#73d8e5'},{...VILLAGE_POINTS.beacon,color:'#82d1dd'},{...VILLAGE_POINTS.cavern,color:'#6c7c85'},{...VILLAGE_POINTS.oldMan,color:'#9c76b5'},{...VILLAGE_POINTS.mountain,color:'#f0d06d'}];if(this.area==='cavern')return[...CHAPTER4_CAVERN_DOORS.map(p=>({...p,color:'#6f8c90'})),...CHAPTER4_LIFT_PARTS.map(p=>({...p,color:'#d5b565'}))];if(this.area==='lookout')return[{x:1120,z:-330,label:'FLOATING LOOKOUT',color:'#ccefff'},{...LOOKOUT_ENTRANCE,color:'#c9a7ff'}];return[...CHAPTER4_MOUNTAIN_SIGNALS.map(p=>({...p,color:'#8edee8'})),{x:1010,z:-250,label:'SUMMIT PEBBLE',color:'#fff0b5'},{x:1120,z:-330,label:'FLOATING LOOKOUT',color:'#ccefff'}]}
+  mapPoints(){if(this.mode==='interior'&&this.interiorId)return interiorMapPoints(this.interiorId);if(this.area==='village'){const points=[{...VILLAGE_POINTS.teleporter,color:'#73d8e5'},{...VILLAGE_POINTS.beacon,color:'#82d1dd'},{...VILLAGE_POINTS.cavern,color:'#6c7c85'},{...VILLAGE_POINTS.oldMan,color:'#9c76b5'},{...VILLAGE_POINTS.mountain,color:'#f0d06d'}];if(hasFieldSkill('wadeCurrent'))points.push({...VILLAGE_POINTS.waterLift,label:'OLD WATER LIFT',color:'#65caff',kind:'route'});if(this.state.ryuzankaro.started&&hasFieldSkill('precisionSwap'))points.push({...VILLAGE_POINTS.apothecaryPass,label:'OLD APOTHECARY PASSAGE',color:'#8a63ce',kind:'optional'});return points}if(this.area==='cavern')return[...CHAPTER4_CAVERN_DOORS.map(p=>({...p,color:'#6f8c90'})),...CHAPTER4_LIFT_PARTS.map(p=>({...p,color:'#d5b565'}))];if(this.area==='lookout')return[{x:1120,z:-330,label:'FLOATING LOOKOUT',color:'#ccefff'},{...LOOKOUT_ENTRANCE,color:'#c9a7ff'}];return[...CHAPTER4_MOUNTAIN_SIGNALS.map(p=>({...p,color:'#8edee8'})),{x:1010,z:-250,label:'SUMMIT PEBBLE',color:'#fff0b5'},{x:1120,z:-330,label:'FLOATING LOOKOUT',color:'#ccefff'}]}
 
   refreshTracker(){if(!this.root)return;this.root.querySelector('[data-c4-required-count]').textContent=`${this.state.requiredCompleted.length} / ${CHAPTER4_REQUIRED_STEPS.length}`;this.root.querySelector('[data-c4-secret-status]').textContent=this.state.ryuzankaro.bossDefeated?'DEFEATED':this.state.ryuzankaro.skipped?'SKIPPED':this.state.ryuzankaro.available?'AVAILABLE':'LOCKED';this.root.querySelector('[data-c4-area-status]').textContent=this.area==='cavern'?'ECHO CAVERNS':this.area==='mountain'?'MOUNTAIN PATH':this.area==='lookout'?'SHADOW’S LOOKOUT':'ECHO VILLAGE';this.root.querySelector('[data-c4-vibration-status]').textContent=this.state.rewards.vibrationSense?'UNLOCKED':'LOCKED';const next=chapter4NextRequired(this.state);this.root.querySelector('[data-c4-journal-list]').innerHTML=`<article><small>HUB PHASE</small><strong>${rpgPacingLabel('chapter4',this.pacing)}</strong><span>Objectives unlock in story waves, with room for arrival and aftermath.</span></article><article><small>CURRENT STORY STEP</small><strong>${pretty(next||'complete')}</strong><span>${chapter4CompletionPercent(this.state)}% chapter completion</span></article><article><small>WHY THIS COMES NEXT</small><strong>${next==='beaconRestored'?'RESTORE REGIONAL DETECTION':next==='cavernsEntered'||next==='liftPartsRecovered'?'RECOVER THE BLOCKED MOUNTAIN ROUTE':next==='villageDefended'?'PROTECT THE LIFT REPAIR':next==='mountainDecision'?'OPTIONAL SECRET OR SOLO DEPARTURE':next==='mountainSignals'||next==='hollowWatcherDefeated'?'TRACE WHO IS WATCHING SHADOW':next==='lookoutReached'?'REACH THE UNCLIMBABLE LOOKOUT':next==='shadowArrival'?'ENTER SHADOW’S LOOKOUT':'FOLLOW THE PROJECT HOLLOW TRAIL'}</strong><span>Every mandatory objective opens the next route instead of acting as an unrelated errand.</span></article><article><small>PARTY FIELD ROUTE</small><strong>${this.state.variety.fieldActions.length} / ${CHAPTER4_PARTY_FIELD_ACTIONS.length}</strong><span>${this.state.variety.fieldRouteComplete?'Cavern approach permanently repaired':'Bark, Wade, and Rrvvfo each have one action'}</span></article><article><small>ECHO BEACON</small><strong>${this.state.beaconNodes.length} / ${CHAPTER4_BEACON_NODES.length}</strong><span>Fire, earth, and lightning repairs</span></article><article><small>MOUNTAIN LIFT</small><strong>${this.state.liftParts.length} / ${CHAPTER4_LIFT_PARTS.length}</strong><span>Recovered components</span></article><article><small>OLD MAN’S POTIONS</small><strong>${this.state.ryuzankaro.ingredients.length} / ${CHAPTER4_INGREDIENTS.length}</strong><span>${this.state.ryuzankaro.bossDefeated?'Ryuzankaro sealed':this.state.ryuzankaro.skipped?'Quest skipped':'Optional before departure'}</span></article><article><small>PROJECT HOLLOW</small><strong>${this.state.hollowWatcher.defeated?'DATA TRANSMITTED':'WATCHER ACTIVE'}</strong><span>${this.state.hollowWatcher.patternsRecorded} repeated patterns recorded</span></article>`}
 
-  openTracker(){if(this.trackerOpen||!['explore','cavern','mountain'].includes(this.mode))return;this.trackerOpen=true;this.refreshTracker();this.root.querySelector('[data-c4-tracker]').hidden=false;this.previousMode=this.mode;this.mode='tracker';this.battle.phase='story';this.root.querySelector('[data-c4-close-journal]').focus()}
+  openTracker(){if(this.trackerOpen||!['explore','cavern','mountain','interior'].includes(this.mode))return;this.trackerOpen=true;this.refreshTracker();this.root.querySelector('[data-c4-tracker]').hidden=false;this.previousMode=this.mode;this.mode='tracker';this.battle.phase='story';this.root.querySelector('[data-c4-close-journal]').focus()}
   closeTracker(){const panel=this.root?.querySelector('[data-c4-tracker]');if(panel)panel.hidden=true;const wasOpen=this.trackerOpen;this.trackerOpen=false;if(wasOpen){this.mode=this.previousMode||'explore';this.battle.phase='play'}}
   openBuildLab(){
     const locked=this.mode==='fight'||this.qte?.active;
     openRrvvfoBuildLab({storyChapter:4,storyProgress:loadLostYearProgress(),locked,lockReason:locked?'BUILD LOCKED • FINISH THE ACTIVE ENCOUNTER':'',onChange:build=>{const player=this.battle?.fighters?.[0];if(player)applyRrvvfoBuildToFighter(player,build);this.battle?.notice?.(`BUILD EQUIPPED • ${build.label}`,1.1)},onClose:()=>this.root.querySelector('[data-c4-menu-build]')?.focus()});
   }
 
-  openStoryMenu(){if(this.storyMenuOpen||!['explore','cavern','mountain','fight'].includes(this.mode))return;this.closeTracker();this.storyMenuOpen=true;const panel=this.root.querySelector('[data-c4-menu]');panel.hidden=false;const skillPanel=this.root.querySelector('[data-c4-field-skills]');if(skillPanel)skillPanel.innerHTML=renderFieldSkillJournal({chapter:4});const buildButton=this.root.querySelector('[data-c4-menu-build]');if(buildButton){buildButton.disabled=this.mode==='fight';buildButton.textContent=this.mode==='fight'?'BUILD LOCKED • ACTIVE FIGHT':'RRVVFO BUILD'}this.storyMenuPaused=Boolean(this.battle&&!this.battle.paused);if(this.storyMenuPaused)this.battle.togglePause();this.root.querySelector('[data-c4-menu-resume]')?.focus()}
+  openStoryMenu(){if(this.storyMenuOpen||!['explore','cavern','mountain','interior','fight'].includes(this.mode))return;this.closeTracker();this.storyMenuOpen=true;const panel=this.root.querySelector('[data-c4-menu]');panel.hidden=false;const skillPanel=this.root.querySelector('[data-c4-field-skills]');if(skillPanel)skillPanel.innerHTML=renderFieldSkillJournal({chapter:4});const buildButton=this.root.querySelector('[data-c4-menu-build]');if(buildButton){buildButton.disabled=this.mode==='fight';buildButton.textContent=this.mode==='fight'?'BUILD LOCKED • ACTIVE FIGHT':'RRVVFO BUILD'}this.storyMenuPaused=Boolean(this.battle&&!this.battle.paused);if(this.storyMenuPaused)this.battle.togglePause();this.root.querySelector('[data-c4-menu-resume]')?.focus()}
   closeStoryMenu(){const panel=this.root?.querySelector('[data-c4-menu]');if(panel)panel.hidden=true;this.storyMenuOpen=false;if(this.storyMenuPaused&&this.battle?.paused)this.battle.togglePause();this.storyMenuPaused=false}
   openManual(){if(this.storyMenuOpen)this.closeStoryMenu();const previous=this.mode;this.mode='manual';this.battle.phase='story';const opened=openCombatManual({onClose:()=>{if(this.aborted)return;this.mode=previous;this.battle.phase='play'}});if(!opened){this.mode=previous;this.battle.phase='play'}}
 
@@ -1116,11 +1175,11 @@ class RrvvfoChapter4{
     if(this.storyMenuOpen){if(event.key==='Escape'){event.preventDefault();event.stopImmediatePropagation();this.closeStoryMenu()}return}
     if(this.trackerOpen){if(event.key==='Escape'||event.key.toLowerCase()==='t'){event.preventDefault();event.stopImmediatePropagation();this.closeTracker()}return}
     if(this.choiceOpen)return;
-    if(event.key==='Escape'&&['explore','cavern','mountain','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();return}
-    if(event.key.toLowerCase()==='m'&&['explore','cavern','mountain','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openManual();return}
-    if(event.key.toLowerCase()==='t'&&['explore','cavern','mountain'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openTracker();return}
-    if(['explore','cavern','mountain'].includes(this.mode)&&(event.key==='Enter'||event.code==='KeyE')){event.preventDefault();event.stopImmediatePropagation();this.tryInteract();return}
-    if(['explore','cavern','mountain'].includes(this.mode)&&(event.code==='Digit4'||event.code==='KeyV')&&this.state.rewards.vibrationSense){event.preventDefault();this.useVibrationSense()}
+    if(event.key==='Escape'&&['explore','cavern','mountain','interior','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();return}
+    if(event.key.toLowerCase()==='m'&&['explore','cavern','mountain','interior','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openManual();return}
+    if(event.key.toLowerCase()==='t'&&['explore','cavern','mountain','interior'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openTracker();return}
+    if(['explore','cavern','mountain','interior'].includes(this.mode)&&(event.key==='Enter'||event.code==='KeyE')){event.preventDefault();event.stopImmediatePropagation();this.tryInteract();return}
+    if(['explore','cavern','mountain','interior'].includes(this.mode)&&(event.code==='Digit4'||event.code==='KeyV')&&this.state.rewards.vibrationSense){event.preventDefault();this.useVibrationSense()}
   }
 
   cleanup(){if(this.aborted)return;this.aborted=true;this.map?.destroy();this.map=null;document.removeEventListener('keydown',this.keyHandler,true);this.dialogue?.overlay?.remove();if(this.battle?.active)this.battle.stopMatch();this.battle?.root?.classList.remove('storyChapter4','storyChapter4Hub','storyChapter4Combat');this.battle?.root?.classList.add('hidden');destroyStoryBattle(this.battle);this.root.remove();activeMission=null}

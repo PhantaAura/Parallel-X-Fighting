@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a402-field-skills-minimal-ui-20260801';
+import {BUILD_VERSION} from '../build-info.js?v=29a404-buildings-interiors-world-life-20260802';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

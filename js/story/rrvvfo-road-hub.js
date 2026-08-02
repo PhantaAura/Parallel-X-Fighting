@@ -1,17 +1,18 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
-import {StoryMap} from './story-map.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a402-field-skills-minimal-ui-20260801';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
-import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
-import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a404-buildings-interiors-world-life-20260802';
+import {sharedInput} from '../input-runtime.js?v=29a404-buildings-interiors-world-life-20260802';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
+import {StoryMap} from './story-map.js?v=29a404-buildings-interiors-world-life-20260802';
+import {recordWorldVisit,discoverWorldShortcut} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a404-buildings-interiors-world-life-20260802';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
+import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -204,12 +205,14 @@ class RrvvfoRoadHub{
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART ROAD?',message:'Restart the current Tournament Road section? Completed checkpoints remain saved.',confirmLabel:'RESTART'});
     const badge=this.battle.root.querySelector('.badge');
     if(badge?.lastChild)badge.lastChild.textContent=' CHAPTER 1 • TOURNAMENT ROAD';
+    if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'training','yard',{entrance:'tangai-dojo'}));
     this.map=new StoryMap({
-      title:'TOURNAMENT ROAD MAP',
+      title:'TOURNAMENT ROAD MAP',regionId:'training',zoneId:'yard',
       bounds:{minX:-1550,maxX:1450,minZ:-720,maxZ:720},
       getPlayer:()=>this.battle?.fighters?.[0]||null,
       getObjective:()=>{const point=this.objectivePoint();return point?{...point,label:this.objective?.textContent||'CURRENT OBJECTIVE'}:null},
-      getPoints:()=>this.mapPoints()
+      getPoints:()=>this.mapPoints(),
+      getZoneId:()=>this.connectedZoneId(),getProgress:()=>loadLostYearProgress(),getWorldState:()=>loadLostYearProgress().worldState
     });
     this.battle.phase='story';
     this.battle.time=9999;
@@ -438,7 +441,7 @@ class RrvvfoRoadHub{
     if(this.routeChoice&&this.step==='route-travel'&&player.x>430&&this.routeGimmickReady()){
       this.roadCleared=true;this.step='gate';this.battle.notice(`${this.routeChoice.toUpperCase()} ROUTE CLEARED`,1.4);if(this.routeChoice==='cliff')completeAdventureMission('c1-high-road',{rank:'A',reward:'TITLE • ROAD RUNNER'});
       this.setObjective('REACH THE SWAP RELAY','The routes reconnect here. Read the three marked positions and use Object Swap to open the route.');
-      saveLostYearProgress({...loadLostYearProgress(),roadRoute:this.routeChoice,lastCheckpoint:'rrvvfo-road-route'});return;
+      let worldProgress={...loadLostYearProgress(),roadRoute:this.routeChoice,lastCheckpoint:'rrvvfo-road-route'};worldProgress=recordWorldVisit(worldProgress,'training','riverside',{entrance:`${this.routeChoice||'main'}-route`});if(this.routeChoice==='cliff')worldProgress=discoverWorldShortcut(worldProgress,'c1-cliff-cut');saveLostYearProgress(worldProgress);return;
     }
     if(this.step==='cart'&&player.x>235&&!this.manualPending){
       this.step='cart-dialogue';
@@ -514,7 +517,7 @@ class RrvvfoRoadHub{
 
   chooseRoadRoute(route){
     if(!['main','forest','cliff'].includes(route))return;
-    this.routeChoice=route;this.routeChoicePanel.hidden=true;this.mode='hub';this.battle.phase='play';if(route==='cliff'){this.cliffJumpMarkers.forEach(marker=>{marker.done=false});discoverAdventureMission('c1-high-road')}
+    this.routeChoice=route;this.routeChoicePanel.hidden=true;this.mode='hub';this.battle.phase='play';if(!this.replayMode){const zone=route==='forest'?'forest':route==='cliff'?'cliff':'mainRoad';saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'training',zone,{entrance:'road-junction'}));}if(route==='cliff'){this.cliffJumpMarkers.forEach(marker=>{marker.done=false});discoverAdventureMission('c1-high-road')}
     if(route==='main'){
       this.step='cart';this.setObjective('MAIN ROAD • CONTROL THE FIRE','Follow the center road and clear the fallen log without spreading flames.');
     }else if(route==='forest'){
@@ -1059,6 +1062,14 @@ class RrvvfoRoadHub{
       r.box({x:1018,y:68,z:0,sx:18,sy:95,sz:18,color:'#6a492f'});
       r.box({x:1018,y:120,z:0,sx:15,sy:55,sz:120,color:'#c84a43'});
     }
+  }
+
+  connectedZoneId(){
+    if(['warmup','leave-training'].includes(this.step))return'yard';
+    if(['bridge','bridge-ready','route-choice'].includes(this.step))return'junction';
+    if(this.step==='route-travel')return this.routeChoice==='forest'?'forest':this.routeChoice==='cliff'?'cliff':'mainRoad';
+    if(['cart','cart-dialogue','runaway-cart','encounter','gate','lens'].includes(this.step))return'riverside';
+    return'outskirts';
   }
 
   mapPoints(){

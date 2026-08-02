@@ -1,17 +1,20 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
-import {sharedInput} from '../input-runtime.js?v=29a402-field-skills-minimal-ui-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a402-field-skills-minimal-ui-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a402-field-skills-minimal-ui-20260801';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a404-buildings-interiors-world-life-20260802';
+import {sharedInput} from '../input-runtime.js?v=29a404-buildings-interiors-world-life-20260802';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a404-buildings-interiors-world-life-20260802';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
+import {StoryMap} from './story-map.js?v=29a404-buildings-interiors-world-life-20260802';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a404-buildings-interiors-world-life-20260802';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a404-buildings-interiors-world-life-20260802';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -68,7 +71,7 @@ function buildUI(){
         <span data-c2-detail>Talk to the people arriving for the tournament.</span>
       </div>
       ${storyAttackStripMarkup({compact:true})}
-      <button class="chapter2MenuButton" type="button" data-c2-menu aria-haspopup="dialog" aria-controls="chapter2StoryMenu">☰ STORY MENU</button>
+      <div class="chapter2HudButtons"><button class="chapter2MenuButton" type="button" data-c2-map>MAP</button><button class="chapter2MenuButton" type="button" data-c2-menu aria-haspopup="dialog" aria-controls="chapter2StoryMenu">☰ STORY MENU</button></div>
     </div>
 
     <div class="storyEnemyRoleTag" data-c2-enemy-role hidden><span data-c2-enemy-role-icon>➜</span><div><small>OPPONENT STYLE</small><strong data-c2-enemy-role-name>RUSHDOWN</strong><p data-c2-enemy-role-detail></p></div></div>
@@ -93,7 +96,7 @@ function buildUI(){
         <div class="chapter2MenuActions">
           <button class="primary" type="button" data-c2-menu-resume>RETURN TO GAME</button>
           <button type="button" data-c2-manual>COMBAT MANUAL</button>
-          <button type="button" data-c2-menu-build>RRVVFO BUILD</button>
+          <button type="button" data-c2-menu-build>RRVVFO BUILD</button><button type="button" data-c2-menu-map>REGION MAP</button>
           <button type="button" data-c2-menu-restart>RESTART ACTIVE FIGHT</button>
           <button type="button" data-c2-exit>EXIT CHAPTER</button>
         </div>
@@ -257,6 +260,8 @@ class RrvvfoMission2{
     this.trackerPausedBattle=false;
     this.hubAmbientTimer=5;
     this.currentDistrict='arrival';
+    this.interiorId='';
+    this.interiorReturn=null;
     this.pacing=this.state.pacing;
     this.aftermathSeconds=0;
     this.aftermathEvent='';
@@ -277,9 +282,12 @@ class RrvvfoMission2{
     this.storyMenuOpen=false;
     this.storyMenuPausedBattle=false;
     this.hubSpawn={x:-1510,z:80};
+    this.map=null;
     this.npcs=this.createNpcs();
 
     this.root.querySelector('[data-c2-menu]').addEventListener('click',()=>this.openStoryMenu());
+    this.root.querySelector('[data-c2-map]').addEventListener('click',()=>this.map?.open());
+    this.root.querySelector('[data-c2-menu-map]').addEventListener('click',()=>{this.closeStoryMenu();this.map?.open()});
     this.root.querySelectorAll('[data-c2-menu-close],[data-c2-menu-resume]').forEach(button=>button.addEventListener('click',()=>this.closeStoryMenu()));
     this.root.querySelector('[data-c2-manual]').addEventListener('click',()=>this.openManual());
     this.root.querySelector('[data-c2-menu-build]').addEventListener('click',()=>this.openBuildLab());
@@ -352,6 +360,8 @@ class RrvvfoMission2{
     }else{
       this.enterHub({opening:true});
     }
+    if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'tournament',this.connectedZoneId(),{entrance:'tournament-outskirts'}));
+    this.ensureRegionMap();
     this.engine.sync(true);
     return this;
   }
@@ -360,11 +370,11 @@ class RrvvfoMission2{
     const battle=this.battle;
     this.engine.useChapterProfile({
       input:next=>{
-        if(this.mode==='hub'){
+        if(this.mode==='hub'||this.mode==='interior'){
           const command=next(),interact=Boolean(command.interact);
           if(interact&&!this.interactHeld)this.tryInteract();
           this.interactHeld=interact;
-          if(this.race.active&&performance.now()<this.race.countdownUntil){
+          if(this.mode==='hub'&&this.race.active&&performance.now()<this.race.countdownUntil){
             return this.engine.commandForMode({},'exploration',{allowJump:false,allowDash:false,allowInteract:false});
           }
           return this.engine.commandForMode(command,'exploration',{allowJump:true,allowDash:true,allowInteract:true});
@@ -393,7 +403,7 @@ class RrvvfoMission2{
         return next(fighter,foe,dt);
       },
       castAbility:(next,slot)=>{
-        if(this.mode==='hub'){battle.notice('SAVE IT FOR THE RING',1.1);return false}
+        if(this.mode==='hub'||this.mode==='interior'){battle.notice('SAVE IT FOR THE RING',1.1);return false}
         if(this.mode!=='fight')return false;
         if(this.currentFight?.final&&slot===5){
           if(this.finalPhase==='awakening-ready'){this.triggerAwakeningAttempt();return true}
@@ -454,16 +464,17 @@ class RrvvfoMission2{
         if(!battle.active||this.aborted)return;
         this.areaTimer=Math.max(0,this.areaTimer-dt);
         if(!this.areaTimer)this.root.querySelector('[data-c2-area]').hidden=true;
-        if(this.mode==='hub'){
-          const player=battle.fighters[0];player.hp=Math.min(player.maxHp,Math.max(1,player.hp));player.en=Math.min(100,Math.max(0,player.en));player.guard=Math.min(100,Math.max(0,player.guard));battle.time=9999;this.updateHub(dt);
+        if(this.mode==='hub'||this.mode==='interior'){
+          const player=battle.fighters[0];player.hp=Math.min(player.maxHp,Math.max(1,player.hp));player.en=Math.min(100,Math.max(0,player.en));player.guard=Math.min(100,Math.max(0,player.guard));battle.time=9999;if(this.mode==='interior')this.updateInterior(dt);else this.updateHub(dt);
         }else if(this.mode==='fight'){battle.time=9999;this.updateFight(dt)}
         else if(this.mode==='spectator'){battle.time=9999;this.updateSpectator(dt)}
         else if(this.mode==='qte')this.updateQte();
         else if(this.mode==='flame')this.updateFlameGame(dt);
         else if(this.mode==='clash')this.updateBeamClash();
+        this.map?.draw();
       },
       flipFor:(next,fighter)=>{
-        if(this.mode==='hub'&&fighter===battle.fighters[0]){
+        if((this.mode==='hub'||this.mode==='interior')&&fighter===battle.fighters[0]){
           const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
           if(speed>.05){
             const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
@@ -474,7 +485,7 @@ class RrvvfoMission2{
         }
         return next(fighter);
       },
-      drawFighterLayer:(next,fighters)=>next(this.mode==='hub'?[battle.fighters[0],...this.visibleHubActors()]:fighters),
+      drawFighterLayer:(next,fighters)=>next(this.mode==='hub'?[battle.fighters[0],...this.visibleHubActors()]:this.mode==='interior'?[battle.fighters[0]]:fighters),
       drawFallback2D:(next,context,fighter,rect)=>{
         const palettes={
           rrvvfo:{body:'#b82329',hair:'#754f35',skin:'#8f5539'},bark:{body:'#8a6036',hair:'#151515',skin:'#a96f4e'},
@@ -496,7 +507,7 @@ class RrvvfoMission2{
         context.fillStyle=palette.hair;context.fillRect(cx-24*shape.head*scale,rect.y+20*scale,48*shape.head*scale,25*scale);
         context.fillStyle='#fff';context.font=`900 ${Math.max(8,11*scale)}px Inter,Arial,sans-serif`;context.textAlign='center';context.fillText(fighter.name.toUpperCase(),cx,rect.y+8*scale);
       },
-      draw:next=>{next();if(this.mode==='hub'){this.drawHubExtras();this.positionAmbientSpeech()}if(this.currentFight?.final&&['fatigue','awakening-ready','awakening'].includes(this.finalPhase))this.drawFinalFatigue()},
+      draw:next=>{next();if(this.mode==='hub'){this.drawHubExtras();this.positionAmbientSpeech()}else if(this.mode==='interior'&&this.interiorId){drawStoryInterior(this.battle.renderer,this.interiorId,performance.now()/1000);for(const item of this.interiorInteractions())this.drawInteriorMarker(item)}if(this.currentFight?.final&&['fatigue','awakening-ready','awakening'].includes(this.finalPhase))this.drawFinalFatigue()},
       exit:async next=>{
         const leave=await storyConfirm({title:'EXIT CHAPTER 2?',message:'Leave the tournament? Official fights restart from 0–0, while completed story checkpoints remain saved.',confirmLabel:'EXIT CHAPTER'});
         if(!leave)return;
@@ -558,8 +569,8 @@ class RrvvfoMission2{
   updateCamera(){
     const foe=this.battle.fighters[1];
     updateHubCamera(this.battle,{
-      frameFight:this.mode!=='hub'&&foe.y>-500,
-      allowLook:this.mode==='hub',
+      frameFight:!['hub','interior'].includes(this.mode)&&foe.y>-500,
+      allowLook:this.mode==='hub'||this.mode==='interior',
       hubDistance:1120,
       fightBaseDistance:930,
       fightMaxDistance:1180
@@ -621,6 +632,20 @@ class RrvvfoMission2{
     recordPacingAftermath(this.pacing,eventId);setRpgPacingPhase(this.pacing,'aftermath',{wave:3});
     this.aftermathEvent=eventId;this.aftermathSeconds=this.replayMode?0:Math.max(0,seconds);
     this.syncRpgPacing();this.saveChapterState();
+  }
+
+  connectedZoneId(districtId=this.currentDistrict){
+    const map={arrival:'westGate',practice:'practice',market:'market',registration:'registration',central:'central',spectator:'spectator',stadium:'stadium'};
+    return map[districtId]||'central';
+  }
+
+  regionMapPoints(){
+    return CHAPTER2_DISTRICTS.map(d=>({x:d.x,z:d.z,label:d.name,kind:'landmark',color:d.id===this.currentDistrict?'#ff5b4e':'#d9a629'}));
+  }
+
+  ensureRegionMap(){
+    this.map?.destroy();
+    this.map=new StoryMap({title:'TOURNAMENT REGION MAP',regionId:'tournament',zoneId:this.connectedZoneId(),bounds:{minX:-1750,maxX:1550,minZ:-900,maxZ:900},getPlayer:()=>this.battle?.fighters?.[0]||null,getObjective:()=>['hub','interior'].includes(this.mode)?this.nearby||null:null,getPoints:()=>this.mode==='interior'&&this.interiorId?interiorMapPoints(this.interiorId):this.regionMapPoints(),getZoneId:()=>this.connectedZoneId(),getProgress:()=>loadLostYearProgress(),getWorldState:()=>loadLostYearProgress().worldState});
   }
 
   showAreaTitle(name){document.dispatchEvent(new CustomEvent('pxstoryarrival',{detail:{title:name,detail:'Story hub updated',tone:'gold',onceKey:`area:${name}`}}));
@@ -715,7 +740,7 @@ class RrvvfoMission2{
   }
 
   updateHub(dt){
-    const player=this.battle.fighters[0],quests=this.state.hubQuests;
+    const player=this.battle.fighters[0],quests=this.state.hubQuests;resolveExteriorBuildingCollision(player,['tournament-admin','tournament-medical','tournament-backstage']);
     this.hubAnimationClock+=Math.max(0,dt)*1000;
     this.bracketCartX=-1080+Math.sin(performance.now()/1300)*430;
     this.fanCardX=-760+Math.sin(performance.now()/430)*185;
@@ -726,6 +751,7 @@ class RrvvfoMission2{
     if(district.id!==this.currentDistrict){
       this.currentDistrict=district.id;
       if(!quests.discoveredDistricts.includes(district.id))quests.discoveredDistricts.push(district.id);
+      if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'tournament',this.connectedZoneId(district.id),{entrance:'hub-walk'}));
       recordPacingVisit(this.pacing,district.id);
       if(!this.pacing.orientationComplete&&completePacingOrientation('chapter2',this.pacing)){
         setRpgPacingPhase(this.pacing,'development',{wave:1});
@@ -773,6 +799,12 @@ class RrvvfoMission2{
         if(quests.shortcuts.includes(shortcut.id)&&distance(player,shortcut)<125)candidates.push({...shortcut,kind:'shortcut'});
       }
     }
+    const buildingDoors=[
+      {buildingId:'tournament-admin',label:'ENTER TOURNAMENT ADMINISTRATION',x:-120,z:-490},
+      {buildingId:'tournament-medical',label:'ENTER MEDICAL CENTER',x:640,z:-430},
+      {buildingId:'tournament-backstage',label:'ENTER FIGHTER BACKSTAGE',x:1010,z:-360}
+    ];
+    for(const door of buildingDoors)if(distance(player,door)<135)candidates.push({...door,kind:'building-enter'});
     this.nearby=candidates.sort((a,b)=>distance(player,a)-distance(player,b))[0]||null;
     const prompt=this.root.querySelector('[data-c2-prompt]');
     prompt.hidden=!this.nearby||this.race.active;
@@ -780,6 +812,30 @@ class RrvvfoMission2{
       this.root.querySelector('[data-c2-prompt-title]').textContent=this.nearby.label;
       const detail=this.root.querySelector('[data-c2-prompt-detail]');if(detail)detail.textContent=this.engine.prompt('interact','E').toUpperCase();
     }
+  }
+
+  interiorInteractions(){return[interiorExitPoint(this.interiorId),...interiorActorPoints(this.interiorId)].filter(Boolean)}
+
+  updateInterior(){
+    const player=this.battle.fighters[0];clampInteriorPlayer(player,this.interiorId);this.hubAnimationClock+=16;
+    const candidates=this.interiorInteractions().filter(item=>distance(player,item)<135);this.nearby=candidates.sort((a,b)=>distance(player,a)-distance(player,b))[0]||null;
+    const prompt=this.root.querySelector('[data-c2-prompt]');prompt.hidden=!this.nearby;if(this.nearby){this.root.querySelector('[data-c2-prompt-title]').textContent=this.nearby.label;const detail=this.root.querySelector('[data-c2-prompt-detail]');if(detail)detail.textContent=this.engine.prompt('interact','E').toUpperCase()}
+  }
+
+  drawInteriorMarker(item){if(!item||!this.battle?.renderer)return;const r=this.battle.renderer,time=performance.now()/1000;r.disc({x:item.x,y:5,z:item.z,rx:26,rz:18,color:item.kind==='interior-exit'?'#ffd88a':'#8fe8ff',alpha:.18+Math.sin(time*3)*.04});r.billboard({x:item.x,y:145,z:item.z,size:16,color:item.kind==='interior-exit'?'#ffd88a':'#8fe8ff',alpha:.42})}
+
+  enterStoryInterior(buildingId){
+    const building=buildingDefinition(buildingId);if(!building)return;const player=this.battle.fighters[0];this.interiorReturn={spawn:{x:player.x,z:player.z},district:this.currentDistrict};this.interiorId=buildingId;this.mode='interior';this.battle.phase='play';this.hideAmbientSpeech();player.reset(building.entry.spawn.x,building.entry.spawn.z);this.hideSecondFighter();snapHubCamera(this.battle,player,{distance:760});
+    if(!this.replayMode){let progress=loadLostYearProgress();progress=recordInteriorVisit(progress,buildingId,{regionId:building.region,zoneId:building.zone,entrance:'front-door'});saveLostYearProgress(progress)}
+    this.map?.setLocalArea({title:buildingMapTitle(buildingId),bounds:interiorBounds(buildingId)});this.battle.root.querySelector('[data-stage-name]').textContent=building.label;this.showAreaTitle(building.label);this.battle.notice('INTERIOR • EXPLORE OR RETURN THROUGH THE DOOR',1.1);
+  }
+
+  exitStoryInterior(){
+    if(!this.interiorId)return;const building=buildingDefinition(this.interiorId),back=this.interiorReturn||{},spawn=building?.entry?.returnSpawn||back.spawn||this.hubSpawn;this.interiorId='';this.mode='hub';this.currentDistrict=back.district||this.currentDistrict;const player=this.battle.fighters[0];player.reset(spawn.x,spawn.z);this.hideSecondFighter();snapHubCamera(this.battle,player,{distance:1120});this.map?.setRegion('tournament',this.connectedZoneId());this.battle.root.querySelector('[data-stage-name]').textContent='LOCAL TOURNAMENT GROUNDS';this.battle.notice('BACK TO THE FESTIVAL',.8);this.updateHubObjective();
+  }
+
+  useInteriorActor(actor){
+    const line=interiorLifeLine(this.interiorId,actor.id,{chapter:2,phase:this.pacing?.phase||'',tournamentStarted:this.state.tournamentStarted});this.showDialogue([{speaker:actor.label||'TOURNAMENT STAFF',speakerClass:'neutral',text:line,tail:'down'}],()=>{this.mode='interior';this.battle.phase='play'});
   }
 
   beginAmbientSpeech(player){
@@ -819,8 +875,11 @@ class RrvvfoMission2{
   }
 
   tryInteract(){
-    if(this.mode!=='hub'||!this.nearby||this.race.active)return;
+    if(!['hub','interior'].includes(this.mode)||!this.nearby||this.race.active)return;
     const npc=this.nearby;
+    if(npc.kind==='building-enter'){this.enterStoryInterior(npc.buildingId);return}
+    if(npc.kind==='interior-exit'){this.exitStoryInterior();return}
+    if(npc.kind==='interior-actor'){this.useInteriorActor(npc);return}
     if(['talk','announcer','vendor','veteran','registration','sage','bark','wade','practice'].includes(npc.kind))this.notePacingConversation(npc.id||npc.kind);
     if(npc.kind==='talk')this.talkToLocal(npc);
     else if(npc.kind==='announcer')this.talkToAnnouncer();
@@ -1109,6 +1168,7 @@ class RrvvfoMission2{
     raceState.complete=true;raceState.won=won;raceState.bestTime=raceState.bestTime==null?time:Math.min(raceState.bestTime,time);
     this.race.active=false;this.root.querySelector('[data-c2-race]').hidden=true;
     this.state.hubQuests.shortcuts=CHAPTER2_SHORTCUTS.map(shortcut=>shortcut.id);
+    if(!this.replayMode){let progress=loadLostYearProgress();for(const id of ['c2-market-stadium','c2-practice-registration','c2-stadium-west'])progress=discoverWorldShortcut(progress,id);saveLostYearProgress(progress)}
     markQuestComplete(this.state.hubQuests,'wadeRace');this.saveChapterState();
     this.showDialogue([
       {speaker:'WADE',speakerClass:'neutral',text:won?'You beat that time? I was showing you the route, not racing at full speed.':'You made it. The route is faster when you stop arguing with every corner.',tail:'down'},
@@ -2240,15 +2300,15 @@ class RrvvfoMission2{
 
   openManual(){
     if(this.storyMenuOpen)this.closeStoryMenu();
-    if(!['hub','fight','spectator'].includes(this.mode))return;
+    if(!['hub','interior','fight','spectator'].includes(this.mode))return;
     const previous=this.mode;
     this.mode='manual';this.battle.phase='story';
     const opened=openCombatManual({onClose:()=>{
       if(this.aborted)return;
       this.mode=previous;
-      this.battle.phase=['hub','fight','spectator'].includes(previous)?'play':'story';
+      this.battle.phase=['hub','interior','fight','spectator'].includes(previous)?'play':'story';
     }});
-    if(!opened){this.mode=previous;this.battle.phase=['hub','fight','spectator'].includes(previous)?'play':'story'}
+    if(!opened){this.mode=previous;this.battle.phase=['hub','interior','fight','spectator'].includes(previous)?'play':'story'}
   }
 
   canOpenTracker(){
@@ -2365,7 +2425,7 @@ class RrvvfoMission2{
       if(this.aborted)return;
       if(this.mode==='dialogue'){
         this.mode=previousMode==='dialogue'?'hub':previousMode;
-        if(this.battle)this.battle.phase=this.mode==='hub'||this.mode==='fight'||this.mode==='spectator'?'play':'story';
+        if(this.battle)this.battle.phase=['hub','interior','fight','spectator'].includes(this.mode)?'play':'story';
       }
       onComplete?.();
     }});
@@ -2391,13 +2451,13 @@ class RrvvfoMission2{
     if(event.key==='Escape'&&this.canOpenStoryMenu()){
       event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();return;
     }
-    if(event.key.toLowerCase()==='m'&&['hub','fight','spectator'].includes(this.mode)){
+    if(event.key.toLowerCase()==='m'&&['hub','interior','fight','spectator'].includes(this.mode)){
       event.preventDefault();event.stopImmediatePropagation();this.openManual();return;
     }
     if(event.key.toLowerCase()==='t'&&this.canOpenTracker()){
       event.preventDefault();event.stopImmediatePropagation();this.toggleTracker(true);return;
     }
-    if(this.mode==='hub'&&(event.key==='Enter'||event.code==='KeyE')){
+    if((this.mode==='hub'||this.mode==='interior')&&(event.key==='Enter'||event.code==='KeyE')){
       event.preventDefault();event.stopImmediatePropagation();this.tryInteract();return;
     }
     if(this.mode==='flame'){
@@ -2618,6 +2678,7 @@ class RrvvfoMission2{
     if(this.battle?.active)this.battle.stopMatch();
     this.battle?.root?.classList.remove('chapter2HubMode','chapter2FightMode','chapter2StoryActive');
     this.battle?.root?.classList.add('hidden');
+    this.map?.destroy();this.map=null;
     destroyStoryBattle(this.battle);
     this.root.remove();activeMission=null;this.onExit();
   }

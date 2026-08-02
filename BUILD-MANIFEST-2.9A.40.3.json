@@ -1,0 +1,28 @@
+{
+  "build": "Prototype 2.9A.40.3 \u2014 Connected World & Exploration Framework",
+  "cache": "29a403-connected-world-exploration-20260802",
+  "saveSchema": 268,
+  "requiresPreviousPatch": false,
+  "cumulative": true,
+  "foundation": "Prototype 2.9A.40.2 \u2014 Field Skills & Minimal UI",
+  "majorSystems": [
+    "Persistent four-region connected-world graph and visit history",
+    "Discovery-based Local / Region / World Story map views",
+    "Permanent route shortcuts and Travel Journal",
+    "Chapter 1 route discovery and Cliff shortcut persistence",
+    "Chapter 2 tournament district continuity and Wade shortcuts",
+    "Chapter 3 Tournament-to-Resonance-to-Echo world continuity",
+    "Chapter 4 Old Water Lift and skilled Old Apothecary Passage",
+    "Building/interior transition registry for the 2.9A.40.4 interior pass",
+    "Legacy save discovery inference with schema 268"
+  ],
+  "validation": {
+    "smokeTests": 431,
+    "javascriptModules": 95,
+    "testModules": 2,
+    "relativeImports": 290,
+    "htmlIds": 259,
+    "duplicateHtmlIds": 0,
+    "jsonAndManifestFilesBeforeCurrentManifest": 51
+  }
+}

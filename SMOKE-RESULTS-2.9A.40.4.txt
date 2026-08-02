@@ -1,0 +1,7 @@
+STATUS: Initial run complete — all tests passed
+PROGRESS: 442 / 442
+COUNTS: 442 / 0
+FAILS: 0
+BROWSER ERRORS: 2
+CONSOLE error: Access to fetch at 'https://px.test/assets/fighters/rrvvfo/missing.json' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+CONSOLE error: Failed to load resource: net::ERR_FAILED

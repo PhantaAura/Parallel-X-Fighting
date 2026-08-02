@@ -1,13 +1,15 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a402-field-skills-minimal-ui-20260801';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a402-field-skills-minimal-ui-20260801';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a402-field-skills-minimal-ui-20260801';
-import {StoryMap} from './story-map.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyConfirm} from './story-ux.js?v=29a402-field-skills-minimal-ui-20260801';
-import {openCombatManual} from './combat-manual.js?v=29a402-field-skills-minimal-ui-20260801';
-import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a402-field-skills-minimal-ui-20260801';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a402-field-skills-minimal-ui-20260801';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a402-field-skills-minimal-ui-20260801';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a404-buildings-interiors-world-life-20260802';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a404-buildings-interiors-world-life-20260802';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a404-buildings-interiors-world-life-20260802';
+import {StoryMap} from './story-map.js?v=29a404-buildings-interiors-world-life-20260802';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a404-buildings-interiors-world-life-20260802';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyConfirm} from './story-ux.js?v=29a404-buildings-interiors-world-life-20260802';
+import {openCombatManual} from './combat-manual.js?v=29a404-buildings-interiors-world-life-20260802';
+import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a404-buildings-interiors-world-life-20260802';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a404-buildings-interiors-world-life-20260802';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a404-buildings-interiors-world-life-20260802';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -24,10 +26,10 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a402-field-skills-minimal-ui-20260801';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a402-field-skills-minimal-ui-20260801';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a402-field-skills-minimal-ui-20260801';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a402-field-skills-minimal-ui-20260801';
+} from './chapter3-content.js?v=29a404-buildings-interiors-world-life-20260802';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a404-buildings-interiors-world-life-20260802';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a404-buildings-interiors-world-life-20260802';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a404-buildings-interiors-world-life-20260802';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -268,11 +270,14 @@ class RrvvfoChapter3{
     this.areaTimer=0;
     this.toastTimer=0;
     this.currentDistrict='';
+    this.interiorId='';
+    this.interiorReturn=null;
     this.pacing=this.state.pacing;
     this.aftermathSeconds=0;
     this.storyMenuOpen=false;
     this.storyMenuPaused=false;
     this.trackerOpen=false;
+    this.trackerPreviousMode='hub';
     this.taskOpen=false;
     this.taskButtons=[];
     this.taskIndex=0;
@@ -308,7 +313,7 @@ class RrvvfoChapter3{
       rootClasses:['storyChapter3Hub','storyChapter3Full'],
       getMode:()=>{
         if(this.engine?.dialogue)return'dialogue';
-        if(['hub','dungeon','remote'].includes(this.mode))return'exploration';
+        if(['hub','dungeon','remote','interior'].includes(this.mode))return'exploration';
         if(this.mode==='fight')return'combat';
         return this.mode;
       }
@@ -318,11 +323,11 @@ class RrvvfoChapter3{
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART ACTIVE ENCOUNTER?',message:'Restart the current Chapter 3 encounter? Completed investigation checkpoints remain saved.',confirmLabel:'RESTART'});
     this.root.hidden=false;
     this.map=new StoryMap({
-      title:'CHAPTER 3 INVESTIGATION MAP',
+      title:'CHAPTER 3 INVESTIGATION MAP',regionId:this.connectedRegionId(),zoneId:this.connectedZoneId(),
       bounds:{minX:-1800,maxX:1800,minZ:-1120,maxZ:1120},
       getPlayer:()=>this.battle?.fighters?.[0]||null,
       getObjective:()=>this.objectivePoint(),
-      getPoints:()=>this.mapPoints()
+      getPoints:()=>this.mapPoints(),getZoneId:()=>this.connectedZoneId(),getProgress:()=>loadLostYearProgress(),getWorldState:()=>loadLostYearProgress().worldState
     });
     this.root.querySelector('[data-c3-transition]').hidden=false;
     this.openingTimer=setTimeout(()=>{
@@ -338,7 +343,7 @@ class RrvvfoChapter3{
     this.engine.useChapterProfile({
       input:next=>{
         const command=next()||EMPTY_COMMAND;
-        if(['hub','dungeon','remote'].includes(this.mode)){
+        if(['hub','dungeon','remote','interior'].includes(this.mode)){
           const interact=Boolean(command.interact);
           if(interact&&!this.interactHeld)this.tryInteract();
           this.interactHeld=interact;
@@ -404,13 +409,13 @@ class RrvvfoChapter3{
       },
       updateCamera:()=>updateHubCamera(battle,{
         frameFight:this.mode==='fight',
-        allowLook:['hub','dungeon','remote'].includes(this.mode),
+        allowLook:['hub','dungeon','remote','interior'].includes(this.mode),
         hubDistance:this.area==='facility'?960:this.area==='remote'?1080:1120,
         fightBaseDistance:920,
         fightMaxDistance:1160
       }),
       flipFor:(next,fighter)=>{
-        if(['hub','dungeon','remote'].includes(this.mode)&&fighter===battle.fighters[0]){
+        if(['hub','dungeon','remote','interior'].includes(this.mode)&&fighter===battle.fighters[0]){
           const speed=Math.hypot(fighter.moveX||0,fighter.moveZ||0);
           if(speed>.05){
             const self=battle.renderer.project(fighter.x,80+fighter.y,fighter.z);
@@ -439,7 +444,7 @@ class RrvvfoChapter3{
         this.toastTimer=Math.max(0,this.toastTimer-dt);
         if(!this.areaTimer)this.root.querySelector('[data-c3-area]').hidden=true;
         if(!this.toastTimer)this.root.querySelector('[data-c3-toast]').hidden=true;
-        if(['hub','dungeon','remote'].includes(this.mode)){
+        if(['hub','dungeon','remote','interior'].includes(this.mode)){
           const player=battle.fighters[0];
           player.hp=Math.max(1,Math.min(player.maxHp,player.hp));
           player.en=Math.max(0,Math.min(100,player.en));
@@ -509,6 +514,8 @@ class RrvvfoChapter3{
   enterAfterHoursHub({opening=false,spawn=HUB_SPAWN}={}){
     this.area='hub';
     this.state.location='after-hours-hub';
+    if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'tournament','stadium',{entrance:'chapter2-aftermath'}));
+    this.map?.setRegion('tournament',this.connectedZoneId());
     this.switchStage('after-hours-tournament');
     this.mode='hub';this.currentFight=null;this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();
     this.battle.root.classList.add('storyChapter3Hub');this.battle.root.classList.remove('storyChapter3Combat');
@@ -540,10 +547,12 @@ class RrvvfoChapter3{
 
   updateExploration(){
     const player=this.battle.fighters[0];
-    if(this.area==='hub'){
+    if(this.mode==='interior')clampInteriorPlayer(player,this.interiorId);
+    if(this.area==='hub'&&this.mode!=='interior'){
+      resolveExteriorBuildingCollision(player,['tournament-admin','tournament-medical','tournament-backstage']);
       const district=[...HUB_DISTRICTS].sort((a,b)=>distance(player,a)-distance(player,b))[0];
       if(district&&district.id!==this.currentDistrict&&distance(player,district)<420){
-        this.currentDistrict=district.id;recordPacingVisit(this.pacing,district.id);
+        this.currentDistrict=district.id;if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'tournament',this.connectedZoneId(),{entrance:'after-hours-walk'}));recordPacingVisit(this.pacing,district.id);
         const wasReady=this.pacing.orientationComplete;
         if(!wasReady&&completePacingOrientation('chapter3',this.pacing)){
           setRpgPacingPhase(this.pacing,'development',{wave:1});
@@ -565,11 +574,16 @@ class RrvvfoChapter3{
   }
 
   availableInteractions(){
+    if(this.mode==='interior')return this.interiorInteractions();
     if(this.area==='remote')return[];
     if(this.area==='facility')return this.facilityInteractions();
     const next=chapter3NextRequired(this.state);
     const items=[];
-    if(next==='medicalLead'&&this.pacing.orientationComplete)items.push({kind:'medical',label:'TALK TO MEDICAL WORKER',x:640,z:-520});
+    // Enterable tournament buildings share the same physical region between Chapters 2 and 3.
+    items.push({kind:'building-enter',buildingId:'tournament-admin',label:'ENTER TOURNAMENT ADMINISTRATION',x:-120,z:-490});
+    items.push({kind:'building-enter',buildingId:'tournament-backstage',label:'ENTER FIGHTER BACKSTAGE',x:1010,z:-360});
+    // The clinic remains a real revisitable place instead of appearing only when the main quest points at it.
+    items.push({kind:'building-enter',buildingId:'tournament-medical',label:'ENTER MEDICAL CENTER',x:640,z:-430});
     if(next==='fighterNobodyRecorded'){
       const step=this.state.recordingStep;
       if(step===0)items.push({kind:'forgotten-fighter',label:'THE UNRECORDED FIGHTER',x:-900,z:-420});
@@ -591,7 +605,6 @@ class RrvvfoChapter3{
       items.push({kind:'bag-evidence-board',label:'REVIEW THE PLOUKE BAG LEADS',x:point.x,z:point.z,point});
     }
     if(next==='strangeManWarningSeen')items.push({kind:'strange-man',label:'QUESTION THE STRANGE MAN',x:STRANGE_MAN_POINT.x,z:STRANGE_MAN_POINT.z});
-    if(next==='medicalWorkerRevisited')items.push({kind:'medical-revisit',label:'SPEAK TO THE MEDICAL WORKER AGAIN',x:640,z:-520});
     if(next==='strangeManHatCollected')items.push({kind:'strange-man-hat',label:'PICK UP THE STRANGE MAN’S HAT',x:STRANGE_MAN_POINT.x,z:STRANGE_MAN_POINT.z});
     if(next==='strangeManLead')items.push({kind:'east-support-clue',label:'INVESTIGATE THE EAST SUPPORT',x:EAST_SUPPORT_CLUE.x,z:EAST_SUPPORT_CLUE.z});
     if(next==='lensTrail'){
@@ -607,7 +620,8 @@ class RrvvfoChapter3{
       if(optionalWave===2&&!waveOne.has(quest.id)&&!waveTwo.has(quest.id))continue;
       const saved=this.state.optional[quest.id];
       if(saved.complete)continue;
-      if(quest.id==='medicalFollowup'&&(!this.state.requiredCompleted.includes('medicalLead')||next==='medicalWorkerRevisited'))continue;
+      // Medical Follow-Up lives inside the clinic with the worker; never spawn a duplicate outdoor marker.
+      if(quest.id==='medicalFollowup')continue;
       if(['finalAnnouncement','cleanupEchoes','fakePloukes','lateFan'].includes(quest.id)&&saved.started){
         const source=OPTIONAL_MULTI_POINTS[quest.id]||[];
         const completed=quest.id==='finalAnnouncement'?this.state.optionalProgress.speakers:quest.id==='cleanupEchoes'?this.state.optionalProgress.cleanupFragments:quest.id==='fakePloukes'?this.state.optionalProgress.fakePloukes:this.state.optionalProgress.autographs;
@@ -637,8 +651,11 @@ class RrvvfoChapter3{
   }
 
   tryInteract(){
-    if(!['hub','dungeon'].includes(this.mode)||!this.nearby)return;
+    if(!['hub','dungeon','interior'].includes(this.mode)||!this.nearby)return;
     const item=this.nearby;
+    if(item.kind==='building-enter'){this.enterStoryInterior(item.buildingId);return}
+    if(item.kind==='interior-exit'){this.exitStoryInterior();return}
+    if(item.kind==='interior-actor'){this.useInteriorActor(item);return}
     const handlers={
       medical:()=>this.beginMedicalLead(),
       'strange-man':()=>this.beginStrangeManWarning(),
@@ -689,11 +706,11 @@ class RrvvfoChapter3{
     if(!items.length){
       this.addEvidence('medicalTestimony');
       this.completeRequired('medicalLead');
-      this.mode='hub';this.battle.phase='play';
+      this.mode=this.interiorId?'interior':'hub';this.battle.phase='play';
       this.showDialogue([
         {speaker:'MEDICAL WORKER',speakerClass:'neutral',text:'The records room logged a private access request during the final match. Find out why tournament records were copied.',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'Finally. A clue with a room attached to it.',tail:'down'}
-      ],()=>{this.mode='hub';this.battle.phase='play';this.updateObjective()});
+      ],()=>{this.mode=this.interiorId?'interior':'hub';this.battle.phase='play';this.updateObjective()});
       return;
     }
     this.showTask({
@@ -738,7 +755,7 @@ class RrvvfoChapter3{
     ],()=>{
       this.state.medicalWorkerRevisited=true;
       this.completeRequired('medicalWorkerRevisited');
-      this.mode='hub';this.battle.phase='play';this.updateObjective();
+      this.mode=this.interiorId?'interior':'hub';this.battle.phase='play';this.updateObjective();
     });
   }
 
@@ -825,6 +842,44 @@ class RrvvfoChapter3{
       this.mode='hub';this.battle.phase='play';this.updateObjective();
       this.toast('INVESTIGATION CLUE','REPEATED MEDICAL BADGE','The east-support access strip connects the warning to the existing maintenance route.');
     });
+  }
+
+  connectedRegionId(){return this.area==='facility'?'resonance':this.area==='remote'?'echo':'tournament'}
+  interiorInteractions(){
+    const exit=interiorExitPoint(this.interiorId),actors=interiorActorPoints(this.interiorId);return[exit,...actors].filter(Boolean);
+  }
+
+  enterStoryInterior(buildingId){
+    const building=buildingDefinition(buildingId);if(!building)return;
+    const player=this.battle.fighters[0];this.interiorReturn={area:this.area,spawn:{x:player.x,z:player.z},district:this.currentDistrict};this.interiorId=buildingId;this.mode='interior';this.battle.phase='play';this.currentFight=null;
+    player.reset(building.entry.spawn.x,building.entry.spawn.z);player.en=Math.max(45,player.en);player.guard=Math.max(70,player.guard);this.hideSecondFighter();snapHubCamera(this.battle,player,{distance:760});
+    if(!this.replayMode){let progress=loadLostYearProgress();progress=recordInteriorVisit(progress,buildingId,{regionId:building.region,zoneId:building.zone,entrance:'front-door'});saveLostYearProgress(progress)}
+    this.map?.setLocalArea({title:buildingMapTitle(buildingId),bounds:interiorBounds(buildingId)});this.engine.setLabels({stageName:building.label,chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','']});this.showAreaTitle(building.label,'ENTERABLE INTERIOR');this.battle.notice('INTERIOR • EXPLORE OR RETURN THROUGH THE DOOR',1.2);this.updateObjective();
+  }
+
+  exitStoryInterior(){
+    if(!this.interiorId)return;const building=buildingDefinition(this.interiorId),back=this.interiorReturn||{},spawn=building?.entry?.returnSpawn||back.spawn||HUB_SPAWN;this.interiorId='';this.mode='hub';this.area=back.area||'hub';this.currentDistrict=back.district||this.currentDistrict;this.preparePlayer(spawn);this.map?.setRegion('tournament',this.connectedZoneId());this.engine.setLabels({stageName:'AFTER-HOURS TOURNAMENT',chapterLabel:'RRVVFO CHAPTER 3',names:['RRVVFO','THE SAGE']});this.battle.notice('BACK OUTSIDE',.8);this.updateObjective();
+  }
+
+  useInteriorActor(actor){
+    if(this.interiorId==='tournament-medical'&&actor.id==='medical-worker'){
+      const next=chapter3NextRequired(this.state);
+      if(next==='medicalLead'&&this.pacing.orientationComplete){this.beginMedicalLead();return}
+      if(next==='medicalWorkerRevisited'){this.revisitMedicalWorker();return}
+      const followup=this.state.optional?.medicalFollowup;
+      const followupAvailable=(rpgPacingQuestWave(this.pacing)>=1)&&this.state.requiredCompleted.includes('medicalLead')&&!followup?.complete;
+      if(followupAvailable){this.startOptionalQuest('medicalFollowup');return}
+    }
+    const line=interiorLifeLine(this.interiorId,actor.id,{chapter:3,phase:this.pacing?.phase||''});this.showDialogue([{speaker:actor.label||'TOURNAMENT STAFF',speakerClass:'neutral',text:line,tail:'down'}],()=>{this.mode='interior';this.battle.phase='play'});
+  }
+
+  connectedZoneId(){
+    if(this.mode==='interior'&&this.interiorId)return buildingDefinition(this.interiorId)?.zone||'central';
+    if(this.area==='remote')return'lowerTrail';
+    if(this.area==='facility'){
+      const next=chapter3NextRequired(this.state);if(['auxiliaryPower'].includes(next))return'power';if(['recordedAttacks'].includes(next))return'corridor';if(['sageSeparated','dummyDefeated'].includes(next))return'security';if(['subjectRFile'].includes(next))return'records';if(['echoDefeated'].includes(next))return'core';if(['projectHollow'].includes(next))return'terminal';if(['teleporterFound','doorClosing','rockThrown','objectSwap','teleporterActivated','remoteRegion'].includes(next))return'teleporter';return'maintenance';
+    }
+    const map={arena:'stadium',vendor:'market',camp:'practice',medical:'medical',office:'registration',bracket:'backstage',media:'service',storage:'service',security:'security',staff:'backstage',elevator:'stadium'};return map[this.currentDistrict]||'central';
   }
 
   updateLensAvailability(){
@@ -973,6 +1028,7 @@ class RrvvfoChapter3{
       {speaker:'RRVVFO',speakerClass:'p1',text:'But it has a map leading under the arena.',tail:'down'}
     ],()=>{
       this.state.staffShortcut=true;this.state.rewards.staffShortcut=true;
+      if(!this.replayMode)saveLostYearProgress(discoverWorldShortcut(loadLostYearProgress(),'c3-service-cut'));
       this.addEvidence('falseBadge');
       this.completeRequired('lockedNightShift');
       this.mode='hub';this.battle.phase='play';this.updateObjective();
@@ -1230,7 +1286,8 @@ class RrvvfoChapter3{
     if(!this.replayMode)addStoryXp(id==='oneLastMatch'?85:45,{source:quest.title});
     this.saveState();
     this.closeTask();
-    this.mode='hub';this.battle.phase='play';
+    // Clinic follow-up finishes where it started instead of teleporting the player back outside.
+    this.mode=(id==='medicalFollowup'&&this.interiorId==='tournament-medical')?'interior':'hub';this.battle.phase='play';
     this.toast('OPTIONAL QUEST COMPLETE',quest.title,quest.reward);
     this.updateObjective();
   }
@@ -1239,6 +1296,8 @@ class RrvvfoChapter3{
     if(!restored){discoverAdventureMission('c3-clean-entry');if((this.state.evidence||[]).length>=CHAPTER3_EVIDENCE.length)completeAdventureMission('c3-clean-entry',{rank:'A',reward:'ARCHIVE • EAST SUPPORT'})}
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'facility'}));
     this.area='facility';this.state.location='facility';
+    if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'resonance','maintenance',{entrance:'tournament-maintenance-elevator'}));
+    this.map?.setRegion('resonance','maintenance');
     if(!this.state.requiredCompleted.includes('facilityEntered'))this.completeRequired('facilityEntered');
     this.switchStage('resonance-facility');
     this.mode='dungeon';this.currentFight=null;this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();
@@ -1578,6 +1637,8 @@ class RrvvfoChapter3{
 
   enterRemoteRegion({restored=false}={}){
     this.area='remote';this.state.location='remote-region';
+    if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo','lowerTrail',{entrance:'resonance-teleporter'}));
+    this.map?.setRegion('echo','lowerTrail');
     if(!this.state.requiredCompleted.includes('remoteRegion'))this.completeRequired('remoteRegion');
     this.switchStage('remote-highlands');
     this.mode='remote';this.currentFight=null;this.battle.phase='play';this.battle.time=9999;this.battle.hideBanner();
@@ -1653,7 +1714,7 @@ class RrvvfoChapter3{
     }
     const objectives={
       opening:['CONFRONT THE SAGE','The tournament has ended, but the arena is still unstable.'],
-      medicalLead:['QUESTION THE MEDICAL WORKER','The first reliable witness is in the recovery tent.'],
+      medicalLead:['QUESTION THE MEDICAL WORKER','The first reliable witness is inside the Tournament Medical Center.'],
       fighterNobodyRecorded:['THE FIGHTER NOBODY RECORDED',this.recordingObjectiveDetail()],
       bracketRecords:['RESTORE THE MISSING BRACKET RECORDS','Use the real Chapter 2 match order to expose the copied data.'],
       lockedNightShift:['LOCKED ON THE NIGHT SHIFT',`Traverse the staff route and free the workers. ${this.state.nightRouteIndex} / ${NIGHT_ROUTE.length}`],
@@ -1698,6 +1759,7 @@ class RrvvfoChapter3{
   }
 
   objectivePoint(){
+    if(this.mode==='interior'&&this.interiorId){const next=chapter3NextRequired(this.state),actor=interiorActorPoints(this.interiorId)[0];if(this.interiorId==='tournament-medical'&&['medicalLead','medicalWorkerRevisited'].includes(next))return actor;return interiorExitPoint(this.interiorId)}
     if(this.area==='remote')return{x:1020,z:-560,label:'SHADOW’S LOOKOUT'};
     const interactions=this.availableInteractions();
     const player=this.battle?.fighters?.[0]||{x:0,z:0};
@@ -1705,6 +1767,7 @@ class RrvvfoChapter3{
   }
 
   mapPoints(){
+    if(this.mode==='interior'&&this.interiorId)return interiorMapPoints(this.interiorId);
     if(this.area!=='hub')return[];
     return[
       ...HUB_DISTRICTS.map(district=>({x:district.x,z:district.z,label:district.name,color:'#78d7ff'})),
@@ -1805,15 +1868,15 @@ class RrvvfoChapter3{
   }
 
   openTracker(){
-    if(this.trackerOpen||!['hub','dungeon','remote'].includes(this.mode))return;
-    this.trackerOpen=true;this.refreshTracker();this.root.querySelector('[data-c3-tracker]').hidden=false;
+    if(this.trackerOpen||!['hub','dungeon','remote','interior'].includes(this.mode))return;
+    this.trackerPreviousMode=this.mode;this.trackerOpen=true;this.refreshTracker();this.root.querySelector('[data-c3-tracker]').hidden=false;
     this.mode='tracker';this.battle.phase='story';this.root.querySelector('[data-c3-close-status]').focus();
   }
 
   closeTracker(){
     if(!this.trackerOpen)return;
     this.trackerOpen=false;this.root.querySelector('[data-c3-tracker]').hidden=true;
-    this.mode=this.area==='facility'?'dungeon':this.area==='remote'?'remote':'hub';this.battle.phase='play';
+    const fallback=this.area==='facility'?'dungeon':this.area==='remote'?'remote':'hub';this.mode=['hub','dungeon','remote','interior'].includes(this.trackerPreviousMode)?this.trackerPreviousMode:fallback;this.battle.phase='play';
   }
 
   openBuildLab(){
@@ -1822,7 +1885,7 @@ class RrvvfoChapter3{
   }
 
   openStoryMenu(){
-    if(this.storyMenuOpen||!['hub','dungeon','remote','fight'].includes(this.mode))return;
+    if(this.storyMenuOpen||!['hub','dungeon','remote','interior','fight'].includes(this.mode))return;
     this.storyMenuOpen=true;this.root.querySelector('[data-c3-menu]').hidden=false;const skillPanel=this.root.querySelector('[data-c3-field-skills]');if(skillPanel)skillPanel.innerHTML=renderFieldSkillJournal({chapter:3});const buildButton=this.root.querySelector('[data-c3-menu-build]');if(buildButton){buildButton.disabled=this.mode==='fight';buildButton.textContent=this.mode==='fight'?'BUILD LOCKED • ACTIVE FIGHT':'RRVVFO BUILD'}
     this.storyMenuPaused=Boolean(this.battle&&!this.battle.paused);if(this.storyMenuPaused)this.battle.togglePause();
     this.root.querySelector('[data-c3-menu-resume]')?.focus();
@@ -1837,7 +1900,7 @@ class RrvvfoChapter3{
 
   openManual(){
     if(this.storyMenuOpen)this.closeStoryMenu();
-    const previous=this.mode;if(!['hub','dungeon','remote','fight'].includes(previous))return;
+    const previous=this.mode;if(!['hub','dungeon','remote','interior','fight'].includes(previous))return;
     this.mode='manual';this.battle.phase='story';
     const opened=openCombatManual({onClose:()=>{if(this.aborted)return;this.mode=previous;this.battle.phase='play'}});
     if(!opened){this.mode=previous;this.battle.phase='play'}
@@ -1863,10 +1926,10 @@ class RrvvfoChapter3{
       if(event.key==='Escape'||event.key.toLowerCase()==='t'){event.preventDefault();event.stopImmediatePropagation();this.closeTracker()}
       return;
     }
-    if(event.key==='Escape'&&['hub','dungeon','remote','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();return}
-    if(event.key.toLowerCase()==='m'&&['hub','dungeon','remote','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openManual();return}
-    if(event.key.toLowerCase()==='t'&&['hub','dungeon','remote'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openTracker();return}
-    if(['hub','dungeon'].includes(this.mode)&&(event.key==='Enter'||event.code==='KeyE')){event.preventDefault();event.stopImmediatePropagation();this.tryInteract()}
+    if(event.key==='Escape'&&['hub','dungeon','remote','interior','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openStoryMenu();return}
+    if(event.key.toLowerCase()==='m'&&['hub','dungeon','remote','interior','fight'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openManual();return}
+    if(event.key.toLowerCase()==='t'&&['hub','dungeon','remote','interior'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openTracker();return}
+    if(['hub','dungeon','interior'].includes(this.mode)&&(event.key==='Enter'||event.code==='KeyE')){event.preventDefault();event.stopImmediatePropagation();this.tryInteract()}
     if(this.mode==='hub'&&event.code==='Digit4'){
       if(chapter3NextRequired(this.state)==='strangeManLead'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected){event.preventDefault();this.inspectStrangeManHatWithLens()}
       else if(chapter3NextRequired(this.state)==='lensTrail'){event.preventDefault();this.useInvestigationLens()}
@@ -1876,10 +1939,11 @@ class RrvvfoChapter3{
   drawChapterWorld(){
     if(!this.battle?.renderer||this.aborted)return;
     const r=this.battle.renderer,time=performance.now()/1000;
-    if(this.area==='hub')this.drawAfterHoursHub(r,time);
+    if(this.mode==='interior'&&this.interiorId)drawStoryInterior(r,this.interiorId,time);
+    else if(this.area==='hub')this.drawAfterHoursHub(r,time);
     else if(this.area==='facility')this.drawFacility(r,time);
     else this.drawRemote(r,time);
-    if(['hub','dungeon'].includes(this.mode)){
+    if(['hub','dungeon','interior'].includes(this.mode)){
       for(const item of this.availableInteractions())this.drawMarker(r,item,time,item.kind.startsWith('optional'));
     }
   }

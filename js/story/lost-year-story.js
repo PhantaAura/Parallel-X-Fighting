@@ -11,19 +11,19 @@ import {
   repairChapter4Progress,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {inspectStoryReliability} from './story-reliability.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {renderTravelJournal} from './connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+} from './lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {inspectStoryReliability} from './story-reliability.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {renderTravelJournal} from './connected-world.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

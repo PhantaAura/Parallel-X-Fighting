@@ -15,7 +15,7 @@
 - Relative ES-module imports: **312 / 312 resolve**.
 - `index.html` IDs: **259 total / 259 unique / 0 duplicates**.
 - JSON/manifests after release manifest generation: **60 / 60 parse**.
-- Active cache identity: `29a4071-chapter3-sabotage-investigation-20260802`.
+- Active cache identity: `29a4072r-ch1-adventure-playtestlab-20260802`.
 - Save schema: **268**.
 
 ## Dedicated 2.9A.40.7.1 regression coverage

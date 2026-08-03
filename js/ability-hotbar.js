@@ -1,4 +1,4 @@
-import {abilityStatus,createDefaultAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {abilityStatus,createDefaultAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
 export const HOTBAR_INFO_HOLD_MS=460;
 export function hotbarPrompt(input,side,entry,device=input?.lastInputDevice?.[side-1]||'keyboard',slot=1){if(device==='touch')return'TAP';if(device==='keyboard'||device==='mouse')return String(slot);return input?.actionLabel?.(side,'u',{device:'controller'})||'ACTIVATE'}

@@ -1,7 +1,7 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {storyExperienceProfile} from './story-experience.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {storyExperienceProfile} from './story-experience.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
@@ -12,7 +12,7 @@ import {
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+} from './lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -418,7 +418,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a4071-chapter3-sabotage-investigation-20260802`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a4072r-ch1-adventure-playtestlab-20260802`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'echo-mountain':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }

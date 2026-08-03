@@ -1,5 +1,5 @@
 Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite
-Release cache: 29a4071-chapter3-sabotage-investigation-20260802
+Release cache: 29a4072r-ch1-adventure-playtestlab-20260802
 Browser: Chromium 144 headless
 Result: 482 / 482 PASS
 Failures: 0

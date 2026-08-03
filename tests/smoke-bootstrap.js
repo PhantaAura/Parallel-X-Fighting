@@ -1,4 +1,4 @@
-const RELEASE_CACHE_ID='29a4071-chapter3-sabotage-investigation-20260802';
+const RELEASE_CACHE_ID='29a4072r-ch1-adventure-playtestlab-20260802';
 const EXPECTED_BUILD='Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite';
 const TOTAL_TESTS=482;
 const IMPORT_TIMEOUT_MS=600000;

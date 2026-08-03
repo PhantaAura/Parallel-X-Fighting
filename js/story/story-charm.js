@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 

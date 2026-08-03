@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {InputManager} from './input.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

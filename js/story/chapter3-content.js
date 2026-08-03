@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
 export const CHAPTER3_STATE_VERSION=4;
 

@@ -1,0 +1,21 @@
+{
+  "build": "Prototype 2.9A.40.7.2R \u2014 Complete Chapter 1 Adventure Rebuild + Mobile Playtest Lab",
+  "base": "Prototype 2.9A.40.7.1 \u2014 Chapter 3 Sabotage Investigation Rewrite",
+  "baseCommit": "9a0ce7020e3b0d13f4917c37ee294278bfc835e4",
+  "cache": "29a4072r-ch1-adventure-playtestlab-20260802",
+  "saveSchema": 268,
+  "releaseType": "full cumulative deployment assembled from verified 40.7.1 standalone base",
+  "chapter5Touched": false,
+  "features": [
+    "physical three-way Chapter 1 road junction",
+    "Main Road controlled-fire and work-lane route",
+    "Forest Trail four-beat navigation route",
+    "Cliff Pass five-ledge platform route",
+    "18s/36s guidance escalation",
+    "two-sided transport Object Swap rescue",
+    "Lens or southern-detour final road choice",
+    "early Story Fire Blast focus while Shots of Agony is locked",
+    "mobile seven-tap developer unlock",
+    "Playtest Lab QA and human telemetry"
+  ]
+}

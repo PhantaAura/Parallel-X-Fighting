@@ -76,7 +76,7 @@
     "2.9A.40.7 Quest & Objective Overhaul: KEEP/TWEAK/THROW quest audit, multi-route Chapter 2 resolutions, Chapter 3 deduction replacements, skilled Chapter 4 potion route, and two-bearing signal triangulation",
     "2.9A.40.7.1 Chapter 3 Sabotage Investigation Rewrite: sabotage-first mystery, concrete witness contradiction, gradual Project Hollow reveal, real Sage lockdown sequence, mandatory blue-clone technique foundation, and multi-day Echo blackout handoff"
   ],
-  "cache_tag": "29a4071-chapter3-sabotage-investigation-20260802",
+  "cache_tag": "29a4072r-ch1-adventure-playtestlab-20260802",
   "save_schema": 268,
   "history": [
     "2.9A.23.1 Story Sprite Recovery: preserves and reloads Rrvvfo’s atlas across Chapter 2–4 fight transitions and rejects stale asynchronous sprite loads",
@@ -160,14 +160,14 @@
     {
       "build": "2.9A.40.7.1",
       "title": "Chapter 3 Sabotage Investigation Rewrite",
-      "cache": "29a4071-chapter3-sabotage-investigation-20260802",
+      "cache": "29a4072r-ch1-adventure-playtestlab-20260802",
       "saveSchema": 268,
       "smoke": "482/482"
     }
   ],
   "currentBuild": "Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite",
-  "cacheId": "29a4071-chapter3-sabotage-investigation-20260802",
+  "cacheId": "29a4072r-ch1-adventure-playtestlab-20260802",
   "saveSchema": 268,
   "latestBuild": "Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite",
-  "latestCacheId": "29a4071-chapter3-sabotage-investigation-20260802"
+  "latestCacheId": "29a4072r-ch1-adventure-playtestlab-20260802"
 }

@@ -1,28 +1,28 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {StoryMap} from './story-map.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {storyConfirm} from './story-ux.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {openCombatManual} from './combat-manual.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {discoverWorldDelight,worldDelightKnown} from './world-delight.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {StoryMap} from './story-map.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {storyConfirm} from './story-ux.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {openCombatManual} from './combat-manual.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {discoverWorldDelight,worldDelightKnown} from './world-delight.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {chapter4PotionReady,chapter4PotionRoute,chapter4SignalsReady,chapter4SignalRoute} from './quest-overhaul.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+} from './chapter4-content.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {chapter4PotionReady,chapter4PotionRoute,chapter4SignalsReady,chapter4SignalRoute} from './quest-overhaul.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;

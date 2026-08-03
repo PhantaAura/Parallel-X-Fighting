@@ -1,4 +1,4 @@
-import {storyConfirm} from './story/story-ux.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {storyConfirm} from './story/story-ux.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
 /* Parallels X shared story dialogue presentation. */
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);

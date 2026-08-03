@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.21';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([

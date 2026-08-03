@@ -1,8 +1,8 @@
-import {BUILD_VERSION} from './build-info.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {sharedInput} from './input-runtime.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {BUILD_VERSION} from './build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {sharedInput} from './input-runtime.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
-const MENU_MODULE_CACHE='29a4071-chapter3-sabotage-investigation-20260802';
+const MENU_MODULE_CACHE='29a4072r-ch1-adventure-playtestlab-20260802';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([

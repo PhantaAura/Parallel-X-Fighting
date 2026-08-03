@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {sharedInput} from '../input-runtime.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast'},

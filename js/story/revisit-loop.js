@@ -1,5 +1,5 @@
-import {normalizeConnectedWorldState,recordWorldVisit} from './connected-world.js?v=29a4071-chapter3-sabotage-investigation-20260802';
-import {loadFieldSkillState} from './field-skills.js?v=29a4071-chapter3-sabotage-investigation-20260802';
+import {normalizeConnectedWorldState,recordWorldVisit} from './connected-world.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {loadFieldSkillState} from './field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 
 export const REVISIT_LOOP_VERSION=1;
 const unique=values=>[...new Set((Array.isArray(values)?values:[]).filter(Boolean))];

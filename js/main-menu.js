@@ -130,6 +130,46 @@ export class MainMenu{
       if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.25)this.move(dx<0?1:-1);
     });
     this.list?.addEventListener('pointercancel',()=>{this.swipeStart=null});
+
+    this.__pxDesktopMenuKeyHandler=event=>{
+      if(!this.root||this.root.classList.contains('hidden'))return;
+      const target=event.target;
+      if(target?.closest?.('input,select,textarea,[contenteditable="true"]'))return;
+
+      const code=event.code||'';
+      const key=String(event.key||'').toLowerCase();
+
+      const previous=
+        ['ArrowLeft','ArrowUp','KeyA','KeyW'].includes(code)||
+        ['arrowleft','arrowup','a','w'].includes(key);
+
+      const next=
+        ['ArrowRight','ArrowDown','KeyD','KeyS'].includes(code)||
+        ['arrowright','arrowdown','d','s'].includes(key);
+
+      const confirm=
+        ['Enter','NumpadEnter','Space'].includes(code)||
+        key==='enter'||key===' ';
+
+      if(previous){
+        event.preventDefault();
+        this.move(-1);
+        return;
+      }
+
+      if(next){
+        event.preventDefault();
+        this.move(1);
+        return;
+      }
+
+      if(confirm){
+        event.preventDefault();
+        void this.confirm();
+      }
+    };
+
+    document.addEventListener('keydown',this.__pxDesktopMenuKeyHandler);
   }
 
   setIndex(index,{focus=false}={}){

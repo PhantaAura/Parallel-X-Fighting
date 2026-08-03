@@ -26,7 +26,7 @@ import {initializeStoryCharm} from './story/story-charm.js?v=29a4072r-ch1-advent
 import {initializeWorldDelight} from './story/world-delight.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 import {initializeMobileStoryUi} from './story/mobile-story-ui.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {MainMenu} from './main-menu.js?v=29a4072r1-desktop-menu-input-20260803';
 import {MatchStatistics} from './match-statistics.js';
 import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
 import {ResultsScreen} from './results-screen.js';

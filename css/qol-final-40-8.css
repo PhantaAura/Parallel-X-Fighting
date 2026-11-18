@@ -1,0 +1,31 @@
+/* Prototype 2.9A.40.8 — Final Legacy QoL Update */
+
+/* Colorblind modes: the SVG filters are injected by js/qol-final.js. */
+html[data-color-mode="deuteranopia"]{filter:url(#pxColor-deuteranopia)}
+html[data-color-mode="protanopia"]{filter:url(#pxColor-protanopia)}
+html[data-color-mode="tritanopia"]{filter:url(#pxColor-tritanopia)}
+
+/* Autosave indicator */
+#pxAutosaveIndicator{position:fixed;top:max(10px,env(safe-area-inset-top,0px));right:max(10px,env(safe-area-inset-right,0px));z-index:3300;padding:7px 13px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(8,12,24,.9);color:#fff;font:700 11px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.12em;pointer-events:none;opacity:0;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease}
+#pxAutosaveIndicator.show{opacity:1;transform:none}
+#pxAutosaveIndicator[data-tone="ok"]::before{content:"\2713\00a0"}
+#pxAutosaveIndicator[data-tone="warn"]{border-color:#ffd447;color:#ffd447}
+#pxAutosaveIndicator[data-tone="warn"]::before{content:"!\00a0"}
+body.reducedMotion #pxAutosaveIndicator,body.skipMenuAnimations #pxAutosaveIndicator{transition:none;transform:none}
+@media (prefers-reduced-motion:reduce){#pxAutosaveIndicator{transition:none;transform:none}}
+
+/* Keyboard bindings panel */
+#keyBindingsPanel{z-index:330}
+#keyBindingsPanel .kbCard{max-width:620px;max-height:calc(100dvh - 32px);overflow:auto}
+#keyBindingsPanel .kbHint{margin:0 0 12px;color:var(--px-color-muted,#aab6cf);font-size:14px;line-height:1.45}
+#keyBindingsPanel .kbList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
+#keyBindingsPanel .kbRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 10px;border:1px solid var(--px-color-line,#394764);border-radius:8px;background:rgba(255,255,255,.04)}
+#keyBindingsPanel .kbRow.changed{border-color:var(--px-color-gold,#ffd447)}
+#keyBindingsPanel .kbRow span{font-size:14px}
+#keyBindingsPanel .kbRow button{min-width:84px;min-height:36px;padding:6px 10px;border-radius:7px;border:1px solid var(--px-color-line,#394764);background:var(--px-color-panel-strong,#171f33);color:#fff;font:700 13px/1 system-ui,sans-serif;cursor:pointer}
+#keyBindingsPanel .kbRow button:focus-visible,#keyBindingsPanel .kbRow button:hover{border-color:var(--px-color-energy,#55d9ff);outline:2px solid var(--px-color-energy,#55d9ff);outline-offset:1px}
+#keyBindingsPanel.capturing .kbRow button{opacity:.6}
+#keyBindingsPanel .kbMessage{min-height:1.4em;margin:12px 0 0;font-size:14px}
+#keyBindingsPanel .kbMessage[data-tone="ok"]{color:#7dffb0}
+#keyBindingsPanel .kbMessage[data-tone="warn"]{color:var(--px-color-gold,#ffd447)}
+@media(max-width:560px){#keyBindingsPanel .kbList{grid-template-columns:1fr}}

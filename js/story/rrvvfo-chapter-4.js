@@ -1,28 +1,28 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {StoryMap} from './story-map.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {storyConfirm} from './story-ux.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {openCombatManual} from './combat-manual.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {discoverWorldDelight,worldDelightKnown} from './world-delight.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a408-final-qol-20260817';
+import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a408-final-qol-20260817';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a408-final-qol-20260817';
+import {StoryMap} from './story-map.js?v=29a408-final-qol-20260817';
+import {storyConfirm} from './story-ux.js?v=29a408-final-qol-20260817';
+import {openCombatManual} from './combat-manual.js?v=29a408-final-qol-20260817';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a408-final-qol-20260817';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a408-final-qol-20260817';
+import {discoverWorldDelight,worldDelightKnown} from './world-delight.js?v=29a408-final-qol-20260817';
+import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a408-final-qol-20260817';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {chapter4PotionReady,chapter4PotionRoute,chapter4SignalsReady,chapter4SignalRoute} from './quest-overhaul.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+} from './chapter4-content.js?v=29a408-final-qol-20260817';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a408-final-qol-20260817';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a408-final-qol-20260817';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a408-final-qol-20260817';
+import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a408-final-qol-20260817';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a408-final-qol-20260817';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a408-final-qol-20260817';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a408-final-qol-20260817';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a408-final-qol-20260817';
+import {chapter4PotionReady,chapter4PotionRoute,chapter4SignalsReady,chapter4SignalRoute} from './quest-overhaul.js?v=29a408-final-qol-20260817';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -393,8 +393,8 @@ class RrvvfoChapter4{
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'echoCavern'}));
     this.area='cavern';this.state.location='echo-caverns';this.switchStage('echo-caverns');this.mode='cavern';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();this.engine.setLabels({stageName:'ECHO CAVERNS',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});this.preparePlayer(restored?SPAWNS.cavern:{x:-980,z:0});this.engine.setHotbarAvailability([],{show:false});this.showAreaTitle('ECHO CAVERNS','PUZZLE ROUTE • ELEMENTAL SEALS');if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'echo','caverns',{entrance:'cavern-approach'}));this.rebuildMap();this.saveState();if(!this.state.requiredCompleted.includes('cavernsEntered')){this.showDialogue([
       {speaker:'WADE',speakerClass:'p2',text:'The cave is making my footsteps sound faster.',tail:'down'},
-      {speaker:'BARK',speakerClass:'neutral',text:'That is because you keep running ahead.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'Three doors. Fire, earth, and lightning. At least this place knows who showed up.',tail:'down'}
+      {speaker:'BARK',speakerClass:'neutral',text:'That’s because you keep running ahead, Wade. Every time.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Three doors. Fire, earth, and lightning. At least this place knows the Elemental Ninja showed up.',tail:'down'}
     ],()=>{this.completeRequired('cavernsEntered');this.mode='cavern';this.battle.phase='play';this.updateObjective()})}else if(this.state.ryuzankaro.started&&!this.state.ryuzankaro.ingredients.includes('rootstone')){this.showDialogue([{speaker:'BARK',speakerClass:'neutral',text:'The grunts reopened a side chamber after our first trip.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'So the cave changed while we were gone. Cool. Also bad.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'At least this isn’t the exact same walk twice.',tail:'down'}],()=>{this.mode='cavern';this.battle.phase='play';this.updateObjective()})}else this.updateObjective();
   }
 
@@ -525,9 +525,9 @@ class RrvvfoChapter4{
   restWithTeam(){
     if(this.state.teamRestSeen){this.toast('PARTY RECOVERED','BARK & WADE ARE READY','The recovery mats remain here, but the Story reward is one-time.');return}
     this.showDialogue([
-      {speaker:'WADE',speakerClass:'p2',text:'One minute. Bark said one minute, and I am enforcing it.',tail:'down'},
+      {speaker:'WADE',speakerClass:'p2',text:'ONE MINUTE! Bark said one minute, and I am enforcing it. Gummy break starts now.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'You have never enforced sitting still in your life.',tail:'down'},
-      {speaker:'BARK',speakerClass:'neutral',text:'The village is secure for now. Eat, recover, then take the mountain alone.',tail:'down'},
+      {speaker:'BARK',speakerClass:'neutral',text:'The village is secure for now. Eat, recover, then take the mountain alone. And don’t make me come get you again.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Fine. But if the Sage complains I was late, I am blaming both of you.',tail:'down'}
     ],()=>{
       this.state.teamRestSeen=true;
@@ -601,12 +601,12 @@ class RrvvfoChapter4{
     this.state.variety.fieldRouteComplete=true;this.state.variety.persistentChanges=[...new Set([...(this.state.variety.persistentChanges||[]),'echo-cavern-route-repaired'])];if(!this.replayMode)saveLostYearProgress(discoverWorldShortcut(loadLostYearProgress(),'c4-cavern-return'));this.saveState();
     this.mode='explore';this.battle.phase='play';this.battle.burst(VILLAGE_POINTS.partyRoute.x,VILLAGE_POINTS.partyRoute.z,'#b8ecff',42,110);
     document.dispatchEvent(new CustomEvent('pxstorycelebration',{detail:{type:'activity',tone:'technique',kicker:'PARTY FIELD ROUTE COMPLETE',title:'ECHO CAVERN APPROACH REPAIRED',detail:'The route remains open and the team’s work is visible in Echo Village.',items:['BARK • SUPPORT','WADE • POWER','RRVVFO • OBJECT SWAP'],onceKey:'activity:party-field-route'}}));
-    this.showDialogue([{speaker:'ECHO VILLAGER',speakerClass:'neutral',text:'The old route is carrying sound again. We will keep it open.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'I did the electricity part.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'We noticed.',tail:'down'}],()=>{this.mode='explore';this.battle.phase='play';this.updateObjective()});
+    this.showDialogue([{speaker:'ECHO VILLAGER',speakerClass:'neutral',text:'The old route is carrying sound again. We will keep it open.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'I did the electricity part.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'We noticed. Believe me, we noticed.',tail:'down'}],()=>{this.mode='explore';this.battle.phase='play';this.updateObjective()});
   }
 
   playEchoChimes(){
     if(this.state.charm?.echoChimesComplete)return;
-    this.showDialogue([{speaker:'WADE',speakerClass:'p2',text:'These plates make different echoes when you hit them.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'Do not hit all of them at once.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'He was already going to do that.',tail:'down'}],()=>this.startQte({type:'echo-chimes',title:'ECHO CHIME JAM',text:'Copy the short rhythm. No item hunt, no combat—just one party moment.',sequence:['LEFT','RIGHT','UP','DOWN','RELEASE'],seconds:10,onComplete:()=>{this.state.charm={...(this.state.charm||{}),echoChimesComplete:true};this.saveState();this.mode='explore';this.battle.phase='play';this.battle.burst(VILLAGE_POINTS.chimes.x,VILLAGE_POINTS.chimes.z,'#8fe8ff',32,90);document.dispatchEvent(new CustomEvent('pxstorybanter',{detail:{lines:[['WADE','That sounded exactly right.'],['BARK','It did not.'],['RRVVFO','The village is cheering, so we are calling it music.']],onceKey:'activity:echo-chimes-banter'}}));document.dispatchEvent(new CustomEvent('pxstorycelebration',{detail:{type:'activity',tone:'technique',kicker:'SIDE ACTIVITY COMPLETE',title:'ECHO CHIME JAM',detail:'Echo Village now repeats the team rhythm near the beacon.',items:['PARTY MEMORY','VILLAGE REACTION'],onceKey:'activity:echo-chimes'}}));this.updateObjective()}}));
+    this.showDialogue([{speaker:'WADE',speakerClass:'p2',text:'WOW. These plates all sound different when you hit them. Like a xylophone, but angrier.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'Wade, do not hit all of them at once.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'He was already going to do that.',tail:'down'}],()=>this.startQte({type:'echo-chimes',title:'ECHO CHIME JAM',text:'Copy the short rhythm. No item hunt, no combat—just one party moment.',sequence:['LEFT','RIGHT','UP','DOWN','RELEASE'],seconds:10,onComplete:()=>{this.state.charm={...(this.state.charm||{}),echoChimesComplete:true};this.saveState();this.mode='explore';this.battle.phase='play';this.battle.burst(VILLAGE_POINTS.chimes.x,VILLAGE_POINTS.chimes.z,'#8fe8ff',32,90);document.dispatchEvent(new CustomEvent('pxstorybanter',{detail:{lines:[['WADE','That sounded exactly right.'],['BARK','It did not.'],['RRVVFO','The village is cheering, so we are calling it music.']],onceKey:'activity:echo-chimes-banter'}}));document.dispatchEvent(new CustomEvent('pxstorycelebration',{detail:{type:'activity',tone:'technique',kicker:'SIDE ACTIVITY COMPLETE',title:'ECHO CHIME JAM',detail:'Echo Village now repeats the team rhythm near the beacon.',items:['PARTY MEMORY','VILLAGE REACTION'],onceKey:'activity:echo-chimes'}}));this.updateObjective()}}));
   }
 
   startTeamMechanicQte({type,title,text,sequence,seconds=11,onComplete}){
@@ -1016,7 +1016,7 @@ class RrvvfoChapter4{
     }
     if(fight.kind==='village-defense'){
       this.unlockRyuzankaroAfterVillageDefense();this.enterVillage({spawn:SPAWNS.village});this.beginVillageAftermath('village-defense',9);
-      this.showDialogue([{speaker:'BARK',speakerClass:'neutral',text:'Those grunts were not passing through. Echo Village is one of their targets.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'We were fighting for days to reach you. I vote we sit down for at least one minute.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'The Sage might still be trapped under that arena.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'Then we protect this village while you follow the mountain signal. Rushing all three of us forward leaves both places exposed.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Fine. One minute. Then I’m moving.',tail:'down'}],()=>{this.mode='explore';this.battle.phase='play';this.updateObjective();this.toast('OPTIONAL QUEST UNLOCKED','THE OLD MAN’S POTIONS','Complete it before leaving, or continue to the mountain gate.')});return;
+      this.showDialogue([{speaker:'BARK',speakerClass:'neutral',text:'Those grunts were not passing through. Echo Village is one of their targets.',tail:'down'},{speaker:'WADE',speakerClass:'p2',text:'We fought for DAYS to reach you! I vote we sit down for at least one minute. Snacks included.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'The Sage might still be trapped under that arena.',tail:'down'},{speaker:'BARK',speakerClass:'neutral',text:'Then we protect this village while you follow the mountain signal. Rushing all three of us forward leaves both places exposed.',tail:'down'},{speaker:'RRVVFO',speakerClass:'p1',text:'Fine. One minute. Then I’m moving.',tail:'down'}],()=>{this.mode='explore';this.battle.phase='play';this.updateObjective();this.toast('OPTIONAL QUEST UNLOCKED','THE OLD MAN’S POTIONS','Complete it before leaving, or continue to the mountain gate.')});return;
     }
     if(fight.kind==='ryuzankaro'){if(fight.finale){this.state.ryuzankaro.checkpoint='seal';this.saveState();this.startSealQte();return}return}
     if(fight.kind==='watcher'){

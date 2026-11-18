@@ -16,6 +16,79 @@ export const CONTROL_MAPS = [
   }
 ];
 
+// ---- Player 1 keyboard remapping (2.9A.40.8) -------------------------------
+// Only Player 1's keyboard map is remappable.  Overrides are stored as a small
+// {action: code} object so defaults keep working if bindings are ever reset or
+// the saved value is damaged.
+export const KEY_BINDINGS_KEY = 'pxKeyBindingsV1';
+export const REMAPPABLE_ACTIONS = Object.freeze([
+  ['l', 'Move Left'], ['r', 'Move Right'], ['up', 'Move Up / Depth'], ['down', 'Move Down / Depth'],
+  ['j', 'Jump'], ['a', 'Light Attack'], ['h', 'Heavy Attack'], ['x', 'Launcher'], ['s', 'Grab'],
+  ['d', 'Dash'], ['b', 'Block'], ['u', 'Ultimate / Selected Ability'], ['k', 'Charge'],
+  ['q', 'Combo Breaker'], ['c', 'Counter'], ['i', 'Interact'], ['n', 'Lens']
+]);
+// Keys the game uses for menus, pause, ability slots and training that must stay fixed.
+export const RESERVED_KEY_CODES = Object.freeze(new Set([
+  'Escape', 'Tab', 'Backspace', 'Enter', 'KeyP', 'KeyY', 'KeyH',
+  'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'NumpadSubtract', 'NumpadMultiply',
+  'MetaLeft', 'MetaRight', 'ContextMenu'
+]));
+const DEFAULT_P1_KEYS = Object.freeze({ ...CONTROL_MAPS[0] });
+
+function readKeyBindingOverrides() {
+  try {
+    const raw = JSON.parse(globalThis.localStorage?.getItem(KEY_BINDINGS_KEY) || '{}');
+    return raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+  } catch { return {}; }
+}
+function writeKeyBindingOverrides() {
+  const overrides = {};
+  for (const [action] of REMAPPABLE_ACTIONS) if (CONTROL_MAPS[0][action] !== DEFAULT_P1_KEYS[action]) overrides[action] = CONTROL_MAPS[0][action];
+  try {
+    if (Object.keys(overrides).length) globalThis.localStorage?.setItem(KEY_BINDINGS_KEY, JSON.stringify(overrides));
+    else globalThis.localStorage?.removeItem(KEY_BINDINGS_KEY);
+  } catch {}
+  try { globalThis.document?.dispatchEvent(new CustomEvent('pxkeybindingschange')); } catch {}
+}
+function validBindingCode(code) {
+  return typeof code === 'string' && /^[A-Za-z0-9]{2,20}$/.test(code) && !RESERVED_KEY_CODES.has(code) && !/^F\d+$/.test(code);
+}
+export function keyBindingError(action, code) {
+  if (!REMAPPABLE_ACTIONS.some(([id]) => id === action)) return 'Unknown action';
+  if (!validBindingCode(code)) return 'That key is reserved for menus, pause or ability slots';
+  if (Object.values(CONTROL_MAPS[1]).includes(code)) return 'That key belongs to Player 2';
+  return '';
+}
+// Binding a key that another action already uses swaps the two actions.
+export function setKeyBinding(action, code) {
+  const error = keyBindingError(action, code);
+  if (error) return { ok: false, error };
+  const map = CONTROL_MAPS[0];
+  const previous = map[action];
+  const other = REMAPPABLE_ACTIONS.map(([id]) => id).find(id => id !== action && map[id] === code);
+  if (other) map[other] = previous;
+  map[action] = code;
+  writeKeyBindingOverrides();
+  return { ok: true, swapped: other || null };
+}
+export function resetKeyBindings() {
+  Object.assign(CONTROL_MAPS[0], DEFAULT_P1_KEYS);
+  writeKeyBindingOverrides();
+}
+export function defaultKeyBinding(action) { return DEFAULT_P1_KEYS[action]; }
+export function keyDisplayName(code) { return displayKey(code); }
+function applySavedKeyBindings() {
+  const saved = readKeyBindingOverrides();
+  const next = { ...DEFAULT_P1_KEYS };
+  for (const [action] of REMAPPABLE_ACTIONS) if (validBindingCode(saved[action])) next[action] = saved[action];
+  // Reject the whole saved set if it would bind one key to two actions or collide with Player 2.
+  const used = REMAPPABLE_ACTIONS.map(([id]) => next[id]);
+  const p2 = new Set(Object.values(CONTROL_MAPS[1]));
+  if (new Set(used).size !== used.length || used.some(code => p2.has(code))) return;
+  Object.assign(CONTROL_MAPS[0], next);
+}
+applySavedKeyBindings();
+
 export const INPUT_BUFFER_FRAMES = 12;
 export const SIMULTANEOUS_WINDOW_FRAMES = 3;
 export const SIMPLIFIED_LIGHT_REPEAT_FRAMES = 18;
@@ -103,9 +176,18 @@ export function canSimplifyTouchAction(action) {
   return SIMPLIFIED_TOUCH_ACTIONS.includes(action);
 }
 
+// Light, Light, Launcher, Jump, Air Light, Air Heavy using the live key bindings.
+// With the mouse, the primary click replaces whichever attack it is bound to.
+function keyboardComboPrompt(mousePrimary = null) {
+  const map = CONTROL_MAPS[0];
+  const light = mousePrimary === 'a' ? 'M1' : displayKey(map.a);
+  const heavy = mousePrimary === 'h' ? 'M1' : displayKey(map.h);
+  return `${light}, ${light}, ${displayKey(map.x)}, ${displayKey(map.j)}, ${light}, ${heavy}`;
+}
+
 export function formatComboPrompt(style = 'xbox', customMapping = null) {
   if (style === 'touch') return 'Light, Light, Launcher, Jump, Air Light, Air Heavy';
-  if (style === 'keyboard') return 'J, J, I, Space, J, K';
+  if (style === 'keyboard') return keyboardComboPrompt();
   const mapping = style === 'custom' ? customMapping || createCustomControllerMapping() : CONTROLLER_STYLES[style] || CONTROLLER_STYLES.xbox;
   return `${mapping.labels.a}, ${mapping.labels.a}, Up + ${mapping.labels.h}, ${mapping.labels.j}, ${mapping.labels.a}, ${mapping.labels.h}`;
 }
@@ -504,7 +586,7 @@ export class InputManager {
 
   comboPrompt(side, device = this.lastInputDevice[side - 1]) {
     if (device === 'touch') return formatComboPrompt('touch');
-    if (device === 'mouse') return this.mousePrimaryAction==='a'?'M1, M1, I, Space, M1, K':'J, J, I, Space, J, M1';
+    if (device === 'mouse') return keyboardComboPrompt(this.mousePrimaryAction);
     if (device === 'keyboard') return formatComboPrompt('keyboard');
     const style = this.controllerStyles[side - 1];
     return formatComboPrompt(style, this.customMappings[side - 1]);

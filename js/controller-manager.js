@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a408-final-qol-20260817';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

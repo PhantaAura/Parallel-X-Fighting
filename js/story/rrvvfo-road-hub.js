@@ -1,19 +1,19 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {sharedInput} from '../input-runtime.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {StoryMap} from './story-map.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {recordWorldVisit,discoverWorldShortcut} from './connected-world.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {storyConfirm} from './story-ux.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {discoverWorldDelight} from './world-delight.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a408-final-qol-20260817';
+import {sharedInput} from '../input-runtime.js?v=29a408-final-qol-20260817';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a408-final-qol-20260817';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a408-final-qol-20260817';
+import {StoryMap} from './story-map.js?v=29a408-final-qol-20260817';
+import {recordWorldVisit,discoverWorldShortcut} from './connected-world.js?v=29a408-final-qol-20260817';
+import {storyConfirm} from './story-ux.js?v=29a408-final-qol-20260817';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a408-final-qol-20260817';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a408-final-qol-20260817';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a408-final-qol-20260817';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a408-final-qol-20260817';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a408-final-qol-20260817';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a408-final-qol-20260817';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a408-final-qol-20260817';
+import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a408-final-qol-20260817';
+import {discoverWorldDelight} from './world-delight.js?v=29a408-final-qol-20260817';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -608,7 +608,7 @@ class RrvvfoRoadHub{
       ],
       'VENDOR':[
         {speaker:'VENDOR',speakerClass:'neutral',text:'Ugh, my boss is making me sell this horrible food.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Food is food, but I don’t got cash on me right now.',tail:'down'}
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Food is food, but I don’t got cash on me right now. Rent ate it all.',tail:'down'}
       ]
     }[nearby.label]||[];
     if(lines.length)this.showDialogue(lines,()=>{this.mode='hub';this.battle.phase='play'});

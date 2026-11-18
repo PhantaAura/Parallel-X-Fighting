@@ -1,9 +1,9 @@
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js';
-import {loadLostYearProgress} from './lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {WORLD_DELIGHT_DISCOVERIES} from './world-delight.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER1_GUIDANCE,CHAPTER1_ROUTES,CHAPTER1_FIRE_BLAST_STORY_FOCUS} from './chapter1-adventure.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {ArenaBattle} from '../arena/arena-mode.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {loadLostYearProgress} from './lost-year-data.js?v=29a408-final-qol-20260817';
+import {WORLD_DELIGHT_DISCOVERIES} from './world-delight.js?v=29a408-final-qol-20260817';
+import {CHAPTER1_GUIDANCE,CHAPTER1_ROUTES,CHAPTER1_FIRE_BLAST_STORY_FOCUS} from './chapter1-adventure.js?v=29a408-final-qol-20260817';
+import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a408-final-qol-20260817';
+import {ArenaBattle} from '../arena/arena-mode.js?v=29a408-final-qol-20260817';
 
 const DEV_SESSION_KEY='pxDeveloperUnlockedSession';
 const LAST_REPORT_KEY='pxPlaytestLastReportV2';
@@ -207,9 +207,9 @@ async function runFullQa(){
   add('Existing Konami developer room',document.querySelector('[data-story-playtest]')?'PASS':'WARN','↑ ↑ ↓ ↓ ← → ← → B A');
   try{
     const modules=await Promise.allSettled([
-      import('./rrvvfo-mission-2.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),
-      import('./rrvvfo-chapter-3.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),
-      import('./rrvvfo-chapter-4.js?v=29a4072r-ch1-adventure-playtestlab-20260802')
+      import('./rrvvfo-mission-2.js?v=29a408-final-qol-20260817'),
+      import('./rrvvfo-chapter-3.js?v=29a408-final-qol-20260817'),
+      import('./rrvvfo-chapter-4.js?v=29a408-final-qol-20260817')
     ]);const failed=modules.filter(item=>item.status==='rejected');add('Released Chapter 2–4 modules import',failed.length?'FAIL':'PASS',failed.length?failed.map(item=>item.reason?.message||'import failed').join(' | '):'3 / 3 loaded');
   }catch(error){add('Released Chapter 2–4 modules import','FAIL',error.message)}
   const pass=checks.filter(c=>c.status==='PASS').length,fail=checks.filter(c=>c.status==='FAIL').length,warn=checks.filter(c=>c.status==='WARN').length;

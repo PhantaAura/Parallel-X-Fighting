@@ -1,0 +1,45 @@
+/* Prototype 2.9A.40.8 — Dojo-Forge identity
+   Clash of Souls keeps its navy base, fire red and energy cyan. The Season 1
+   remake contributes its own motifs, taken from the script: the pink
+   Asrylyte energy, shard imagery (24 shards), and the three elemental
+   ninja (fire, lightning, earth). Everything here is additive: colors, thin
+   accents and shard shapes only. No layout, sizing or animation changes. */
+
+:root{
+  --px-color-asrylyte:#ff4fb8;
+  --px-color-asrylyte-deep:#2a0a24;
+  --px-element-fire:#ff6a2e;
+  --px-element-lightning:#ffd23f;
+  --px-element-earth:#5fbf5f;
+  --px-forge-bar:linear-gradient(90deg,var(--px-element-fire),var(--px-color-asrylyte) 58%,var(--px-color-energy,#55d9ff));
+}
+
+/* Panels: a forge-to-Asrylyte accent line across the top of every card. */
+.qolCard{position:relative}
+.qolCard::before{content:"";position:absolute;left:16px;right:16px;top:0;height:3px;border-radius:0 0 3px 3px;background:var(--px-forge-bar);pointer-events:none}
+
+/* Headings: a small tilted shard, like a fragment of Asrylyte. */
+.qolCard h2::before{content:"";display:inline-block;width:.46em;height:.5em;margin-right:.45em;vertical-align:.04em;background:linear-gradient(160deg,var(--px-color-asrylyte),#9b2d7a);clip-path:polygon(48% 0,100% 38%,72% 100%,14% 86%,0 30%)}
+
+/* Start screen */
+#startPrompt::before,#startPrompt::after{content:"\25C6";display:inline-block;margin:0 .7em;color:var(--px-color-asrylyte);font-size:.7em;vertical-align:.1em}
+.startCard .brandMark small{background:var(--px-forge-bar);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){.startCard .brandMark small{background:none;-webkit-text-fill-color:currentColor}}
+
+/* Keyboard focus: Asrylyte pink reads clearly against the navy panels. */
+.qolCard :focus-visible,.mainMenuScreen :focus-visible{outline:2px solid var(--px-color-asrylyte);outline-offset:2px}
+
+/* Skip-seen button in the dialogue toolbar reads as a distinct action. */
+[data-dialogue-skip-seen]{border-color:var(--px-color-asrylyte)!important;color:#ffd6ef!important}
+[data-dialogue-skip-seen][hidden]{display:none!important}
+
+/* Settings: group labels for the new options pick up the same accent. */
+#keyBindingsPanel .kbRow.changed{border-color:var(--px-color-asrylyte)}
+#keyBindingsPanel .kbMessage[data-tone="ok"]{color:#ffd6ef}
+
+/* Autosave indicator: forge accent, still clear on any background. */
+#pxAutosaveIndicator{border-image:none;box-shadow:inset 3px 0 0 var(--px-color-asrylyte)}
+
+/* Colorblind modes: the pink accent is the one decorative color that must not be the only cue,
+   so decorative shards turn off and the high-contrast text colors stay. */
+html[data-color-mode] .qolCard h2::before{background:#fff}

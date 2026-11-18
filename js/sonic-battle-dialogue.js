@@ -1,6 +1,20 @@
-import {storyConfirm} from './story/story-ux.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {storyConfirm} from './story/story-ux.js?v=29a408-final-qol-20260817';
+import {loadQolSettings} from './qol-settings.js?v=29a408-final-qol-20260817';
 
 /* Parallels X shared story dialogue presentation. */
+// Scenes you have already read (3+ lines, no choices) can be skipped in one
+// press. A scene counts as seen once it ends or is skipped.
+const SEEN_KEY='pxSeenDialoguesV1',SEEN_LIMIT=1200,SEEN_MIN_LINES=3;
+function hashText(text){let h=5381;for(let i=0;i<text.length;i++)h=((h<<5)+h+text.charCodeAt(i))|0;return(h>>>0).toString(36)}
+function conversationId(queue){
+  const lines=queue.map(entry=>`${entry?.speaker||''}:${entry?.text==null?'':String(entry.text)}`);
+  return hashText(`${lines.length}|${lines.slice(0,4).join('~')}|${lines.slice(-2).join('~')}`);
+}
+function readSeen(){try{const list=JSON.parse(localStorage.getItem(SEEN_KEY)||'[]');return Array.isArray(list)?list:[]}catch{return[]}}
+function markSeen(id){
+  try{const list=readSeen();if(list.includes(id))return;list.push(id);localStorage.setItem(SEEN_KEY,JSON.stringify(list.slice(-SEEN_LIMIT)))}catch{}
+}
+function skipSeenEnabled(){try{return loadQolSettings().gameplay.skipSeenScenes!==false}catch{return true}}
 const ADVANCE_KEYS=new Set(['Enter','Space','KeyZ','KeyJ','KeyF','ArrowRight']);
 const PREVIOUS_KEYS=new Set(['ArrowUp','ArrowLeft']);
 const NEXT_KEYS=new Set(['ArrowDown']);
@@ -82,7 +96,7 @@ export class SonicBattleDialogue{
     this.spriteWrap=document.createElement('div');this.spriteWrap.className='px-dialogue-sprite-wrap sbDialoguePortraitWrap';
     this.spriteEl=document.createElement('div');this.spriteEl.className='px-dialogue-sprite sbDialoguePortrait';this.spriteEl.style.display='none';this.spriteWrap.appendChild(this.spriteEl);this.portraitEl=this.spriteEl;
     this.box=document.createElement('div');this.box.className='px-dialogue-box sbDialogueBox';
-    this.toolbar=document.createElement('div');this.toolbar.className='px-dialogue-toolbar';this.toolbar.innerHTML='<button type="button" data-dialogue-auto>AUTO: OFF</button><button type="button" data-dialogue-speed>SPEED: NORMAL</button><button type="button" data-dialogue-history>HISTORY</button>';
+    this.toolbar=document.createElement('div');this.toolbar.className='px-dialogue-toolbar';this.toolbar.innerHTML='<button type="button" data-dialogue-auto>AUTO: OFF</button><button type="button" data-dialogue-speed>SPEED: NORMAL</button><button type="button" data-dialogue-history>HISTORY</button><button type="button" data-dialogue-skip-seen hidden>SKIP SEEN SCENE (TAB)</button>';
     this.speakerEl=document.createElement('div');this.speakerEl.className='px-dialogue-speaker sbDialogueSpeaker';this.speakerEl.style.display='none';
     this.emotionEl=document.createElement('span');this.emotionEl.className='px-dialogue-emotion';
     this.tailEl=document.createElement('div');this.tailEl.className='sbDialogueTail';this.tailEl.style.display='none';
@@ -95,6 +109,7 @@ export class SonicBattleDialogue{
     this.toolbar.querySelector('[data-dialogue-auto]').addEventListener('click',event=>{event.stopPropagation();this.prefs.auto=!this.prefs.auto;this.savePrefs();this.updateToolbar();if(this.prefs.auto&&this.canAdvance)this.advanceTimer=setTimeout(()=>this.advance(),this.autoAdvanceDelay)});
     this.toolbar.querySelector('[data-dialogue-speed]').addEventListener('click',event=>{event.stopPropagation();const order=['slow','normal','fast','instant'],index=order.indexOf(this.prefs.speed);this.prefs.speed=order[(index+1)%order.length];this.savePrefs();this.updateToolbar()});
     this.toolbar.querySelector('[data-dialogue-history]').addEventListener('click',event=>{event.stopPropagation();this.openHistory()});
+    this.toolbar.querySelector('[data-dialogue-skip-seen]').addEventListener('click',event=>{event.stopPropagation();this.skipSeen()});
     this.historyPanel.querySelector('[data-dialogue-history-close]').addEventListener('click',event=>{event.stopPropagation();this.closeHistory()});
     this.updateToolbar();
   }
@@ -111,6 +126,8 @@ export class SonicBattleDialogue{
   bindInput(){if(this.inputBound)return;document.addEventListener('keydown',this._onKey);this.inputBound=true}
   unbindInput(){if(!this.inputBound)return;document.removeEventListener('keydown',this._onKey);this.inputBound=false}
   _isActive(){return Boolean(this.overlay?.classList.contains('active'))}
+  _seenSkipAvailable(){return Boolean(this.isSeen&&this.allowSkip&&!this.isClosing&&skipSeenEnabled())}
+  skipSeen(){if(this._seenSkipAvailable()&&this._isActive())this.close()}
   _onPointer(event){
     if(!this._isActive()||event.target.closest('.px-dialogue-choice,.sbDialogueChoice,.px-dialogue-toolbar,.px-dialogue-history'))return;
     event.preventDefault();if(this.isTyping)this.skipTyping();else if(this.canAdvance)this.advance();
@@ -118,21 +135,31 @@ export class SonicBattleDialogue{
   _onKey(event){
     if(!this._isActive())return;
     if(!this.historyPanel?.classList.contains('hidden')){if(event.code==='Escape'||ADVANCE_KEYS.has(event.code)){event.preventDefault();this.closeHistory()}return}
+    if(event.code==='Tab'&&this._seenSkipAvailable()){event.preventDefault();this.skipSeen();return}
     if(ADVANCE_KEYS.has(event.code)){event.preventDefault();if(this.isTyping)this.skipTyping();else if(this.choicesEl.style.display!=='none')this.selectChoice(this.choiceIndex);else if(this.canAdvance)this.advance();return}
     if(this.choicesEl.style.display!=='none'){if(PREVIOUS_KEYS.has(event.code)){event.preventDefault();this.navigateChoice(-1)}else if(NEXT_KEYS.has(event.code)){event.preventDefault();this.navigateChoice(1)}}
     if(event.code==='KeyH'){event.preventDefault();this.openHistory();return}
     if(event.code==='Escape'){
-      event.preventDefault();event.stopImmediatePropagation();if(!this.allowSkip||this.skipPromptOpen)return;this.skipPromptOpen=true;
+      event.preventDefault();event.stopImmediatePropagation();if(!this.allowSkip||this.skipPromptOpen)return;
+      if(this._seenSkipAvailable()){this.skipSeen();return}
+      this.skipPromptOpen=true;
       storyConfirm({title:'SKIP THIS CONVERSATION?',message:'The remaining dialogue will be skipped and the story will continue from the next gameplay section.',accept:'SKIP DIALOGUE'}).then(skip=>{this.skipPromptOpen=false;if(skip&&this._isActive())this.close()});
     }
   }
   _pollGamepad(){
     if(!this._isActive())return;const pads=navigator.getGamepads?.()||[],pad=Array.from(pads).find(Boolean),confirm=Boolean(pad?.buttons?.[0]?.pressed);
+    const skipButton=Boolean(pad?.buttons?.[3]?.pressed);
+    if(skipButton&&!this.gamepadSkipWasPressed&&this._seenSkipAvailable()){this.gamepadSkipWasPressed=true;this.skipSeen();return}
+    this.gamepadSkipWasPressed=skipButton;
     if(confirm&&!this.gamepadWasPressed){if(this.isTyping)this.skipTyping();else if(this.choicesEl.style.display!=='none')this.selectChoice(this.choiceIndex);else if(this.canAdvance)this.advance()}
     this.gamepadWasPressed=confirm;if(this._isActive())this.gamepadFrame=requestAnimationFrame(this._pollGamepad);
   }
   show(data){
-    this.build();this.bindInput();this.completed=false;this.isClosing=false;this.overlay.classList.add('active');this.currentQueue=Array.isArray(data)?data:[data];this.queueIndex=0;this.history=[];this.displayEntry(this.currentQueue[0]||{});cancelAnimationFrame(this.gamepadFrame);this.gamepadFrame=requestAnimationFrame(this._pollGamepad);return this;
+    this.build();this.bindInput();this.completed=false;this.isClosing=false;this.overlay.classList.add('active');this.currentQueue=Array.isArray(data)?data:[data];this.queueIndex=0;this.history=[];
+    const longEnough=this.currentQueue.length>=SEEN_MIN_LINES,hasChoices=this.currentQueue.some(entry=>Array.isArray(entry?.choices)&&entry.choices.length);
+    this.seenId=longEnough&&!hasChoices?conversationId(this.currentQueue):null;this.isSeen=Boolean(this.seenId&&readSeen().includes(this.seenId));
+    const skipSeenButton=this.toolbar?.querySelector('[data-dialogue-skip-seen]');if(skipSeenButton)skipSeenButton.hidden=!this._seenSkipAvailable();
+    this.displayEntry(this.currentQueue[0]||{});cancelAnimationFrame(this.gamepadFrame);this.gamepadFrame=requestAnimationFrame(this._pollGamepad);return this;
   }
   displayEntry(entry={}){
     clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);this.canAdvance=false;this.promptEl.style.display='none';this.choicesEl.style.display='none';this.choicesEl.innerHTML='';
@@ -181,7 +208,7 @@ export class SonicBattleDialogue{
   selectChoice(index){const entry=this.currentQueue[this.queueIndex]||{},choice=entry.choices?.[index];if(!choice)return;this.onChoice({entry,choice,index});this.advance()}
   advance(){if(this.isClosing)return;clearTimeout(this.advanceTimer);this.queueIndex++;if(this.queueIndex<this.currentQueue.length)this.displayEntry(this.currentQueue[this.queueIndex]);else this.close()}
   close(){
-    if(this.isClosing)return;this.isClosing=true;clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);cancelAnimationFrame(this.gamepadFrame);this.canAdvance=false;this.isTyping=false;
+    if(this.isClosing)return;if(this.seenId)markSeen(this.seenId);this.isClosing=true;clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);cancelAnimationFrame(this.gamepadFrame);this.canAdvance=false;this.isTyping=false;
     const finish=()=>{if(this.completed)return;this.completed=true;const callback=this.onComplete;this.destroy();this.isClosing=false;callback()};if(this.box){this.box.classList.add('exit');setTimeout(finish,200)}else finish();
   }
   destroy(){

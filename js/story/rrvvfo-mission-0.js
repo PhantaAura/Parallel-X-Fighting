@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {storyConfirm} from './story-ux.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a408-final-qol-20260817';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a408-final-qol-20260817';
+import {storyConfirm} from './story-ux.js?v=29a408-final-qol-20260817';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a408-final-qol-20260817';
+import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a408-final-qol-20260817';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';
@@ -150,7 +150,7 @@ class RrvvfoMission0{
 
   showOpeningDialogue(){
     this.engine.showDialogue([
-      {speaker:'THE SAGE',speakerClass:'neutral',text:'Before you start throwing attacks around, prove you can move without a path.',tail:'down'},
+      {speaker:'THE SAGE',speakerClass:'neutral',text:'Before you start throwing attacks around, prove you can move without a path. Learn from the greatest Sage.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'There is literally a path right there.',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'Then ignore it. See the glowing anchor? Swap to it. Three anchors. No walking between them.',tail:'down'},
       {speaker:'THE SAGE',speakerClass:'neutral',text:'If an object can get somewhere, you can turn that into a route. Figure out the rest.',tail:'down'}

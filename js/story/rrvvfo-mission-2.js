@@ -1,23 +1,23 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {sharedInput} from '../input-runtime.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {storyConfirm} from './story-ux.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {StoryMap} from './story-map.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {discoverWorldDelight} from './world-delight.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {chapter2BracketRoute} from './quest-overhaul.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a408-final-qol-20260817';
+import {sharedInput} from '../input-runtime.js?v=29a408-final-qol-20260817';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a408-final-qol-20260817';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a408-final-qol-20260817';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a408-final-qol-20260817';
+import {storyConfirm} from './story-ux.js?v=29a408-final-qol-20260817';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a408-final-qol-20260817';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a408-final-qol-20260817';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a408-final-qol-20260817';
+import {StoryMap} from './story-map.js?v=29a408-final-qol-20260817';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a408-final-qol-20260817';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a408-final-qol-20260817';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a408-final-qol-20260817';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a408-final-qol-20260817';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a408-final-qol-20260817';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a408-final-qol-20260817';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a408-final-qol-20260817';
+import {discoverWorldDelight} from './world-delight.js?v=29a408-final-qol-20260817';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a408-final-qol-20260817';
+import {chapter2BracketRoute} from './quest-overhaul.js?v=29a408-final-qol-20260817';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -1086,10 +1086,10 @@ class RrvvfoMission2{
 
   meetBarkAndWade(){
     this.showDialogue([
-      {speaker:'WADE',speakerClass:'neutral',text:'There you are! We’ve been looking all over—',tail:'down'},
+      {speaker:'WADE',speakerClass:'neutral',text:'THERE YOU ARE! We’ve been looking all over—',tail:'down'},
       {speaker:'BARK',speakerClass:'neutral',text:'We just got here, Wade. We didn’t even start looking yet.',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'Wade, you really are dense, huh?',tail:'down'},
-      {speaker:'WADE',speakerClass:'neutral',text:'Looks like a big ninja reunion. The three of us.',tail:'down'},
+      {speaker:'WADE',speakerClass:'neutral',text:'WOW, a ninja reunion! Just the three of us! Is there cake?',tail:'down'},
       {speaker:'RRVVFO',speakerClass:'p1',text:'But only one of us can win.',tail:'down'},
       {speaker:'BARK',speakerClass:'neutral',text:'It’s me.',tail:'down'},
       {speaker:'WADE',speakerClass:'neutral',text:'It’s me. I’m the most tactical.',tail:'down'},
@@ -1109,7 +1109,7 @@ class RrvvfoMission2{
     const lostFan=this.state.hubQuests.optional.lostFan;
     if(lostFan.started&&!lostFan.complete){
       this.showDialogue([
-        {speaker:'RRVVFO',speakerClass:'p1',text:'When did the ninjas get merch?',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'When did the Elemental Ninja get merch?',tail:'down'},
         {speaker:'WADE',speakerClass:'neutral',text:'Uh, I think Tangai started it after you beat Revvfo. He needed more funding since someone keeps spending money on his card.',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'A fan’s looking for you.',tail:'down'},
         {speaker:'WADE',speakerClass:'neutral',text:'Like the blowing ones?',tail:'down'},
@@ -1254,7 +1254,7 @@ class RrvvfoMission2{
         {speaker:'RRVVFO',speakerClass:'p1',text:'That’s weird. Maybe I should take this more seriously.',tail:'down'}
       ],
       east:[
-        {speaker:'WADE',speakerClass:'neutral',text:'Look! Different shoe marks.',tail:'down'}
+        {speaker:'WADE',speakerClass:'neutral',text:'LOOK! Different shoe marks!',tail:'down'}
       ]
     }[support.id]||[];
     this.showDialogue(lines,()=>{
@@ -1460,7 +1460,7 @@ class RrvvfoMission2{
     if(!quest.started){
       this.showDialogue([
         {speaker:'TOURNAMENT CASHIER',speakerClass:'neutral',text:'The final prize envelope stuck to the delivery cart. It’s circling the grounds.',tail:'down'},
-        {speaker:'RRVVFO',speakerClass:'p1',text:'Wow. This place really is held together with duct tape.',tail:'down'},
+        {speaker:'RRVVFO',speakerClass:'p1',text:'Wow. This place really is held together with duct tape. My landlord would love it.',tail:'down'},
         {speaker:'TOURNAMENT CASHIER',speakerClass:'neutral',text:'Please stop the cart before the announcer notices.',tail:'down'}
       ],()=>{quest.started=true;this.state.hubQuests.activeQuest='prizeCart';this.saveChapterState();this.questToast('SIDE QUEST STARTED','THE MISSING PRIZE ENVELOPE','Catch the moving delivery cart.');this.resumeHub()});
     }else this.showDialogue([{speaker:'TOURNAMENT CASHIER',speakerClass:'neutral',text:'The cart keeps circling Market Street. Interact when you catch it.',tail:'down'}]);
@@ -2045,7 +2045,7 @@ class RrvvfoMission2{
       ],()=>this.returnToHubIntermission('bark-pouki','after-quarterfinal',{x:1030,z:100}));
     }else if(fight.id==='wade'){
       this.showDialogue([
-        {speaker:'WADE',speakerClass:'neutral',text:'You won! Yay!',tail:'down'},
+        {speaker:'WADE',speakerClass:'neutral',text:'YOU WON! YAYYY!',tail:'down'},
         {speaker:'RRVVFO',speakerClass:'p1',text:'I don’t think that’s supposed to be your reaction.',tail:'down'},
         {speaker:'ANNOUNCER',speakerClass:'rival',text:'Plouke has defeated Pouki in the opposite semifinal. The final is set!',tail:'down'}
       ],()=>this.returnToHubIntermission('final','before-final',{x:1030,z:100}));

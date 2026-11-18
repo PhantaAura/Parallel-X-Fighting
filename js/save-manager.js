@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a408-final-qol-20260817';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',
@@ -21,12 +21,18 @@ export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxTrainingPresetsV1',
   'pxQolLastActivity',
   'pxQolStartSeen',
-  'pxHintsDismissed'
+  'pxHintsDismissed',
+  'pxKeyBindingsV1',
+  'pxSeenDialoguesV1'
 ]);
+
+// Local-only safety copy written by autosave. Not part of exports/imports.
+export const AUTOSAVE_KEY='pxAutosaveV1';
 
 const SETTINGS_KEYS=Object.freeze([
   'pxControllerSettingsV1','pxTouchSettingsV1','pxRrvvfoVisualsV1','pxQolSettingsV1',
-  'pxAbilityHotbarV1','pxMobilePresentationV1','pxArenaControlsV1','pxDialoguePrefsV1','pxHintsDismissed'
+  'pxAbilityHotbarV1','pxMobilePresentationV1','pxArenaControlsV1','pxDialoguePrefsV1','pxHintsDismissed',
+  'pxKeyBindingsV1'
 ]);
 const TRAINING_KEYS=Object.freeze(['pxTrainingPresetsV1']);
 function availableStorage(){try{return globalThis.localStorage}catch{return null}}
@@ -82,6 +88,7 @@ export function importSaveText(text,storage=availableStorage()){
 export function resetSaveGroup(group,storage=availableStorage()){
   const keys=group==='settings'?SETTINGS_KEYS:group==='training'?TRAINING_KEYS:SAVE_EXPORT_KEYS;
   let removed=0;
+  if(group==='all'){try{storageRemove(storage,AUTOSAVE_KEY)}catch{}}
   for(const key of keys){
     try{storageRemove(storage,key);removed++}catch{}
   }

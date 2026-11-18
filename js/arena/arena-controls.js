@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {sharedInput} from '../input-runtime.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {CONTROL_MAPS} from '../input.js?v=29a408-final-qol-20260817';
+import {sharedInput} from '../input-runtime.js?v=29a408-final-qol-20260817';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

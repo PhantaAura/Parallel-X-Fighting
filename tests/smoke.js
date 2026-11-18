@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a408-final-qol-20260817';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a408-final-qol-20260817';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {Fighter} from '../js/fighter.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {EffectSystem} from '../js/effects.js?v=29a408-final-qol-20260817';
+import {Fighter} from '../js/fighter.js?v=29a408-final-qol-20260817';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,29 +17,29 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CONNECTED_WORLD_VERSION,WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,connectedZoneNeighbors,discoverWorldLandmark,discoverWorldShortcut,freshConnectedWorldState,normalizeConnectedWorldState,recordInteriorVisit,recordWorldVisit,renderTravelJournal,setWorldDoorState,worldDoorState,worldInteriorKnown,worldMapSummary,worldShortcutKnown,worldZoneKnown} from '../js/story/connected-world.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {STORY_BUILDINGS,STORY_INTERIOR_VERSION,buildingDefinition,buildingIdsForChapter,buildingMapTitle,canEnterBuilding,interiorActorPoints,interiorMapPoints,interiorTransition,lockedDoorLine,resolveExteriorBuildingCollision} from '../js/story/story-interiors.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {FIELD_SKILL_REACTIONS,WORLD_DELIGHT_DISCOVERIES,WORLD_DELIGHT_VERSION,delightForChapter,discoverWorldDelight,loadWorldDelightState,normalizeWorldDelightState,worldDelightKnown} from '../js/story/world-delight.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {FAST_TRAVEL_NODES,REVISIT_LOOP_VERSION,REVISIT_OPPORTUNITIES,claimRevisitOpportunity,fastTravelDestination,fastTravelNodeAvailable,markFastTravelArrival,renderRevisitJournal,revisitOpportunityStatus,revisitState,syncFastTravelNodes,unlockFastTravelNode} from '../js/story/revisit-loop.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER3_REPLACEMENT_ACTIVITIES,QUEST_AUDIT,QUEST_OVERHAUL_VERSION,chapter2BracketRoute,chapter3ReplacementActivity,chapter4PotionReady,chapter4PotionRoute,chapter4SignalRoute,chapter4SignalsReady,questAuditSummary} from '../js/story/quest-overhaul.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a408-final-qol-20260817';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a408-final-qol-20260817';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a408-final-qol-20260817';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a408-final-qol-20260817';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a408-final-qol-20260817';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a408-final-qol-20260817';
+import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a408-final-qol-20260817';
+import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a408-final-qol-20260817';
+import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a408-final-qol-20260817';
+import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a408-final-qol-20260817';
+import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a408-final-qol-20260817';
+import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a408-final-qol-20260817';
+import {CONNECTED_WORLD_VERSION,WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,connectedZoneNeighbors,discoverWorldLandmark,discoverWorldShortcut,freshConnectedWorldState,normalizeConnectedWorldState,recordInteriorVisit,recordWorldVisit,renderTravelJournal,setWorldDoorState,worldDoorState,worldInteriorKnown,worldMapSummary,worldShortcutKnown,worldZoneKnown} from '../js/story/connected-world.js?v=29a408-final-qol-20260817';
+import {STORY_BUILDINGS,STORY_INTERIOR_VERSION,buildingDefinition,buildingIdsForChapter,buildingMapTitle,canEnterBuilding,interiorActorPoints,interiorMapPoints,interiorTransition,lockedDoorLine,resolveExteriorBuildingCollision} from '../js/story/story-interiors.js?v=29a408-final-qol-20260817';
+import {FIELD_SKILL_REACTIONS,WORLD_DELIGHT_DISCOVERIES,WORLD_DELIGHT_VERSION,delightForChapter,discoverWorldDelight,loadWorldDelightState,normalizeWorldDelightState,worldDelightKnown} from '../js/story/world-delight.js?v=29a408-final-qol-20260817';
+import {FAST_TRAVEL_NODES,REVISIT_LOOP_VERSION,REVISIT_OPPORTUNITIES,claimRevisitOpportunity,fastTravelDestination,fastTravelNodeAvailable,markFastTravelArrival,renderRevisitJournal,revisitOpportunityStatus,revisitState,syncFastTravelNodes,unlockFastTravelNode} from '../js/story/revisit-loop.js?v=29a408-final-qol-20260817';
+import {CHAPTER3_REPLACEMENT_ACTIVITIES,QUEST_AUDIT,QUEST_OVERHAUL_VERSION,chapter2BracketRoute,chapter3ReplacementActivity,chapter4PotionReady,chapter4PotionRoute,chapter4SignalRoute,chapter4SignalsReady,questAuditSummary} from '../js/story/quest-overhaul.js?v=29a408-final-qol-20260817';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a408-final-qol-20260817';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a408-final-qol-20260817';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a408-final-qol-20260817';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a408-final-qol-20260817';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a408-final-qol-20260817';
+import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a408-final-qol-20260817';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -48,27 +48,27 @@ import {DEFAULT_QOL_SETTINGS,QOL_SETTINGS_KEY,loadQolSettings,saveQolSettings,sa
 import {NotificationSystem} from '../js/notification-system.js';
 import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringifySave,validateSaveImport} from '../js/save-manager.js';
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
-import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a408-final-qol-20260817';
+import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a408-final-qol-20260817';
+import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a408-final-qol-20260817';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {LoadingManager} from '../js/loading-manager.js?v=29a408-final-qol-20260817';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {STAGES} from '../js/stages.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
-import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a408-final-qol-20260817';
+import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a408-final-qol-20260817';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a408-final-qol-20260817';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a408-final-qol-20260817';
+import {STAGES} from '../js/stages.js?v=29a408-final-qol-20260817';
+import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a408-final-qol-20260817';
 
-const RELEASE_CACHE_ID='29a4072r-ch1-adventure-playtestlab-20260802';
-const EXPECTED_BUILD='Prototype 2.9A.40.7.2R — Complete Chapter 1 Adventure Rebuild + Mobile Playtest Lab';
-const TOTAL_TESTS=482;
+const RELEASE_CACHE_ID='29a408-final-qol-20260817';
+const EXPECTED_BUILD='Prototype 2.9A.40.8 — Final Legacy QoL Update';
+const TOTAL_TESTS=488;
 const TEST_TIMEOUT_MS=30000;
 class SmokeTimeoutError extends Error{constructor(name){super(`Timed out after ${TEST_TIMEOUT_MS/1000} seconds: ${name}`);this.name='SmokeTimeoutError';this.code='PX_SMOKE_TIMEOUT'}}
 const FETCH_TIMEOUT_MS=12000;
@@ -610,7 +610,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the sabotage investigation, Project Hollow reveal, blue-clone escape, and blackout handoff',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a4072r-ch1-adventure-playtestlab-20260802');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a408-final-qol-20260817');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the rewritten Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['SABOTAGE_EVIDENCE_POINTS','SABOTAGE_WITNESSES','investigateMaintenanceEntry','inspectHiddenInfrastructure','inspectSageTrail','findRealSage','beginLockdownFight','startDoorSequence','showBlueCloneLesson','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`rewritten Chapter 3 omitted ${token}`);
@@ -660,7 +660,7 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a4072r-ch1-adventure-playtestlab-20260802');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a408-final-qol-20260817');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','enterLookout','startShadowArrival'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
@@ -1847,7 +1847,7 @@ await test('2.9A.36 older Chapter 4 saves beyond the caverns never move backward
 });
 
 await test('2.9A.36 active build packages playful exploration without changing save schema',async()=>{
-  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
+  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a408-final-qol-20260817'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.36 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.36 changed the save schema unexpectedly');
   assert(html.includes(RELEASE_CACHE_ID),'2.9A.36 cache identity is not synchronized');
@@ -1918,7 +1918,7 @@ await test('2.9A.37 chapter results include RPG afterglow instead of rushing the
 });
 
 await test('2.9A.37 active build packages reliability and RPG flow without changing save schema',async()=>{
-  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),fetchSource('../js/story/story-reliability.js')]);
+  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a408-final-qol-20260817'),fetchSource('../js/story/story-reliability.js')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.37 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.37 changed save schema unexpectedly');
   assert(html.includes('story-rpg-flow-29a37.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.37 active page is not synchronized');
@@ -2011,7 +2011,7 @@ await test('2.9A.38 mastery records are included in safe save export and import'
 });
 
 await test('2.9A.38 active build integrates mastery results Training rewards and Extras records',async()=>{
-  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802')]);
+  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a408-final-qol-20260817')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.38 build label is not centralized');assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.38 changed save schema unexpectedly');
   assert(html.includes('mastery-records-29a38.css')&&html.includes('MASTERY & RECORDS')&&html.includes(RELEASE_CACHE_ID),'2.9A.38 page does not expose Adventure Records');
   for(const token of ['createBattleMasterySession','recordBattleMasteryEvent','finalizeBattleMastery','data-mastery-result','recordMasteryChallenge'])assert(arena.includes(token),`Arena mastery integration omitted ${token}`);
@@ -2049,7 +2049,7 @@ await test('2.9A.39 Chapter 4 adds optional party recovery without adding a mand
 });
 
 await test('2.9A.39.1 active build preserves RPG polish with the new Chapter 4 ending',async()=>{
-  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802')]);
+  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a408-final-qol-20260817')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD&&build.SAVE_SCHEMA_VERSION===268,'2.9A.39.1 build identity or save schema is wrong');
   assert(html.includes('full-experience-29a39.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.39.1 presentation/cache is not synchronized');
   assert(charm.includes('storyExperienceBeat')&&charm.includes('pxstoryfightrank'),'Story charm does not consume the new pacing/rank events');
@@ -2138,7 +2138,7 @@ await test('2.9A.40.2 Flow Cancel and build passives give audiovisual feedback i
 });
 
 await test('2.9A.40.2 current release identity keeps save schema 268 and the new cache synchronized',async()=>{
-  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),fetchSource('../index.html')]);
+  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a408-final-qol-20260817'),fetchSource('../index.html')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.2 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.2 changed save schema unexpectedly');
   assert(index.includes('field-minimal-29a402.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.2 index is missing the minimal-UI release identity');
@@ -2296,7 +2296,7 @@ await test('2.9A.40.4 interior-map tabs obey hidden state so local building maps
 });
 
 await test('2.9A.40.4 current release synchronizes interiors connected maps and save schema 268',async()=>{
-  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),fetchSource('../index.html'),fetchSource('../css/connected-world-29a403.css')]);
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a408-final-qol-20260817'),fetchSource('../index.html'),fetchSource('../css/connected-world-29a403.css')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.4 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.4 changed save schema unexpectedly');
   assert(index.includes('connected-world-29a403.css')&&index.includes('buildings-interiors-29a404.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.4 index is missing connected-world/interior presentation cache identity');
@@ -2361,7 +2361,7 @@ await test('2.9A.40.5 secrets stay subtle: Echo overlook only marks itself when 
 });
 
 await test('2.9A.40.5 current release keeps save schema 268 and synchronizes World Delight presentation',async()=>{
-  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),fetchSource('../index.html'),fetchSource('../css/world-delight-29a405.css')]);
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a408-final-qol-20260817'),fetchSource('../index.html'),fetchSource('../css/world-delight-29a405.css')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.5 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.5 changed save schema unexpectedly');
   assert(index.includes('world-delight-29a405.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.5 index is missing World Delight release identity');
@@ -2429,7 +2429,7 @@ await test('2.9A.40.6 Echo revisit mode adds a Vibration Sense shrine reward wit
 });
 
 await test('2.9A.40.6 release identity keeps schema 268 and loads revisit-loop presentation',async()=>{
-  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),fetchSource('../index.html'),fetchSource('../css/revisit-loop-29a406.css')]);
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a408-final-qol-20260817'),fetchSource('../index.html'),fetchSource('../css/revisit-loop-29a406.css')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'40.6 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'40.6 changed save schema unexpectedly');
   assert(index.includes('revisit-loop-29a406.css')&&index.includes(RELEASE_CACHE_ID),'40.6 index omitted revisit-loop presentation/cache');
@@ -2567,11 +2567,113 @@ await test('2.9A.40.7.1 old completed and mid-facility Chapter 3 saves migrate i
 });
 
 await test('2.9A.40.7.1 current release keeps save schema 268 and centralizes the Chapter 3 sabotage rewrite',async()=>{
-  const [build,index,questSource]=await Promise.all([import('../js/build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802'),fetchSource('../index.html'),fetchSource('../js/story/quest-overhaul.js')]);
+  const [build,index,questSource]=await Promise.all([import('../js/build-info.js?v=29a408-final-qol-20260817'),fetchSource('../index.html'),fetchSource('../js/story/quest-overhaul.js')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'40.7.1 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'40.7.1 changed save schema unexpectedly');
   assert(index.includes(RELEASE_CACHE_ID),'40.7.1 index omitted release cache identity');
   for(const token of ['QUEST_AUDIT','CHAPTER3_REPLACEMENT_ACTIVITIES','chapter4PotionRoute','chapter4SignalRoute'])assert(questSource.includes(token),`quest-overhaul module omitted ${token}`);
+});
+
+
+await test('2.9A.40.8 keyboard remapping swaps, rejects reserved keys, persists and resets',async()=>{
+  const input=await import('../js/input.js?v=29a408-final-qol-20260817');
+  const before=JSON.stringify(input.CONTROL_MAPS[0]),savedBefore=localStorage.getItem(input.KEY_BINDINGS_KEY);
+  try{
+    input.resetKeyBindings();
+    assert(input.CONTROL_MAPS[0].a==='KeyJ'&&input.formatComboPrompt('keyboard')==='J, J, I, Space, J, K','default combo prompt changed');
+    let result=input.setKeyBinding('a','KeyF');assert(result.ok&&input.CONTROL_MAPS[0].a==='KeyF','binding did not apply');
+    assert(input.formatComboPrompt('keyboard')==='F, F, I, Space, F, K','combo prompt ignored the live binding');
+    result=input.setKeyBinding('h','KeyF');assert(result.ok&&result.swapped==='a'&&input.CONTROL_MAPS[0].h==='KeyF'&&input.CONTROL_MAPS[0].a==='KeyK','used key did not swap actions');
+    for(const code of ['Escape','Tab','Enter','KeyP','Digit3','ArrowLeft','Numpad1','F5'])assert(!input.setKeyBinding('j',code).ok,`${code} should be rejected`);
+    assert(!input.setKeyBinding('nope','KeyG').ok,'unknown action accepted');
+    const codes=input.REMAPPABLE_ACTIONS.map(([id])=>input.CONTROL_MAPS[0][id]);assert(new Set(codes).size===codes.length,'two actions share one key');
+    const stored=JSON.parse(localStorage.getItem(input.KEY_BINDINGS_KEY));assert(stored.h==='KeyF'&&!('l' in stored),'only changed bindings should be stored');
+    input.resetKeyBindings();assert(JSON.stringify(input.CONTROL_MAPS[0])===JSON.stringify(Object.assign({},JSON.parse(before))),'reset did not restore defaults');
+    assert(localStorage.getItem(input.KEY_BINDINGS_KEY)===null,'reset left stored overrides behind');
+  }finally{
+    input.resetKeyBindings();
+    if(savedBefore!==null){localStorage.setItem(input.KEY_BINDINGS_KEY,savedBefore)}
+  }
+});
+
+await test('2.9A.40.8 new settings sanitize safely and old settings stay valid',async()=>{
+  const settings=await import('../js/qol-settings.js?v=29a408-final-qol-20260817');
+  const old=settings.sanitizeQolSettings({gameplay:{combatMessages:'important'},accessibility:{cameraShake:'off'}});
+  assert(old.gameplay.skipSeenScenes===true&&old.gameplay.autosave===true&&old.accessibility.colorMode==='off','new settings did not default for an older save');
+  assert(old.gameplay.combatMessages==='important'&&old.accessibility.cameraShake==='off','existing settings were lost');
+  assert(settings.sanitizeQolSettings({accessibility:{colorMode:'bogus'}}).accessibility.colorMode==='off','invalid color mode was kept');
+  for(const mode of ['deuteranopia','protanopia','tritanopia'])assert(settings.sanitizeQolSettings({accessibility:{colorMode:mode}}).accessibility.colorMode===mode,`${mode} was rejected`);
+  assert(settings.sanitizeQolSettings({gameplay:{autosave:false,skipSeenScenes:false}}).gameplay.autosave===false,'autosave toggle did not persist');
+});
+
+await test('2.9A.40.8 colorblind matrices are finite and separate red from green',async()=>{
+  const {daltonizeMatrix,applyColorMode}=await import('../js/qol-final.js?v=29a408-final-qol-20260817');
+  const identity=daltonizeMatrix('off');assert(identity[0][0]===1&&identity[1][1]===1&&identity[2][2]===1&&identity[0][1]===0,'off mode is not identity');
+  const apply=(m,c)=>m.map(row=>Math.max(0,Math.min(1,row[0]*c[0]+row[1]*c[1]+row[2]*c[2])));
+  for(const mode of ['protanopia','deuteranopia','tritanopia']){
+    const m=daltonizeMatrix(mode);assert(m.every(row=>row.every(Number.isFinite)),`${mode} has a non-finite value`);
+    if(mode!=='tritanopia'){const red=apply(m,[1,0,0]),green=apply(m,[0,1,0]);assert(Math.hypot(...red.map((v,i)=>v-green[i]))>.8,`${mode} leaves red and green too close`)}
+  }
+  applyColorMode('deuteranopia');assert(document.documentElement.dataset.colorMode==='deuteranopia'&&document.getElementById('pxColor-deuteranopia'),'filter was not installed');
+  applyColorMode('off');assert(!document.documentElement.dataset.colorMode,'color mode did not clear');
+});
+
+await test('2.9A.40.8 autosave writes on progress, keeps two slots, restores and survives a damaged slot',async()=>{
+  const {Autosave,restoreAutosave,describeAutosave}=await import('../js/qol-final.js?v=29a408-final-qol-20260817');
+  const storage=memoryStorage();let clock=100000;
+  const autosave=new Autosave({storage,now:()=>clock});
+  assert(autosave.tick()===false,'wrote a backup with no progress');
+  storage.setItem('pxSave','{"chapter":1}');assert(autosave.tick()===true,'did not back up new progress');
+  assert(autosave.tick()===false,'wrote again with unchanged progress');
+  clock+=20000;storage.setItem('pxSave','{"chapter":2}');assert(autosave.tick()===true,'did not back up changed progress');
+  clock+=1000;storage.setItem('pxSave','{"chapter":3}');assert(autosave.tick()===false,'ignored the minimum gap');
+  assert(autosave.tick({force:true,quiet:true})===true,'forced write was ignored');
+  assert(JSON.parse(storage.getItem('pxAutosaveV1')).slots.length===2&&describeAutosave(storage),'backup should keep exactly two slots');
+  storage.setItem('pxSave','{"chapter":"damaged"}');
+  assert(restoreAutosave(storage).ok&&JSON.parse(storage.getItem('pxSave')).chapter===3,'restore did not bring back the newest backup');
+  const damaged=JSON.parse(storage.getItem('pxAutosaveV1'));damaged.slots[0].text='{broken';storage.setItem('pxAutosaveV1',JSON.stringify(damaged));
+  assert(restoreAutosave(storage).ok&&JSON.parse(storage.getItem('pxSave')).chapter===2,'a damaged newest slot should fall back to the older one');
+  const disabled=new Autosave({storage:memoryStorage(),isEnabled:()=>false});disabled.storage.setItem('pxSave','{"a":1}');assert(disabled.tick({force:true})===false,'wrote while autosave was off');
+  const full=memoryStorage(),originalSet=full.setItem;full.setItem=(k,v)=>{if(k==='pxAutosaveV1')throw new Error('quota');originalSet(k,v)};
+  const failing=new Autosave({storage:full,now:()=>clock});full.setItem('pxSave','{"a":1}');assert(failing.tick({force:true,quiet:true})===false,'quota error should be reported as a failed write, not thrown');
+});
+
+await test('2.9A.40.8 save export/import and resets include the new keys',async()=>{
+  const save=await import('../js/save-manager.js?v=29a408-final-qol-20260817');
+  assert(save.SAVE_EXPORT_KEYS.includes('pxKeyBindingsV1')&&save.SAVE_EXPORT_KEYS.includes('pxSeenDialoguesV1'),'new keys missing from exports');
+  assert(!save.SAVE_EXPORT_KEYS.includes(save.AUTOSAVE_KEY),'autosave backup must stay out of exports');
+  const storage=memoryStorage();storage.setItem('pxKeyBindingsV1','{"a":"KeyF"}');storage.setItem('pxSeenDialoguesV1','["abc"]');storage.setItem(save.AUTOSAVE_KEY,'{}');
+  const exported=save.createSaveExport(storage);assert(exported.data.pxKeyBindingsV1&&exported.data.pxSeenDialoguesV1&&!exported.data[save.AUTOSAVE_KEY],'export contents are wrong');
+  const target=memoryStorage();assert(save.importSaveText(JSON.stringify(exported),target).ok&&target.getItem('pxKeyBindingsV1')==='{"a":"KeyF"}','import did not restore bindings');
+  save.resetSaveGroup('settings',storage);assert(storage.getItem('pxKeyBindingsV1')===null&&storage.getItem('pxSeenDialoguesV1')!==null,'settings reset should clear bindings but keep seen scenes');
+  save.resetSaveGroup('all',storage);assert(storage.getItem(save.AUTOSAVE_KEY)===null&&storage.getItem('pxSeenDialoguesV1')===null,'full reset left data behind');
+});
+
+await test('2.9A.40.8 dialogue offers one-press skip only for scenes already seen',async()=>{
+  const {SonicBattleDialogue}=await import('../js/sonic-battle-dialogue.js?v=29a408-final-qol-20260817');
+  const seenBefore=localStorage.getItem('pxSeenDialoguesV1');localStorage.removeItem('pxSeenDialoguesV1');
+  const host=document.createElement('div');document.body.appendChild(host);
+  const lines=[{speaker:'Wade',text:'Smoke-test line one.'},{speaker:'Bark',text:'Smoke-test line two.'},{speaker:'Rrvvfo',text:'Smoke-test line three.'}];
+  try{
+    const first=new SonicBattleDialogue({container:host,typeSpeed:0});first.show(lines);
+    assert(first.isSeen===false&&first.toolbar.querySelector('[data-dialogue-skip-seen]').hidden,'unseen scene offered skipping');
+    await new Promise(resolve=>{first.onComplete=resolve;first.close()});
+    const second=new SonicBattleDialogue({container:host,typeSpeed:0});second.show(lines);
+    assert(second.isSeen===true&&!second.toolbar.querySelector('[data-dialogue-skip-seen]').hidden,'seen scene did not offer skipping');
+    await new Promise(resolve=>{second.onComplete=resolve;second.skipSeen()});
+    const short=new SonicBattleDialogue({container:host,typeSpeed:0});short.show([{speaker:'Wade',text:'One.'}]);
+    await new Promise(resolve=>{short.onComplete=resolve;short.close()});
+    const short2=new SonicBattleDialogue({container:host,typeSpeed:0});short2.show([{speaker:'Wade',text:'One.'}]);assert(short2.isSeen===false,'short barks should never be skipped');
+    await new Promise(resolve=>{short2.onComplete=resolve;short2.close()});
+    const choice=[...lines,{speaker:'Sage',text:'Pick one.',choices:[{text:'A'},{text:'B'}]}];
+    const c1=new SonicBattleDialogue({container:host,typeSpeed:0});c1.show(choice);await new Promise(resolve=>{c1.onComplete=resolve;c1.close()});
+    const c2=new SonicBattleDialogue({container:host,typeSpeed:0});c2.show(choice);assert(c2.isSeen===false,'scenes with choices must never be skippable');
+    await new Promise(resolve=>{c2.onComplete=resolve;c2.close()});
+    const locked=new SonicBattleDialogue({container:host,typeSpeed:0,allowSkip:false});locked.show(lines);assert(!locked._seenSkipAvailable(),'unskippable cutscenes must stay unskippable');
+    await new Promise(resolve=>{locked.onComplete=resolve;locked.close()});
+  }finally{
+    host.remove();if(seenBefore===null)localStorage.removeItem('pxSeenDialoguesV1');else localStorage.setItem('pxSeenDialoguesV1',seenBefore);
+  }
 });
 
 const finalOrdered=registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean);

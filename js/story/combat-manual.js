@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a4072r-ch1-adventure-playtestlab-20260802';
+import {BUILD_VERSION} from '../build-info.js?v=29a408-final-qol-20260817';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

@@ -68,7 +68,7 @@ import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stage
 
 const RELEASE_CACHE_ID='29a408-final-qol-20260817';
 const EXPECTED_BUILD='Prototype 2.9A.40.8 — Final Legacy QoL Update';
-const TOTAL_TESTS=488;
+const TOTAL_TESTS=489;
 const TEST_TIMEOUT_MS=30000;
 class SmokeTimeoutError extends Error{constructor(name){super(`Timed out after ${TEST_TIMEOUT_MS/1000} seconds: ${name}`);this.name='SmokeTimeoutError';this.code='PX_SMOKE_TIMEOUT'}}
 const FETCH_TIMEOUT_MS=12000;
@@ -2674,6 +2674,20 @@ await test('2.9A.40.8 dialogue offers one-press skip only for scenes already see
   }finally{
     host.remove();if(seenBefore===null)localStorage.removeItem('pxSeenDialoguesV1');else localStorage.setItem('pxSeenDialoguesV1',seenBefore);
   }
+});
+
+await test('2.9A.40.8 playtest-lab UI observer settles instead of looping forever on the settings panel',async()=>{
+  await import('../js/story/mobile-playtest-lab.js?v=29a408-final-qol-20260817');
+  const panel=document.createElement('div');panel.id='settingsPanel';panel.innerHTML='<div class="qolCard"><div id="settingsContent"></div><div class="settingsActions"></div></div>';
+  let records=0;const observer=new MutationObserver(list=>{records+=list.length});observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class','hidden']});
+  const existing=document.getElementById('settingsPanel');existing?.removeAttribute('id');
+  document.body.appendChild(panel);
+  await new Promise(resolve=>setTimeout(resolve,400));
+  observer.disconnect();panel.remove();existing?.setAttribute('id','settingsPanel');
+  // A healthy install adds the build-tap row once (a handful of records). The old code rewrote the label on every
+  // callback, which re-triggered the observer endlessly and froze the page.
+  assert(records<40,`settings observer kept mutating the DOM (${records} records in 400ms)`);
+  assert(panel.querySelectorAll('.pxDevBuildTap').length===1,'build-tap row should be installed exactly once');
 });
 
 const finalOrdered=registry.map(entry=>results.find(result=>result.name===entry.name)).filter(Boolean);

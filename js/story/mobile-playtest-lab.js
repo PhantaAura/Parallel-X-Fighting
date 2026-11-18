@@ -93,7 +93,11 @@ function installSettingsEntry(){
   const card=panel.querySelector('.settingsQol')||panel.querySelector('.qolCard')||panel;
   let tap=card.querySelector('.pxDevBuildTap');
   if(!tap){tap=document.createElement('div');tap.className='pxDevBuildTap';tap.setAttribute('role','button');tap.setAttribute('tabindex','0');tap.innerHTML=`<span>BUILD VERSION • tap 7× for developer tools</span><strong>${escapeHtml(BUILD_VERSION)}</strong>`;tap.addEventListener('click',handleBuildTap);tap.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();handleBuildTap()}});const content=panel.querySelector('#settingsContent');content?.insertAdjacentElement('afterend',tap)}
-  tap.classList.toggle('unlocked',state.unlocked);tap.querySelector('span').textContent=state.unlocked?'DEVELOPER MODE • SESSION UNLOCKED':'BUILD VERSION • tap 7× for developer tools';
+  // Only touch the DOM when the unlock state actually changes. This function runs from a
+  // MutationObserver on document.body: rewriting the label on every call is itself a DOM
+  // mutation, which re-triggered the observer forever and froze the game at startup.
+  const unlockKey=state.unlocked?'1':'0';
+  if(tap.dataset.pxUnlock!==unlockKey){tap.dataset.pxUnlock=unlockKey;tap.classList.toggle('unlocked',state.unlocked);tap.querySelector('span').textContent=state.unlocked?'DEVELOPER MODE • SESSION UNLOCKED':'BUILD VERSION • tap 7× for developer tools'}
   const actions=panel.querySelector('.settingsActions');if(actions&&state.unlocked&&!actions.querySelector('#pxDeveloperLabButton')){const button=document.createElement('button');button.id='pxDeveloperLabButton';button.type='button';button.textContent='DEVELOPER MENU • PLAYTEST LAB';button.addEventListener('click',openLab);actions.appendChild(button)}
 }
 

@@ -1,4 +1,4 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a416-arcade-ink-ui-20261122';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a417-adventure-presentation-20261122';
 import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a412-echo-ridge-20261122';
 import {storyExperienceProfile} from './story-experience.js?v=29a412-echo-ridge-20261122';
 import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a412-echo-ridge-20261122';

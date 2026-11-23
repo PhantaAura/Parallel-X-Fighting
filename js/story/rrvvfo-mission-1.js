@@ -21,9 +21,9 @@ function buildUI(){
   root.id=UI_ID;
   root.innerHTML=`
     <div class="storyTutorialTag" data-tutorial-tag>
-      <small>RRVVFO ROUTE • CHAPTER 1 • COMBAT MANUAL</small>
-      <strong data-tutorial-objective>WAIT FOR THE SAGE</strong>
-      <span data-tutorial-detail>The refresher begins after the briefing.</span>
+      <small>CHAPTER 1 • TRAIN WITH THE SAGE</small>
+      <strong data-tutorial-objective>LEARN BY PLAYING</strong>
+      <span data-tutorial-detail>The Sage introduces one skill at a time. Try it in the arena; the lesson moves on when you’re ready.</span>
     </div>
     <aside class="storyTutorialCoach" data-tutorial-coach hidden aria-live="polite">
       <header><small>STEP <b data-tutorial-step>1</b> OF ${TOTAL_STEPS}</small><span data-tutorial-state>DO THIS NOW</span></header>
@@ -36,9 +36,9 @@ function buildUI(){
     </aside>
     <div class="storyManualOverlay" data-combat-manual hidden>
       <article class="storyManualCard">
-        <header><div><small>THE SAGE'S COMBAT MANUAL</small><h2>BACK IN FIGHTING SHAPE</h2></div><strong>TOURNAMENT PREP</strong></header>
+      <header><div><small>CHAPTER 1 • THE SAGE’S DOJO</small><h2>LET’S GET YOU READY</h2><p>Learn the basics in short live drills. You can resume later or jump ahead to techniques.</p></div><strong>TRAINING PLAN</strong></header>
         <div class="manualGrid" data-manual-grid></div>
-        <div class="storyManualActions"><button type="button" class="primary" data-begin-tutorial>BEGIN GUIDED REFRESHER</button><button type="button" data-resume-tutorial hidden>RESUME CHECKPOINT</button><button type="button" data-quick-tutorial>QUICK REFRESHER</button><button type="button" data-exit-manual>RETURN TO RRVVFO ROUTE</button></div>
+        <div class="storyManualActions"><button type="button" class="primary" data-begin-tutorial>START FROM THE BEGINNING</button><button type="button" data-resume-tutorial hidden>RESUME LESSON</button><button type="button" data-quick-tutorial>SKIP TO ABILITIES + SPAR</button><button type="button" data-exit-manual>EXIT TO STORY MENU</button></div>
       </article>
     </div>
     <div class="storyCompleteOverlay" data-mission-complete hidden>
@@ -300,24 +300,20 @@ class RrvvfoMission1{
   renderManual(){
     const a=this.controls();
     const prompt=(action,keyboard)=>this.engine?.prompt(action,keyboard)||keyboard;
-    const ability=slot=>prompt(`ability${slot}`,`SLOT ${slot}`);
     this.root.querySelector('[data-manual-grid]').innerHTML=`
-      <section><h3>MOVEMENT</h3><dl><div><dt>Move</dt><dd>${prompt('move','W A S D')}</dd></div><div><dt>Jump</dt><dd>${prompt('jump',controlLabel(a.jump))}</dd></div><div><dt>Dash</dt><dd>${prompt('dash',`${controlLabel(a.dash)} / DOUBLE-TAP`)}</dd></div></dl></section>
-      <section><h3>BASIC COMBAT</h3><dl><div><dt>Light</dt><dd>${prompt('light',`${controlLabel(a.light)} / MOUSE 1`)}</dd></div><div><dt>Heavy</dt><dd>${prompt('heavy',controlLabel(a.heavy))}</dd></div><div><dt>Launcher</dt><dd>${prompt('launcher',controlLabel(a.launcher))}</dd></div><div><dt>Timed Guard</dt><dd>${prompt('block',`${controlLabel(a.block)} / MOUSE 2`)}</dd></div><div><dt>Grab</dt><dd>${prompt('grab',controlLabel(a.grab))}</dd></div></dl></section>
-      <section><h3>KINETIC COMBAT</h3><dl><div><dt>Pursuit route</dt><dd>LAUNCHER → ${prompt('dash',controlLabel(a.dash))} → LIGHT → HEAVY</dd></div><div><dt>Attack ready</dt><dd>BUFFER LIGHT OR HEAVY WHEN THE PURSUIT PROMPT PULSES</dd></div><div><dt>Pursuit Tech</dt><dd>SPEND 15 ENERGY AND DASH WHILE BEING CHASED</dd></div></dl></section>
-      <section><h3>RESOURCE CONTROL</h3><dl><div><dt>Charge</dt><dd>${prompt('charge',controlLabel(a.charge))} • STAND STILL</dd></div><div><dt>Attack gain</dt><dd>CLEAN HITS RESTORE ENERGY</dd></div><div><dt>Guard recovery</dt><dd>FASTER WHILE STANDING STILL</dd></div></dl></section>
-      <section><h3>HOTBAR</h3><dl><div><dt>${ability(1)}</dt><dd>FIRE BLAST</dd></div><div><dt>${ability(2)}</dt><dd>??? • TECHNIQUE NOT INVENTED</dd></div><div><dt>${ability(3)}</dt><dd>OBJECT SWAP</dd></div><div><dt>${ability(4)}</dt><dd>LENS • 60 ENERGY / 25 HP EARLY</dd></div><div><dt>${ability(5)}</dt><dd>SOLAR WEAVE • NOT USED HERE</dd></div></dl></section>
-      <section><h3>HOW THE REFRESHER WORKS</h3><p>The large instruction card shows one task at a time. An action checks off only after the game confirms that it actually happened—not merely when a button is pressed.</p></section>
-      <section><h3>SAGE'S NOTE</h3><p>Lens predicts the most probable attack. Successful reads build mastery. At full mastery it can auto-dodge only a few times—not forever.</p></section>`;
+      <section><h3>THE CONTROLS</h3><dl><div><dt>Move</dt><dd>${prompt('move','W A S D')}</dd></div><div><dt>Jump / dash</dt><dd>${prompt('jump',controlLabel(a.jump))} / ${prompt('dash',controlLabel(a.dash))}</dd></div><div><dt>Attack / guard</dt><dd>${prompt('light',controlLabel(a.light))} / ${prompt('block',controlLabel(a.block))}</dd></div></dl></section>
+      <section><h3>YOUR TRAINING PLAN</h3><p>Get moving, try a few attacks, learn to guard, then use energy and the Lens of Truth. Finish with a short spar against the Sage.</p></section>
+      <section><h3>HOW TO FOLLOW ALONG</h3><p>One clear prompt appears at a time. The checklist records actions the game sees; no need to press everything at once. If you leave, your lesson checkpoint is saved.</p></section>
+      <section><h3>READY WHEN YOU ARE</h3><p>The Sage is here to help. Explore each move at your pace, and use the quick option if you already know the basics.</p></section>`;
   }
 
   showManual(){
     grantCombatManual({pages:['movement','basic-combat','kinetic-combat','resource-control','advanced-defense','hotbar','lens-secrets']});
     this.manual.hidden=false;
-    this.setObjective('READ THE COMBAT MANUAL','Choose Guided, Resume, or Quick Refresher.');
+    this.setObjective('PICK UP THE BASICS','Choose a guided lesson, resume where you stopped, or skip ahead.');
     const resume=this.root.querySelector('[data-resume-tutorial]'),checkpoint=this.savedTutorialCheckpoint();
     resume.hidden=checkpoint==='movement';
-    if(!resume.hidden)resume.textContent=`RESUME • ${checkpoint.replace(/([A-Z])/g,' $1').toUpperCase()}`;
+    if(!resume.hidden)resume.textContent=`RESUME LESSON • ${checkpoint.replace(/([A-Z])/g,' $1').toUpperCase()}`;
     (resume.hidden?this.root.querySelector('[data-begin-tutorial]'):resume).focus();
   }
 

@@ -1,0 +1,39 @@
+/* Clearer first-play instructions and a storybook field-map finish. */
+#rrvvfoMission1UI .storyManualOverlay{background:rgba(11,25,28,.76);backdrop-filter:blur(4px)}
+#rrvvfoMission1UI .storyManualCard{width:min(980px,96vw);padding:clamp(18px,3vw,32px);border:3px solid #30362c;border-radius:18px;background:#f8f1df;color:#26312a;box-shadow:0 20px 70px #071015aa;clip-path:none}
+#rrvvfoMission1UI .storyManualCard header{align-items:center;padding-bottom:18px;border-bottom:2px solid #c9b98f}
+#rrvvfoMission1UI .storyManualCard header small{color:#9d4d27;font-size:11px;letter-spacing:.15em}
+#rrvvfoMission1UI .storyManualCard h2{margin:5px 0;font-size:clamp(28px,5vw,48px);font-style:normal;letter-spacing:-.035em}
+#rrvvfoMission1UI .storyManualCard header p{max-width:600px;margin:8px 0 0;color:#586252;font-size:14px;line-height:1.5}
+#rrvvfoMission1UI .storyManualCard header>strong{padding:10px 13px;border:1px solid #bda875;border-radius:999px;background:#eee2c3;color:#705a2e;font-size:10px;letter-spacing:.12em;white-space:nowrap}
+#rrvvfoMission1UI .storyManualCard .manualGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0}
+#rrvvfoMission1UI .storyManualCard section{padding:12px 14px;border:1px solid #d3c6a3;border-radius:10px;background:#fffaf0}
+#rrvvfoMission1UI .storyManualCard h3{margin-bottom:8px;color:#a14c28;font-size:12px;letter-spacing:.08em}
+#rrvvfoMission1UI .storyManualCard dl div{border-bottom:1px solid #e4dac1;padding-bottom:4px}
+#rrvvfoMission1UI .storyManualCard dt{font-size:12px;color:#57604f}
+#rrvvfoMission1UI .storyManualCard dd{font-size:12px;color:#27342c}
+#rrvvfoMission1UI .storyManualActions{gap:9px}
+#rrvvfoMission1UI .storyManualActions button{border:1px solid #606857;border-radius:8px;background:#fffaf0;color:#29352d;padding:12px 15px;box-shadow:0 3px 0 #c9bea3;font-size:12px;font-weight:800}
+#rrvvfoMission1UI .storyManualActions button.primary{border-color:#8b3b24;background:#b95732;color:#fff}
+#rrvvfoMission1UI .storyManualActions button:hover{transform:translateY(-1px);background:#f1dfae}
+#rrvvfoMission1UI .storyManualActions button.primary:hover{background:#cc6840}
+#rrvvfoMission1UI .storyTutorialTag{border:1px solid #665638!important;border-left:5px solid #d79232!important;border-radius:10px!important;background:#fff8e8!important;color:#25352c!important;box-shadow:0 6px 20px #16261c55!important;clip-path:none!important}
+#rrvvfoMission1UI .storyTutorialTag small{color:#a5532b!important;letter-spacing:.09em!important}
+#rrvvfoMission1UI .storyTutorialCoach{border:1px solid #514c3d!important;border-radius:14px!important;background:#fff9eb!important;color:#27342c!important;box-shadow:0 12px 32px #12201f55!important}
+#rrvvfoMission1UI .storyTutorialCoach header{border-bottom:1px solid #d5c9a9!important}
+#rrvvfoMission1UI .storyTutorialCoach header span{border:1px solid #bda875!important;border-radius:999px!important;background:#f0dfb1!important;color:#56431f!important}
+#rrvvfoMission1UI .storyTutorialCoach h2{font-style:normal!important;letter-spacing:-.03em}
+#rrvvfoMission1UI .storyTutorialCoach .storyTutorialProgress{border-radius:99px!important;background:#ded6c2!important}
+#rrvvfoMission1UI .storyTutorialCoach .storyTutorialProgress i{border-radius:99px!important;background:#5d956b!important}
+#rrvvfoMission1UI .storyTutorialCoach .storyTutorialChecklist span{border:1px solid #d9cfb7!important;border-radius:6px!important;background:#fffdf7!important}
+#lostYearStoryScreen .routeCard.isLocked{filter:saturate(.58);opacity:.68}
+#lostYearStoryScreen .routeCard.isLocked .routePortrait{filter:grayscale(.45)}
+#lostYearStoryScreen .routeCard.isLocked .routeStartHint{color:#695a3a}
+.storyMiniMap canvas,.connectedMapCard canvas{background:#efe6c9!important}
+.storyMiniMap{border-color:#354438!important;border-radius:9px!important;background:#f5eedb!important;color:#303d31!important;box-shadow:0 5px 18px #15261f55!important}
+.storyMiniMap canvas{border:1px solid #7e8065!important;border-radius:5px}
+.storyExplorationMapButton{border:1px solid #59654e!important;border-radius:8px!important;background:#f7efd9!important;color:#28352c!important;box-shadow:0 3px 0 #b8a980!important}
+.storyMapOverlay{background:rgba(14,24,25,.82)!important;backdrop-filter:blur(5px)}
+.connectedMapCard{border:2px solid #59634d!important;border-radius:14px!important;background:#f8f1df!important;box-shadow:0 20px 65px #061018aa!important}
+.connectedMapCard canvas{border:1px solid #8b8669!important;border-radius:8px;box-shadow:inset 0 0 25px #fff8df55}
+@media(max-width:760px){#rrvvfoMission1UI .storyManualCard .manualGrid{grid-template-columns:1fr}#rrvvfoMission1UI .storyManualCard header{align-items:flex-start}#rrvvfoMission1UI .storyManualCard header>strong{font-size:8px;white-space:normal}}

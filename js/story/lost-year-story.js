@@ -13,7 +13,7 @@ import {
   saveLostYearProgress
 } from './lost-year-data.js?v=29a412-echo-ridge-20261122';
 import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a412-echo-ridge-20261122';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a412-echo-ridge-20261122';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a417-adventure-presentation-20261122';
 import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a412-echo-ridge-20261122';
 import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a412-echo-ridge-20261122';
 import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a412-echo-ridge-20261122';
@@ -112,20 +112,22 @@ class LostYearStoryScreen{
 
   showRoutes({focus=false}={}){
     this.progress=loadLostYearProgress();this.routeView.hidden=false;this.routePanel.hidden=false;this.routeHome.hidden=true;
+    const rrvvfoComplete=completedRrvvfoChapterCount(this.progress)>=RRVVFO_PLANNED_CHAPTER_COUNT;
     const next=rrvvfoNextMission(this.progress),all=[{id:'rrvvfo',lead:'RRVVFO',title:'THE LOST YEAR',color:'#e94b3c',description:'Follow Rrvvfo from Tangai’s Dojo into Echo Region and the Organization of the Red conspiracy.',chapters:8},...PARALLEL_ROUTES.map(r=>({id:r.id,lead:r.lead,title:r.title,color:r.color,description:routeDescription(r.id),chapters:r.chapters.length}))];
-    const cards=all.map(r=>{const done=r.id==='rrvvfo'?(!next?8:completedRrvvfoChapterCount(this.progress)):(this.progress.parallelRouteChapters?.[r.id]||[]).length;return `<button type="button" class="routeCard" style="--route-color:${r.color}" data-route-id="${r.id}"><span class="routePortrait" aria-hidden="true"><b>${r.lead[0]}</b></span><span class="routeCopy"><span class="status">${done<r.chapters?'CONTINUE STORY':'ROUTE COMPLETE'} • ${done}/${r.chapters} CHAPTERS</span><h2>${r.lead}</h2><h3>${r.title}</h3><p>${r.description}</p></span><span class="routeStartHint">${storyPromptLabel('confirm')} • OPEN ROUTE</span></button>`}).join('');
+    const cards=all.map(r=>{const done=r.id==='rrvvfo'?(!next?8:completedRrvvfoChapterCount(this.progress)):(this.progress.parallelRouteChapters?.[r.id]||[]).length,locked=r.id!=='rrvvfo'&&!rrvvfoComplete;return `<button type="button" class="routeCard ${locked?'isLocked':''}" style="--route-color:${r.color}" data-route-id="${r.id}" ${locked?'disabled aria-disabled="true"':''}><span class="routePortrait" aria-hidden="true"><b>${locked?'•':r.lead[0]}</b></span><span class="routeCopy"><span class="status">${locked?'LOCKED • CLEAR RRVVFO':done<r.chapters?'CONTINUE STORY':'ROUTE COMPLETE'} • ${locked?'0':done}/${r.chapters} CHAPTERS</span><h2>${r.lead}</h2><h3>${r.title}</h3><p>${locked?'Finish all eight chapters of Rrvvfo’s route to unlock this story.':r.description}</p></span><span class="routeStartHint">${locked?'UNLOCKS AFTER RRVVFO':`${storyPromptLabel('confirm')} • OPEN ROUTE`}</span></button>`}).join('');
     const card=this.root.querySelector('[data-route-grid]');card.classList.add('routeChooser');
-    card.innerHTML=`<header class="storyRouteCarouselHeading"><small>STORY MODE</small><h2>CHOOSE YOUR ROUTE</h2><p>Five perspectives. Pick any route to begin; each keeps its own chapter progress.</p></header><div class="storyRouteCarouselStage routeChooserGrid">${cards}</div><div class="storyRoutePosition"><span class="selected"></span><strong>5 ROUTES</strong><small>ALL ROUTES AVAILABLE</small></div>`;
-    card.querySelectorAll('[data-route-id]').forEach(button=>button.addEventListener('click',()=>this.openRoute(button.dataset.routeId)));
+    card.innerHTML=`<header class="storyRouteCarouselHeading"><small>STORY MODE</small><h2>CHOOSE YOUR ROUTE</h2><p>${rrvvfoComplete?'Five perspectives. Each route keeps its own chapter progress.':'Start with Rrvvfo. Clear all eight chapters to open the other character stories.'}</p></header><div class="storyRouteCarouselStage routeChooserGrid">${cards}</div><div class="storyRoutePosition"><span class="selected"></span><strong>${rrvvfoComplete?'5 ROUTES':'1 ROUTE OPEN'}</strong><small>${rrvvfoComplete?'ALL ROUTES AVAILABLE':'OTHER ROUTES LOCKED'}</small></div>`;
+    card.querySelectorAll('[data-route-id]').forEach(button=>button.addEventListener('click',()=>{if(button.dataset.routeId==='rrvvfo'||rrvvfoComplete)this.openRoute(button.dataset.routeId)}));
     if(focus)card.querySelector(`[data-route-id="${this.progress.selectedRoute||'rrvvfo'}"]`)?.focus()||card.querySelector('[data-route-id]')?.focus();
-    const preview=all.find(r=>r.id===(this.progress.selectedRoute||'rrvvfo'))||all[0];this.routePanel.style.setProperty('--route-color',preview.color);
-    this.routePanel.innerHTML=`<div class="routeDetails"><small>${preview.lead} STORY • ${preview.chapters} CHAPTERS</small><h2>${preview.title}</h2><p>${preview.description}</p>${storyStatsMarkup(this.progress,{compact:true})}${storyAttackStripMarkup({compact:true})}<div class="routeActions"><button type="button" class="primary" data-open-route="${preview.id}">OPEN ${preview.lead} ROUTE</button></div></div>`;
-    this.routePanel.querySelector('[data-open-route]').addEventListener('click',event=>this.openRoute(event.currentTarget.dataset.openRoute));
+    const preview=all.find(r=>r.id===(this.progress.selectedRoute||'rrvvfo'))||all[0],previewLocked=preview.id!=='rrvvfo'&&!rrvvfoComplete;this.routePanel.style.setProperty('--route-color',preview.color);
+    this.routePanel.innerHTML=`<div class="routeDetails"><small>${previewLocked?'CHARACTER STORY • LOCKED':`${preview.lead} STORY • ${preview.chapters} CHAPTERS`}</small><h2>${preview.title}</h2><p>${previewLocked?'Complete all eight chapters of Rrvvfo’s route to unlock the other character routes.':preview.description}</p>${storyStatsMarkup(this.progress,{compact:true})}${storyAttackStripMarkup({compact:true})}<div class="routeActions"><button type="button" class="primary" data-open-route="${preview.id}" ${previewLocked?'disabled':''}>${previewLocked?'LOCKED • CLEAR RRVVFO':`OPEN ${preview.lead} ROUTE`}</button></div></div>`;
+    this.routePanel.querySelector('[data-open-route]').addEventListener('click',event=>{if(!previewLocked)this.openRoute(event.currentTarget.dataset.openRoute)});
   }
 
-  openRoute(routeId='rrvvfo'){if(routeId==='rrvvfo')this.showRouteHome({focus:true});else this.showParallelRouteHome(routeId,{focus:true})}
+  openRoute(routeId='rrvvfo'){if(routeId==='rrvvfo')this.showRouteHome({focus:true});else if(completedRrvvfoChapterCount(loadLostYearProgress())>=RRVVFO_PLANNED_CHAPTER_COUNT)this.showParallelRouteHome(routeId,{focus:true});else this.showRoutes({focus:true})}
 
   showParallelRouteHome(routeId,{focus=false}={}){
+    if(completedRrvvfoChapterCount(loadLostYearProgress())<RRVVFO_PLANNED_CHAPTER_COUNT)return this.showRoutes({focus:true});
     const route=PARALLEL_ROUTES.find(item=>item.id===routeId);if(!route)return this.showRoutes({focus:true});
     this.progress=loadLostYearProgress();this.routeView.hidden=true;this.routePanel.hidden=true;this.routeHome.hidden=false;document.dispatchEvent(new CustomEvent('pxstorymenuopen'));
     const done=this.progress.parallelRouteChapters?.[routeId]||[],found=route.chapters.findIndex((_,index)=>!done.includes(index+1)),next=found<0?0:found+1;

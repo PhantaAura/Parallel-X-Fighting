@@ -1,5 +1,12 @@
 # Fighter sprite atlas notes
 
+## Adventure presentation pass (2.9A.45)
+
+- Reframed Chapter 1 as a guided dojo lesson with a short training plan, control summary, checkpoint resume, and a clearer skip-ahead action.
+- Locked Wade, Bark, Virek, and Oddballs story routes until all eight Rrvvfo chapters are complete, with a direct-entry guard and an unlock explanation in the route menu.
+- Repainted local, regional, and world maps with layered hills, roads, rivers, landmarks, and warmer hand-drawn colors while preserving map discovery and objective markers.
+- Updated the build/cache version to 2.9A.45.
+
 ## Stock reference
 
 - Wade and Bark sheets are transparent RGBA WebP atlases at 1728 × 1920. They use 192 × 192 frames in a 9-column grid.

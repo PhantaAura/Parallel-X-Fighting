@@ -1,0 +1,1712 @@
+{
+  "version": 2,
+  "fighter": "jimmy",
+  "image": "./jimmy-atlas.webp",
+  "atlas": {
+    "width": 1152,
+    "height": 1152,
+    "frameCanvas": [
+      192,
+      192
+    ],
+    "columns": 6
+  },
+  "defaults": {
+    "appearance": "down",
+    "groundPivot": [
+      96,
+      178
+    ],
+    "scale": 0.74,
+    "pixelSmoothing": true,
+    "depthScale": 0.08,
+    "maxAfterimages": 2
+  },
+  "frames": {
+    "jimmy_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        66,
+        17,
+        91,
+        175
+      ],
+      "source": [
+        0,
+        0,
+        192,
+        192
+      ]
+    },
+    "jimmy_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        64,
+        15,
+        89,
+        177
+      ],
+      "source": [
+        192,
+        0,
+        192,
+        192
+      ]
+    },
+    "jimmy_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        62,
+        21,
+        93,
+        171
+      ],
+      "source": [
+        384,
+        0,
+        192,
+        192
+      ]
+    },
+    "jimmy_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        56,
+        25,
+        100,
+        167
+      ],
+      "source": [
+        576,
+        0,
+        192,
+        192
+      ]
+    },
+    "jimmy_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        23,
+        122,
+        169
+      ],
+      "source": [
+        768,
+        0,
+        192,
+        192
+      ]
+    },
+    "jimmy_06": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        31,
+        26,
+        136,
+        166
+      ],
+      "source": [
+        960,
+        0,
+        192,
+        192
+      ]
+    },
+    "jimmy_07": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        0,
+        136,
+        192
+      ],
+      "source": [
+        0,
+        192,
+        192,
+        192
+      ]
+    },
+    "jimmy_08": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        0,
+        114,
+        192
+      ],
+      "source": [
+        192,
+        192,
+        192,
+        192
+      ]
+    },
+    "jimmy_09": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        32,
+        0,
+        135,
+        192
+      ],
+      "source": [
+        384,
+        192,
+        192,
+        192
+      ]
+    },
+    "jimmy_10": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        0,
+        101,
+        192
+      ],
+      "source": [
+        576,
+        192,
+        192,
+        192
+      ]
+    },
+    "jimmy_11": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        38,
+        0,
+        132,
+        192
+      ],
+      "source": [
+        768,
+        192,
+        192,
+        192
+      ]
+    },
+    "jimmy_12": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        22,
+        0,
+        152,
+        192
+      ],
+      "source": [
+        960,
+        192,
+        192,
+        192
+      ]
+    },
+    "jimmy_13": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        24,
+        38,
+        140,
+        150
+      ],
+      "source": [
+        0,
+        384,
+        192,
+        192
+      ]
+    },
+    "jimmy_14": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        6,
+        35,
+        157,
+        156
+      ],
+      "source": [
+        192,
+        384,
+        192,
+        192
+      ]
+    },
+    "jimmy_15": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        0,
+        29,
+        158,
+        161
+      ],
+      "source": [
+        384,
+        384,
+        192,
+        192
+      ]
+    },
+    "jimmy_16": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        2,
+        37,
+        154,
+        152
+      ],
+      "source": [
+        576,
+        384,
+        192,
+        192
+      ]
+    },
+    "jimmy_17": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        47,
+        24,
+        109,
+        166
+      ],
+      "source": [
+        768,
+        384,
+        192,
+        192
+      ]
+    },
+    "jimmy_18": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        3,
+        38,
+        157,
+        153
+      ],
+      "source": [
+        960,
+        384,
+        192,
+        192
+      ]
+    },
+    "jimmy_19": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        27,
+        26,
+        133,
+        155
+      ],
+      "source": [
+        0,
+        576,
+        192,
+        192
+      ]
+    },
+    "jimmy_20": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        26,
+        28,
+        132,
+        153
+      ],
+      "source": [
+        192,
+        576,
+        192,
+        192
+      ]
+    },
+    "jimmy_21": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        20,
+        56,
+        123,
+        126
+      ],
+      "source": [
+        384,
+        576,
+        192,
+        192
+      ]
+    },
+    "jimmy_22": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        7,
+        24,
+        149,
+        157
+      ],
+      "source": [
+        576,
+        576,
+        192,
+        192
+      ]
+    },
+    "jimmy_23": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        9,
+        33,
+        183,
+        148
+      ],
+      "source": [
+        768,
+        576,
+        192,
+        192
+      ]
+    },
+    "jimmy_24": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        0,
+        55,
+        164,
+        126
+      ],
+      "source": [
+        960,
+        576,
+        192,
+        192
+      ]
+    },
+    "jimmy_25": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        26,
+        11,
+        138,
+        164
+      ],
+      "source": [
+        0,
+        768,
+        192,
+        192
+      ]
+    },
+    "jimmy_26": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        28,
+        13,
+        129,
+        162
+      ],
+      "source": [
+        192,
+        768,
+        192,
+        192
+      ]
+    },
+    "jimmy_27": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        27,
+        24,
+        140,
+        151
+      ],
+      "source": [
+        384,
+        768,
+        192,
+        192
+      ]
+    },
+    "jimmy_28": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        11,
+        20,
+        161,
+        156
+      ],
+      "source": [
+        576,
+        768,
+        192,
+        192
+      ]
+    },
+    "jimmy_29": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        27,
+        50,
+        114,
+        126
+      ],
+      "source": [
+        768,
+        768,
+        192,
+        192
+      ]
+    },
+    "jimmy_30": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        10,
+        15,
+        162,
+        161
+      ],
+      "source": [
+        960,
+        768,
+        192,
+        192
+      ]
+    },
+    "jimmy_31": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        37,
+        13,
+        144,
+        165
+      ],
+      "source": [
+        0,
+        960,
+        192,
+        192
+      ]
+    },
+    "jimmy_32": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        39,
+        13,
+        120,
+        165
+      ],
+      "source": [
+        192,
+        960,
+        192,
+        192
+      ]
+    },
+    "jimmy_33": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        14,
+        33,
+        130,
+        146
+      ],
+      "source": [
+        384,
+        960,
+        192,
+        192
+      ]
+    },
+    "jimmy_34": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        11,
+        47,
+        140,
+        133
+      ],
+      "source": [
+        576,
+        960,
+        192,
+        192
+      ]
+    },
+    "jimmy_35": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        19,
+        33,
+        119,
+        146
+      ],
+      "source": [
+        768,
+        960,
+        192,
+        192
+      ]
+    },
+    "jimmy_36": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        118,
+        96
+      ],
+      "handAnchor": [
+        128,
+        91
+      ],
+      "projectileOrigin": [
+        137,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        13,
+        9,
+        155,
+        169
+      ],
+      "source": [
+        960,
+        960,
+        192,
+        192
+      ]
+    }
+  },
+  "animations": {
+    "idle": {
+      "frames": [
+        "jimmy_01",
+        "jimmy_02",
+        "jimmy_03",
+        "jimmy_04"
+      ],
+      "frameDuration": 125,
+      "loop": true,
+      "cancelable": true
+    },
+    "fightingStance": {
+      "frames": [
+        "jimmy_05",
+        "jimmy_06"
+      ],
+      "frameDuration": 105,
+      "loop": true,
+      "cancelable": true
+    },
+    "run": {
+      "frames": [
+        "jimmy_13",
+        "jimmy_14",
+        "jimmy_15",
+        "jimmy_16"
+      ],
+      "frameDuration": 82,
+      "loop": true,
+      "cancelable": true
+    },
+    "jumpStart": {
+      "frames": [
+        "jimmy_22",
+        "jimmy_23"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true
+    },
+    "jumpRise": {
+      "frames": [
+        "jimmy_23",
+        "jimmy_24"
+      ],
+      "frameDuration": 85,
+      "loop": true,
+      "cancelable": true
+    },
+    "fall": {
+      "frames": [
+        "jimmy_24",
+        "jimmy_25"
+      ],
+      "frameDuration": 90,
+      "loop": true,
+      "cancelable": true
+    },
+    "land": {
+      "frames": [
+        "jimmy_19",
+        "jimmy_20"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true
+    },
+    "dash": {
+      "frames": [
+        "jimmy_17",
+        "jimmy_18"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true
+    },
+    "turn": {
+      "frames": [
+        "jimmy_07",
+        "jimmy_08",
+        "jimmy_09"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true
+    },
+    "blockStart": {
+      "frames": [
+        "jimmy_25",
+        "jimmy_26"
+      ],
+      "frameDuration": 80,
+      "loop": false,
+      "cancelable": true
+    },
+    "blockHold": {
+      "frames": [
+        "jimmy_26",
+        "jimmy_27"
+      ],
+      "frameDuration": 100,
+      "loop": true,
+      "cancelable": true
+    },
+    "blockHit": {
+      "frames": [
+        "jimmy_27",
+        "jimmy_28"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true
+    },
+    "perfectBlock": {
+      "frames": [
+        "jimmy_26",
+        "jimmy_28"
+      ],
+      "frameDuration": 70,
+      "loop": false,
+      "cancelable": true
+    },
+    "hurtLight": {
+      "frames": [
+        "jimmy_22"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true
+    },
+    "hurtHeavy": {
+      "frames": [
+        "jimmy_23",
+        "jimmy_24"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "airHurt": {
+      "frames": [
+        "jimmy_23"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "airFall": {
+      "frames": [
+        "jimmy_24",
+        "jimmy_25"
+      ],
+      "frameDuration": 90,
+      "loop": true,
+      "cancelable": true
+    },
+    "knockback": {
+      "frames": [
+        "jimmy_23",
+        "jimmy_24"
+      ],
+      "frameDuration": 80,
+      "loop": false,
+      "cancelable": true
+    },
+    "knockdown": {
+      "frames": [
+        "jimmy_24",
+        "jimmy_31"
+      ],
+      "frameDuration": 105,
+      "loop": false,
+      "cancelable": true
+    },
+    "groundDown": {
+      "frames": [
+        "jimmy_31"
+      ],
+      "frameDuration": 110,
+      "loop": true,
+      "cancelable": true
+    },
+    "getUp": {
+      "frames": [
+        "jimmy_32",
+        "jimmy_33",
+        "jimmy_34"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true
+    },
+    "defeated": {
+      "frames": [
+        "jimmy_32"
+      ],
+      "frameDuration": 130,
+      "loop": false,
+      "cancelable": true
+    },
+    "victory": {
+      "frames": [
+        "jimmy_36",
+        "jimmy_35",
+        "jimmy_34"
+      ],
+      "frameDuration": 140,
+      "loop": false,
+      "cancelable": true
+    },
+    "defeat": {
+      "frames": [
+        "jimmy_31",
+        "jimmy_32",
+        "jimmy_33"
+      ],
+      "frameDuration": 130,
+      "loop": false,
+      "cancelable": true
+    },
+    "calmGesture": {
+      "frames": [
+        "jimmy_11",
+        "jimmy_12",
+        "jimmy_32"
+      ],
+      "frameDuration": 150,
+      "loop": false,
+      "cancelable": true
+    },
+    "cautiousLook": {
+      "frames": [
+        "jimmy_07",
+        "jimmy_08",
+        "jimmy_10"
+      ],
+      "frameDuration": 135,
+      "loop": false,
+      "cancelable": true
+    },
+    "distract": {
+      "frames": [
+        "jimmy_11",
+        "jimmy_28",
+        "jimmy_36"
+      ],
+      "frameDuration": 110,
+      "loop": false,
+      "cancelable": true
+    },
+    "protect": {
+      "frames": [
+        "jimmy_25",
+        "jimmy_26",
+        "jimmy_27"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true
+    },
+    "redirect": {
+      "frames": [
+        "jimmy_26",
+        "jimmy_27"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "reassure": {
+      "frames": [
+        "jimmy_11",
+        "jimmy_12"
+      ],
+      "frameDuration": 160,
+      "loop": false,
+      "cancelable": true
+    }
+  },
+  "effects": {}
+}

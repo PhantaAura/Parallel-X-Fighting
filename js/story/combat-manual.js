@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a413-parallel-routes-20261122';
+import {BUILD_VERSION} from '../build-info.js?v=29a414-jimmy-atlas-20261122';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

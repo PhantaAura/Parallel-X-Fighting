@@ -1,16 +1,16 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a523-race-maps-20261123';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a523-race-maps-20261123';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a523-race-maps-20261123';
-import {StoryMap} from './story-map.js?v=29a523-race-maps-20261123';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a523-race-maps-20261123';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a523-race-maps-20261123';
-import {storyConfirm} from './story-ux.js?v=29a523-race-maps-20261123';
-import {openCombatManual} from './combat-manual.js?v=29a523-race-maps-20261123';
-import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a523-race-maps-20261123';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a523-race-maps-20261123';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a523-race-maps-20261123';
-import {discoverWorldDelight} from './world-delight.js?v=29a523-race-maps-20261123';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a523-race-maps-20261123';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a524-scenery-art-20261123';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a524-scenery-art-20261123';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a524-scenery-art-20261123';
+import {StoryMap} from './story-map.js?v=29a524-scenery-art-20261123';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a524-scenery-art-20261123';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a524-scenery-art-20261123';
+import {storyConfirm} from './story-ux.js?v=29a524-scenery-art-20261123';
+import {openCombatManual} from './combat-manual.js?v=29a524-scenery-art-20261123';
+import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a524-scenery-art-20261123';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a524-scenery-art-20261123';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a524-scenery-art-20261123';
+import {discoverWorldDelight} from './world-delight.js?v=29a524-scenery-art-20261123';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a524-scenery-art-20261123';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -27,12 +27,12 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a523-race-maps-20261123';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a523-race-maps-20261123';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a523-race-maps-20261123';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a523-race-maps-20261123';
-import {chapter3ReplacementActivity} from './quest-overhaul.js?v=29a523-race-maps-20261123';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a523-race-maps-20261123';
+} from './chapter3-content.js?v=29a524-scenery-art-20261123';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a524-scenery-art-20261123';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a524-scenery-art-20261123';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a524-scenery-art-20261123';
+import {chapter3ReplacementActivity} from './quest-overhaul.js?v=29a524-scenery-art-20261123';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a524-scenery-art-20261123';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;

@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a523-race-maps-20261123';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a524-scenery-art-20261123';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

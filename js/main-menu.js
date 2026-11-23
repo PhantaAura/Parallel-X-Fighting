@@ -1,8 +1,8 @@
-import {BUILD_VERSION} from './build-info.js?v=29a523-race-maps-20261123';
-import {sharedInput} from './input-runtime.js?v=29a523-race-maps-20261123';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a523-race-maps-20261123';
+import {BUILD_VERSION} from './build-info.js?v=29a524-scenery-art-20261123';
+import {sharedInput} from './input-runtime.js?v=29a524-scenery-art-20261123';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a524-scenery-art-20261123';
 
-const MENU_MODULE_CACHE='29a523-race-maps-20261123';
+const MENU_MODULE_CACHE='29a524-scenery-art-20261123';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([

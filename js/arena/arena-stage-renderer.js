@@ -12,6 +12,7 @@ function rangedValues(min,max,step){
 function drawTree(renderer,tree={}){
   const{x=0,z=0,scale=1,index=0,color='#467443'}=tree;
   if(tree.dead){drawBareTree(renderer,{x,z,scale,color});return}
+  shadow(renderer,x,z,52*scale,35*scale,5,.16);
   renderer.cylinder({x,y:42*scale,z,rx:10*scale,rz:11*scale,sy:84*scale,color:'#65452e'});
   if(tree.shape==='broadleaf'){
     renderer.sphere({x,y:125*scale,z,sx:102*scale,sy:88*scale,sz:88*scale,color});
@@ -52,7 +53,17 @@ function drawPavilion(renderer,{x,z,sx=380,sz=250,wall='#e4d8bd',roof='#9d4434',
   renderer.box({x,y,z,sx:sx*.72,sy:y*1.2,sz:sz*.7,color:wall});
   for(const side of [-1,1])for(const end of [-1,1])renderer.cylinder({x:x+side*sx*.44,y:y*.57,z:z+end*sz*.42,rx:11,rz:11,sy:y*1.08,color:'#73543a'});
   renderer.gableRoof({x,y:y*1.65,z,sx,sy:Math.max(50,sx*.3),sz,color:roof});
-  renderer.box({x,y:y*2.02,z,sx:sx*.95,sy:12,sz:sz*1.08,color:'#d8b878'});
+  renderer.box({x,y:y*2.02,z,sx:sx*.95,sy:9,sz:14,color:'#d8b878'});
+  shadow(renderer,x,z,sx*.5,sz*.48,5,.14);
+  for(let dx=-sx*.42;dx<sx*.43;dx+=32){
+    renderer.segment({x:x+dx,y:y*1.65+sx*.15,z},{x:x+dx,y:y*1.65-sx*.15,z:z+sz*.48},{width:3,height:3,color:'#704333',alpha:.5});
+  }
+  for(const side of [-1,1]){
+    const wx=x+side*sx*.2,front=z+sz*.35+2;
+    renderer.box({x:wx,y:y*.95,z:front,sx:sx*.13,sy:y*.45,sz:4,color:'#3c4945'});
+    for(const offset of [-1,0,1])renderer.box({x:wx+offset*sx*.035,y:y*.95,z:front+3,sx:3,sy:y*.45,sz:4,color:'#cbb28c'});
+  }
+  renderer.box({x,y:y*.65,z:z+sz*.35+3,sx:sx*.14,sy:y*.8,sz:6,color:'#493b2e'});
 }
 
 function drawPipe(renderer,a,b,{radius=12,color='#627887'}={}){
@@ -67,7 +78,8 @@ function drawChapterLandmarks(renderer,stage){
     // Open, flowerless countryside forms frame the path without turning it into a tournament field.
     drawRollingHills(renderer);
     // A real roadside obstruction, creek stones, and a timber bridge read clearly from the 3D camera.
-    renderer.segment({x:337,y:34,z:-82},{x:337,y:34,z:82},{width:48,height:48,color:'#79502f'});
+    renderer.sphere({x:337,y:34,z:0,sx:49,sy:48,sz:186,color:'#79502f'});
+    for(const dx of [-15,0,15])renderer.segment({x:337+dx,y:54,z:-72},{x:337+dx,y:54,z:72},{width:2,height:2,color:'#493624',alpha:.6});
     renderer.segment({x:337,y:61,z:-42},{x:360,y:94,z:-20},{width:14,height:14,color:'#65432b'});
     renderer.segment({x:337,y:60,z:36},{x:310,y:86,z:61},{width:12,height:12,color:'#65432b'});
     for(const [x,z,s] of [[-80,-195,.7],[178,-202,.58],[232,194,.72],[-72,205,.62],[535,-150,.7],[535,155,.63]])drawRock(renderer,{x,z,scale:s,height:40,color:'#817765'});
@@ -285,10 +297,99 @@ function drawChapterLandmarks(renderer,stage){
   }
 }
 
+// Deterministic dressing stays identical in story play and the map gallery.
+function artNoise(seed){const n=Math.sin(seed*127.1+311.7)*43758.5453;return n-Math.floor(n)}
+function shadow(r,x,z,rx,rz,y=9,alpha=.12){
+  r.disc({x:x+rx*.12,y,z:z+rz*.12,rx:rx*1.18,rz:rz*1.18,color:'#19251e',alpha:alpha*.35});
+  r.disc({x,y:y+.1,z,rx,rz,color:'#19251e',alpha});
+}
+function dressGround(r,stage){
+  const id=stage.id,b=stage.bounds;
+  const meadow=['training-road','training-field','remote-highlands','chapter5-outpost','chapter6-highlands','chapter7-relay'].includes(id);
+  const stone=['echo-village','echo-mountain','echo-sky','shadow-lookout','echo-caverns'].includes(id);
+  const factory=['resonance-facility','chapter8-core'].includes(id);
+  const plaza=['tournament-hub','tournament','after-hours-tournament'].includes(id);
+  if(!meadow&&!stone&&!factory&&!plaza)return;
+  // Small tonal patches break up the flat floor without hiding objectives.
+  for(let i=0;i<110;i++){
+    const x=b.minX+artNoise(i+1)*(b.maxX-b.minX),z=b.minZ+artNoise(i+401)*(b.maxZ-b.minZ);
+    if(meadow&&Math.abs(z)<165)continue;
+    const color=meadow?(i%2?'#9caf69':'#3e6440'):stone?(i%2?'#c1b699':'#675e50'):factory?'#74868c':'#fff3d5';
+    r.disc({x,y:5.2,z,rx:18+artNoise(i+55)*67,rz:9+artNoise(i+98)*30,color,alpha:meadow?.15:.075});
+    if(meadow&&i%3===0){
+      for(let j=0;j<3;j++)r.cone({x:x+j*6,y:10+j*2,z:z+j*3,rx:2,rz:3,sy:18+j*4,color:i%2?'#526d3f':'#819457'});
+    }
+    if(stone&&i%5===0)drawRock(r,{x,z,scale:.12+artNoise(i)*.12,height:35,color:'#9b927c'});
+  }
+  if(factory||plaza){
+    const step=factory?230:185;
+    for(let x=b.minX;x<b.maxX;x+=step)r.segment({x,y:5.5,z:b.minZ},{x,y:5.5,z:b.maxZ},{width:1.4,height:.6,color:factory?'#131f2b':'#9b8c71',alpha:.26});
+    for(let z=b.minZ;z<b.maxZ;z+=step)r.segment({x:b.minX,y:5.5,z},{x:b.maxX,y:5.5,z},{width:1.4,height:.6,color:factory?'#131f2b':'#9b8c71',alpha:.26});
+  }
+  if(id==='training-road'){
+    // Timber grain, separated planks and worn creek banks.
+    for(let x=-52;x<207;x+=18){r.box({x,y:30.1,z:0,sx:2,sy:1,sz:205,color:'#382c22',alpha:.55});r.box({x:x+6,y:30.4,z:0,sx:1,sy:.7,sz:173,color:'#c59c65',alpha:.35})}
+    for(let i=0;i<28;i++){
+      const z=-810+i*60;
+      for(const x of [-49,198]){
+        r.sphere({x:x+Math.sin(i*1.8)*9,y:5,z,sx:34+i%3*7,sy:16,sz:45,color:i%2?'#777964':'#8e866c'});
+      }
+      if(Math.abs(z)>140)r.disc({x:75+Math.sin(i)*29,y:8.2,z,rx:24,rz:2,color:'#c5e3d8',alpha:.25});
+    }
+    for(const x of [-420,-260,845]){
+      shadow(r,x,x===-260?255:-245,48,35,5,.15);
+      drawRock(r,{x,z:x===-260?255:-245,scale:.55,height:65,color:'#8b8975'});
+    }
+  }
+}
+function dressArchitecture(r,box,stage){
+  const{x=0,y=0,z=0,sx=0,sy=0,sz=0}=box;
+  if(y<25||sy<75||sx<160||sz<100||sx>900||sy>460||box.alpha<.8)return;
+  const industrial=['resonance-facility','chapter8-core'].includes(stage.id);
+  const top=y+sy/2,bottom=Math.max(6,y-sy/2),front=z+sz/2+2;
+  shadow(r,x,z,sx*.55,sz*.55,5,.13);
+  r.box({x,y:bottom+8,z,sx:sx+12,sy:16,sz:sz+12,color:industrial?'#192a34':'#81745d'});
+  r.box({x,y:top-9,z,sx:sx+8,sy:10,sz:sz+8,color:industrial?'#78949e':'#d5bd90'});
+  for(const side of [-1,1])r.box({x:x+side*(sx/2-7),y,z:front,sx:11,sy,sz:8,color:industrial?'#536c7b':'#6c4a35'});
+  for(let wx=x-sx*.32;wx<=x+sx*.33;wx+=Math.max(65,sx*.26)){
+    const width=Math.min(47,sx*.12),wy=bottom+sy*.61;
+    r.box({x:wx,y:wy,z:front+1,sx:width+9,sy:sy*.33+9,sz:7,color:industrial?'#172333':'#715542'});
+    r.box({x:wx,y:wy,z:front+6,sx:width,sy:sy*.33,sz:3,color:industrial?'#6abac5':'#b3c8ba',alpha:.85});
+    r.box({x:wx,y:wy,z:front+9,sx:3,sy:sy*.33,sz:3,color:industrial?'#3d5966':'#69543d'});
+  }
+  if(!industrial){
+    r.gableRoof({x,y:top+24,z,sx:sx+58,sy:75,sz:sz+52,color:stage.id==='echo-village'?'#715844':'#8c4737'});
+    r.box({x,y:top+64,z,sx:sx+62,sy:7,sz:12,color:'#cfb186'});
+    r.box({x,y:bottom+34,z:front+11,sx:39,sy:66,sz:9,color:'#42392d'});
+    r.box({x,y:bottom+2,z:front+28,sx:68,sy:7,sz:42,color:'#b3a18a'});
+  }else{
+    for(const side of [-1,1])r.cylinder({x:x+side*sx*.4,y:top+10,z,rx:13,sy:25,color:'#9caaa9'});
+    r.box({x,y:bottom+17,z:front+7,sx:sx*.75,sy:6,sz:4,color:'#c1a15a'});
+  }
+}
+function drawFinishedScenery(r,box,stage){
+  // Old foliage blocks are replaced in place so paths and sightlines stay legible.
+  const c=String(box.color||'');
+  const rgb=/^#[0-9a-f]{6}$/i.test(c)?[1,3,5].map(i=>parseInt(c.slice(i,i+2),16)):null;
+  const green=rgb&&rgb[1]>rgb[0]*1.12&&rgb[1]>rgb[2]*1.08;
+  if(green&&box.y>60&&box.sy>55&&box.sx>60&&box.sx<210&&box.sz>60){
+    shadow(r,box.x,box.z,box.sx*.48,box.sz*.4,5,.16);
+    r.sphere({...box,sx:box.sx*1.18,sy:box.sy*1.12,sz:box.sz*1.12});
+    r.sphere({...box,x:box.x-box.sx*.29,y:box.y+box.sy*.17,sx:box.sx*.7,sy:box.sy*.73,sz:box.sz*.8});
+    return;
+  }
+  if(stage.id==='training-road'&&[[-420,-250],[-260,255],[845,-245]].some(([x,z])=>box.x===x&&box.z===z))return;
+  const campus=['tournament-hub','tournament','after-hours-tournament'].includes(stage.id);
+  if(campus&&box.sx>200&&box.sz>180&&box.sy<=54&&box.y>105)return;
+  r.box(box);
+  if(NATURAL_STAGE_IDS.has(stage.id))dressArchitecture(r,box,stage);
+}
+
 export function drawArenaStage(renderer,stage){
   const {bounds:b,floor,boundary,scenery}=stage;
   renderer.box(floor.base);
   renderer.box(floor.surface);
+  dressGround(renderer,stage);
 
   if(floor.grid&&!NATURAL_STAGE_IDS.has(stage.id)){
     const grid=floor.grid;
@@ -311,7 +412,7 @@ export function drawArenaStage(renderer,stage){
     if((stage.id==='remote-highlands'||stage.id==='chapter5-outpost'||stage.id==='chapter6-highlands'||stage.id==='chapter7-relay')&&Math.abs(box.z||0)===690&&((box.sx===28&&box.sy===140)||(box.sx===118&&box.sy===110)))continue;
     if(stage.id==='shadow-lookout'&&box.x===1120&&box.z===-330&&[420,240,300].includes(box.sx))continue;
     if(stage.id==='training-road'&&((box.z===-245&&box.sy>=64&&box.sy<=152)||box.x===600&&(Math.abs(box.z||0)===135||box.z===0)||box.x===1295&&box.z===-260||[1040,1250,1420].includes(box.x)&&box.z===250||[1250,1420].includes(box.x)&&box.z===265||(box.x===-1160&&box.z===-265)||([-1325,-995].includes(box.x)&&box.z===-85)))continue;
-    renderer.box(box);
+    drawFinishedScenery(renderer,box,stage);
   }
   for(const tree of scenery?.trees||[])drawTree(renderer,tree);
   drawChapterLandmarks(renderer,stage);

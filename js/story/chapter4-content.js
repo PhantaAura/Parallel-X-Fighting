@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a523-race-maps-20261123';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a523-race-maps-20261123';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a524-scenery-art-20261123';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a524-scenery-art-20261123';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
 export const CHAPTER4_STATE_VERSION=5;
 

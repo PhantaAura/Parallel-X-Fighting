@@ -1,4 +1,4 @@
-import {surface} from './chapter1-landscape.js?v=29a56c-worlds';
+import {surface} from './chapter1-landscape.js?v=29a57-lookout-center';
 
 // Explicit scenery for each chapter. Collision and quest coordinates remain owned by the story.
 const rebuilt=new Set(['tournament-hub','after-hours-tournament','resonance-facility','remote-highlands','echo-village','echo-mountain','echo-caverns','echo-sky','shadow-lookout','chapter5-outpost','chapter6-highlands','chapter7-relay','chapter8-core']);
@@ -178,7 +178,7 @@ function floating(r,lookout){
   if(lookout){
     const cx=930,cz=-310;r.cylinder({x:cx,y:16,z:cz,rx:310,rz:255,sy:32,color:'#a59279'});
     r.cylinder({x:cx,y:34,z:cz,rx:285,rz:230,sy:8,color:'#eee1bd',texture:material(r,'limestone')});
-    r.cylinder({x:cx,y:115,z:cz-65,rx:100,rz:90,sy:166,color:'#e4dbc2'});r.sphere({x:cx,y:207,z:cz-65,sx:216,sy:124,sz:193,color:'#83a7a4'});
+    r.cylinder({x:cx,y:115,z:cz,rx:100,rz:90,sy:166,color:'#e4dbc2'});r.sphere({x:cx,y:207,z:cz,sx:216,sy:124,sz:193,color:'#83a7a4'});
     for(let i=0;i<8;i++){const a=i*Math.PI/4,px=cx+Math.cos(a)*230,pz=cz+Math.sin(a)*180;r.cylinder({x:px,y:107,z:pz,rx:10,sy:150,color:'#ece2ca'});r.cylinder({x:px,y:183,z:pz,rx:19,sy:9,color:'#ba9b6a'})}
     for(const px of [520,1340]){pine(r,px,-310,.9);r.cylinder({x:px,y:12,z:-310,rx:62,sy:24,color:'#b7bba0'})}
   }else{

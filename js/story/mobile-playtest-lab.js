@@ -1,9 +1,9 @@
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js';
-import {loadLostYearProgress} from './lost-year-data.js?v=29a56c-worlds';
-import {WORLD_DELIGHT_DISCOVERIES} from './world-delight.js?v=29a56c-worlds';
-import {CHAPTER1_ADVENTURE_VERSION,CHAPTER1_GUIDANCE,CHAPTER1_ROUTES,CHAPTER1_FIRE_BLAST_STORY_FOCUS} from './chapter1-adventure.js?v=29a56c-worlds';
-import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a56c-worlds';
-import {ArenaBattle} from '../arena/arena-mode.js?v=29a56c-worlds';
+import {loadLostYearProgress} from './lost-year-data.js?v=29a57-lookout-center';
+import {WORLD_DELIGHT_DISCOVERIES} from './world-delight.js?v=29a57-lookout-center';
+import {CHAPTER1_ADVENTURE_VERSION,CHAPTER1_GUIDANCE,CHAPTER1_ROUTES,CHAPTER1_FIRE_BLAST_STORY_FOCUS} from './chapter1-adventure.js?v=29a57-lookout-center';
+import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a57-lookout-center';
+import {ArenaBattle} from '../arena/arena-mode.js?v=29a57-lookout-center';
 
 const DEV_SESSION_KEY='pxDeveloperUnlockedSession';
 const LAST_REPORT_KEY='pxPlaytestLastReportV2';
@@ -251,9 +251,9 @@ async function runFullQa(){
   add('Existing Konami developer room',document.querySelector('[data-story-playtest]')?'PASS':'WARN','↑ ↑ ↓ ↓ ← → ← → B A');
   try{
     const modules=await Promise.allSettled([
-      import('./rrvvfo-mission-2.js?v=29a56c-worlds'),
-      import('./rrvvfo-chapter-3.js?v=29a56c-worlds'),
-      import('./rrvvfo-chapter-4.js?v=29a56c-worlds')
+      import('./rrvvfo-mission-2.js?v=29a57-lookout-center'),
+      import('./rrvvfo-chapter-3.js?v=29a57-lookout-center'),
+      import('./rrvvfo-chapter-4.js?v=29a57-lookout-center')
     ]);const failed=modules.filter(item=>item.status==='rejected');add('Released Chapter 2–4 modules import',failed.length?'FAIL':'PASS',failed.length?failed.map(item=>item.reason?.message||'import failed').join(' | '):'3 / 3 loaded');
   }catch(error){add('Released Chapter 2–4 modules import','FAIL',error.message)}
   const pass=checks.filter(c=>c.status==='PASS').length,fail=checks.filter(c=>c.status==='FAIL').length,warn=checks.filter(c=>c.status==='WARN').length;
@@ -291,7 +291,7 @@ async function startBossDebugPreview(bossId){
   if(activeStoryBattleIsOpen()){setOutput('Close the active chapter before opening boss practice. Your story save stays untouched.');return}
   closeLab();
   try{
-    const {startConfiguredArenaBattle}=await import('../arena/arena-mode.js?v=29a56c-worlds');
+    const {startConfiguredArenaBattle}=await import('../arena/arena-mode.js?v=29a57-lookout-center');
     const battle=startConfiguredArenaBattle({mode:'training',fighters:['rrvvfo',boss.fighterId],stageId:boss.stage,difficulty:'normal',koTarget:1,allowRandomRematch:false});
     if(!battle)throw new Error('The boss practice fight could not open.');
     const foe=battle.fighters[1];foe.name=boss.name;foe.accent=boss.accent;foe.aiArchetype=boss.archetype;foe.visualScale=1.12;foe.maxHp=boss.hp;foe.hp=boss.hp;foe.storySpeedMultiplier=boss.speed;foe.storyAttackMultiplier=boss.attack;foe.storyDefenseMultiplier=boss.defense;foe.en=55;foe.asset=null;
@@ -305,7 +305,7 @@ async function startMapDebugPreview(stageId){
   if(activeStoryBattleIsOpen()){setOutput('Close the active chapter before opening a map preview. Your story save stays untouched.');return}
   closeLab();
   try{
-    const {startConfiguredArenaBattle}=await import('../arena/arena-mode.js?v=29a56c-worlds');
+    const {startConfiguredArenaBattle}=await import('../arena/arena-mode.js?v=29a57-lookout-center');
     const battle=startConfiguredArenaBattle({mode:'training',fighters:['rrvvfo','revvfo'],stageId,koTarget:1});
     if(!battle)throw new Error('The arena could not open this map.');
     battle.trainingDummy='stand';battle.trainingPursuitDefense='never';

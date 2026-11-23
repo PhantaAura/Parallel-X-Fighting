@@ -1,16 +1,16 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a56c-worlds';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a56c-worlds';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a56c-worlds';
-import {StoryMap} from './story-map.js?v=29a56c-worlds';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a56c-worlds';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a56c-worlds';
-import {storyConfirm} from './story-ux.js?v=29a56c-worlds';
-import {openCombatManual} from './combat-manual.js?v=29a56c-worlds';
-import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a56c-worlds';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a56c-worlds';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a56c-worlds';
-import {discoverWorldDelight} from './world-delight.js?v=29a56c-worlds';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a56c-worlds';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a57-lookout-center';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a57-lookout-center';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a57-lookout-center';
+import {StoryMap} from './story-map.js?v=29a57-lookout-center';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a57-lookout-center';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a57-lookout-center';
+import {storyConfirm} from './story-ux.js?v=29a57-lookout-center';
+import {openCombatManual} from './combat-manual.js?v=29a57-lookout-center';
+import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a57-lookout-center';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a57-lookout-center';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a57-lookout-center';
+import {discoverWorldDelight} from './world-delight.js?v=29a57-lookout-center';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a57-lookout-center';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -27,12 +27,12 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a56c-worlds';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a56c-worlds';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a56c-worlds';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a56c-worlds';
-import {chapter3ReplacementActivity} from './quest-overhaul.js?v=29a56c-worlds';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a56c-worlds';
+} from './chapter3-content.js?v=29a57-lookout-center';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a57-lookout-center';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a57-lookout-center';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a57-lookout-center';
+import {chapter3ReplacementActivity} from './quest-overhaul.js?v=29a57-lookout-center';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a57-lookout-center';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;

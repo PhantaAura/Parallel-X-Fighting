@@ -1,5 +1,5 @@
-import {drawChapterWorld} from './chapter-worlds.js?v=29a56c-worlds';
-import {drawChapterOneLandscape,valleyHeight} from './chapter1-landscape.js?v=29a56c-worlds';
+import {drawChapterWorld} from './chapter-worlds.js?v=29a57-lookout-center';
+import {drawChapterOneLandscape,valleyHeight} from './chapter1-landscape.js?v=29a57-lookout-center';
 const NATURAL_STAGE_IDS=new Set(['training-road','tournament-hub','tournament','resonance-facility','echo-village','echo-mountain','echo-caverns','echo-sky','shadow-lookout','chapter5-outpost','chapter6-highlands','chapter7-relay','chapter8-core']);
 
 function drawPerimeterSegment(renderer,a,b,rail){renderer.segment(a,b,{width:rail.width,height:rail.height,color:rail.color,alpha:rail.alpha??1,lit:rail.lit??true})}

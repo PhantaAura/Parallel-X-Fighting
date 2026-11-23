@@ -1,6 +1,11 @@
 # Fighter sprite atlas notes
 
-## Chapters 2–8 world rebuild (2.9A.56)
+## Shadow’s Lookout alignment (2.9A.57)
+
+- Centered the sanctuary building and dome on the round plinth and surrounding column ring, removing a 65-unit rear offset.
+
+
+## Chapters 2–8 world rebuild (2.9A.57)
 
 - Replaced the remaining chapter scenery collections with explicit 3D world builders: a tiled tournament campus, automated factory, sandstone Echo village and ridge trail, mineral caverns, floating stone sanctuaries, observation outpost, network beacon station, relay plateau and reactor chamber.
 - Added cached custom roof, terrain and crag meshes plus procedural stone, earth, plaster, tile and metal materials.
@@ -9,7 +14,7 @@
 - Reviewed all twelve gallery previews; no full story playthrough or mobile performance assessment was performed.
 
 
-## Chapter 1 valley rebuild (2.9A.56)
+## Chapter 1 valley rebuild (2.9A.57)
 
 - Replaced the flat Chapter 1 floor and stacked roads with a cached sculpted valley mesh, a curved dirt ribbon and a winding creek with shaped banks.
 - Added procedural grass, earth and bank materials, branching trees, a custom timber dojo and hillside boulders. No flowers were added.
@@ -17,7 +22,7 @@
 - Rebuilt creek bed clearance and preserved the bridge crossing.
 
 
-## Scenery art pass (2.9A.56)
+## Scenery art pass (2.9A.57)
 
 - Replaced square foliage with clustered rounded canopies, added soft contact shadows and small ground color variations.
 - Added building foundations, framed windows, corner posts, doors, steps, pitched roof silhouettes and pavilion roof seams.
@@ -26,14 +31,14 @@
 - Shared rendering applies to the playable maps and the gallery.
 
 
-## 3D chapter worlds and route-menu repair (2.9A.56)
+## 3D chapter worlds and route-menu repair (2.9A.57)
 
 - Replaced the previous backdrop approach with native 3D scenery meshes. Chapter 1 uses a flowerless countryside trail, rolling hills, a creek, bridge, roadside log, and trees; Chapter 2 uses original martial-arts hall and courtyard shapes; Chapter 3 uses tanks, connected pipes, repeated conveyor lanes, overhead rails, and articulated robotic arms.
 - Expanded Echo Region with village roofs, sandstone ridges, bare highland trees, caves, a mountain ascent, a floating-island encounter, and a circular Shadow’s Lookout inspired by the reference silhouette but with original proportions and structure. Chapter 6’s Red Network now has its own beacon outpost. Chapters 5–8 now have distinct outpost, extraction-highland, relay-plateau, and central-core variants.
 - Fixed the route selector’s missing character-preview element, which had collapsed route details into a narrow strip. Route and playable-chapter totals now reflect whether Rrvvfo’s route has been completed; locked card copy is shorter and readable.
 - Enforced phone/tablet-only touch overlays even when controls are manually set to “on”; desktop keyboard and arrow-key movement remain available.
 - Added all chapter environments to Settings-gated map previews and matched Hollow Mimic / Red Leader practice fights to their story arenas. Chapter jumps remain temporary replays and previews do not alter story progress.
-- The reference photos now guide explorable 3D terrain, paths, buildings, and landmarks; no photo is used as a level backdrop. Wade’s race markers were moved onto clear approaches, and his lead display now uses his actual position. Removed the earlier raster backdrop assets and bumped the browser cache key/build label to 2.9A.56. Save schema remains 268.
+- The reference photos now guide explorable 3D terrain, paths, buildings, and landmarks; no photo is used as a level backdrop. Wade’s race markers were moved onto clear approaches, and his lead display now uses his actual position. Removed the earlier raster backdrop assets and bumped the browser cache key/build label to 2.9A.57. Save schema remains 268.
 
 
 ## Broad reliability and QoL pass (2.9A.46)

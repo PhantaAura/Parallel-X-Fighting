@@ -1,5 +1,5 @@
-import {storyConfirm} from './story/story-ux.js?v=29a56c-worlds';
-import {loadQolSettings} from './qol-settings.js?v=29a56c-worlds';
+import {storyConfirm} from './story/story-ux.js?v=29a57-lookout-center';
+import {loadQolSettings} from './qol-settings.js?v=29a57-lookout-center';
 
 /* Parallels X shared story dialogue presentation. */
 // Scenes you have already read (3+ lines, no choices) can be skipped in one

@@ -11,21 +11,21 @@ import {
   repairChapter4Progress,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a56c-worlds';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a56c-worlds';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a56c-worlds';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a56c-worlds';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a56c-worlds';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a56c-worlds';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a56c-worlds';
-import {startRrvvfoChapter5,startRrvvfoChapter6,startRrvvfoChapter7,startRrvvfoChapter8} from './rrvvfo-chapters-5-8.js?v=29a56c-worlds';
-import {PARALLEL_ROUTES,parallelMissionId,startParallelRouteChapter} from './parallel-route-story.js?v=29a56c-worlds';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a56c-worlds';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a56c-worlds';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a56c-worlds';
-import {inspectStoryReliability} from './story-reliability.js?v=29a56c-worlds';
-import {renderTravelJournal} from './connected-world.js?v=29a56c-worlds';
-import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a56c-worlds';
+} from './lost-year-data.js?v=29a57-lookout-center';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a57-lookout-center';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a57-lookout-center';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a57-lookout-center';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a57-lookout-center';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a57-lookout-center';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a57-lookout-center';
+import {startRrvvfoChapter5,startRrvvfoChapter6,startRrvvfoChapter7,startRrvvfoChapter8} from './rrvvfo-chapters-5-8.js?v=29a57-lookout-center';
+import {PARALLEL_ROUTES,parallelMissionId,startParallelRouteChapter} from './parallel-route-story.js?v=29a57-lookout-center';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a57-lookout-center';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a57-lookout-center';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a57-lookout-center';
+import {inspectStoryReliability} from './story-reliability.js?v=29a57-lookout-center';
+import {renderTravelJournal} from './connected-world.js?v=29a57-lookout-center';
+import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a57-lookout-center';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

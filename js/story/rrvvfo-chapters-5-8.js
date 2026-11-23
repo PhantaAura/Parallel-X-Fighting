@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a56c-worlds';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a56c-worlds';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a56c-worlds';
-import {storyConfirm} from './story-ux.js?v=29a56c-worlds';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a56c-worlds';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a57-lookout-center';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a57-lookout-center';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a57-lookout-center';
+import {storyConfirm} from './story-ux.js?v=29a57-lookout-center';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a57-lookout-center';
 
 const RUN_ID='pxLegacyRrvvfoChapterRun';
 const CHAPTERS=Object.freeze({

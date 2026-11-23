@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a56c-worlds';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a56c-worlds';
-import {storyConfirm} from './story-ux.js?v=29a56c-worlds';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a56c-worlds';
-import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a56c-worlds';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a57-lookout-center';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a57-lookout-center';
+import {storyConfirm} from './story-ux.js?v=29a57-lookout-center';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a57-lookout-center';
+import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a57-lookout-center';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

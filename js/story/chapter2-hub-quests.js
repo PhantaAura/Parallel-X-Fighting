@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a56c-worlds';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a57-lookout-center';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.22';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([

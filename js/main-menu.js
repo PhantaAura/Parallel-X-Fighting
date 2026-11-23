@@ -1,8 +1,8 @@
-import {BUILD_VERSION} from './build-info.js?v=29a56c-worlds';
-import {sharedInput} from './input-runtime.js?v=29a56c-worlds';
-import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a56c-worlds';
+import {BUILD_VERSION} from './build-info.js?v=29a57-lookout-center';
+import {sharedInput} from './input-runtime.js?v=29a57-lookout-center';
+import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a57-lookout-center';
 
-const MENU_MODULE_CACHE='29a56c-worlds';
+const MENU_MODULE_CACHE='29a57-lookout-center';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([

@@ -1,5 +1,5 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.56 — Chapter World Rebuild
+## Prototype 2.9A.57 — Chapter World Rebuild
 
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
@@ -24,7 +24,7 @@ The route selector now uses its missing character-preview panel and shows the ro
 
 ## Current build
 
-**Prototype 2.9A.56 — Chapter World Rebuild**
+**Prototype 2.9A.57 — Chapter World Rebuild**
 
 This is a complete cumulative build. No older package is required.
 

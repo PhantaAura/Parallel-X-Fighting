@@ -1,5 +1,5 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.52 — 3D Chapter Worlds
+## Prototype 2.9A.53 — 3D Chapter Worlds
 
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
@@ -20,11 +20,11 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 This pass rebuilds the chapter scenery as explorable 3D geometry: Chapter 1’s flowerless countryside trail and creek bridge, Chapter 2’s martial-arts tournament courtyard, Chapter 3’s busy automated factory, Echo Region’s village and sandstone ridges, a floating Shadow’s Lookout, and separate outpost, Red Network, relay, and core sites for Chapters 5–8. Existing floors, puzzles, side quests, and story triggers remain the playable map.
 
-The route selector now uses its missing character-preview panel and shows the routes actually unlocked by progress. Phone controls are hidden on computers. Settings-only Map Debug Mode still uses the Konami code, and now previews every released chapter environment plus its chapter and boss warps. Wade’s tournament mix-up is corrected in dialogue. Save schema remains 268.
+The route selector now uses its missing character-preview panel and shows the routes actually unlocked by progress. Phone controls are hidden on computers. Settings-only Map Debug Mode still uses the Konami code, and now previews every released chapter environment plus its chapter and boss warps. Wade’s tournament mix-up is corrected in dialogue, the race checkpoints now sit clear of the crowded stalls and building edges, and the lead display follows Wade’s actual position. Save schema remains 268.
 
 ## Current build
 
-**Prototype 2.9A.52 — 3D Chapter Worlds**
+**Prototype 2.9A.53 — 3D Chapter Worlds**
 
 This is a complete cumulative build. No older package is required.
 

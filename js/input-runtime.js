@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a523-3d-worlds-20261123';
+import {InputManager} from './input.js?v=29a523-race-maps-20261123';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

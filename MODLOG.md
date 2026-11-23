@@ -1,13 +1,13 @@
 # Fighter sprite atlas notes
 
-## 3D chapter worlds and route-menu repair (2.9A.52)
+## 3D chapter worlds and route-menu repair (2.9A.53)
 
 - Replaced the previous backdrop approach with native 3D scenery meshes. Chapter 1 uses a flowerless countryside trail, rolling hills, a creek, bridge, roadside log, and trees; Chapter 2 uses original martial-arts hall and courtyard shapes; Chapter 3 uses tanks, connected pipes, repeated conveyor lanes, overhead rails, and articulated robotic arms.
 - Expanded Echo Region with village roofs, sandstone ridges, bare highland trees, caves, a mountain ascent, a floating-island encounter, and a circular Shadow’s Lookout inspired by the reference silhouette but with original proportions and structure. Chapter 6’s Red Network now has its own beacon outpost. Chapters 5–8 now have distinct outpost, extraction-highland, relay-plateau, and central-core variants.
 - Fixed the route selector’s missing character-preview element, which had collapsed route details into a narrow strip. Route and playable-chapter totals now reflect whether Rrvvfo’s route has been completed; locked card copy is shorter and readable.
 - Enforced phone/tablet-only touch overlays even when controls are manually set to “on”; desktop keyboard and arrow-key movement remain available.
 - Added all chapter environments to Settings-gated map previews and matched Hollow Mimic / Red Leader practice fights to their story arenas. Chapter jumps remain temporary replays and previews do not alter story progress.
-- Removed the earlier raster backdrop assets and updated the browser cache key/build label to 2.9A.52. Wade’s tournament correction remains in place. Save schema remains 268.
+- The reference photos now guide explorable 3D terrain, paths, buildings, and landmarks; no photo is used as a level backdrop. Wade’s race markers were moved onto clear approaches, and his lead display now uses his actual position. Removed the earlier raster backdrop assets and bumped the browser cache key/build label to 2.9A.53. Save schema remains 268.
 
 
 ## Broad reliability and QoL pass (2.9A.46)

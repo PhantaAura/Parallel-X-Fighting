@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a523-3d-worlds-20261123';
-import {sharedInput} from '../input-runtime.js?v=29a523-3d-worlds-20261123';
+import {CONTROL_MAPS} from '../input.js?v=29a523-race-maps-20261123';
+import {sharedInput} from '../input-runtime.js?v=29a523-race-maps-20261123';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

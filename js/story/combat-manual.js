@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a523-3d-worlds-20261123';
+import {BUILD_VERSION} from '../build-info.js?v=29a523-race-maps-20261123';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

@@ -1,23 +1,24 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a409-wade-race-events-20261122';
-import {sharedInput} from '../input-runtime.js?v=29a409-wade-race-events-20261122';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a409-wade-race-events-20261122';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a409-wade-race-events-20261122';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a409-wade-race-events-20261122';
-import {storyConfirm} from './story-ux.js?v=29a409-wade-race-events-20261122';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a409-wade-race-events-20261122';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a409-wade-race-events-20261122';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a409-wade-race-events-20261122';
-import {StoryMap} from './story-map.js?v=29a409-wade-race-events-20261122';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a409-wade-race-events-20261122';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a409-wade-race-events-20261122';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a409-wade-race-events-20261122';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a409-wade-race-events-20261122';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a409-wade-race-events-20261122';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a409-wade-race-events-20261122';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a409-wade-race-events-20261122';
-import {discoverWorldDelight} from './world-delight.js?v=29a409-wade-race-events-20261122';
-import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a409-wade-race-events-20261122';
-import {chapter2BracketRoute} from './quest-overhaul.js?v=29a409-wade-race-events-20261122';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a410-pacing-objective-qol-20261122';
+import {sharedInput} from '../input-runtime.js?v=29a410-pacing-objective-qol-20261122';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a410-pacing-objective-qol-20261122';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a410-pacing-objective-qol-20261122';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a410-pacing-objective-qol-20261122';
+import {storyConfirm} from './story-ux.js?v=29a410-pacing-objective-qol-20261122';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a410-pacing-objective-qol-20261122';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a410-pacing-objective-qol-20261122';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a410-pacing-objective-qol-20261122';
+import {StoryMap} from './story-map.js?v=29a410-pacing-objective-qol-20261122';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a410-pacing-objective-qol-20261122';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a410-pacing-objective-qol-20261122';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a410-pacing-objective-qol-20261122';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a410-pacing-objective-qol-20261122';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a410-pacing-objective-qol-20261122';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a410-pacing-objective-qol-20261122';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a410-pacing-objective-qol-20261122';
+import {discoverWorldDelight} from './world-delight.js?v=29a410-pacing-objective-qol-20261122';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a410-pacing-objective-qol-20261122';
+import {chapter2BracketRoute} from './quest-overhaul.js?v=29a410-pacing-objective-qol-20261122';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a410-pacing-objective-qol-20261122';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -375,6 +376,7 @@ class RrvvfoMission2{
     }
     if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'tournament',this.connectedZoneId(),{entrance:'tournament-outskirts'}));
     this.ensureRegionMap();
+    this.objectiveHistory=attachStoryObjectiveHistory({root:this.root,chapter:2,battle:this.battle,getMode:()=>this.mode,setMode:mode=>{this.mode=mode},isActive:()=>!this.aborted});
     this.engine.sync(true);
     return this;
   }
@@ -670,6 +672,7 @@ class RrvvfoMission2{
   }
 
   setObjective(title,detail){
+    recordStoryObjective(2,title,detail);
     for(const selector of ['[data-c2-objective]','[data-c2-menu-objective]','[data-c2-tracker-objective]']){
       const node=this.root.querySelector(selector);if(node)node.textContent=title;
     }
@@ -2736,6 +2739,7 @@ class RrvvfoMission2{
     this.battle?.root?.classList.remove('chapter2HubMode','chapter2FightMode','chapter2StoryActive');
     this.battle?.root?.classList.add('hidden');
     this.map?.destroy();this.map=null;
+    this.objectiveHistory?.destroy();this.objectiveHistory=null;
     destroyStoryBattle(this.battle);
     this.root.remove();activeMission=null;this.onExit();
   }

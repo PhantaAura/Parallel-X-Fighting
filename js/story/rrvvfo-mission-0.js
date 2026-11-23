@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a409-wade-race-events-20261122';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a409-wade-race-events-20261122';
-import {storyConfirm} from './story-ux.js?v=29a409-wade-race-events-20261122';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a409-wade-race-events-20261122';
-import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a409-wade-race-events-20261122';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a410-pacing-objective-qol-20261122';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a410-pacing-objective-qol-20261122';
+import {storyConfirm} from './story-ux.js?v=29a410-pacing-objective-qol-20261122';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a410-pacing-objective-qol-20261122';
+import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a410-pacing-objective-qol-20261122';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

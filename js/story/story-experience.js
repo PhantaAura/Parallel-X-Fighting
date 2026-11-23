@@ -7,17 +7,17 @@ export const STORY_EXPERIENCE_PROFILES=Object.freeze({
     promise:'Short, energetic, and constantly teaching through play instead of menus.'
   }),
   2:Object.freeze({
-    chapter:2,label:'TOURNAMENT DAY',targetMinutes:Object.freeze([70,100]),cadenceMinutes:Object.freeze([2,4]),
+    chapter:2,label:'TOURNAMENT DAY',targetMinutes:Object.freeze([65,85]),cadenceMinutes:Object.freeze([2,4]),
     rhythm:Object.freeze(['EXPLORE','MEET PEOPLE','PREPARE','FIGHT','COOLDOWN','CROWD REACTS','FIGHT']),
     promise:'The grounds should feel like a festival that changes after every round.'
   }),
   3:Object.freeze({
-    chapter:3,label:'AFTER HOURS',targetMinutes:Object.freeze([55,80]),cadenceMinutes:Object.freeze([2,4]),
+    chapter:3,label:'AFTER HOURS',targetMinutes:Object.freeze([45,65]),cadenceMinutes:Object.freeze([2,4]),
     rhythm:Object.freeze(['OBSERVE','QUESTION','RECONSTRUCT','DESCEND','DISCOVER','ESCAPE']),
     promise:'Tighter than Chapter 2; every quiet stretch should increase suspicion.'
   }),
   4:Object.freeze({
-    chapter:4,label:'ECHO REGION',targetMinutes:Object.freeze([90,120]),cadenceMinutes:Object.freeze([2,4]),
+    chapter:4,label:'ECHO REGION',targetMinutes:Object.freeze([75,95]),cadenceMinutes:Object.freeze([2,4]),
     rhythm:Object.freeze(['ARRIVE','LEARN VILLAGE','PARTY FIELDWORK','CAVERNS','DEFENSE','RECOVER','OPTIONAL SECRET','SOLO CLIMB','BOSS','LOOKOUT']),
     promise:'The longest chapter because it has the most distinct adventure phases, not because it has more empty walking.'
   })

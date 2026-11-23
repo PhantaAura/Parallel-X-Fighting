@@ -1,5 +1,5 @@
-import {storyConfirm} from './story/story-ux.js?v=29a409-wade-race-events-20261122';
-import {loadQolSettings} from './qol-settings.js?v=29a409-wade-race-events-20261122';
+import {storyConfirm} from './story/story-ux.js?v=29a410-pacing-objective-qol-20261122';
+import {loadQolSettings} from './qol-settings.js?v=29a410-pacing-objective-qol-20261122';
 
 /* Parallels X shared story dialogue presentation. */
 // Scenes you have already read (3+ lines, no choices) can be skipped in one
@@ -85,9 +85,9 @@ export class SonicBattleDialogue{
     this.container=options.container||document.body;this.onComplete=options.onComplete||(()=>{});this.onChoice=options.onChoice||(()=>{});
     this.typeSpeed=options.typeSpeed??24;this.autoAdvanceDelay=options.autoAdvanceDelay??1450;this.prefs=readPrefs();this.history=[];
     this.overlay=this.spriteWrap=this.spriteEl=this.box=this.textEl=this.speakerEl=this.tailEl=this.promptEl=this.choicesEl=this.portraitEl=null;
-    this.toolbar=this.historyPanel=this.emotionEl=null;this.typingTimer=null;this.advanceTimer=null;this.gamepadFrame=0;this.isTyping=false;this.canAdvance=false;
+    this.toolbar=this.historyPanel=this.emotionEl=null;this.typingTimer=null;this.advanceTimer=null;this.holdAdvanceTimer=null;this.gamepadFrame=0;this.gamepadHoldStarted=0;this.isTyping=false;this.canAdvance=false;
     this.currentQueue=[];this.queueIndex=0;this.choiceIndex=0;this.inputBound=false;this.isClosing=false;this.completed=false;this.gamepadWasPressed=false;this.skipPromptOpen=false;this.allowSkip=options.allowSkip!==false;
-    this._onKey=this._onKey.bind(this);this._onPointer=this._onPointer.bind(this);this._pollGamepad=this._pollGamepad.bind(this);this.bindInput();
+    this._onKey=this._onKey.bind(this);this._onKeyUp=this._onKeyUp.bind(this);this._onPointer=this._onPointer.bind(this);this._onPointerUp=this._onPointerUp.bind(this);this._pollGamepad=this._pollGamepad.bind(this);this.bindInput();
   }
   savePrefs(){try{localStorage.setItem(PREFS_KEY,JSON.stringify(this.prefs))}catch{}}
   build(){
@@ -105,7 +105,7 @@ export class SonicBattleDialogue{
     this.promptEl=document.createElement('div');this.promptEl.className='px-dialogue-prompt sbDialoguePrompt';this.promptEl.innerHTML='<span>Click or press</span><kbd class="px-key sbKey">A</kbd><span>to continue</span>';this.promptEl.style.display='none';
     this.historyPanel=document.createElement('section');this.historyPanel.className='px-dialogue-history hidden';this.historyPanel.setAttribute('aria-label','Dialogue history');this.historyPanel.innerHTML='<header><strong>DIALOGUE HISTORY</strong><button type="button" data-dialogue-history-close>BACK</button></header><div data-dialogue-history-list></div>';
     this.box.append(this.toolbar,this.speakerEl,this.tailEl,this.textEl,this.choicesEl,this.promptEl);this.overlay.append(this.spriteWrap,this.box,this.historyPanel);
-    this.overlay.addEventListener('pointerdown',this._onPointer);this.container.appendChild(this.overlay);
+    this.overlay.addEventListener('pointerdown',this._onPointer);document.addEventListener('pointerup',this._onPointerUp);document.addEventListener('pointercancel',this._onPointerUp);this.container.appendChild(this.overlay);
     this.toolbar.querySelector('[data-dialogue-auto]').addEventListener('click',event=>{event.stopPropagation();this.prefs.auto=!this.prefs.auto;this.savePrefs();this.updateToolbar();if(this.prefs.auto&&this.canAdvance)this.advanceTimer=setTimeout(()=>this.advance(),this.autoAdvanceDelay)});
     this.toolbar.querySelector('[data-dialogue-speed]').addEventListener('click',event=>{event.stopPropagation();const order=['slow','normal','fast','instant'],index=order.indexOf(this.prefs.speed);this.prefs.speed=order[(index+1)%order.length];this.savePrefs();this.updateToolbar()});
     this.toolbar.querySelector('[data-dialogue-history]').addEventListener('click',event=>{event.stopPropagation();this.openHistory()});
@@ -118,25 +118,34 @@ export class SonicBattleDialogue{
     this.toolbar.querySelector('[data-dialogue-auto]').textContent=`AUTO: ${this.prefs.auto?'ON':'OFF'}`;
     this.toolbar.querySelector('[data-dialogue-speed]').textContent=`SPEED: ${String(this.prefs.speed||'normal').toUpperCase()}`;
   }
+  holdAdvanceEnabled(){if(typeof this.holdAdvanceActive==='boolean')return this.holdAdvanceActive;try{return loadQolSettings().gameplay.holdDialogueAdvance===true}catch{return false}}
+  updateAdvancePrompt(){if(this.promptEl)this.promptEl.innerHTML=this.holdAdvanceEnabled()?'<span>Hold to continue</span><kbd class="px-key sbKey">0.35s</kbd>':'<span>Click or press</span><kbd class="px-key sbKey">A</kbd><span>to continue</span>'}
+  beginHoldAdvance(){
+    if(!this.holdAdvanceEnabled()||!this.canAdvance||this.isTyping||this.choicesEl?.style.display!=='none'||this.holdAdvanceTimer)return false;
+    this.holdAdvanceTimer=setTimeout(()=>{this.holdAdvanceTimer=null;if(this._isActive()&&this.canAdvance)this.advance()},350);
+    return true;
+  }
+  cancelHoldAdvance(){clearTimeout(this.holdAdvanceTimer);this.holdAdvanceTimer=null}
   openHistory(){
     if(!this.historyPanel)return;clearTimeout(this.advanceTimer);this.historyPanel.classList.remove('hidden');this.box.classList.add('history-open');
     const list=this.historyPanel.querySelector('[data-dialogue-history-list]');list.innerHTML=this.history.map(item=>`<article><strong>${safeText(item.speaker||'Narrator')}</strong><p>${safeText(item.text)}</p></article>`).join('')||'<p>No earlier lines yet.</p>';list.scrollTop=list.scrollHeight;
   }
   closeHistory(){this.historyPanel?.classList.add('hidden');this.box?.classList.remove('history-open');if(this.prefs.auto&&this.canAdvance)this.advanceTimer=setTimeout(()=>this.advance(),this.autoAdvanceDelay)}
-  bindInput(){if(this.inputBound)return;document.addEventListener('keydown',this._onKey);this.inputBound=true}
-  unbindInput(){if(!this.inputBound)return;document.removeEventListener('keydown',this._onKey);this.inputBound=false}
+  bindInput(){if(this.inputBound)return;document.addEventListener('keydown',this._onKey);document.addEventListener('keyup',this._onKeyUp);this.inputBound=true}
+  unbindInput(){if(!this.inputBound)return;document.removeEventListener('keydown',this._onKey);document.removeEventListener('keyup',this._onKeyUp);this.inputBound=false;this.cancelHoldAdvance()}
   _isActive(){return Boolean(this.overlay?.classList.contains('active'))}
   _seenSkipAvailable(){return Boolean(this.isSeen&&this.allowSkip&&!this.isClosing&&skipSeenEnabled())}
   skipSeen(){if(this._seenSkipAvailable()&&this._isActive())this.close()}
   _onPointer(event){
     if(!this._isActive()||event.target.closest('.px-dialogue-choice,.sbDialogueChoice,.px-dialogue-toolbar,.px-dialogue-history'))return;
-    event.preventDefault();if(this.isTyping)this.skipTyping();else if(this.canAdvance)this.advance();
+    event.preventDefault();if(this.isTyping)this.skipTyping();else if(this.canAdvance){if(!this.beginHoldAdvance())this.advance()}
   }
+  _onPointerUp(){this.cancelHoldAdvance()}
   _onKey(event){
     if(!this._isActive())return;
     if(!this.historyPanel?.classList.contains('hidden')){if(event.code==='Escape'||ADVANCE_KEYS.has(event.code)){event.preventDefault();this.closeHistory()}return}
     if(event.code==='Tab'&&this._seenSkipAvailable()){event.preventDefault();this.skipSeen();return}
-    if(ADVANCE_KEYS.has(event.code)){event.preventDefault();if(this.isTyping)this.skipTyping();else if(this.choicesEl.style.display!=='none')this.selectChoice(this.choiceIndex);else if(this.canAdvance)this.advance();return}
+    if(ADVANCE_KEYS.has(event.code)){event.preventDefault();if(event.repeat)return;if(this.isTyping)this.skipTyping();else if(this.choicesEl.style.display!=='none')this.selectChoice(this.choiceIndex);else if(this.canAdvance){if(!this.beginHoldAdvance())this.advance()}return}
     if(this.choicesEl.style.display!=='none'){if(PREVIOUS_KEYS.has(event.code)){event.preventDefault();this.navigateChoice(-1)}else if(NEXT_KEYS.has(event.code)){event.preventDefault();this.navigateChoice(1)}}
     if(event.code==='KeyH'){event.preventDefault();this.openHistory();return}
     if(event.code==='Escape'){
@@ -146,23 +155,26 @@ export class SonicBattleDialogue{
       storyConfirm({title:'SKIP THIS CONVERSATION?',message:'The remaining dialogue will be skipped and the story will continue from the next gameplay section.',accept:'SKIP DIALOGUE'}).then(skip=>{this.skipPromptOpen=false;if(skip&&this._isActive())this.close()});
     }
   }
+  _onKeyUp(event){if(ADVANCE_KEYS.has(event.code))this.cancelHoldAdvance()}
   _pollGamepad(){
     if(!this._isActive())return;const pads=navigator.getGamepads?.()||[],pad=Array.from(pads).find(Boolean),confirm=Boolean(pad?.buttons?.[0]?.pressed);
     const skipButton=Boolean(pad?.buttons?.[3]?.pressed);
     if(skipButton&&!this.gamepadSkipWasPressed&&this._seenSkipAvailable()){this.gamepadSkipWasPressed=true;this.skipSeen();return}
     this.gamepadSkipWasPressed=skipButton;
-    if(confirm&&!this.gamepadWasPressed){if(this.isTyping)this.skipTyping();else if(this.choicesEl.style.display!=='none')this.selectChoice(this.choiceIndex);else if(this.canAdvance)this.advance()}
+    if(this.holdAdvanceEnabled()&&confirm&&this.choicesEl.style.display==='none'&&!this.isTyping&&this.canAdvance){if(this.gamepadHoldStarted!==-1){if(!this.gamepadHoldStarted)this.gamepadHoldStarted=performance.now();if(performance.now()-this.gamepadHoldStarted>=350){this.gamepadHoldStarted=-1;this.advance()}}}
+    else if(confirm&&!this.gamepadWasPressed){if(this.isTyping)this.skipTyping();else if(this.choicesEl.style.display!=='none')this.selectChoice(this.choiceIndex);else if(this.canAdvance)this.advance()}
+    if(!confirm)this.gamepadHoldStarted=0;
     this.gamepadWasPressed=confirm;if(this._isActive())this.gamepadFrame=requestAnimationFrame(this._pollGamepad);
   }
   show(data){
-    this.build();this.bindInput();this.completed=false;this.isClosing=false;this.overlay.classList.add('active');this.currentQueue=Array.isArray(data)?data:[data];this.queueIndex=0;this.history=[];
+    this.build();this.bindInput();this.completed=false;this.isClosing=false;this.overlay.classList.add('active');this.currentQueue=Array.isArray(data)?data:[data];this.queueIndex=0;this.history=[];this.gamepadHoldStarted=0;this.cancelHoldAdvance();
     const longEnough=this.currentQueue.length>=SEEN_MIN_LINES,hasChoices=this.currentQueue.some(entry=>Array.isArray(entry?.choices)&&entry.choices.length);
     this.seenId=longEnough&&!hasChoices?conversationId(this.currentQueue):null;this.isSeen=Boolean(this.seenId&&readSeen().includes(this.seenId));
     const skipSeenButton=this.toolbar?.querySelector('[data-dialogue-skip-seen]');if(skipSeenButton)skipSeenButton.hidden=!this._seenSkipAvailable();
     this.displayEntry(this.currentQueue[0]||{});cancelAnimationFrame(this.gamepadFrame);this.gamepadFrame=requestAnimationFrame(this._pollGamepad);return this;
   }
   displayEntry(entry={}){
-    clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);this.canAdvance=false;this.promptEl.style.display='none';this.choicesEl.style.display='none';this.choicesEl.innerHTML='';
+    clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);this.cancelHoldAdvance();this.holdAdvanceActive=(()=>{try{return loadQolSettings().gameplay.holdDialogueAdvance===true}catch{return false}})();this.canAdvance=false;this.promptEl.style.display='none';this.choicesEl.style.display='none';this.choicesEl.innerHTML='';this.updateAdvancePrompt();
     const key=speakerKey(entry),emotion=inferEmotion(entry);this.overlay.dataset.emotion=emotion;
     if(entry.speaker){
       this.speakerEl.style.display='inline-flex';this.speakerEl.className=`px-dialogue-speaker sbDialogueSpeaker ${key}`;this.speakerEl.textContent=safeText(entry.speaker);
@@ -206,13 +218,13 @@ export class SonicBattleDialogue{
   navigateChoice(direction){const choices=this.choicesEl.querySelectorAll('.px-dialogue-choice,.sbDialogueChoice');if(!choices.length)return;this.choiceIndex=(this.choiceIndex+direction+choices.length)%choices.length;this.updateChoiceSelection();choices[this.choiceIndex].focus()}
   updateChoiceSelection(){this.choicesEl.querySelectorAll('.px-dialogue-choice,.sbDialogueChoice').forEach((choice,index)=>choice.classList.toggle('selected',index===this.choiceIndex))}
   selectChoice(index){const entry=this.currentQueue[this.queueIndex]||{},choice=entry.choices?.[index];if(!choice)return;this.onChoice({entry,choice,index});this.advance()}
-  advance(){if(this.isClosing)return;clearTimeout(this.advanceTimer);this.queueIndex++;if(this.queueIndex<this.currentQueue.length)this.displayEntry(this.currentQueue[this.queueIndex]);else this.close()}
+  advance(){if(this.isClosing)return;this.cancelHoldAdvance();clearTimeout(this.advanceTimer);this.queueIndex++;if(this.queueIndex<this.currentQueue.length)this.displayEntry(this.currentQueue[this.queueIndex]);else this.close()}
   close(){
-    if(this.isClosing)return;if(this.seenId)markSeen(this.seenId);this.isClosing=true;clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);cancelAnimationFrame(this.gamepadFrame);this.canAdvance=false;this.isTyping=false;
+    if(this.isClosing)return;if(this.seenId)markSeen(this.seenId);this.isClosing=true;clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);this.cancelHoldAdvance();cancelAnimationFrame(this.gamepadFrame);this.canAdvance=false;this.isTyping=false;
     const finish=()=>{if(this.completed)return;this.completed=true;const callback=this.onComplete;this.destroy();this.isClosing=false;callback()};if(this.box){this.box.classList.add('exit');setTimeout(finish,200)}else finish();
   }
   destroy(){
-    clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);cancelAnimationFrame(this.gamepadFrame);this.unbindInput();this.overlay?.removeEventListener('pointerdown',this._onPointer);this.overlay?.remove();
+    clearInterval(this.typingTimer);clearTimeout(this.advanceTimer);this.cancelHoldAdvance();cancelAnimationFrame(this.gamepadFrame);this.unbindInput();this.overlay?.removeEventListener('pointerdown',this._onPointer);document.removeEventListener('pointerup',this._onPointerUp);document.removeEventListener('pointercancel',this._onPointerUp);this.overlay?.remove();
     this.overlay=this.spriteWrap=this.spriteEl=this.portraitEl=this.box=this.textEl=this.speakerEl=this.tailEl=this.promptEl=this.choicesEl=this.toolbar=this.historyPanel=this.emotionEl=null;
   }
   static say(text,speaker,options={}){const dialogue=new SonicBattleDialogue(options);dialogue.show({text,speaker,...options});return dialogue}

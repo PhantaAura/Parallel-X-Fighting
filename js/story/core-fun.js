@@ -1,4 +1,4 @@
-import {storyTechniqueAvailable} from './field-skills.js?v=29a409-wade-race-events-20261122';
+import {storyTechniqueAvailable} from './field-skills.js?v=29a410-pacing-objective-qol-20261122';
 const BUILD_KEY='pxRrvvfoBuildV1';
 const ADVENTURE_KEY='pxAdventureProgressV1';
 

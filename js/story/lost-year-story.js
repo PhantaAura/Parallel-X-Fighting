@@ -11,19 +11,19 @@ import {
   repairChapter4Progress,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a409-wade-race-events-20261122';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a409-wade-race-events-20261122';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a409-wade-race-events-20261122';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a409-wade-race-events-20261122';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a409-wade-race-events-20261122';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a409-wade-race-events-20261122';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a409-wade-race-events-20261122';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a409-wade-race-events-20261122';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a409-wade-race-events-20261122';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a409-wade-race-events-20261122';
-import {inspectStoryReliability} from './story-reliability.js?v=29a409-wade-race-events-20261122';
-import {renderTravelJournal} from './connected-world.js?v=29a409-wade-race-events-20261122';
-import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a409-wade-race-events-20261122';
+} from './lost-year-data.js?v=29a410-pacing-objective-qol-20261122';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a410-pacing-objective-qol-20261122';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a410-pacing-objective-qol-20261122';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a410-pacing-objective-qol-20261122';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a410-pacing-objective-qol-20261122';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a410-pacing-objective-qol-20261122';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a410-pacing-objective-qol-20261122';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a410-pacing-objective-qol-20261122';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a410-pacing-objective-qol-20261122';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a410-pacing-objective-qol-20261122';
+import {inspectStoryReliability} from './story-reliability.js?v=29a410-pacing-objective-qol-20261122';
+import {renderTravelJournal} from './connected-world.js?v=29a410-pacing-objective-qol-20261122';
+import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a410-pacing-objective-qol-20261122';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;

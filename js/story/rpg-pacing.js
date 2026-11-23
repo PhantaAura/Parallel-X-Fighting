@@ -10,7 +10,7 @@ export const RPG_PACING_PROFILES=Object.freeze({
   }),
   chapter2:Object.freeze({
     label:'TOURNAMENT DAY',
-    orientation:Object.freeze({districts:3,conversations:2,requiredDistricts:['central']}),
+    orientation:Object.freeze({districts:2,conversations:1,requiredDistricts:['central']}),
     phaseLabels:Object.freeze({arrival:'FESTIVAL ARRIVAL',development:'TOURNAMENT PREPARATION',crisis:'OFFICIAL BRACKET',aftermath:'BETWEEN ROUNDS',departure:'TOURNAMENT AFTERMATH'})
   }),
   chapter3:Object.freeze({

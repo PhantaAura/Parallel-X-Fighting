@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a409-wade-race-events-20261122';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a409-wade-race-events-20261122';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a410-pacing-objective-qol-20261122';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a410-pacing-objective-qol-20261122';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
 export const CHAPTER4_STATE_VERSION=5;
 
@@ -26,6 +26,7 @@ export const CHAPTER4_LIFT_PARTS=Object.freeze([
   Object.freeze({id:'resonance-coil',label:'RESONANCE COIL',x:890,z:-40}),
   Object.freeze({id:'brake-core',label:'MOUNTAIN BRAKE CORE',x:720,z:-330})
 ]);
+export const CHAPTER4_REQUIRED_LIFT_PART_COUNT=2;
 
 export const CHAPTER4_INGREDIENTS=Object.freeze([
   Object.freeze({id:'emberBloom',title:'EMBER BLOOM',label:'CONTROL THE EMBER BLOOM',area:'village',x:460,z:600}),

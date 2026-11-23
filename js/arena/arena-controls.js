@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a58a-quality';
-import {sharedInput} from '../input-runtime.js?v=29a58a-quality';
+import {CONTROL_MAPS} from '../input.js?v=29a59-route';
+import {sharedInput} from '../input-runtime.js?v=29a59-route';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 
@@ -153,7 +153,7 @@ export class ArenaControlManager{
   }
 
   keyDown(event){
-    if(!this.active)return;
+    if(!this.active||this.keyboardModalOwner)return;
     if(event.code==='Escape'){
       event.preventDefault();event.stopImmediatePropagation();
       if(!this.settingsPanel?.classList.contains('hidden'))this.closeSettings();else this.onExit();

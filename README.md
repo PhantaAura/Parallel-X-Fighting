@@ -1,6 +1,8 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.58 — Code Quality and Stability
+## Prototype 2.9A.59 — Route Guidance and Fight Transitions
 
+- Main-quest guidance follows the required destination with camera-relative directions, distance, and a world label when visible. Optional activities no longer replace the main target.
+- Fixed lost fighter atlases after encounter changes and overlapping Echo scenery during boss transitions.
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
 - The real Sage is found fighting inside the facility; Project Hollow threatens the escape through lockdown/suppression rather than casually overpowering him.
@@ -423,4 +425,4 @@ Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.33.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.33.m
 
 ## Code checks
 
-Run `node --test tests/code-quality.test.mjs` for save-import, geometry, renderer cleanup, and JavaScript syntax checks. Serve the repository locally and open `tests/lifecycle-smoke.html` for browser lifecycle checks. These do not replace chapter playthroughs or mobile performance checks.
+Run `node --test tests/*.test.mjs` for save-import, geometry, renderer cleanup, sprite-request races, main-quest guidance, and JavaScript syntax checks. Serve the repository locally and open `tests/lifecycle-smoke.html` and `tests/route-polish-smoke.html` for browser lifecycle, real-atlas and repeated chapter-transition checks. These do not replace chapter playthroughs or mobile performance checks.

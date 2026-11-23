@@ -1,4 +1,4 @@
-import {surface} from './surface-mesh.js?v=29a58a-quality';
+import {surface} from './surface-mesh.js?v=29a59-route';
 
 // Explicit scenery for each chapter. Collision and quest coordinates remain owned by the story.
 const rebuilt=new Set(['tournament-hub','after-hours-tournament','resonance-facility','remote-highlands','echo-village','echo-mountain','echo-caverns','echo-sky','shadow-lookout','chapter5-outpost','chapter6-highlands','chapter7-relay','chapter8-core']);

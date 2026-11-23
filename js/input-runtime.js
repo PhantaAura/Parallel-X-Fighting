@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a58a-quality';
+import {InputManager} from './input.js?v=29a59-route';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

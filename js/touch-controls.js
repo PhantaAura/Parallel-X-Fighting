@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a58a-quality';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a59-route';
 
 function isMobileTouchPlatform(nav=globalThis.navigator){
   if(nav?.userAgentData?.mobile)return true;

@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a58a-quality';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a59-route';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.22';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([
@@ -170,4 +170,36 @@ export function nearestDistrict(x,z){
     if(d<bestDistance){best=district;bestDistance=d}
   }
   return best;
+}
+
+// Track the mandatory route, independent of the closest optional conversation.
+export function chapter2MainTarget({state,pacing={},npcs=[],race={},movingCard=null,cartX=-1080}={}){
+  if(!state?.hubQuests)return null;
+  const q=state.hubQuests.mandatory,npc=id=>npcs.find(item=>item.id===id)||null;
+  if(!pacing.orientationComplete&&!state.tournamentStarted){
+    if(!(pacing.visitedDistricts||[]).includes('central'))return{x:-280,z:40,label:'CENTRAL PLAZA'};
+    if(!(pacing.conversations||[]).length)return npc('announcer');
+    return CHAPTER2_DISTRICTS.find(item=>!(pacing.visitedDistricts||[]).includes(item.id))||npc('announcer');
+  }
+  if(state.tournamentStarted){
+    const required=requiredRumorCountForStep(state.tournamentStep),found=q.ploukeRumors.clues.length;
+    if(state.intermission&&found<required){const source=CHAPTER2_PLOUKE_CLUES[found]?.source;return npc({'OLD COMPETITOR':'veteran','TOURNAMENT WORKER':'worker',BARK:'bark',WADE:'wade'}[source])}
+    return npc('bracket');
+  }
+  if(!q.bracket.started&&!q.bracket.complete)return npc('announcer');
+  if(!q.bracket.complete){
+    const missing=missingChapter2BracketCards(state.hubQuests)[0];
+    if(missing?.id==='fan-card')return q.bracket.fanClue&&movingCard?{...movingCard,label:'WADE’S BRACKET CARD'}:npc('fan');
+    if(missing?.id==='vendor-card')return{x:-430,z:760,label:'MARKET ROOF • BRACKET CARD'};
+    if(missing?.id==='veteran-card')return{x:cartX,z:-300,label:'MAINTENANCE CART • BRACKET CARD'};
+    return npc('announcer');
+  }
+  if(!state.sageVanished)return npc('announcer');
+  if(!state.firstBrawlComplete)return npc('practice');
+  if(!state.metBarkWade)return npc('wade');
+  if(!q.wadeRace.complete)return race.active?CHAPTER2_RACE_CHECKPOINTS[race.index]||npc('wade'):npc('wade');
+  if(!q.barkRing.started)return npc('bark');
+  if(!q.barkRing.complete)return CHAPTER2_RING_SUPPORTS.find(item=>!q.barkRing.supports.includes(item.id))||npc('bark');
+  if(!state.hubQuests.variety.festivalExhibition.complete)return npc('exhibition');
+  return npc('bracket');
 }

@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a58a-quality';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a58a-quality';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a58a-quality';
-import {storyConfirm} from './story-ux.js?v=29a58a-quality';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a58a-quality';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a59-route';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a59-route';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a59-route';
+import {storyConfirm} from './story-ux.js?v=29a59-route';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a59-route';
 
 const RUN_ID='pxLegacyRrvvfoChapterRun';
 const CHAPTERS=Object.freeze({
@@ -404,7 +404,9 @@ class RrvvfoLegacyChapter{
     foe.maxHp=Math.round(foe.maxHp*Math.max(.45,Number(wave.hpScale??fight.hpScale)||1));foe.hp=foe.maxHp;foe.en=82;foe.guard=100;
     this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:foe.id,stageId:this.battle.stage.id,mode:'story'});
     this.engine.setHotbarAvailability([1,2,3,4,5],{show:true});this.engine.setLabels({stageName:this.battle.stage.name,chapterLabel:`RRVVFO CHAPTER ${this.number}`,names:['RRVVFO',foe.name.toUpperCase()]});
-    const waveCount=fight.waves?.length||1;this.battle.notice(`${fight.notice||fight.name}${waveCount>1?` • PHASE ${this.waveIndex+1}/${waveCount}`:''}`,1.8);
+    const waveCount=fight.waves?.length||1;
+    this.setObjective(fight.objective,`${waveCount>1?`Phase ${this.waveIndex+1} of ${waveCount} • `:''}${foe.name}. ${fight.detail||''}`);
+    this.battle.notice(`${fight.notice||fight.name}${waveCount>1?` • PHASE ${this.waveIndex+1}/${waveCount}`:''}`,1.8);
     this.fightSettled=false;this.fightSerial++;this.currentFightToken=this.fightSerial;
   }
 

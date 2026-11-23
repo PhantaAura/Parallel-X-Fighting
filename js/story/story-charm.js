@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a58a-quality';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a59-route';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 

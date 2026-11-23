@@ -1,21 +1,22 @@
+import {bindFighterAsset,SPRITE_FIGHTER_IDS} from './fighter-assets.js?v=29a59-route';
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a58a-quality';
-import {drawStagePersonality,projectileHitsStageGeometry,resolveStageGeometry,stagePersonalityFor} from './stage-personality.js?v=29a58a-quality';
-import {drawArenaStage} from './arena-stage-renderer.js?v=29a58a-quality';
-import {WebGLArenaRenderer} from './webgl-renderer.js?v=29a58a-quality';
-import {ArenaControlManager} from './arena-controls.js?v=29a58a-quality';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor,fighterFeelFor} from './arena-combat-data.js?v=29a58a-quality';
-import {finalKoImpactFor,signatureMeleeKind,signatureProfileFor} from './signature-combat.js?v=29a58a-quality';
-import {PLAYABLE_ROSTER_IDS,ROSTER} from '../roster.js?v=29a58a-quality';
-import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a58a-quality';
-import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a58a-quality';
-import {loadQolSettings} from '../qol-settings.js?v=29a58a-quality';
-import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a58a-quality';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a58a-quality';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a58a-quality';
-import {BUILD_VERSION} from '../build-info.js?v=29a58a-quality';
-import {createBattleMasterySession,finalizeBattleMastery,masteryRankLabel,recordBattleMasteryEvent,recordMasteryChallenge} from '../mastery-records.js?v=29a58a-quality';
-import {applyRrvvfoBuildToFighter,buildHasPassive,currentRrvvfoBuild,enemyArchetypeShape,tuneRrvvfoAbility} from '../story/core-fun.js?v=29a58a-quality';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a59-route';
+import {drawStagePersonality,projectileHitsStageGeometry,resolveStageGeometry,stagePersonalityFor} from './stage-personality.js?v=29a59-route';
+import {drawArenaStage} from './arena-stage-renderer.js?v=29a59-route';
+import {WebGLArenaRenderer} from './webgl-renderer.js?v=29a59-route';
+import {ArenaControlManager} from './arena-controls.js?v=29a59-route';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor,fighterFeelFor} from './arena-combat-data.js?v=29a59-route';
+import {finalKoImpactFor,signatureMeleeKind,signatureProfileFor} from './signature-combat.js?v=29a59-route';
+import {PLAYABLE_ROSTER_IDS,ROSTER} from '../roster.js?v=29a59-route';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a59-route';
+import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a59-route';
+import {loadQolSettings} from '../qol-settings.js?v=29a59-route';
+import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a59-route';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a59-route';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a59-route';
+import {BUILD_VERSION} from '../build-info.js?v=29a59-route';
+import {createBattleMasterySession,finalizeBattleMastery,masteryRankLabel,recordBattleMasteryEvent,recordMasteryChallenge} from '../mastery-records.js?v=29a59-route';
+import {applyRrvvfoBuildToFighter,buildHasPassive,currentRrvvfoBuild,enemyArchetypeShape,tuneRrvvfoAbility} from '../story/core-fun.js?v=29a59-route';
 
 const ID='arenaModeScreen';
 const W=960;
@@ -257,7 +258,7 @@ function installUI(){
   return root;
 }
 
-const SPRITE_MANIFEST_IDS=new Set(['rrvvfo','revvfo','wade','bark','sage']);
+const SPRITE_MANIFEST_IDS=SPRITE_FIGHTER_IDS;
 
 async function loadSprite(renderer,id){
   if(!SPRITE_MANIFEST_IDS.has(String(id)))return null;
@@ -315,9 +316,14 @@ function frameFor(fighter){
 
 class CombatAudio{
   constructor(){this.context=null}
-  enable(){if(!this.context){const AudioContext=window.AudioContext||window.webkitAudioContext;if(AudioContext)this.context=new AudioContext()}this.context?.resume?.()}
+  enable(){
+    if(this.context?.state==='closed')return;
+    if(!this.context){const AudioContext=window.AudioContext||window.webkitAudioContext;if(AudioContext)this.context=new AudioContext()}
+    // A scene may be disposed before an autoplay-gated resume promise settles.
+    this.context?.resume?.()?.catch(()=>{});
+  }
   tone(frequency=220,duration=.06,type='square',gain=.035,slide=0,delay=0){
-    const context=this.context;if(!context)return;
+    const context=this.context;if(!context||context.state==='closed')return;
     const oscillator=context.createOscillator(),volume=context.createGain(),now=context.currentTime+Math.max(0,delay);
     oscillator.type=type;oscillator.frequency.setValueAtTime(frequency,now);if(slide)oscillator.frequency.exponentialRampToValueAtTime(Math.max(30,frequency+slide),now+duration);
     volume.gain.setValueAtTime(Math.max(.0001,gain),now);volume.gain.exponentialRampToValueAtTime(.0001,now+duration);
@@ -471,18 +477,8 @@ class ArenaBattle{
     }));
     return this.assetPromises.get(id);
   }
-  ensureFighterAsset(fighter,id=fighter?.id,{force=false}={}){
-    if(!fighter||!id)return Promise.resolve(null);
-    const expectedId=String(id);
-    if(!force&&fighter.asset&&fighter.assetId===expectedId)return Promise.resolve(fighter.asset);
-    const token=(Number(fighter.assetLoadToken)||0)+1;
-    fighter.assetLoadToken=token;
-    return this.loadFighterAsset(expectedId).then(asset=>{
-      if(!this.active||fighter.assetLoadToken!==token||fighter.id!==expectedId)return asset;
-      fighter.asset=asset;
-      fighter.assetId=asset?expectedId:null;
-      return asset;
-    });
+  ensureFighterAsset(fighter,id=fighter?.id,options={}){
+    return bindFighterAsset(this,fighter,id,options);
   }
   clearCombatObjects(){this.projectiles=[];this.agonyClones=[];this.thunderZones=[];this.quakes=[];this.earthWalls=[]}
   clearPursuitState(fighter){
@@ -1372,6 +1368,9 @@ class ArenaBattle{
   }
 
   drawFighterSprite2D(context,fighter){
+    if(fighter.y>-500&&SPRITE_FIGHTER_IDS.has(fighter.id)&&(!fighter.asset||fighter.assetId!==fighter.id)&&Date.now()>=(fighter.assetRetryAt||0)){
+      void this.ensureFighterAsset(fighter);
+    }
     const frame=frameFor(fighter),rect=this.fighterScreenRect(fighter,frame);
     if(!rect.visible||rect.x>W+rect.width||rect.x+rect.width<0||rect.y>H+rect.height||rect.y+rect.height<0)return;
     const alpha=fighter.hp<=0?.72:1;

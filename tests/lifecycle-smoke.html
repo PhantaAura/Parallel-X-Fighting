@@ -6,8 +6,8 @@
 const result=document.querySelector('#result'),lines=[];
 try{
   const [{ArenaBattle},{createStoryBattle,destroyStoryBattle,attachStoryEngine}]=await Promise.all([
-    import('../js/arena/arena-mode.js?v=29a58a-quality'),
-    import('../js/story/story-engine.js?v=29a58a-quality')
+    import('../js/arena/arena-mode.js?v=29a59-route'),
+    import('../js/story/story-engine.js?v=29a59-route')
   ]);
   const check=(condition,label)=>{if(!condition)throw Error(label);lines.push('PASS · '+label)};
   const first=new ArenaBattle('dojo');
@@ -30,7 +30,7 @@ try{
   const third=new ArenaBattle('resonance-facility');third.draw();third.dispose();
   check(third.renderer.landscapeMeshes.size===0,'A rendered chapter releases its uploaded scenery meshes');
   check(document.querySelectorAll('#arenaModeScreenStyle').length===1,'Arena styles do not accumulate');
-  await import('../js/story/mobile-playtest-lab.js?v=29a58a-quality');
+  await import('../js/story/mobile-playtest-lab.js?v=29a59-route');
   await new Promise(resolve=>requestAnimationFrame(resolve));
   check(Boolean(document.querySelector('[data-px-build-tap] span')),'Settings version entry stays distinct from the map debug hint');
   check(document.querySelectorAll('[data-px-build-tap]').length===1,'Repeated Settings observation does not duplicate the version entry');

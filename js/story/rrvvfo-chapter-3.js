@@ -1,16 +1,17 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a58a-quality';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a58a-quality';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a58a-quality';
-import {StoryMap} from './story-map.js?v=29a58a-quality';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a58a-quality';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a58a-quality';
-import {storyConfirm} from './story-ux.js?v=29a58a-quality';
-import {openCombatManual} from './combat-manual.js?v=29a58a-quality';
-import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a58a-quality';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a58a-quality';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a58a-quality';
-import {discoverWorldDelight} from './world-delight.js?v=29a58a-quality';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a58a-quality';
+import {nearestMainInteraction} from './main-quest-guidance.js?v=29a59-route';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a59-route';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a59-route';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a59-route';
+import {StoryMap} from './story-map.js?v=29a59-route';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a59-route';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a59-route';
+import {storyConfirm} from './story-ux.js?v=29a59-route';
+import {openCombatManual} from './combat-manual.js?v=29a59-route';
+import {applyRrvvfoBuildToFighter,openRrvvfoBuildLab} from './core-fun.js?v=29a59-route';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a59-route';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a59-route';
+import {discoverWorldDelight} from './world-delight.js?v=29a59-route';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a59-route';
 import {
   CHAPTER3_BRACKET_ORDER,
   CHAPTER3_EVIDENCE,
@@ -27,12 +28,12 @@ import {
   freshChapter3State,
   markChapter3Required,
   normalizeChapter3State
-} from './chapter3-content.js?v=29a58a-quality';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a58a-quality';
-import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a58a-quality';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a58a-quality';
-import {chapter3ReplacementActivity} from './quest-overhaul.js?v=29a58a-quality';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a58a-quality';
+} from './chapter3-content.js?v=29a59-route';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a59-route';
+import {CHAPTER3_INCIDENT_ORDER,nextIncidentStep,recordIncidentStep} from './quest-variety.js?v=29a59-route';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a59-route';
+import {chapter3ReplacementActivity} from './quest-overhaul.js?v=29a59-route';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a59-route';
 
 const UI_ID='rrvvfoChapter3PreviewUI';
 const MISSION_ID=CHAPTER3_MISSION_ID;
@@ -338,7 +339,7 @@ class RrvvfoChapter3{
     this.battle.beforeRestart=()=>storyConfirm({title:'RESTART ACTIVE ENCOUNTER?',message:'Restart the current Chapter 3 encounter? Completed investigation checkpoints remain saved.',confirmLabel:'RESTART'});
     this.root.hidden=false;
     this.objectiveHistory=attachStoryObjectiveHistory({root:this.root,chapter:3,battle:this.battle,getMode:()=>this.mode,setMode:mode=>{this.mode=mode},isActive:()=>!this.aborted});
-    this.map=new StoryMap({
+    this.map=new StoryMap({getBattle:()=>this.battle,isExploring:()=>!this.aborted&&(['hub','dungeon','remote','interior'].includes(this.mode)),
       title:'CHAPTER 3 INVESTIGATION MAP',regionId:this.connectedRegionId(),zoneId:this.connectedZoneId(),
       bounds:{minX:-1800,maxX:1800,minZ:-1120,maxZ:1120},
       getPlayer:()=>this.battle?.fighters?.[0]||null,
@@ -1509,7 +1510,7 @@ class RrvvfoChapter3{
     player.id='rrvvfo';player.name='Rrvvfo';player.accent='#ff493d';player.cpu=false;player.visualScale=1;player.reset(-420,70);void this.battle.ensureFighterAsset(player,'rrvvfo');
     applyStoryProgressionToFighter(player,loadLostYearProgress());player.en=75;player.guard=100;
     const hollow=['scanner','lockdown-unit'].includes(config.kind);
-    foe.id=config.id;foe.name=config.name;foe.accent=hollow?'#74d7e4':config.kind==='echo'?'#72d9e7':'#a98c5e';foe.cpu=true;foe.visualScale=config.kind==='echo'?1.18:hollow?1.08:1;foe.reset(420,-70);foe.asset=null;
+    foe.id=config.id;foe.name=config.name;foe.accent=hollow?'#74d7e4':config.kind==='echo'?'#72d9e7':'#a98c5e';foe.cpu=true;foe.visualScale=config.kind==='echo'?1.18:hollow?1.08:1;foe.reset(420,-70);foe.asset=null;void this.battle.ensureFighterAsset(foe,foe.id);
     applyStoryLevelToFighter(foe,playerLevel+(config.kind==='echo'?2:hollow?1:0));
     foe.maxHp=Math.round(foe.maxHp*(config.hpScale||1));foe.hp=foe.maxHp;foe.en=80;foe.guard=100;
     this.battle.beginBattleRank({fighterId:'rrvvfo',opponentId:foe.id,stageId:this.battle.stage.id,mode:'story'});
@@ -1883,9 +1884,10 @@ class RrvvfoChapter3{
       return interiorExitPoint(this.interiorId);
     }
     if(this.area==='remote')return null;
+    if(['opening','sabotageInvestigationStarted','sabotageConfirmed'].includes(next))return{x:1280,z:120,label:'DAMAGED MAIN ARENA'};
     if(['medicalWorkerFirstConversationComplete','medicalWorkerRevisited'].includes(next))return{x:640,z:-430,label:'TOURNAMENT MEDICAL CENTER'};
-    const interactions=this.availableInteractions();const player=this.battle?.fighters?.[0]||{x:0,z:0};
-    return[...interactions].sort((a,b)=>distance(player,a)-distance(player,b))[0]||null;
+    const interactions=this.availableInteractions().filter(item=>!item.kind?.startsWith('optional')&&item.kind!=='building-enter');const player=this.battle?.fighters?.[0]||{x:0,z:0};
+    return nearestMainInteraction(interactions,player);
   }
   mapPoints(){
     if(this.mode==='interior'&&this.interiorId)return interiorMapPoints(this.interiorId);
@@ -2053,9 +2055,6 @@ class RrvvfoChapter3{
     if(event.key.toLowerCase()==='t'&&['hub','dungeon','remote','interior'].includes(this.mode)){event.preventDefault();event.stopImmediatePropagation();this.openTracker();return}
     if(['hub','dungeon','interior'].includes(this.mode)&&(event.key==='Enter'||event.code==='KeyE')){event.preventDefault();event.stopImmediatePropagation();this.tryInteract()}
     if(this.mode==='hub'&&event.code==='Digit4'&&this.state.strangeManHatCollected&&!this.state.strangeManHatLensInspected){event.preventDefault();this.inspectStrangeManHatWithLens()}
-  }
-
-  drawChapterWorld(){
   }
 
   drawChapterWorld(){

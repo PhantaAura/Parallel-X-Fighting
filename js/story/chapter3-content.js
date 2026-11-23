@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a58a-quality';
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a58a-quality';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a59-route';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a59-route';
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
 export const CHAPTER3_STATE_VERSION=4;
 

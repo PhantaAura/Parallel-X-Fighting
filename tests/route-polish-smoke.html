@@ -1,0 +1,60 @@
+<!doctype html><meta charset="utf-8"><title>Clash of Souls route checks</title>
+<style>body{background:#14221d;color:#e9efdf;font:17px/1.6 system-ui;padding:24px}pre{white-space:pre-wrap}.pass{color:#8ddeab}.fail{color:#ffaba1}[hidden]{display:none!important}</style>
+<h1>Route, sprites and maps</h1><pre id="result">Loading actual character atlases…</pre>
+<script type="module">
+const result=document.querySelector('#result'),lines=[];let battle,map,chapter;
+try{
+  const [{ArenaBattle},{StoryMap}]=await Promise.all([
+    import('../js/arena/arena-mode.js?v=29a59-route'),import('../js/story/story-map.js?v=29a59-route')
+  ]);
+  const check=(ok,label)=>{if(!ok)throw Error(label);lines.push('PASS · '+label)};
+  battle=new ArenaBattle('tournament');
+  for(const id of ['rrvvfo','bark','wade']){
+    const fighter=battle.fighters[1];fighter.id=id;fighter.asset=null;
+    battle.draw();await fighter.assetPendingPromise;
+    check(fighter.assetId===id&&fighter.asset?.image?.naturalWidth>0,id.toUpperCase()+' atlas loads after a fight changes the actor');
+  }
+  const bark=battle.fighters[1];bark.id='bark';bark.asset=null;
+  await battle.ensureFighterAsset(bark);battle.stopMatch();
+  bark.asset=null;await battle.ensureFighterAsset(bark);
+  check(bark.assetId==='bark','Cached sprites reattach while a match is stopped between phases');
+  let exits=0;battle.controls.onExit=()=>exits++;battle.controls.start();
+  let exploring=true;
+  const config={getBattle:()=>battle,isExploring:()=>exploring,getPlayer:()=>battle.fighters[0],getObjective:()=>({x:100,z:100,label:'MAIN QUEST DESTINATION'})};
+  const old=new StoryMap(config);map=new StoryMap(config);old.draw(true);
+  check(document.querySelectorAll('.storyMiniMap').length===1,'Replacing a chapter map leaves one minimap');
+  check(document.querySelectorAll('.storyQuestBeacon').length===1,'A stale map cannot recreate an old destination marker');
+  map.open();check(battle.paused,'Opening the map pauses gameplay');
+  map.overlay.querySelector('[data-map-close]').dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',bubbles:true}));
+  check(map.overlay.hidden&&!battle.paused&&exits===0,'Escape closes the map without also triggering battle exit');
+  map.open();map.open();
+  map.close();check(!battle.paused,'Closing the map resumes only the pause it owns');
+  battle.paused=true;map.open();map.close();check(battle.paused,'A previously paused match stays paused after map close');battle.paused=false;
+  map.open();exploring=false;map.draw(true);
+  check(map.mini.hidden&&map.compass.hidden&&map.beacon.hidden&&map.overlay.hidden&&!battle.paused,'Fight transition closes and hides all exploration map UI');
+  exploring=true;map.draw(true);check(!map.mini.hidden,'The single map returns when exploration resumes');
+  map.destroy();map.destroy();battle.dispose();
+  check(document.querySelectorAll('.storyMiniMap,.storyQuestBeacon').length===0,'Repeated chapter cleanup leaves no maps or markers');
+  const {startRrvvfoChapter4}=await import('../js/story/rrvvfo-chapter-4.js?v=29a59-route');
+  chapter=startRrvvfoChapter4({replay:true,playtestHub:true});
+  chapter.saveState=()=>{}; // The transition fixture must not write a player checkpoint.
+  await new Promise(resolve=>setTimeout(resolve,120));
+  chapter.battle.stopMatch();
+  const villageDraw=chapter.drawVillage.bind(chapter);let villageDraws=0;
+  chapter.drawVillage=(...args)=>{villageDraws++;villageDraw(...args)};
+  for(let cycle=0;cycle<2;cycle++){
+    chapter.startFight({kind:'ryuzankaro',id:'ryuzankaro',name:'Ryuzankaro',stage:'echo-sky',teamBattle:true});
+    chapter.battle.stopMatch();chapter.battle.draw();
+    check(villageDraws===cycle,'A sky fight does not draw the previous village scenery (cycle '+(cycle+1)+')');
+    const allies=chapter.companionSprites();
+    allies.forEach(ally=>{ally.y=0});chapter.battle.draw();
+    await Promise.all(allies.map(ally=>chapter.battle.ensureFighterAsset(ally)));
+    check(allies.every(ally=>ally.assetId===ally.id&&ally.asset?.image?.naturalWidth>0),'Bark and Wade team-fight atlases load (cycle '+(cycle+1)+')');
+    chapter.enterVillage({opening:false});chapter.battle.stopMatch();chapter.battle.draw();
+    check(villageDraws===cycle+1&&chapter.battle.stage.id==='echo-village','Returning from a fight restores only the village stage (cycle '+(cycle+1)+')');
+  }
+  chapter.cleanup();
+  check(document.querySelectorAll('.storyMiniMap,.storyQuestBeacon,#arenaModeScreen').length===0,'Repeated scene transitions release the battle and its map');
+  result.className='pass';result.textContent=lines.join('\n');
+}catch(error){chapter?.cleanup();map?.destroy();battle?.dispose();result.className='fail';result.textContent=lines.join('\n')+'\nFAIL · '+error.stack;console.error(error)}
+</script>

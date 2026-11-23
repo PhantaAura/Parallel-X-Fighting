@@ -1,19 +1,19 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a58a-quality';
-import {sharedInput} from '../input-runtime.js?v=29a58a-quality';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a58a-quality';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a58a-quality';
-import {StoryMap} from './story-map.js?v=29a58a-quality';
-import {recordWorldVisit,discoverWorldShortcut} from './connected-world.js?v=29a58a-quality';
-import {storyConfirm} from './story-ux.js?v=29a58a-quality';
-import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a58a-quality';
-import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a58a-quality';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a58a-quality';
-import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a58a-quality';
-import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a58a-quality';
-import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a58a-quality';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a58a-quality';
-import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a58a-quality';
-import {discoverWorldDelight} from './world-delight.js?v=29a58a-quality';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a59-route';
+import {sharedInput} from '../input-runtime.js?v=29a59-route';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a59-route';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a59-route';
+import {StoryMap} from './story-map.js?v=29a59-route';
+import {recordWorldVisit,discoverWorldShortcut} from './connected-world.js?v=29a59-route';
+import {storyConfirm} from './story-ux.js?v=29a59-route';
+import {applyStoryLevelToFighter,applyStoryProgressionToFighter,storyLevelFromProgress} from './story-progression.js?v=29a59-route';
+import {storyAttackStripMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a59-route';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a59-route';
+import {drawRoadLandmarks} from './hub-landmark-art.js?v=29a59-route';
+import {normalizeRpgPacingState,setRpgPacingPhase,rpgPacingLabel} from './rpg-pacing.js?v=29a59-route';
+import {normalizeQuestVarietyState,runawayCartRank} from './quest-variety.js?v=29a59-route';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,currentRrvvfoBuild,discoverAdventureMission,openRrvvfoBuildLab} from './core-fun.js?v=29a59-route';
+import {masterFieldSkill,recordFieldSkillTrial,renderFieldSkillJournal} from './field-skills.js?v=29a59-route';
+import {discoverWorldDelight} from './world-delight.js?v=29a59-route';
 
 const MISSION_ID='rrvvfo-road';
 const UI_ID='rrvvfoRoadHubUI';
@@ -207,7 +207,7 @@ class RrvvfoRoadHub{
     const badge=this.battle.root.querySelector('.badge');
     if(badge?.lastChild)badge.lastChild.textContent=' CHAPTER 1 • TOURNAMENT ROAD';
     if(!this.replayMode)saveLostYearProgress(recordWorldVisit(loadLostYearProgress(),'training','yard',{entrance:'tangai-dojo'}));
-    this.map=new StoryMap({
+    this.map=new StoryMap({getBattle:()=>this.battle,isExploring:()=>!this.aborted&&(this.mode==='hub'),
       title:'TOURNAMENT ROAD MAP',regionId:'training',zoneId:'yard',
       bounds:{minX:-1550,maxX:1450,minZ:-720,maxZ:720},
       getPlayer:()=>this.battle?.fighters?.[0]||null,

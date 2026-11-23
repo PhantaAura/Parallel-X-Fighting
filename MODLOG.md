@@ -1,5 +1,16 @@
 # Fighter sprite atlas notes
 
+## Route guidance and fight transitions (2.9A.59)
+
+- Main-quest navigation now shows the required destination, camera-relative direction, distance, and an in-world label when the destination is visible. Local view opens by default; Region and World remain available.
+- Chapter 2 tracks orientation, bracket recovery, the active Wade race checkpoint, ring investigation and tournament progression instead of whichever NPC is nearby. Chapters 3–4 exclude optional activities from main destination selection.
+- Exploration map UI hides during combat and dialogue. Replacing a chapter map destroys the old instance; stale callbacks cannot redraw it. Opening the full map pauses gameplay and closing it only resumes its own pause. Escape closes the map before opening the chapter menu.
+- Fighter atlas bindings now recover after encounter resets, share pending requests, reject responses for an outdated fighter identity, and retry failed loads with a delay. Existing Jimmy, Jonathan and Raggie manifests are supported by the shared loader.
+- Chapter 4 team and village companions use Bark/Wade's atlases. Village scenery no longer draws over the sky boss arena, and returning from the encounter restores the matching stage.
+- Later-chapter fight objectives identify the current opponent and wave. Rapid scene cleanup no longer leaves rejected audio-resume promises.
+- Validation: 20 Node checks, 20 browser route/sprite/scene checks, and the existing browser lifecycle suite. This is targeted regression coverage, not a full route playthrough.
+
+
 ## Code quality and lifecycle fixes (2.9A.58)
 
 - Fixed the malformed debug-combat import that prevented the main module graph from parsing.

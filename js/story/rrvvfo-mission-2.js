@@ -1,24 +1,24 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a58a-quality';
-import {sharedInput} from '../input-runtime.js?v=29a58a-quality';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a58a-quality';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a58a-quality';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a58a-quality';
-import {storyConfirm} from './story-ux.js?v=29a58a-quality';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a58a-quality';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a58a-quality';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a58a-quality';
-import {StoryMap} from './story-map.js?v=29a58a-quality';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a58a-quality';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a58a-quality';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a58a-quality';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a58a-quality';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a58a-quality';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a58a-quality';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a58a-quality';
-import {discoverWorldDelight} from './world-delight.js?v=29a58a-quality';
-import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a58a-quality';
-import {chapter2BracketRoute} from './quest-overhaul.js?v=29a58a-quality';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a58a-quality';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a59-route';
+import {sharedInput} from '../input-runtime.js?v=29a59-route';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a59-route';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a59-route';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a59-route';
+import {storyConfirm} from './story-ux.js?v=29a59-route';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a59-route';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MainTarget,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a59-route';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a59-route';
+import {StoryMap} from './story-map.js?v=29a59-route';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a59-route';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a59-route';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a59-route';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a59-route';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a59-route';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a59-route';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a59-route';
+import {discoverWorldDelight} from './world-delight.js?v=29a59-route';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a59-route';
+import {chapter2BracketRoute} from './quest-overhaul.js?v=29a59-route';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a59-route';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -660,9 +660,17 @@ class RrvvfoMission2{
     return points;
   }
 
+  mainQuestTarget(){
+    if(this.aftermathSeconds>0)return null;
+    if(this.mode==='interior')return interiorExitPoint(this.interiorId);
+    if(this.mode!=='hub')return null;
+    return chapter2MainTarget({state:this.state,pacing:this.pacing,npcs:this.npcs,race:this.race,
+      movingCard:{x:this.fanCardX,z:this.fanCardZ},cartX:this.bracketCartX});
+  }
+
   ensureRegionMap(){
     this.map?.destroy();
-    this.map=new StoryMap({title:'TOURNAMENT REGION MAP',regionId:'tournament',zoneId:this.connectedZoneId(),bounds:{minX:-1750,maxX:1550,minZ:-900,maxZ:900},getPlayer:()=>this.battle?.fighters?.[0]||null,getObjective:()=>['hub','interior'].includes(this.mode)?this.nearby||null:null,getPoints:()=>this.mode==='interior'&&this.interiorId?interiorMapPoints(this.interiorId):this.regionMapPoints(),getZoneId:()=>this.connectedZoneId(),getProgress:()=>loadLostYearProgress(),getWorldState:()=>loadLostYearProgress().worldState});
+    this.map=new StoryMap({getBattle:()=>this.battle,isExploring:()=>!this.aborted&&(['hub','interior'].includes(this.mode)),title:'TOURNAMENT REGION MAP',regionId:'tournament',zoneId:this.connectedZoneId(),bounds:{minX:-1750,maxX:1550,minZ:-900,maxZ:900},getPlayer:()=>this.battle?.fighters?.[0]||null,getObjective:()=>this.mainQuestTarget(),getPoints:()=>this.mode==='interior'&&this.interiorId?interiorMapPoints(this.interiorId):this.regionMapPoints(),getZoneId:()=>this.connectedZoneId(),getProgress:()=>loadLostYearProgress(),getWorldState:()=>loadLostYearProgress().worldState});
   }
 
   showAreaTitle(name){document.dispatchEvent(new CustomEvent('pxstoryarrival',{detail:{title:name,detail:'Story hub updated',tone:'gold',onceKey:`area:${name}`}}));
@@ -1781,7 +1789,7 @@ class RrvvfoMission2{
       else if(this.currentFight.mealBuff==='speed')player.storySpeedMultiplier*=1.15;
       if(this.currentFight.mealBuff){if(consumeMeal){this.state.hubQuests.bonuses.meal=null;this.saveChapterState()}this.battle.notice(`${this.currentFight.mealBuff.toUpperCase()} MEAL ACTIVE`,1.6)}
       if(assisted){player.storyAttackMultiplier*=1.12;player.storyDefenseMultiplier*=.90}
-      foe.id=config.id;foe.name=config.name;foe.accent=this.opponentAccent(config.id);foe.cpu=true;foe.visualScale=Number(config.visualScale)||1;foe.reset(370,-78);foe.asset=null;
+      foe.id=config.id;foe.name=config.name;foe.accent=this.opponentAccent(config.id);foe.cpu=true;foe.visualScale=Number(config.visualScale)||1;foe.reset(370,-78);foe.asset=null;void this.battle.ensureFighterAsset(foe,foe.id);
       applyStoryLevelToFighter(foe,enemyLevel,{bossHpBonus});
       foe.bodyCenter*=foe.visualScale;foe.collisionRadius*=Math.min(1.45,foe.visualScale);
       foe.maxHp=opponentMaxHp;foe.hp=opponentMaxHp;foe.en=config.final?80:45;foe.guard=100;const archetype=enemyArchetype(config.archetype||'rushdown');foe.aiArchetype=archetype.id;foe.storySpeedMultiplier*=archetype.speed;foe.storyAttackMultiplier*=archetype.attack;foe.storyDefenseMultiplier/=archetype.defense;
@@ -2096,7 +2104,7 @@ class RrvvfoMission2{
       this.switchStage('tournament');
       this.mode='spectator';this.currentFight={id:'pouki-exhibition',elapsed:0,phase:1};
       const bark=this.battle.fighters[0],pouki=this.battle.fighters[1];
-      bark.id='bark';bark.name='Bark';bark.accent='#9a6a3a';bark.cpu=true;bark.reset(-370,78);bark.hp=100;bark.en=70;bark.asset=null;
+      bark.id='bark';bark.name='Bark';bark.accent='#9a6a3a';bark.cpu=true;bark.reset(-370,78);bark.hp=100;bark.en=70;bark.asset=null;void this.battle.ensureFighterAsset(bark,'bark');
       pouki.id='pouki';pouki.name='Pouki';pouki.accent='#6ca2a7';pouki.cpu=true;pouki.reset(370,-78);pouki.hp=100;pouki.en=80;pouki.asset=null;
       this.battle.phase='play';this.battle.time=9999;this.battle.ringOutEnabled=false;this.battle.onRingOut=null;this.battle.hideBanner();
       this.setArenaNames('BARK','POUKI');

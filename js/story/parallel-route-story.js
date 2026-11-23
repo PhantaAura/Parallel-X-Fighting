@@ -1,6 +1,6 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a58a-quality';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a58a-quality';
-import {storyConfirm} from './story-ux.js?v=29a58a-quality';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a59-route';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a59-route';
+import {storyConfirm} from './story-ux.js?v=29a59-route';
 
 export const PARALLEL_ROUTES=Object.freeze([
   {id:'wade',lead:'WADE',title:'THE LONGEST SHORTCUT',color:'#55dfff',fighter:'wade',stage:'training-road',chapters:[

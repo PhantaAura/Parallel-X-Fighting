@@ -1,4 +1,4 @@
-import {surface} from './surface-mesh.js?v=29a58a-quality';
+import {surface} from './surface-mesh.js?v=29a59-route';
 
 // Chapter 1 uses a sculpted valley mesh; the central story lanes stay level.
 const roadZ=x=>Math.sin((x-75)/470)*44;

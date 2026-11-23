@@ -1,5 +1,5 @@
-import {normalizeConnectedWorldState,recordWorldVisit} from './connected-world.js?v=29a58a-quality';
-import {loadFieldSkillState} from './field-skills.js?v=29a58a-quality';
+import {normalizeConnectedWorldState,recordWorldVisit} from './connected-world.js?v=29a59-route';
+import {loadFieldSkillState} from './field-skills.js?v=29a59-route';
 
 export const REVISIT_LOOP_VERSION=1;
 const unique=values=>[...new Set((Array.isArray(values)?values:[]).filter(Boolean))];

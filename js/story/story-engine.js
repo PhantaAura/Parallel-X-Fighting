@@ -1,7 +1,7 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a58a-quality';
-import {sharedInput} from '../input-runtime.js?v=29a58a-quality';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a58a-quality';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a58a-quality';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a59-route';
+import {sharedInput} from '../input-runtime.js?v=29a59-route';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a59-route';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a59-route';
 
 export const STORY_ENGINE_VERSION='2.9A.24';
 export const STORY_ENGINE_CACHE='29a412-echo-ridge-20261122';

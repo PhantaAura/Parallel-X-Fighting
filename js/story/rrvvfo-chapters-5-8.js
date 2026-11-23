@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a419-map-visuals-20261123';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a412-echo-ridge-20261122';
-import {storyConfirm} from './story-ux.js?v=29a412-echo-ridge-20261122';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a412-echo-ridge-20261122';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a523-3d-worlds-20261123';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a523-3d-worlds-20261123';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a523-3d-worlds-20261123';
+import {storyConfirm} from './story-ux.js?v=29a523-3d-worlds-20261123';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a523-3d-worlds-20261123';
 
 const RUN_ID='pxLegacyRrvvfoChapterRun';
 const CHAPTERS=Object.freeze({
@@ -20,7 +20,7 @@ const CHAPTERS=Object.freeze({
         ['RRVVFO','p1','You gave me a near-death button and forgot to mention it?'],
         ['SHADOW','neutral','He told me to wait until you were awake. Go get your proof.']
       ]},
-      {type:'fight',id:'observation-site',objective:'BREAK THE COMBAT OBSERVATION SITE',detail:'The first base is logging movement and match patterns. Shut down its observer.',name:'RED OBSERVATION UNIT',fighterId:'hollow-grunt',accent:'#65d9e7',archetype:'guard',hpScale:.82,levelOffset:-1,stage:'resonance-facility',xp:110,notice:'FIELD BASE 1 • COMBAT OBSERVATION',
+      {type:'fight',id:'observation-site',objective:'BREAK THE COMBAT OBSERVATION SITE',detail:'The first base is logging movement and match patterns. Shut down its observer.',name:'RED OBSERVATION UNIT',fighterId:'hollow-grunt',accent:'#65d9e7',archetype:'guard',hpScale:.82,levelOffset:-1,stage:'chapter5-outpost',xp:110,notice:'FIELD BASE 1 • COMBAT OBSERVATION',
         intro:[['RRVVFO','p1','This place is empty, but the cameras are still watching. Let’s see what they think they learned.']],
         after:[['RRVVFO','p1','It was studying the crowd and the referee calls too. That is more than a move list.'],['NARRATION','neutral','The recovered transmission points to a laboratory that can reproduce the patterns it records.']]},
       {type:'quest',id:'field-evidence',objective:'OPTIONAL SIDE QUEST • SECURE FIELD EVIDENCE',detail:'Trace the Red’s records without exposing the fighters it has studied.',title:'PAPER TRAIL',description:'The first base left behind three loose evidence trails. Put them together before the Red wipes its records.',rewardXp:90,rewardItem:'redFieldEvidenceKit',rewardLabel:'FIELD EVIDENCE KIT',steps:[
@@ -28,7 +28,7 @@ const CHAPTERS=Object.freeze({
         {title:'BIOLOGY LOG',text:'The lab’s samples are tagged with fighter names. Secure a usable clue without carrying the names out.',choices:[{label:'COMPARE THE CLEAN SAMPLE TRAYS',value:'samples',reply:'The sample pattern matches the copied fighting styles, not a roster of people.'},{label:'IMAGE THE MACHINE CALIBRATION',value:'calibration',reply:'The calibration image proves the Red copied living energy signatures.'}]},
         {title:'MEMORY LEDGER',text:'A ledger links copied memories to the Project Hollow schedule. How do you preserve it?',choices:[{label:'ENCRYPT THE IDENTITY COLUMN',value:'encrypt',reply:'The schedule stays readable while every fighter’s identity is sealed.'},{label:'KEEP THE SCHEDULE, ERASE THE NAMES',value:'erase',reply:'The replacement plan survives, but the Red loses its list of targets.'}]}
       ]},
-      {type:'fight',id:'replication-lab',objective:'SHUT DOWN THE POWER REPLICATION LAB',detail:'Three machines recreate Bark’s defense, Wade’s speed, and Rrvvfo’s fire patterns.',name:'RED REPLICATION LINE',fighterId:'hollow-grunt',accent:'#ef7769',archetype:'rushdown',levelOffset:0,stage:'resonance-facility',xp:170,notice:'FIELD BASE 2 • THREE COPIED STYLES',waves:[
+      {type:'fight',id:'replication-lab',objective:'SHUT DOWN THE POWER REPLICATION LAB',detail:'Three machines recreate Bark’s defense, Wade’s speed, and Rrvvfo’s fire patterns.',name:'RED REPLICATION LINE',fighterId:'hollow-grunt',accent:'#ef7769',archetype:'rushdown',levelOffset:0,stage:'chapter5-outpost',xp:170,notice:'FIELD BASE 2 • THREE COPIED STYLES',waves:[
         {name:'BARK PATTERN • AEGIS UNIT',fighterId:'hollow-grunt',accent:'#c29a66',archetype:'guard',hpScale:.53,levelOffset:-1},
         {name:'WADE PATTERN • FLASH UNIT',fighterId:'wade',accent:'#5fb4f2',archetype:'rushdown',hpScale:.55,levelOffset:0},
         {name:'RRVVFO PATTERN • SOLAR UNIT',fighterId:'rrvvfo',accent:'#f07a6e',archetype:'hotshot',hpScale:.58,levelOffset:0}
@@ -45,7 +45,7 @@ const CHAPTERS=Object.freeze({
         ['RRVVFO','p1','That is not elegant. It might be enough.'],
         ['SHADOW','neutral','I heard that from orbit. You just invented a new technique. Keep its energy cost in mind.']
       ]},
-      {type:'fight',id:'archive-outpost',objective:'DEFEAT THE HOLLOW MIMIC',detail:'The Archive Outpost has combined every copied style into one adaptive opponent.',name:'HOLLOW MIMIC',fighterId:'hollow-grunt',accent:'#bb6bf0',archetype:'hotshot',hpScale:1.28,levelOffset:2,boss:true,stage:'resonance-facility',xp:220,notice:'FIELD BASE 3 • HOLLOW MIMIC',
+      {type:'fight',id:'archive-outpost',objective:'DEFEAT THE HOLLOW MIMIC',detail:'The Archive Outpost has combined every copied style into one adaptive opponent.',name:'HOLLOW MIMIC',fighterId:'hollow-grunt',accent:'#bb6bf0',archetype:'hotshot',hpScale:1.28,levelOffset:2,boss:true,stage:'chapter5-outpost',xp:220,notice:'FIELD BASE 3 • HOLLOW MIMIC',
         intro:[['NARRATION','neutral','At the Archive Outpost, old Organization of the Red hardware surrounds the last working chamber. “Project Hollow” is stamped on its cloning records.'],['HOLLOW MIMIC','rival','COMBAT MODEL READY. SUBJECT: RRVVFO.'],['RRVVFO','p1','You can copy the motion. You still have to fight me.']],
         after:[['NARRATION','neutral','The core confirms the structure: the Organization of the Red is the faction; Project Hollow is its biological-copy program.'],['RRVVFO','p1','This is a person they built out of my memories. He thinks he is me.'],['SHADOW','neutral','You have proof. Come back to the lookout. I’ll explain what I can.']]},
       {type:'scene',id:'shadow-departs',objective:'RETURN TO THE LOOKOUT WITH THE DATA CORE',detail:'Shadow leaves Earth, while the Red prepares its new Rrvvfo.',lines:[
@@ -95,7 +95,7 @@ const CHAPTERS=Object.freeze({
         ['RRVVFO','p1','Then we find out what else they taught him.'],
         ['NARRATION','neutral','The clone hears only rejection. He runs back to the Organization of the Red and demands equipment that can take another fighter’s energy.']
       ]},
-      {type:'fight',id:'red-extraction',objective:'STOP THE RED EXTRACTION TEAM',detail:'The clone escapes under cover of an extraction squad. Their decoy fight hid the real theft.',name:'RED EXTRACTION TEAM',fighterId:'hollow-grunt',accent:'#dc5a58',archetype:'rushdown',hpScale:1.08,levelOffset:1,stage:'remote-highlands',xp:150,notice:'RED EXTRACTION • PURSUIT',waves:[
+      {type:'fight',id:'red-extraction',objective:'STOP THE RED EXTRACTION TEAM',detail:'The clone escapes under cover of an extraction squad. Their decoy fight hid the real theft.',name:'RED EXTRACTION TEAM',fighterId:'hollow-grunt',accent:'#dc5a58',archetype:'rushdown',hpScale:1.08,levelOffset:1,stage:'chapter6-highlands',xp:150,notice:'RED EXTRACTION • PURSUIT',waves:[
         {name:'RED PURSUER',fighterId:'hollow-grunt',accent:'#dc5a58',archetype:'rushdown',hpScale:.62,levelOffset:0},
         {name:'RED SIGNAL WARDEN',fighterId:'hollow-grunt',accent:'#ca77e8',archetype:'guard',hpScale:.72,levelOffset:1}
       ],intro:[['WADE','p2','Two tracks, one exit. I’m cutting off the vehicle. Bark, keep Rrvvfo moving.'],['BARK','neutral','The machine is already gone. Fight the squad and we can still read the signal.']],
@@ -103,7 +103,7 @@ const CHAPTERS=Object.freeze({
     ])
   }),
   7:Object.freeze({
-    title:'WHICH ONE IS REAL?',stage:'resonance-facility',minutes:'45–55 MIN',completeXp:320,
+    title:'WHICH ONE IS REAL?',stage:'chapter7-relay',minutes:'45–55 MIN',completeXp:320,
     events:Object.freeze([
       {type:'scene',id:'network-awakens',objective:'STOP THE RED NETWORK FROM SPREADING',detail:'The stolen Virek Emerald is powering relays across the world.',lines:[
         ['NARRATION','neutral','The Emerald’s pulse lights relay towers in a chain. The Organization of the Red begins pulling power from every linked arena.'],
@@ -111,7 +111,7 @@ const CHAPTERS=Object.freeze({
         ['BARK','neutral','I can break the relay housings. The central one will be guarded.'],
         ['RRVVFO','p1','Then we make them spend their attention on us.']
       ]},
-      {type:'fight',id:'relay-wardens',objective:'BREAK THE FIRST ENERGY RELAY',detail:'Clear the wardens while Wade finds the network’s weak link.',name:'RED RELAY WARDENS',fighterId:'hollow-grunt',accent:'#4ed8dc',archetype:'guard',stage:'resonance-facility',xp:160,notice:'RED NETWORK • RELAY 01',waves:[
+      {type:'fight',id:'relay-wardens',objective:'BREAK THE FIRST ENERGY RELAY',detail:'Clear the wardens while Wade finds the network’s weak link.',name:'RED RELAY WARDENS',fighterId:'hollow-grunt',accent:'#4ed8dc',archetype:'guard',stage:'chapter7-relay',xp:160,notice:'RED NETWORK • RELAY 01',waves:[
         {name:'RELAY WARDEN',fighterId:'hollow-grunt',accent:'#4ed8dc',archetype:'guard',hpScale:.72,levelOffset:0},
         {name:'ENERGY LANCER',fighterId:'hollow-grunt',accent:'#f1bc60',archetype:'hotshot',hpScale:.88,levelOffset:1}
       ],intro:[['WADE','p2','The tower keeps trying to restore its own connection. Take out the wardens while I jam the recovery pulse.']]},
@@ -132,10 +132,10 @@ const CHAPTERS=Object.freeze({
         {label:'DROP THE BLOCKER • TAKE THE DRAIN',value:'drop'},
         {label:'HOLD IT • LET WADE REDIRECT',value:'hold'}
       ],decision:'blocker',lines:[['WADE','p2','I can try to redirect it. It takes a few seconds.'],['BARK','neutral','Rrvvfo, do not make a decision you cannot survive.']]},
-      {type:'fight',id:'siphon-clone',objective:'FIGHT THE CLONE’S SIPHON GAUNTLETS',detail:'The blocker buys time, but each successful hit pulls a little energy from Rrvvfo.',name:'CLONE RRVVFO • SIPHON GAUNTLETS',fighterId:'rrvvfo',accent:'#71dff0',archetype:'hotshot',hpScale:1.12,levelOffset:2,boss:true,mirror:true,energyDrain:.75,stage:'resonance-facility',xp:210,notice:'SIPHON SYSTEM • ENERGY DRAIN',
+      {type:'fight',id:'siphon-clone',objective:'FIGHT THE CLONE’S SIPHON GAUNTLETS',detail:'The blocker buys time, but each successful hit pulls a little energy from Rrvvfo.',name:'CLONE RRVVFO • SIPHON GAUNTLETS',fighterId:'rrvvfo',accent:'#71dff0',archetype:'hotshot',hpScale:1.12,levelOffset:2,boss:true,mirror:true,energyDrain:.75,stage:'chapter7-relay',xp:210,notice:'SIPHON SYSTEM • ENERGY DRAIN',
         intro:[['NARRATION','neutral','The gauntlets lock onto the blocker’s glow. Each hit draws a small measure of energy through the shield.'],['CLONE RRVVFO','rival','I can feel it. I know what you are thinking because I am thinking it too.'],['RRVVFO','p1','Then think about who I am protecting.']],
         after:[['NARRATION','neutral','Wade opens a narrow channel. Rrvvfo lets the blocker fall and takes the siphon directly. The gauntlets pull hard; the emergency bead warms but stays intact.'],['BARK','neutral','You gave him a clear shot at your power.'],['RRVVFO','p1','He never gets yours.']]},
-      {type:'fight',id:'red-purge',objective:'PROTECT THE CLONE FROM THE RED PURGE SQUAD',detail:'The Organization turns on its own creation as soon as he hesitates.',name:'RED PURGE SQUAD',fighterId:'hollow-grunt',accent:'#ee5d60',archetype:'heavy',hpScale:.94,levelOffset:1,stage:'resonance-facility',xp:180,notice:'RED SECURITY • PURGE ORDER',playerEnergy:32,wearDown:true,waves:[
+      {type:'fight',id:'red-purge',objective:'PROTECT THE CLONE FROM THE RED PURGE SQUAD',detail:'The Organization turns on its own creation as soon as he hesitates.',name:'RED PURGE SQUAD',fighterId:'hollow-grunt',accent:'#ee5d60',archetype:'heavy',hpScale:.94,levelOffset:1,stage:'chapter7-relay',xp:180,notice:'RED SECURITY • PURGE ORDER',playerEnergy:32,wearDown:true,waves:[
         {name:'RED PURGE ENFORCER',fighterId:'hollow-grunt',accent:'#ee5d60',archetype:'heavy',hpScale:.62,levelOffset:0},
         {name:'RED PURGE CAPTAIN',fighterId:'hollow-grunt',accent:'#c566d8',archetype:'rushdown',hpScale:.76,levelOffset:1}
       ],intro:[['RED DIRECTOR','rival','Unit status: disobedient. Dispose of the duplicate and recover the usable energy.'],['CLONE RRVVFO','rival','They said I was the only one who could save them.'],['RRVVFO','p1','They were using your fear to point you at me. You can choose what happens next.']]},
@@ -151,7 +151,7 @@ const CHAPTERS=Object.freeze({
     ])
   }),
   8:Object.freeze({
-    title:'CLASH OF SOULS',stage:'resonance-facility',minutes:'60–75 MIN',completeXp:420,
+    title:'CLASH OF SOULS',stage:'chapter8-core',minutes:'60–75 MIN',completeXp:420,
     events:Object.freeze([
       {type:'scene',id:'central-infiltration',objective:'INFILTRATE THE RED CENTRAL FACILITY',detail:'The Emerald and the Revvfo imprint are feeding one worldwide takeover network.',lines:[
         ['NARRATION','neutral','The central facility draws power from the Virek Emerald and a condensed imprint recovered from the Hollow Watcher’s last fight with Rrvvfo. The Red never needed to capture Revvfo to keep a sample.'],
@@ -161,11 +161,11 @@ const CHAPTERS=Object.freeze({
         ['WADE','p2','I will keep the network from repairing them. You two get to the Leader.'],
         ['RRVVFO','p1','Together, then. No one has to prove which of us is real.']
       ]},
-      {type:'fight',id:'facility-breach',objective:'LET BARK BREAK THE FACILITY DEFENSES',detail:'Hold off the Red’s shield team while Bark opens a path to the network core.',name:'RED FACILITY GUARD',fighterId:'hollow-grunt',accent:'#62d9d0',archetype:'guard',hpScale:.94,stage:'resonance-facility',xp:180,notice:'BARK • OUTER DEFENSES',waves:[
+      {type:'fight',id:'facility-breach',objective:'LET BARK BREAK THE FACILITY DEFENSES',detail:'Hold off the Red’s shield team while Bark opens a path to the network core.',name:'RED FACILITY GUARD',fighterId:'hollow-grunt',accent:'#62d9d0',archetype:'guard',hpScale:.94,stage:'chapter8-core',xp:180,notice:'BARK • OUTER DEFENSES',waves:[
         {name:'RED SHIELD PAIR',fighterId:'hollow-grunt',accent:'#62d9d0',archetype:'guard',hpScale:.7,levelOffset:0},
         {name:'RED BREACH CAPTAIN',fighterId:'hollow-grunt',accent:'#d0a46a',archetype:'heavy',hpScale:.85,levelOffset:1}
       ],intro:[['BARK','neutral','I have the wall. Keep their shield line facing you while I open it.']]},
-      {type:'fight',id:'network-scramble',objective:'GIVE WADE TIME TO DISRUPT THE NETWORK',detail:'Keep the Red’s recovery units busy while Wade locks the relays in a broken loop.',name:'RED NETWORK RECOVERY UNIT',fighterId:'hollow-grunt',accent:'#59aaf0',archetype:'rushdown',hpScale:1,levelOffset:1,stage:'resonance-facility',xp:190,notice:'WADE • NETWORK SCRAMBLE',waves:[
+      {type:'fight',id:'network-scramble',objective:'GIVE WADE TIME TO DISRUPT THE NETWORK',detail:'Keep the Red’s recovery units busy while Wade locks the relays in a broken loop.',name:'RED NETWORK RECOVERY UNIT',fighterId:'hollow-grunt',accent:'#59aaf0',archetype:'rushdown',hpScale:1,levelOffset:1,stage:'chapter8-core',xp:190,notice:'WADE • NETWORK SCRAMBLE',waves:[
         {name:'RED RECOVERY DRONE',fighterId:'hollow-grunt',accent:'#59aaf0',archetype:'rushdown',hpScale:.67,levelOffset:0},
         {name:'RED SIGNAL WARDEN',fighterId:'hollow-grunt',accent:'#a76ee0',archetype:'hotshot',hpScale:.82,levelOffset:1}
       ],intro:[['WADE','p2','The relay will keep healing until I finish the loop. Do not let the recovery units get a clean hit on the console.']]},
@@ -174,7 +174,7 @@ const CHAPTERS=Object.freeze({
         {title:'OPERATIONS ARCHIVE',text:'The archive holds the Red’s target list and its takeover schedule.',choices:[{label:'COPY THE SHUTDOWN SEQUENCE',value:'shutdown',reply:'You recover a clean shutdown route and leave the target list behind.'},{label:'DELETE THE TARGET LIST FIRST',value:'delete',reply:'The target list is gone before the shutdown schedule is copied.'}]},
         {title:'FINAL EVACUATION',text:'The workers can leave through a lit security hall or a dark maintenance duct.',choices:[{label:'TAKE THE MAINTENANCE DUCT WITH WADE',value:'duct',reply:'Wade leads the group through the duct while Bark keeps the hatch from closing.'},{label:'CLEAR THE SECURITY HALL TOGETHER',value:'hall',reply:'The four of you clear the hall and escort every worker out in one group.'}]}
       ]},
-      {type:'fight',id:'red-leader',objective:'DEFEAT THE ORGANIZATION OF THE RED LEADER',detail:'Three phases: prediction, Emerald overload, then the Leader without the network to hide behind.',name:'ORGANIZATION OF THE RED LEADER',fighterId:'red-commander',accent:'#de4a52',archetype:'hotshot',hpScale:1.18,levelOffset:3,boss:true,stage:'resonance-facility',xp:300,notice:'THE RED LEADER • FINAL BATTLE',waves:[
+      {type:'fight',id:'red-leader',objective:'DEFEAT THE ORGANIZATION OF THE RED LEADER',detail:'Three phases: prediction, Emerald overload, then the Leader without the network to hide behind.',name:'ORGANIZATION OF THE RED LEADER',fighterId:'red-commander',accent:'#de4a52',archetype:'hotshot',hpScale:1.18,levelOffset:3,boss:true,stage:'chapter8-core',xp:300,notice:'THE RED LEADER • FINAL BATTLE',waves:[
         {name:'RED LEADER • PREDICTION ARRAY',fighterId:'red-commander',accent:'#d15561',archetype:'guard',hpScale:.7,levelOffset:2},
         {name:'RED LEADER • EMERALD OVERLOAD',fighterId:'red-commander',accent:'#8f5fe1',archetype:'hotshot',hpScale:.86,levelOffset:3},
         {name:'RED LEADER • NO NETWORK',fighterId:'red-commander',accent:'#ef824f',archetype:'rushdown',hpScale:.98,levelOffset:2}

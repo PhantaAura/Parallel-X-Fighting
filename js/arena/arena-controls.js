@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a412-echo-ridge-20261122';
-import {sharedInput} from '../input-runtime.js?v=29a412-echo-ridge-20261122';
+import {CONTROL_MAPS} from '../input.js?v=29a523-3d-worlds-20261123';
+import {sharedInput} from '../input-runtime.js?v=29a523-3d-worlds-20261123';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 
@@ -108,8 +108,11 @@ export class ArenaControlManager{
     this.selectAbility(0);
   }
 
-  isTouchDevice(){return (typeof navigator!=='undefined'&&navigator.maxTouchPoints>0)||(typeof matchMedia==='function'&&matchMedia('(pointer:coarse)').matches)}
-  touchEnabled(){return this.settings.touchMode==='on'||(this.settings.touchMode==='auto'&&this.isTouchDevice())}
+  isTouchDevice(){
+    const nav=globalThis.navigator,ua=String(nav?.userAgent||''),platform=String(nav?.platform||''),points=Number(nav?.maxTouchPoints||0);
+    return Boolean(nav?.userAgentData?.mobile||/iPhone|iPad|iPod|Android|Tablet/i.test(ua)||(/Mac/.test(platform)&&points>1));
+  }
+  touchEnabled(){return this.isTouchDevice()&&this.settings.touchMode!=='off'}
   layout(){return PC_LAYOUTS.shared}
 
   start(){

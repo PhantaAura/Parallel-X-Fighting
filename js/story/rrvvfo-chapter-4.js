@@ -1,29 +1,29 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a419-map-visuals-20261123';
-import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a412-echo-ridge-20261122';
-import {StoryMap} from './story-map.js?v=29a419-map-visuals-20261123';
-import {storyConfirm} from './story-ux.js?v=29a412-echo-ridge-20261122';
-import {openCombatManual} from './combat-manual.js?v=29a419-map-visuals-20261123';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a412-echo-ridge-20261122';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a412-echo-ridge-20261122';
-import {discoverWorldDelight} from './world-delight.js?v=29a412-echo-ridge-20261122';
-import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a412-echo-ridge-20261122';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a523-3d-worlds-20261123';
+import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a523-3d-worlds-20261123';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a523-3d-worlds-20261123';
+import {StoryMap} from './story-map.js?v=29a523-3d-worlds-20261123';
+import {storyConfirm} from './story-ux.js?v=29a523-3d-worlds-20261123';
+import {openCombatManual} from './combat-manual.js?v=29a523-3d-worlds-20261123';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a523-3d-worlds-20261123';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a523-3d-worlds-20261123';
+import {discoverWorldDelight} from './world-delight.js?v=29a523-3d-worlds-20261123';
+import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a523-3d-worlds-20261123';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_REQUIRED_LIFT_PART_COUNT,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a412-echo-ridge-20261122';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a412-echo-ridge-20261122';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a412-echo-ridge-20261122';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a412-echo-ridge-20261122';
-import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a412-echo-ridge-20261122';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a412-echo-ridge-20261122';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a412-echo-ridge-20261122';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a412-echo-ridge-20261122';
-import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a412-echo-ridge-20261122';
-import {chapter4PotionReady,chapter4PotionRoute,chapter4SignalsReady,chapter4SignalRoute} from './quest-overhaul.js?v=29a412-echo-ridge-20261122';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a412-echo-ridge-20261122';
+} from './chapter4-content.js?v=29a523-3d-worlds-20261123';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a523-3d-worlds-20261123';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a523-3d-worlds-20261123';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a523-3d-worlds-20261123';
+import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a523-3d-worlds-20261123';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a523-3d-worlds-20261123';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a523-3d-worlds-20261123';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a523-3d-worlds-20261123';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a523-3d-worlds-20261123';
+import {chapter4PotionReady,chapter4PotionRoute,chapter4SignalsReady,chapter4SignalRoute} from './quest-overhaul.js?v=29a523-3d-worlds-20261123';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a523-3d-worlds-20261123';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -200,7 +200,7 @@ class RrvvfoChapter4{
 
   beginVillageAftermath(eventId,seconds=8){recordPacingAftermath(this.pacing,eventId);setRpgPacingPhase(this.pacing,'aftermath',{wave:3});this.aftermathSeconds=this.replayMode?0:Math.max(0,seconds);this.syncRpgPacing();this.saveState()}
 
-  stageForLocation(location){if(location==='echo-caverns')return'echo-caverns';if(location==='echo-mountain'||location==='shadow-lookout')return'echo-mountain';if(location==='echo-sky')return'echo-sky';return'echo-village'}
+  stageForLocation(location){if(location==='echo-caverns')return'echo-caverns';if(location==='shadow-lookout')return'shadow-lookout';if(location==='echo-mountain')return'echo-mountain';if(location==='echo-sky')return'echo-sky';return'echo-village'}
 
   patchBattle(){
     const battle=this.battle;
@@ -795,7 +795,7 @@ class RrvvfoChapter4{
   enterLookout({restored=false}={}){if(!restored){discoverAdventureMission('c4-solo-summit');completeAdventureMission('c4-solo-summit',{rank:'A',reward:'ARCHIVE • MOUNTAIN WIND'})}
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'mystery'}));
     document.dispatchEvent(new CustomEvent('pxcombatduck',{detail:{amount:.82,duration:1.25}}));
-    this.area='lookout';this.state.location='shadow-lookout';this.switchStage('echo-mountain');this.battle.setStageBackdrop('shadow-lookout');this.mode='mountain';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();
+    this.area='lookout';this.state.location='shadow-lookout';this.switchStage('shadow-lookout');this.mode='mountain';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();
     this.engine.setLabels({stageName:'SHADOW’S LOOKOUT',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});
     this.preparePlayer({x:930,z:-330});const player=this.battle.fighters[0];player.y=LOOKOUT_HEIGHT;player.vy=0;player.grounded=true;player.kvy=0;
     resetHubCameraLook(this.battle);this.lookoutLandingSeconds=restored?.85:LOOKOUT_LANDING_SECONDS;this.lookoutPromptCueShown=false;

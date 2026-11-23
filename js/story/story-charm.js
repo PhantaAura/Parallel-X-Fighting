@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a412-echo-ridge-20261122';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a523-3d-worlds-20261123';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 

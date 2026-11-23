@@ -9,22 +9,21 @@ function deepFreeze(value){
 
 
 function trainingRoadScenery(){
-  const boxes=[];
-  const treeColors=['#315e36','#3f7440','#2b5531','#4b7f45'];
-  const trunk='#60402a';
-  const addTree=(x,z,scale=1,index=0)=>{
-    boxes.push({x,y:46*scale,z,sx:22*scale,sy:92*scale,sz:22*scale,color:trunk});
-    boxes.push({x,y:114*scale,z,sx:92*scale,sy:96*scale,sz:92*scale,color:treeColors[index%treeColors.length]});
-  };
-  for(let x=-1370,index=0;x<=1370;x+=135,index++){
-    addTree(x,-785,.88+(index%3)*.08,index);
-    addTree(x,785,.92+((index+1)%3)*.07,index+2);
+  const trees=[];
+  const colors=['#567e46','#648a4e','#4f7843','#709251'];
+  for(let x=-1380,index=0;x<=1380;x+=410,index++){
+    // Sparse broadleaf silhouettes keep the field open like the reference, not a pine maze.
+    if(index%2===0)trees.push({x,z:-710-(index%3)*34,scale:.66+(index%3)*.05,index,shape:'broadleaf',color:colors[index%colors.length]});
+    if(index%3!==1)trees.push({x:x+95,z:710+(index%2)*38,scale:.62+(index%2)*.07,index:index+2,shape:'broadleaf',color:colors[(index+2)%colors.length]});
   }
-  for(let x=-880,index=0;x<=1120;x+=180,index++){
-    addTree(x,-540,.78+(index%2)*.09,index+1);
-    addTree(x,540,.8+((index+1)%2)*.08,index+3);
-  }
-  return boxes;
+  return trees;
+}
+
+function echoRegionTrees(){
+  return [
+    [-1110,-620,.95],[-780,650,.82],[-340,-655,.9],[80,675,.78],
+    [460,-660,1.02],[850,620,.88],[1130,-575,.82],[-70,-210,.62]
+  ].map(([x,z,scale],index)=>({x,z,scale,index,dead:true,color:index%2?'#4d514b':'#5d5b50'}));
 }
 
 function expandedTrainingRegionScenery(){
@@ -229,7 +228,6 @@ const TANGAI_DOJO={
 const GLOBAL_TOURNAMENT={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'tournament',
-  backdrop:'chapter2-tournament',
   name:'Global Tournament',
   subtitle:'Grand championship ring',
   available:true,
@@ -300,7 +298,6 @@ const GLOBAL_TOURNAMENT={
 const TRAINING_FIELD={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'training-field',
-  backdrop:'chapter1-field',
   name:'Sage Training Field',
   subtitle:'Open recovery-year sparring ground',
   available:true,
@@ -349,13 +346,10 @@ const TRAINING_FIELD={
       {x:475,y:82,z:-355,sx:215,sy:170,sz:170,color:'#416e40'},
       {x:-430,y:36,z:285,sx:150,sy:72,sz:140,color:'#5f8247'},
       {x:430,y:40,z:280,sx:170,sy:80,sz:150,color:'#64874b'},
-      {x:-315,y:52,z:-285,sx:24,sy:104,sz:24,color:'#5e3e27'},
-      {x:-315,y:118,z:-285,sx:118,sy:90,sz:118,color:'#356f3b'},
-      {x:330,y:56,z:-270,sx:26,sy:112,sz:26,color:'#5e3e27'},
-      {x:330,y:126,z:-270,sx:126,sy:96,sz:126,color:'#397742'},
       {x:-505,y:30,z:20,sx:30,sy:60,sz:80,color:'#826f5b'},
       {x:505,y:34,z:-20,sx:34,sy:68,sz:92,color:'#7d6957'}
     ],
+    trees:[{x:-315,z:-285,scale:1.08,index:0,color:'#356f3b'},{x:330,z:-270,scale:1.12,index:2,color:'#397742'}],
     lamps:[]
   }
 };
@@ -364,7 +358,6 @@ const TRAINING_FIELD={
 const TRAINING_ROAD={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'training-road',
-  backdrop:'chapter1-field',
   name:'Training Grounds and Tournament Road',
   subtitle:'Living Chapter 1 hub and guided road',
   available:true,
@@ -394,15 +387,14 @@ const TRAINING_ROAD={
     zoomSmoothing:.06
   },
   floor:{
-    base:{x:0,y:-28,z:0,sx:3100,sy:56,sz:1980,color:'#355a35'},
-    surface:{x:0,y:1,z:0,sx:2980,sy:5,sz:1860,color:'#57834a'},
+    base:{x:0,y:-28,z:0,sx:9000,sy:56,sz:6500,color:'#355a35'},
+    surface:{x:0,y:1,z:0,sx:8800,sy:5,sz:6300,color:'#638e4f'},
     grid:{stepX:240,stepZ:210,y:4,widthX:1.1,widthZ:1.1,height:.8,color:'#d5edba',alphaX:.045,alphaZ:.04},
     centerMark:{x:-1050,y:5,z:70,radius:150,segments:42,width:3,height:1.4,color:'#e9f3bc',alpha:.36,crossRadius:178,crossWidth:2,crossAlpha:.18}
   },
   scenery:{
     boxes:[
-      {x:0,y:-41,z:0,sx:3280,sy:28,sz:2140,color:'#345630'},
-      ...trainingRoadScenery(),
+      {x:0,y:-41,z:0,sx:9000,sy:28,sz:6500,color:'#456b3d'},
       // Sage's sanctuary makes Chapter 1 read as a training region instead of a town.
       {x:-1160,y:10,z:70,sx:610,sy:15,sz:410,color:'#b89b6c'},
       {x:-1160,y:17,z:70,sx:430,sy:8,sz:265,color:'#d8c28d'},
@@ -463,8 +455,8 @@ const TRAINING_ROAD={
       {x:-260,y:22,z:255,sx:82,sy:44,sz:64,color:'#8f7959'},
       {x:845,y:25,z:-245,sx:92,sy:50,sz:74,color:'#806e54'}
     ],
-    lamps:[{x:-835,z:-120},{x:-835,z:120},{x:980,z:-150},{x:980,z:150}],
-    lamp:{post:{y:65,sx:12,sy:130,sz:12,color:'#463224'},light:{y:140,sx:34,sy:34,sz:34,color:'#fff0a3',alpha:.9,lit:false}}
+    trees:trainingRoadScenery(),
+    lamps:[]
   }
 };
 
@@ -564,7 +556,6 @@ const EXPANDED_TRAINING_REGION={
 const LOCAL_TOURNAMENT_HUB={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'tournament-hub',
-  backdrop:'chapter2-tournament',
   name:'Local Tournament Grounds',
   subtitle:'Open Chapter 2 story hub',
   available:true,
@@ -739,7 +730,6 @@ const AFTER_HOURS_TOURNAMENT={
 const RESONANCE_FACILITY={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'resonance-facility',
-  backdrop:'chapter3-factory',
   name:'Abandoned Resonance Facility',
   subtitle:'Chapter 3 underground investigation and combat',
   available:true,
@@ -795,7 +785,6 @@ const RESONANCE_FACILITY={
 const REMOTE_HIGHLANDS={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'remote-highlands',
-  backdrop:'chapter4-echo-region',
   name:'Remote Highlands',
   subtitle:'Chapter 3 destination near Shadow’s Lookout',
   available:true,
@@ -839,6 +828,7 @@ const REMOTE_HIGHLANDS={
         return{x,y:162+(index%3)*14,z:index%2?-690:690,sx:118,sy:110,sz:118,color:index%2?'#315c3f':'#3e6948'};
       })
     ],
+    trees:echoRegionTrees(),
     lamps:[]
   }
 };
@@ -847,7 +837,7 @@ const REMOTE_HIGHLANDS={
 
 const ECHO_VILLAGE={
   schema:ARENA_STAGE_SCHEMA_VERSION,
-  id:'echo-village',backdrop:'chapter4-echo-region',name:'Echo Village',subtitle:'Ancient resonance settlement beneath Shadow’s Lookout',available:true,
+  id:'echo-village',name:'Echo Village',subtitle:'Ancient resonance settlement beneath Shadow’s Lookout',available:true,
   performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.68},
   bounds:{minX:-1600,maxX:1600,minZ:-920,maxZ:920},
   spawnPoints:[{x:-1363,z:100},{x:120,z:-40}],projectileLimits:{padding:240,minY:-70,maxY:980},ai:{wallMargin:140},
@@ -911,7 +901,7 @@ const ECHO_SKY={
 
 const ECHO_MOUNTAIN={
   schema:ARENA_STAGE_SCHEMA_VERSION,
-  id:'echo-mountain',backdrop:'chapter4-mountain',name:'Mountain Path',subtitle:'The ascent to Shadow’s Lookout',available:true,
+  id:'echo-mountain',name:'Mountain Path',subtitle:'The ascent to Shadow’s Lookout',available:true,
   performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.72},
   bounds:{minX:-1450,maxX:1450,minZ:-760,maxZ:760},spawnPoints:[{x:-1240,z:0},{x:760,z:0}],projectileLimits:{padding:220,minY:-120,maxY:980},ai:{wallMargin:120},
   camera:{yawDeg:40,fov:44,clear:'#6b8298',fogColor:'#c1ced8',fogRange:[1000,3400],focusClampX:1360,focusClampZ:700,baseDistance:1060,separationScale:.2,minDistance:980,maxDistance:1250,heightBase:500,heightDistanceScale:.17,horizontalDistanceScale:.82,targetHeight:52,jumpTargetScale:.18,focusSmoothing:.085,zoomSmoothing:.06},
@@ -922,7 +912,7 @@ const ECHO_MOUNTAIN={
     {x:-720,y:95,z:240,sx:300,sy:190,sz:170,color:'#4e5755'},{x:-180,y:110,z:-280,sx:260,sy:220,sz:190,color:'#454e4e'},{x:430,y:135,z:250,sx:300,sy:270,sz:220,color:'#41494b'},
     {x:1120,y:445,z:-330,sx:420,sy:42,sz:340,color:'#2b3138',alpha:.94},{x:1120,y:525,z:-330,sx:240,sy:120,sz:220,color:'#566979',alpha:.92},{x:1120,y:610,z:-330,sx:300,sy:52,sz:280,color:'#b8dff0',alpha:.55},
     ...Array.from({length:15},(_,i)=>({x:-1320+i*185,y:85+(i%4)*26,z:i%2?-650:650,sx:150+(i%3)*35,sy:170+(i%4)*52,sz:170,color:i%2?'#3f4a48':'#48524f'}))
-  ],lamps:[]}
+  ],trees:echoRegionTrees(),lamps:[]}
 };
 
 export const ARENA_STAGE_PROFILES=deepFreeze({
@@ -956,7 +946,12 @@ export const ARENA_STAGES=deepFreeze({
   'echo-village':ECHO_VILLAGE,
   'echo-caverns':ECHO_CAVERNS,
   'echo-sky':ECHO_SKY,
-  'echo-mountain':ECHO_MOUNTAIN
+  'echo-mountain':ECHO_MOUNTAIN,
+  'shadow-lookout':{...ECHO_MOUNTAIN,id:'shadow-lookout',name:'Shadow’s Lookout',subtitle:'Floating Echo Region sanctuary',available:false,spawnPoints:[{x:760,z:0},{x:900,z:90}],camera:{...ECHO_MOUNTAIN.camera,baseDistance:900,minDistance:850,maxDistance:1050,heightBase:440},scenery:{...ECHO_MOUNTAIN.scenery,trees:echoRegionTrees()}},
+  'chapter6-highlands':{...REMOTE_HIGHLANDS,id:'chapter6-highlands',name:'Echo Highlands',subtitle:'Chapter 6 extraction route above the village',available:false,spawnPoints:[{x:-250,z:0},{x:250,z:0}],scenery:{...REMOTE_HIGHLANDS.scenery,trees:echoRegionTrees()}},
+  'chapter5-outpost':{...REMOTE_HIGHLANDS,id:'chapter5-outpost',name:'Red Observation Outpost',subtitle:'Chapter 5 field base in the Echo foothills',available:false,spawnPoints:[{x:-220,z:120},{x:220,z:-100}],scenery:{...REMOTE_HIGHLANDS.scenery,trees:echoRegionTrees()}},
+  'chapter7-relay':{...REMOTE_HIGHLANDS,id:'chapter7-relay',name:'Emerald Relay Plateau',subtitle:'Chapter 7 signal relay site above Echo Region',available:false,spawnPoints:[{x:-270,z:0},{x:270,z:100}],scenery:{...REMOTE_HIGHLANDS.scenery,trees:echoRegionTrees()}},
+  'chapter8-core':{...RESONANCE_FACILITY,id:'chapter8-core',name:'Organization Central Core',subtitle:'Chapter 8 final machine hall',available:false,spawnPoints:[{x:-740,z:120},{x:260,z:-40}]}
 });
 
 export function validateArenaStage(stage){

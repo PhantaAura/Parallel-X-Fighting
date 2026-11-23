@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a419-map-visuals-20261123';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a523-3d-worlds-20261123';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',

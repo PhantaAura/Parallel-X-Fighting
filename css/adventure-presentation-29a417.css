@@ -37,3 +37,76 @@
 .connectedMapCard{border:2px solid #59634d!important;border-radius:14px!important;background:#f8f1df!important;box-shadow:0 20px 65px #061018aa!important}
 .connectedMapCard canvas{border:1px solid #8b8669!important;border-radius:8px;box-shadow:inset 0 0 25px #fff8df55}
 @media(max-width:760px){#rrvvfoMission1UI .storyManualCard .manualGrid{grid-template-columns:1fr}#rrvvfoMission1UI .storyManualCard header{align-items:flex-start}#rrvvfoMission1UI .storyManualCard header>strong{font-size:8px;white-space:normal}}
+
+
+/* Route picker repair: pair the preview portrait with the detail column and keep both readable. */
+#lostYearStoryScreen .routePanel{
+  display:grid!important;
+  grid-template-columns:minmax(180px,.62fr) minmax(0,1.38fr)!important;
+  align-items:stretch!important;
+  gap:0!important;
+  min-width:0!important;
+  min-height:560px!important;
+  max-height:min(820px,calc(100dvh - 255px))!important;
+  overflow:hidden!important;
+  padding:0!important;
+  border:1px solid #4b596e!important;
+  border-radius:12px!important;
+  background:#111d2b!important;
+  color:#f3efe4!important;
+  box-shadow:0 14px 30px #0008!important;
+}
+#lostYearStoryScreen .routePanel .routeFeatureRrvvfo{
+  display:block!important;
+  align-self:stretch!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:100%!important;
+  border:0!important;
+  border-right:1px solid #4b596e!important;
+  background:radial-gradient(ellipse at 50% 82%,#a84b39 0,transparent 48%),linear-gradient(155deg,#293d47,#101a2a 72%)!important;
+}
+#lostYearStoryScreen .routePanel .routeFeatureRrvvfo:before{
+  width:220px!important;
+  height:220px!important;
+  bottom:6%!important;
+  transform:translateX(-50%) scale(1.42)!important;
+}
+#lostYearStoryScreen .routePanel .routeDetails{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:10px!important;
+  min-width:0!important;
+  min-height:0!important;
+  overflow:auto!important;
+  padding:clamp(18px,2.2vw,34px)!important;
+  border:0!important;
+  background:transparent!important;
+  color:#e9e5d9!important;
+}
+#lostYearStoryScreen .routePanel .routeDetails>small{color:#e1bf67!important;font-size:11px!important;letter-spacing:.14em!important}
+#lostYearStoryScreen .routePanel .routeDetails h2{margin:0!important;color:#fff!important;font-size:clamp(30px,3vw,46px)!important;font-style:normal!important;line-height:1!important;letter-spacing:-.025em!important;text-shadow:none!important}
+#lostYearStoryScreen .routePanel .routeDetails p{margin:0!important;color:#c3cbd0!important;font-size:14px!important;line-height:1.55!important}
+#lostYearStoryScreen .routePanel .routeDetails dl{margin:4px 0!important}
+#lostYearStoryScreen .routePanel .routeDetails dl div{border:1px solid #46546a!important;border-radius:6px!important;background:#0b1421!important}
+#lostYearStoryScreen .routePanel .routeDetails dt{color:#d9bf76!important}
+#lostYearStoryScreen .routePanel .routeDetails dd{color:#f2efe6!important}
+#lostYearStoryScreen .routePanel .routeActions{margin-top:6px!important}
+#lostYearStoryScreen .routePanel .routeActions button{min-height:48px!important;border-radius:7px!important}
+@media(max-width:900px){
+  #lostYearStoryScreen .routePanel{grid-template-columns:140px minmax(0,1fr)!important;min-height:340px!important;max-height:52vh!important}
+  #lostYearStoryScreen .routePanel .routeFeatureRrvvfo{min-height:0!important}
+}
+
+#lostYearStoryScreen .routePanel .routeFeatureLetter{display:grid!important;place-items:center!important;min-width:0!important;min-height:0!important;height:100%!important;border:0!important;border-right:1px solid #4b596e!important;background:radial-gradient(circle at 50% 43%,color-mix(in srgb,var(--route-color,#d2a84c) 45%,transparent),transparent 55%),linear-gradient(155deg,#253545,#101a2a 72%)!important}
+#lostYearStoryScreen .routePanel .routeFeatureLetter b{display:grid!important;place-items:center!important;width:clamp(90px,12vw,180px)!important;aspect-ratio:1!important;border:2px solid color-mix(in srgb,var(--route-color,#d2a84c) 80%,#fff)!important;border-radius:50%!important;background:#111d2b!important;color:#f5f0df!important;font:900 clamp(56px,8vw,112px)/1 var(--pxb-display)!important;text-shadow:3px 3px 0 #000!important;box-shadow:0 14px 32px #0008!important}
+
+#lostYearStoryScreen .routePanel .routeDetails .storyRpgStats{margin:2px 0!important;padding:12px!important;border:1px solid #46546a!important;border-radius:8px!important;background:#0b1421!important;color:#f2efe6!important}
+#lostYearStoryScreen .routePanel .routeDetails .storyRpgStats header{gap:18px!important;margin:0 0 9px!important;padding:0 0 8px!important;border-bottom:1px solid #46546a!important}
+#lostYearStoryScreen .routePanel .routeDetails .storyRpgStats header span{display:flex!important;align-items:baseline!important;gap:8px!important}
+#lostYearStoryScreen .routePanel .routeDetails .storyRpgStats header small,#lostYearStoryScreen .routePanel .routeDetails .storyStatGrid small{position:static!important;color:#d9bf76!important;font-size:9px!important;font-weight:800!important;letter-spacing:.08em!important;line-height:1.1!important}
+#lostYearStoryScreen .routePanel .routeDetails .storyRpgStats header strong{color:#fff!important;font-size:19px!important;line-height:1!important}
+#lostYearStoryScreen .routePanel .routeDetails .storyStatGrid{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:6px!important}
+#lostYearStoryScreen .routePanel .routeDetails .storyStatGrid span{min-width:0!important;padding:7px 4px!important;border:1px solid #46546a!important;border-radius:5px!important;background:#152337!important}
+#lostYearStoryScreen .routePanel .routeDetails .storyStatGrid b{color:#fff!important;font-size:15px!important;line-height:1.1!important}

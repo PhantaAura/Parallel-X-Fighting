@@ -1,5 +1,5 @@
-import {storyConfirm} from './story/story-ux.js?v=29a412-echo-ridge-20261122';
-import {loadQolSettings} from './qol-settings.js?v=29a412-echo-ridge-20261122';
+import {storyConfirm} from './story/story-ux.js?v=29a523-3d-worlds-20261123';
+import {loadQolSettings} from './qol-settings.js?v=29a523-3d-worlds-20261123';
 
 /* Parallels X shared story dialogue presentation. */
 // Scenes you have already read (3+ lines, no choices) can be skipped in one

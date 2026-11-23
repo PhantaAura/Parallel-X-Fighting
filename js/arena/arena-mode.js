@@ -1,21 +1,21 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a419-map-visuals-20261123';
-import {drawStagePersonality,projectileHitsStageGeometry,resolveStageGeometry,stagePersonalityFor} from './stage-personality.js?v=29a412-echo-ridge-20261122';
-import {drawArenaStage} from './arena-stage-renderer.js';
-import {WebGLArenaRenderer} from './webgl-renderer.js';
-import {ArenaControlManager} from './arena-controls.js?v=29a412-echo-ridge-20261122';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor,fighterFeelFor} from './arena-combat-data.js?v=29a412-echo-ridge-20261122';
-import {finalKoImpactFor,signatureMeleeKind,signatureProfileFor} from './signature-combat.js?v=29a412-echo-ridge-20261122';
-import {PLAYABLE_ROSTER_IDS,ROSTER} from '../roster.js?v=29a412-echo-ridge-20261122';
-import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a412-echo-ridge-20261122';
-import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a412-echo-ridge-20261122';
-import {loadQolSettings} from '../qol-settings.js?v=29a412-echo-ridge-20261122';
-import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a412-echo-ridge-20261122';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a412-echo-ridge-20261122';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a412-echo-ridge-20261122';
-import {BUILD_VERSION} from '../build-info.js?v=29a419-map-visuals-20261123';
-import {createBattleMasterySession,finalizeBattleMastery,masteryRankLabel,recordBattleMasteryEvent,recordMasteryChallenge} from '../mastery-records.js?v=29a412-echo-ridge-20261122';
-import {applyRrvvfoBuildToFighter,buildHasPassive,currentRrvvfoBuild,enemyArchetypeShape,tuneRrvvfoAbility} from '../story/core-fun.js?v=29a412-echo-ridge-20261122';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a523-3d-worlds-20261123';
+import {drawStagePersonality,projectileHitsStageGeometry,resolveStageGeometry,stagePersonalityFor} from './stage-personality.js?v=29a523-3d-worlds-20261123';
+import {drawArenaStage} from './arena-stage-renderer.js?v=29a523-3d-worlds-20261123';
+import {WebGLArenaRenderer} from './webgl-renderer.js?v=29a523-3d-worlds-20261123';
+import {ArenaControlManager} from './arena-controls.js?v=29a523-3d-worlds-20261123';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor,fighterFeelFor} from './arena-combat-data.js?v=29a523-3d-worlds-20261123';
+import {finalKoImpactFor,signatureMeleeKind,signatureProfileFor} from './signature-combat.js?v=29a523-3d-worlds-20261123';
+import {PLAYABLE_ROSTER_IDS,ROSTER} from '../roster.js?v=29a523-3d-worlds-20261123';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a523-3d-worlds-20261123';
+import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a523-3d-worlds-20261123';
+import {loadQolSettings} from '../qol-settings.js?v=29a523-3d-worlds-20261123';
+import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a523-3d-worlds-20261123';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a523-3d-worlds-20261123';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a523-3d-worlds-20261123';
+import {BUILD_VERSION} from '../build-info.js?v=29a523-3d-worlds-20261123';
+import {createBattleMasterySession,finalizeBattleMastery,masteryRankLabel,recordBattleMasteryEvent,recordMasteryChallenge} from '../mastery-records.js?v=29a523-3d-worlds-20261123';
+import {applyRrvvfoBuildToFighter,buildHasPassive,currentRrvvfoBuild,enemyArchetypeShape,tuneRrvvfoAbility} from '../story/core-fun.js?v=29a523-3d-worlds-20261123';
 
 const ID='arenaModeScreen';
 const W=960;
@@ -41,14 +41,7 @@ const JUGGLE_LIMIT=COMBAT_RULES.juggleLimit;
 const EDGE_PRESSURE_HITS=COMBAT_RULES.edgePressureHits;
 const EDGE_PRESSURE_WINDOW=COMBAT_RULES.edgePressureWindow;
 const LENS_MASTERY_KEY='pxLensMasteryV1';
-const STAGE_BACKDROPS=Object.freeze({
-  'chapter1-field':new URL('../../assets/environments/ch1-field.webp',import.meta.url).href,
-  'chapter2-tournament':new URL('../../assets/environments/ch2-tournament.webp',import.meta.url).href,
-  'chapter3-factory':new URL('../../assets/environments/ch3-factory.webp',import.meta.url).href,
-  'chapter4-echo-region':new URL('../../assets/environments/ch4-echo-region.webp',import.meta.url).href,
-  'chapter4-mountain':new URL('../../assets/environments/ch4-mountain.webp',import.meta.url).href,
-  'shadow-lookout':new URL('../../assets/environments/ch4-lookout.webp',import.meta.url).href
-});
+
 
 const MOVEMENT_PROFILES=Object.freeze({
   rrvvfo:Object.freeze({walkSpeed:154,runSpeed:316,airSpeed:218,accel:1320,runAccel:1820,brake:1990,airAccel:720,airBrake:112,dashSpeed:720,pursuitSpeed:960}),
@@ -147,7 +140,6 @@ function installUI(){
   style.textContent=`
 #${ID}{position:fixed;inset:0;z-index:1200;background:radial-gradient(circle at 50% 30%,#2b2140,#080a12 70%);color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif;overflow:hidden}
 #${ID}.hidden{display:none}
-#${ID} .stageBackdrop{position:absolute;z-index:0;inset:0;margin:auto;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));background-color:#101326;background-position:center 50%;background-size:cover;background-repeat:no-repeat;filter:saturate(.86) brightness(.92);pointer-events:none}
 #${ID} canvas{position:absolute;z-index:1;inset:0;margin:auto;cursor:crosshair;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));max-width:100%;max-height:100%;touch-action:none;background:transparent}
 #${ID} [data-world-layer]{z-index:1}#${ID} [data-fighter-layer]{z-index:2!important;pointer-events:none;cursor:default;background:transparent!important}
 #${ID} .top{position:absolute;z-index:20;inset:14px 18px auto;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;text-shadow:0 2px 8px #000;pointer-events:none}
@@ -193,6 +185,11 @@ function installUI(){
 #${ID}[data-mobile-layout=compact] .arenaMovePad{width:112px;height:112px}#${ID}[data-mobile-layout=compact] .arenaActionCluster{transform:scale(.86);transform-origin:right bottom}#${ID}.arena-left-handed[data-mobile-layout=compact] .arenaActionCluster{transform-origin:left bottom}
 #${ID}[data-mobile-layout=large] .arenaMovePad{width:150px;height:150px}#${ID}[data-mobile-layout=large] .arenaActionCluster{transform:scale(1.12);transform-origin:right bottom}#${ID}.arena-left-handed[data-mobile-layout=large] .arenaActionCluster{transform-origin:left bottom}
 #${ID}.arena-labels-hidden .arenaTouchButton span{display:none}
+#${ID}.mapPreviewOnly{background:#6da9d0}
+#${ID}.mapPreviewOnly [data-fighter-layer]{visibility:hidden}
+#${ID}.mapPreviewOnly .top,#${ID}.mapPreviewOnly .clock,#${ID}.mapPreviewOnly .badge,#${ID}.mapPreviewOnly .banner,#${ID}.mapPreviewOnly .result,#${ID}.mapPreviewOnly .battleRankToast,#${ID}.mapPreviewOnly .arenaNotice,#${ID}.mapPreviewOnly .focusRecoveryCue,#${ID}.mapPreviewOnly .combatEventLayer,#${ID}.mapPreviewOnly .pursuitPrompt,#${ID}.mapPreviewOnly .edgeWarning,#${ID}.mapPreviewOnly .arenaHotbar,#${ID}.mapPreviewOnly .arenaTouchControls,#${ID}.mapPreviewOnly .arenaTouchUtilities,#${ID}.mapPreviewOnly .bottom,#${ID}.mapPreviewOnly .arenaTrainingPanel,#${ID}.mapPreviewOnly .arenaStageSelect,#${ID}.mapPreviewOnly .lensBlindness,#${ID}.mapPreviewOnly .impactFlash,#${ID}.mapPreviewOnly .arenaControlSettings,#${ID}.mapPreviewOnly .rotateHint,#${ID}.mapPreviewOnly .comboCallout{display:none!important}
+#${ID} .arenaMapPreviewNav{position:absolute;z-index:90;top:max(18px,env(safe-area-inset-top));left:max(18px,env(safe-area-inset-left));display:flex;align-items:center;gap:14px;padding:9px 12px;border:1px solid #ffffff8c;border-radius:10px;background:#08111dcc;color:#fff;font:900 13px/1.2 Inter,Segoe UI,Arial,sans-serif;letter-spacing:.06em;box-shadow:0 4px 16px #0006;backdrop-filter:blur(8px)}
+#${ID} .arenaMapPreviewNav button{padding:7px 11px;border-radius:7px;background:#f2d076;color:#18202a}
 
 #${ID} .masteryResult{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;margin:14px 0;padding:10px 12px;border:1px solid #ffffff38;border-radius:10px;background:#0a101cf0;text-align:left}#${ID} .masteryResult[hidden]{display:none!important}#${ID} .masteryResultRank{grid-row:1/3;display:grid;place-items:center;width:58px;height:58px;border:2px solid #fff18a;border-radius:50%;background:#17120a;color:#fff18a;font-size:34px;font-weight:1000;box-shadow:0 0 18px #ffe45f55}#${ID} .masteryResult strong{font-size:13px;letter-spacing:.06em}#${ID} .masteryResult span{color:#bfefff;font-size:10px;font-weight:900;line-height:1.35}#${ID} .masteryResultRank[data-rank="S"],#${ID} .battleRankToast[data-rank="S"] .battleRankLetter{border-color:#ffe56e;background:#443407;color:#fff4a8;box-shadow:0 0 22px #ffe56e88}#${ID} .masteryResultRank[data-rank="A"],#${ID} .battleRankToast[data-rank="A"] .battleRankLetter{border-color:#6de7ff;background:#083344;color:#c8f7ff;box-shadow:0 0 20px #6de7ff77}#${ID} .masteryResultRank[data-rank="B"],#${ID} .battleRankToast[data-rank="B"] .battleRankLetter{border-color:#75ef9a;background:#0b3820;color:#d6ffe2;box-shadow:0 0 18px #75ef9a66}#${ID} .masteryResultRank[data-rank="C"],#${ID} .battleRankToast[data-rank="C"] .battleRankLetter{border-color:#8fb9ff;background:#152a4a;color:#e4edff;box-shadow:0 0 16px #8fb9ff55}#${ID} .masteryResultRank[data-rank="D"],#${ID} .battleRankToast[data-rank="D"] .battleRankLetter{border-color:#ffb45f;background:#4a260a;color:#fff0d8;box-shadow:0 0 16px #ffb45f55}#${ID} .masteryResultRank[data-rank="E"],#${ID} .battleRankToast[data-rank="E"] .battleRankLetter{border-color:#ff7777;background:#4b1010;color:#ffe5e5;box-shadow:0 0 16px #ff777755}#${ID} .battleRankToast{position:absolute;z-index:92;left:50%;top:21%;transform:translate(-50%,-10px);display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;min-width:min(360px,82vw);padding:10px 14px;border:1px solid #ffffff52;border-radius:12px;background:#070b14f2;box-shadow:0 16px 42px #000b;opacity:1;transition:opacity .16s,transform .16s;pointer-events:none}#${ID} .battleRankToast[hidden]{display:none!important}#${ID} .battleRankToast .battleRankLetter{grid-row:1/3;display:grid;place-items:center;width:64px;height:64px;border:3px solid #8fb9ff;border-radius:50%;font-size:40px;font-weight:1000}#${ID} .battleRankToast strong{font-size:14px;letter-spacing:.1em}#${ID} .battleRankToast span{color:#d9efff;font-size:10px;font-weight:900;line-height:1.4}
 #${ID} .arenaStageSelect{position:absolute;z-index:100;inset:0;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 20%,#432451,#110b19 58%,#05070d 100%)}#${ID} .arenaStageSelect.hidden{display:none}#${ID} .arenaStageCard{width:min(920px,94vw);max-height:92vh;overflow:auto;padding:24px;border:1px solid #ffffff32;border-radius:20px;background:#0a0d17f2;box-shadow:0 30px 100px #000c}#${ID} .arenaStageCard header{text-align:center}#${ID} .arenaStageCard header small{color:#78f3ff;font-weight:1000;letter-spacing:.13em}#${ID} .arenaStageCard h2{margin:4px 0 8px;font-size:36px}#${ID} .arenaStageCard header p{margin:0 auto 20px;max-width:650px;color:#c9c5da}#${ID} .arenaStageGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}#${ID} .arenaStageOption{min-height:190px;padding:16px;text-align:left;border:2px solid #ffffff2c;background:linear-gradient(155deg,#28203d,#101321 72%);transition:transform .12s,border-color .12s,box-shadow .12s}#${ID} .arenaStageOption:hover:not(:disabled),#${ID} .arenaStageOption:focus-visible:not(:disabled){transform:translateY(-3px);border-color:#78f3ff;box-shadow:0 0 0 2px #78f3ff44,0 14px 30px #0008}#${ID} .arenaStageOption strong{display:block;font-size:20px}#${ID} .arenaStageOption span{display:block;margin-top:6px;color:#d9ccff;font-size:12px}#${ID} .arenaStageOption .stageTags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}#${ID} .arenaStageOption .stageTags b{padding:3px 6px;border:1px solid #ffffff38;border-radius:999px;background:#080b15b8;color:#9eefff;font-size:9px;letter-spacing:.08em}#${ID} .arenaStageOption .stageDescription{min-height:34px;color:#e8e5f2;line-height:1.35}#${ID} .arenaStageOption .stageRecommend{color:#ffd98c;font-size:10px}#${ID} .arenaStageOption em{display:inline-block;margin-top:14px;padding:4px 7px;border-radius:999px;background:#1b8d6b;color:#eafff8;font-size:10px;font-style:normal;letter-spacing:.08em}#${ID} .arenaStageOption.tournament{background:linear-gradient(155deg,#53303f,#20152e 72%)}#${ID} .arenaStageOption:disabled{cursor:not-allowed;opacity:.5;filter:grayscale(.5)}#${ID} .arenaStageOption:disabled em{background:#514a5d}#${ID} .arenaStageBack{display:block;margin:18px auto 0}
@@ -206,7 +203,6 @@ function installUI(){
   root.id=ID;
   root.className='hidden';
   root.innerHTML=`
-<div class="stageBackdrop" data-stage-backdrop aria-hidden="true"></div>
 <canvas data-world-layer width="${W}" height="${H}" aria-label="WebGL perspective arena"></canvas>
 <canvas data-fighter-layer width="${W}" height="${H}" aria-hidden="true"></canvas>
 
@@ -250,7 +246,7 @@ function installUI(){
   <header><div><small>${BUILD_VERSION}</small><h2>CONTROL LAYOUTS</h2><p>Desktop and mobile settings save separately from combat balance.</p></div><button data-arena-controls-close aria-label="Close">×</button></header>
   <div class="arenaControlGrid">
     <fieldset><legend>PC</legend><label>Keyboard profile<select data-control-pc-layout><option value="shared">Chapter 1–3 Controls — used in every mode</option></select></label><label>Left mouse click<select data-control-mouse-attack><option value="light">Light Attack</option><option value="heavy">Heavy Attack</option></select></label><p><strong>Movement:</strong> WASD<br><strong>Jump:</strong> Space<br><strong>Light / Heavy / Launcher:</strong> J / K / I<br><strong>Dash:</strong> Shift<br><strong>Block:</strong> L or Mouse 2<br><strong>Charge:</strong> C<br><strong>Grab:</strong> U<br><strong>Abilities:</strong> 1–5</p></fieldset>
-    <fieldset><legend>MOBILE</legend><label>Touch controls<select data-control-touch-mode><option value="auto">Auto detect</option><option value="on">Always on</option><option value="off">Off</option></select></label><label>Button size<select data-control-mobile-layout><option value="compact">Compact</option><option value="standard">Standard</option><option value="large">Large Buttons</option></select></label><label>Handedness<select data-control-handedness><option value="right">Joystick left / attacks right</option><option value="left">Joystick right / attacks left</option></select></label><label>Opacity<input data-control-opacity type="range" min=".45" max="1" step=".05"></label><label><input data-control-labels type="checkbox"> Show action labels</label></fieldset>
+    <fieldset><legend>MOBILE</legend><label>Touch controls<select data-control-touch-mode><option value="auto">Auto detect</option><option value="on">Always on mobile</option><option value="off">Off</option></select></label><label>Button size<select data-control-mobile-layout><option value="compact">Compact</option><option value="standard">Standard</option><option value="large">Large Buttons</option></select></label><label>Handedness<select data-control-handedness><option value="right">Joystick left / attacks right</option><option value="left">Joystick right / attacks left</option></select></label><label>Opacity<input data-control-opacity type="range" min=".45" max="1" step=".05"></label><label><input data-control-labels type="checkbox"> Show action labels</label></fieldset>
   </div><div class="arenaControlActions"><button data-arena-controls-reset>RESTORE DEFAULTS</button><button class="primary" data-arena-controls-close>DONE</button></div>
 </div></div>
 <div class="arenaTrainingPanel hidden" data-arena-training-panel><button class="trainingPanelToggle" data-training-toggle aria-expanded="true">TRAINING PANEL • HIDE</button><div class="trainingPanelBody" data-training-panel-body><strong>ARENA TRAINING</strong><label>TRIAL <select data-training-drill><option value="free">Free Practice</option><option value="parry">Perfect-Parry Trial</option><option value="charge">Energy Discipline</option><option value="recovery">Focus Recovery</option><option value="combo">Launch → Pursuit Trial</option><option value="finisher">Ideal Pursuit Combo</option><option value="wall">Wall Splat Trial</option><option value="bounce">Ground Bounce Trial</option><option value="escape">Pursuit Escape Trial</option><option value="pressure">Pursuit Pressure</option><option value="guard">Guard-Break Punish</option><option value="variation">Unpredictable Route</option><optgroup label="Fighter Identity"><option value="rrvvfoIdentity">Rrvvfo • Improvised Angle</option><option value="revvfoIdentity">Revvfo • Relentless Pressure</option><option value="wadeIdentity">Wade • Lightning Near-Miss</option><option value="barkIdentity">Bark • Armored Punish</option></optgroup></select></label><label>DUMMY <select data-training-dummy><option value="stand">Stand</option><option value="block">Always Block</option><option value="perfect">Perfect-Block Attempts</option><option value="counter">Counter After Hit</option><option value="tech">Air-Tech Practice</option><option value="pursuit">Pursuit Pressure</option><option value="recovery">Focus Recovery Practice</option><option value="random">Random Defense</option><option value="cpu">Full CPU</option></select></label><label>PURSUIT DEFENSE <select data-training-pursuit-defense><option value="never">Never Tech</option><option value="occasional">Tech Occasionally</option><option value="always">Tech Every Time</option><option value="repeated">Tech After Repeated Route</option></select></label><label>FOCUS RECOVERY <select data-training-recovery><option value="never">Never Recover</option><option value="safe">Recover When Safe</option><option value="low">Recover at Low Health</option><option value="always">Always Attempt</option></select></label><button data-training-reset>RESET MATCH</button><button data-training-reset-combat>RESET COMBAT STATE</button><button data-training-moves>MOVE LIST</button><button data-training-identity>FIGHTER IDENTITY GUIDE</button><button data-training-advanced>ADVANCED 2D LAB</button><div class="pursuitCounters"><span>WALL SPLAT <strong data-training-wall-count>0/1</strong></span><span>GROUND BOUNCE <strong data-training-bounce-count>0/1</strong></span></div><div class="arenaTrialCard" data-training-trial-card><small data-training-trial-label>FREE PRACTICE</small><strong data-training-trial-goal>Practice any route.</strong><span data-training-trial-message>No pass condition.</span><div><i data-training-trial-meter></i></div></div></div></div>
@@ -522,17 +518,13 @@ class ArenaBattle{
 
   setStage(stageId='dojo'){
     if(this.active)throw new Error('Cannot change arenas during an active match.');
-    this.stage=getArenaStage(stageId);this.setStageBackdrop(this.stage.backdrop||'');this.stageProfile=stageProfile(this.stage.id);this.ringOutEnabled=this.stageProfile?.boundary==='RING-OUT'&&this.matchMode!=='training';this.stageBoundaryPulse=0;this.crowdExcitement=0;
+    this.stage=getArenaStage(stageId);this.stageProfile=stageProfile(this.stage.id);this.ringOutEnabled=this.stageProfile?.boundary==='RING-OUT'&&this.matchMode!=='training';this.stageBoundaryPulse=0;this.crowdExcitement=0;
     const [spawn1,spawn2]=this.stage.spawnPoints;
     this.fighters[0].reset(spawn1.x,spawn1.z);this.fighters[1].reset(spawn2.x,spawn2.z);this.camera=initialCameraState(this.stage,this.fighters);
     return this.stage;
   }
 
-  setStageBackdrop(backdropId=this.stage?.backdrop||''){
-    const id=String(backdropId||''),source=STAGE_BACKDROPS[id],node=this.root?.querySelector('[data-stage-backdrop]');
-    if(node){node.style.backgroundImage=source?'url("' + source + '")':'';node.dataset.backdrop=id}
-    return Boolean(source);
-  }
+
 
   start(){
     if(this.active)return;this.feedback=combatFeedbackPreferences();this.root.querySelector('[data-arena-stage-select]').classList.add('hidden');this.active=true;this.root.querySelector('[data-stage-name]').textContent=`${this.stage.name.toUpperCase()} • ${this.stageProfile?.archetype||'NEUTRAL'}`;this.canvas.setAttribute('aria-label',`${this.stage.name} WebGL perspective arena`);this.audio.enable();this.root.classList.remove('hidden','paused');['startScreen','mainMenuScreen','menuScreen','gameScreen'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));this.controls.start();this.root.classList.toggle('arenaTrainingMode',this.trainingMode);this.root.querySelector('[data-arena-training-panel]')?.classList.toggle('hidden',!this.trainingMode);this.setTrainingPanelCollapsed(this.trainingMode&&this.controls.touchEnabled());this.restart();this.last=performance.now();this.raf=requestAnimationFrame(timestamp=>this.loop(timestamp));

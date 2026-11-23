@@ -180,6 +180,23 @@ function cylinderMesh(gl,segments=18){
   return createMesh(gl,p,uv,n,indices);
 }
 
+function sphereMesh(gl,latitudes=12,longitudes=20){
+  const p=[],uv=[],n=[],indices=[];
+  for(let lat=0;lat<=latitudes;lat++){
+    const phi=lat/latitudes*Math.PI,sy=Math.cos(phi),ring=Math.sin(phi);
+    for(let lon=0;lon<=longitudes;lon++){
+      const theta=lon/longitudes*Math.PI*2,x=ring*Math.cos(theta),z=ring*Math.sin(theta);
+      p.push(x*.5,sy*.5,z*.5);n.push(x,sy,z);uv.push(lon/longitudes,lat/latitudes);
+    }
+  }
+  const stride=longitudes+1;
+  for(let lat=0;lat<latitudes;lat++)for(let lon=0;lon<longitudes;lon++){
+    const a=lat*stride+lon,b=a+stride;
+    indices.push(a,b,a+1,b,b+1,a+1);
+  }
+  return createMesh(gl,p,uv,n,indices);
+}
+
 function coneMesh(gl,segments=18){
   const p=[],uv=[],n=[],indices=[];
   const slope=.62;
@@ -215,9 +232,9 @@ function gableRoofMesh(gl){
 }
 
 export class WebGLArenaRenderer{
-  constructor(canvas){
+  constructor(canvas,{preserveDrawingBuffer=false}={}){
     this.canvas=canvas;
-    const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false});
+    const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,preserveDrawingBuffer});
     if(!gl)throw new Error('WebGL is not available in this browser.');
     this.gl=gl;
     this.program=program(gl,`
@@ -280,7 +297,7 @@ void main(){
       fogColor:gl.getUniformLocation(this.program,'uFogColor'),
       fogRange:gl.getUniformLocation(this.program,'uFogRange')
     };
-    this.meshes={cube:cubeMesh(gl),quad:quadMesh(gl),disc:discMesh(gl),cylinder:cylinderMesh(gl),cone:coneMesh(gl),gable:gableRoofMesh(gl)};
+    this.meshes={cube:cubeMesh(gl),quad:quadMesh(gl),disc:discMesh(gl),cylinder:cylinderMesh(gl),cone:coneMesh(gl),sphere:sphereMesh(gl),gable:gableRoofMesh(gl)};
     this.whiteTexture=this.makeWhiteTexture();
     this.eye=[520,390,650];
     this.target=[0,35,0];
@@ -328,7 +345,7 @@ void main(){
     this.viewProjection=multiply(this.projection,this.view);
     const color=this.color(clear);
     gl.viewport(0,0,this.canvas.width,this.canvas.height);
-    gl.clearColor(color[0],color[1],color[2],0);
+    gl.clearColor(color[0],color[1],color[2],1);
     gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
     gl.useProgram(this.program);
     gl.uniformMatrix4fv(this.locations.projection,false,this.projection);
@@ -388,6 +405,11 @@ void main(){
   cone(options={}){
     const{x=0,y=0,z=0,rx=1,rz=rx,sy=1,rotationY=0}=options;
     this.draw(this.meshes.cone,modelMatrix({x,y,z,sx:rx,sy,sz:rz,rotationY}),options);
+  }
+
+  sphere(options={}){
+    const{x=0,y=0,z=0,sx=1,sy=sx,sz=sx,rotationY=0}=options;
+    this.draw(this.meshes.sphere,modelMatrix({x,y,z,sx,sy,sz,rotationY}),{...options,cull:false});
   }
 
   gableRoof(options={}){

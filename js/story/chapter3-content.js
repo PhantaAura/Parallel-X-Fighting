@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a412-echo-ridge-20261122';
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a412-echo-ridge-20261122';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a523-3d-worlds-20261123';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a523-3d-worlds-20261123';
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
 export const CHAPTER3_STATE_VERSION=4;
 

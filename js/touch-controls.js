@@ -1,4 +1,10 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a412-echo-ridge-20261122';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a523-3d-worlds-20261123';
+
+function isMobileTouchPlatform(nav=globalThis.navigator){
+  if(nav?.userAgentData?.mobile)return true;
+  const ua=String(nav?.userAgent||''),platform=String(nav?.platform||''),touchPoints=Number(nav?.maxTouchPoints||0);
+  return /iPhone|iPad|iPod|Android|Tablet/i.test(ua)||(/Mac/.test(platform)&&touchPoints>1);
+}
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',
@@ -301,7 +307,7 @@ export class TouchControls {
   }
 
   startMatch({training=false,show=true}={}) {
-    this.enabled=!!show;this.training=!!training;
+    this.enabled=!!show&&isMobileTouchPlatform();this.training=!!training;
     this.root?.classList?.toggle('hidden',!this.enabled);
     this.root?.classList?.remove('touch-controls-disabled');
     this.root?.classList?.toggle('training-touch',this.training);

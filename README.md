@@ -1,5 +1,5 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.47 — Chapter 1–4 Environment Pass
+## Prototype 2.9A.52 — 3D Chapter Worlds
 
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
@@ -16,11 +16,15 @@
 
 Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
-The latest pass adds six original painterly environment backdrops to the Chapter 1–4 play spaces while leaving their floors, side quests, puzzle triggers, and combat geometry intact. Wade’s shortcut introduction now catches his tournament mix-up with a quick Rrvvfo correction. Map Debug Mode unlocks only by entering the Konami code while Settings is open; it includes temporary chapter replays, five boss practice fights, combat tests, and map previews. Save schema remains 268.
+[View the 3D chapter map gallery](https://phantaaura.github.io/Parallel-X-Fighting/map-gallery.html)
+
+This pass rebuilds the chapter scenery as explorable 3D geometry: Chapter 1’s flowerless countryside trail and creek bridge, Chapter 2’s martial-arts tournament courtyard, Chapter 3’s busy automated factory, Echo Region’s village and sandstone ridges, a floating Shadow’s Lookout, and separate outpost, Red Network, relay, and core sites for Chapters 5–8. Existing floors, puzzles, side quests, and story triggers remain the playable map.
+
+The route selector now uses its missing character-preview panel and shows the routes actually unlocked by progress. Phone controls are hidden on computers. Settings-only Map Debug Mode still uses the Konami code, and now previews every released chapter environment plus its chapter and boss warps. Wade’s tournament mix-up is corrected in dialogue. Save schema remains 268.
 
 ## Current build
 
-**Prototype 2.9A.47 — Chapter 1–4 Environment Pass**
+**Prototype 2.9A.52 — 3D Chapter Worlds**
 
 This is a complete cumulative build. No older package is required.
 

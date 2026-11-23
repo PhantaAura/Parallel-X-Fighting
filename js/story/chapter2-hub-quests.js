@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a412-echo-ridge-20261122';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a523-3d-worlds-20261123';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.21';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([
@@ -12,7 +12,7 @@ export const CHAPTER2_DISTRICTS=Object.freeze([
 ]);
 
 export const CHAPTER2_RACE_CHECKPOINTS=Object.freeze([
-  // Keep race triggers on the walkable lanes beside the market and practice props.
+  // Put checkpoint rings on open approaches, clear of stall awnings and walls.
   {id:'market',label:'MARKET STREET',x:-800,z:560},
   {id:'practice',label:'PRACTICE RING',x:-1120,z:480},
   // The registration and medical buildings are solid; these are their open approaches.

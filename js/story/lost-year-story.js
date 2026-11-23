@@ -11,21 +11,21 @@ import {
   repairChapter4Progress,
   routeProgress,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
-import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a419-map-visuals-20261123';
-import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a419-map-visuals-20261123';
-import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a419-map-visuals-20261123';
-import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a419-map-visuals-20261123';
-import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a419-map-visuals-20261123';
-import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a419-map-visuals-20261123';
-import {startRrvvfoChapter5,startRrvvfoChapter6,startRrvvfoChapter7,startRrvvfoChapter8} from './rrvvfo-chapters-5-8.js?v=29a419-map-visuals-20261123';
-import {PARALLEL_ROUTES,parallelMissionId,startParallelRouteChapter} from './parallel-route-story.js?v=29a419-map-visuals-20261123';
-import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a419-map-visuals-20261123';
-import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a412-echo-ridge-20261122';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a412-echo-ridge-20261122';
-import {inspectStoryReliability} from './story-reliability.js?v=29a412-echo-ridge-20261122';
-import {renderTravelJournal} from './connected-world.js?v=29a412-echo-ridge-20261122';
-import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a412-echo-ridge-20261122';
+} from './lost-year-data.js?v=29a523-3d-worlds-20261123';
+import {startRrvvfoMission0} from './rrvvfo-mission-0.js?v=29a523-3d-worlds-20261123';
+import {startRrvvfoMission1} from './rrvvfo-mission-1.js?v=29a523-3d-worlds-20261123';
+import {startRrvvfoMission2} from './rrvvfo-mission-2.js?v=29a523-3d-worlds-20261123';
+import {startRrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a523-3d-worlds-20261123';
+import {startRrvvfoChapter3} from './rrvvfo-chapter-3.js?v=29a523-3d-worlds-20261123';
+import {startRrvvfoChapter4} from './rrvvfo-chapter-4.js?v=29a523-3d-worlds-20261123';
+import {startRrvvfoChapter5,startRrvvfoChapter6,startRrvvfoChapter7,startRrvvfoChapter8} from './rrvvfo-chapters-5-8.js?v=29a523-3d-worlds-20261123';
+import {PARALLEL_ROUTES,parallelMissionId,startParallelRouteChapter} from './parallel-route-story.js?v=29a523-3d-worlds-20261123';
+import {combatManualOwned,grantCombatManual,openCombatManual} from './combat-manual.js?v=29a523-3d-worlds-20261123';
+import {requireLandscapeForStory,showStoryStartupError,storyConfirm} from './story-ux.js?v=29a523-3d-worlds-20261123';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyPromptLabel,storyStatsMarkup} from './story-rpg-ui.js?v=29a523-3d-worlds-20261123';
+import {inspectStoryReliability} from './story-reliability.js?v=29a523-3d-worlds-20261123';
+import {renderTravelJournal} from './connected-world.js?v=29a523-3d-worlds-20261123';
+import {fastTravelDestination,markFastTravelArrival,renderRevisitJournal,syncFastTravelNodes} from './revisit-loop.js?v=29a523-3d-worlds-20261123';
 
 const SCREEN_ID='lostYearStoryScreen';
 let instance=null;
@@ -41,7 +41,7 @@ function buildScreen(){
         <div class="storyModeTitle"><small>PARALLELS X • STORY</small><h1>ROUTE <span>SELECT</span></h1></div>
         <button type="button" data-story-help>CONTROLS</button>
       </header>
-      <div class="lyMeta"><span class="lyChip">5 ROUTES AVAILABLE</span><span class="lyChip">28 PLAYABLE CHAPTERS</span><span class="lyChip">AUTO-SAVE</span><span class="lyChip">RPG LEVELS</span></div>
+      <div class="lyMeta"><span class="lyChip" data-route-count>1 ROUTE OPEN</span><span class="lyChip" data-playable-count>8 CHAPTERS PLAYABLE</span><span class="lyChip">AUTO-SAVE</span><span class="lyChip">RPG LEVELS</span></div>
       <div class="lyLayout" data-ly-layout>
         <main class="routeView" data-route-view><div class="routeGrid" data-route-grid></div></main>
         <aside class="routePanel" data-route-panel></aside>
@@ -114,13 +114,17 @@ class LostYearStoryScreen{
     this.progress=loadLostYearProgress();this.routeView.hidden=false;this.routePanel.hidden=false;this.routeHome.hidden=true;
     const rrvvfoComplete=completedRrvvfoChapterCount(this.progress)>=RRVVFO_PLANNED_CHAPTER_COUNT;
     const next=rrvvfoNextMission(this.progress),all=[{id:'rrvvfo',lead:'RRVVFO',title:'THE LOST YEAR',color:'#e94b3c',description:'Follow Rrvvfo from Tangai’s Dojo into Echo Region and the Organization of the Red conspiracy.',chapters:8},...PARALLEL_ROUTES.map(r=>({id:r.id,lead:r.lead,title:r.title,color:r.color,description:routeDescription(r.id),chapters:r.chapters.length}))];
-    const cards=all.map(r=>{const done=r.id==='rrvvfo'?(!next?8:completedRrvvfoChapterCount(this.progress)):(this.progress.parallelRouteChapters?.[r.id]||[]).length,locked=r.id!=='rrvvfo'&&!rrvvfoComplete;return `<button type="button" class="routeCard ${locked?'isLocked':''}" style="--route-color:${r.color}" data-route-id="${r.id}" ${locked?'disabled aria-disabled="true"':''}><span class="routePortrait" aria-hidden="true"><b>${locked?'•':r.lead[0]}</b></span><span class="routeCopy"><span class="status">${locked?'LOCKED • CLEAR RRVVFO':done<r.chapters?'CONTINUE STORY':'ROUTE COMPLETE'} • ${locked?'0':done}/${r.chapters} CHAPTERS</span><h2>${r.lead}</h2><h3>${r.title}</h3><p>${locked?'Finish all eight chapters of Rrvvfo’s route to unlock this story.':r.description}</p></span><span class="routeStartHint">${locked?'UNLOCKS AFTER RRVVFO':`${storyPromptLabel('confirm')} • OPEN ROUTE`}</span></button>`}).join('');
+    const routeCount=this.root.querySelector('[data-route-count]'),chapterCount=this.root.querySelector('[data-playable-count]');
+    if(routeCount)routeCount.textContent=rrvvfoComplete?'5 ROUTES OPEN':'1 ROUTE OPEN';
+    if(chapterCount)chapterCount.textContent=rrvvfoComplete?'28 CHAPTERS PLAYABLE':'8 CHAPTERS PLAYABLE';
+    const cards=all.map(r=>{const done=r.id==='rrvvfo'?(!next?8:completedRrvvfoChapterCount(this.progress)):(this.progress.parallelRouteChapters?.[r.id]||[]).length,locked=r.id!=='rrvvfo'&&!rrvvfoComplete;return `<button type="button" class="routeCard ${locked?'isLocked':''}" style="--route-color:${r.color}" data-route-id="${r.id}" ${locked?'disabled aria-disabled="true"':''}><span class="routePortrait" aria-hidden="true"><b>${locked?'•':r.lead[0]}</b></span><span class="routeCopy"><span class="status">${locked?'LOCKED':done<r.chapters?'CONTINUE':'COMPLETE'} • ${locked?'0':done}/${r.chapters}</span><h2>${r.lead}</h2><h3>${r.title}</h3><p>${locked?'Finish all eight chapters of Rrvvfo’s route to unlock this story.':r.description}</p></span><span class="routeStartHint">${locked?'AFTER RRVVFO':`${storyPromptLabel('confirm')} • OPEN`}</span></button>`}).join('');
     const card=this.root.querySelector('[data-route-grid]');card.classList.add('routeChooser');
     card.innerHTML=`<header class="storyRouteCarouselHeading"><small>STORY MODE</small><h2>CHOOSE YOUR ROUTE</h2><p>${rrvvfoComplete?'Five perspectives. Each route keeps its own chapter progress.':'Start with Rrvvfo. Clear all eight chapters to open the other character stories.'}</p></header><div class="storyRouteCarouselStage routeChooserGrid">${cards}</div><div class="storyRoutePosition"><span class="selected"></span><strong>${rrvvfoComplete?'5 ROUTES':'1 ROUTE OPEN'}</strong><small>${rrvvfoComplete?'ALL ROUTES AVAILABLE':'OTHER ROUTES LOCKED'}</small></div>`;
     card.querySelectorAll('[data-route-id]').forEach(button=>button.addEventListener('click',()=>{if(button.dataset.routeId==='rrvvfo'||rrvvfoComplete)this.openRoute(button.dataset.routeId)}));
     if(focus)card.querySelector(`[data-route-id="${this.progress.selectedRoute||'rrvvfo'}"]`)?.focus()||card.querySelector('[data-route-id]')?.focus();
     const preview=all.find(r=>r.id===(this.progress.selectedRoute||'rrvvfo'))||all[0],previewLocked=preview.id!=='rrvvfo'&&!rrvvfoComplete;this.routePanel.style.setProperty('--route-color',preview.color);
-    this.routePanel.innerHTML=`<div class="routeDetails"><small>${previewLocked?'CHARACTER STORY • LOCKED':`${preview.lead} STORY • ${preview.chapters} CHAPTERS`}</small><h2>${preview.title}</h2><p>${previewLocked?'Complete all eight chapters of Rrvvfo’s route to unlock the other character routes.':preview.description}</p>${storyStatsMarkup(this.progress,{compact:true})}${storyAttackStripMarkup({compact:true})}<div class="routeActions"><button type="button" class="primary" data-open-route="${preview.id}" ${previewLocked?'disabled':''}>${previewLocked?'LOCKED • CLEAR RRVVFO':`OPEN ${preview.lead} ROUTE`}</button></div></div>`;
+    const hasRoutePortrait=preview.id==='rrvvfo',featureClass=hasRoutePortrait?'routeFeatureRrvvfo':'routeFeatureLetter';
+    this.routePanel.innerHTML=`<div class="routeFeature ${featureClass}" aria-hidden="true"><b>${preview.lead[0]}</b></div><div class="routeDetails"><small>${previewLocked?'CHARACTER STORY • LOCKED':`${preview.lead} STORY • ${preview.chapters} CHAPTERS`}</small><h2>${preview.title}</h2><p>${previewLocked?'Complete all eight chapters of Rrvvfo’s route to unlock the other character routes.':preview.description}</p>${storyStatsMarkup(this.progress,{compact:true})}<div class="routeActions"><button type="button" class="primary" data-open-route="${preview.id}" ${previewLocked?'disabled':''}>${previewLocked?'LOCKED • CLEAR RRVVFO':`OPEN ${preview.lead} ROUTE`}</button></div></div>`;
     this.routePanel.querySelector('[data-open-route]').addEventListener('click',event=>{if(!previewLocked)this.openRoute(event.currentTarget.dataset.openRoute)});
   }
 

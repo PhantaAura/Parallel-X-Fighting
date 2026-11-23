@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a408-final-qol-20260817';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a409-wade-race-events-20261122';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

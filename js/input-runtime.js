@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a408-final-qol-20260817';
+import {InputManager} from './input.js?v=29a409-wade-race-events-20261122';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

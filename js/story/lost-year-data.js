@@ -1,5 +1,5 @@
-import {inspectStoryReliability} from './story-reliability.js?v=29a408-final-qol-20260817';
-import {normalizeConnectedWorldState} from './connected-world.js?v=29a408-final-qol-20260817';
+import {inspectStoryReliability} from './story-reliability.js?v=29a409-wade-race-events-20261122';
+import {normalizeConnectedWorldState} from './connected-world.js?v=29a409-wade-race-events-20261122';
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;

@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a408-final-qol-20260817';
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a408-final-qol-20260817';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a409-wade-race-events-20261122';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a409-wade-race-events-20261122';
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
 export const CHAPTER3_STATE_VERSION=4;
 

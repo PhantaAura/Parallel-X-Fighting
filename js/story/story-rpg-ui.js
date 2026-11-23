@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a408-final-qol-20260817';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a408-final-qol-20260817';
+import {sharedInput} from '../input-runtime.js?v=29a409-wade-race-events-20261122';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a409-wade-race-events-20261122';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast'},

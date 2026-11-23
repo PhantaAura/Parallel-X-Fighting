@@ -1,23 +1,23 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a408-final-qol-20260817';
-import {sharedInput} from '../input-runtime.js?v=29a408-final-qol-20260817';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a408-final-qol-20260817';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a408-final-qol-20260817';
-import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a408-final-qol-20260817';
-import {storyConfirm} from './story-ux.js?v=29a408-final-qol-20260817';
-import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a408-final-qol-20260817';
-import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a408-final-qol-20260817';
-import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a408-final-qol-20260817';
-import {StoryMap} from './story-map.js?v=29a408-final-qol-20260817';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a408-final-qol-20260817';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a408-final-qol-20260817';
-import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a408-final-qol-20260817';
-import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a408-final-qol-20260817';
-import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a408-final-qol-20260817';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a408-final-qol-20260817';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a408-final-qol-20260817';
-import {discoverWorldDelight} from './world-delight.js?v=29a408-final-qol-20260817';
-import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a408-final-qol-20260817';
-import {chapter2BracketRoute} from './quest-overhaul.js?v=29a408-final-qol-20260817';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a409-wade-race-events-20261122';
+import {sharedInput} from '../input-runtime.js?v=29a409-wade-race-events-20261122';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a409-wade-race-events-20261122';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a409-wade-race-events-20261122';
+import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a409-wade-race-events-20261122';
+import {storyConfirm} from './story-ux.js?v=29a409-wade-race-events-20261122';
+import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a409-wade-race-events-20261122';
+import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a409-wade-race-events-20261122';
+import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a409-wade-race-events-20261122';
+import {StoryMap} from './story-map.js?v=29a409-wade-race-events-20261122';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a409-wade-race-events-20261122';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a409-wade-race-events-20261122';
+import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a409-wade-race-events-20261122';
+import {completePacingOrientation,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingVisit,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a409-wade-race-events-20261122';
+import {CHAPTER2_EXHIBITION_SEQUENCE,exhibitionRank} from './quest-variety.js?v=29a409-wade-race-events-20261122';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a409-wade-race-events-20261122';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a409-wade-race-events-20261122';
+import {discoverWorldDelight} from './world-delight.js?v=29a409-wade-race-events-20261122';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a409-wade-race-events-20261122';
+import {chapter2BracketRoute} from './quest-overhaul.js?v=29a409-wade-race-events-20261122';
 
 const MISSION_ID='rrvvfo-02';
 const UI_ID='rrvvfoMission2UI';
@@ -59,6 +59,11 @@ function normalizeChapter2State(saved={}){
 
 function clamp(value,min,max){return Math.max(min,Math.min(max,value))}
 function distance(a,b){return Math.hypot((a.x||0)-(b.x||0),(a.z||0)-(b.z||0))}
+function distanceToSegment(point,start,end){
+  const dx=end.x-start.x,dz=end.z-start.z,lengthSquared=dx*dx+dz*dz;
+  const t=lengthSquared>0?Math.max(0,Math.min(1,((point.x-start.x)*dx+(point.z-start.z)*dz)/lengthSquared)):0;
+  return Math.hypot(point.x-(start.x+t*dx),point.z-(start.z+t*dz));
+}
 function unique(values){return[...new Set(values)]}
 
 function buildUI(){
@@ -1138,7 +1143,7 @@ class RrvvfoMission2{
     const raceState=this.state.hubQuests.mandatory.wadeRace;
     raceState.started=true;this.state.hubQuests.activeQuest='wadeRace';
     const now=performance.now();
-    this.race={active:true,index:0,startedAt:now+3000,countdownUntil:now+3000,elapsed:0,wadeX:250,wadeZ:20,splits:[]};
+    this.race={active:true,index:0,startedAt:now+3000,countdownUntil:now+3000,elapsed:0,wadeX:250,wadeZ:20,splits:[],lastPlayerX:180,lastPlayerZ:40};
     this.root.querySelector('[data-c2-race]').hidden=false;
     this.root.querySelector('[data-c2-prompt]').hidden=true;
     this.mode='hub';this.battle.phase='play';
@@ -1150,6 +1155,7 @@ class RrvvfoMission2{
   }
 
   updateWadeRace(dt){
+    if(this.storyMenuOpen||document.hidden)return;
     const player=this.battle.fighters[0],raceState=this.state.hubQuests.mandatory.wadeRace;
     const countdown=this.race.countdownUntil-performance.now();
     if(countdown>0){
@@ -1159,9 +1165,13 @@ class RrvvfoMission2{
       return;
     }
     this.root.querySelector('[data-c2-race-countdown]').textContent='GO!';
-    this.race.elapsed=(performance.now()-this.race.startedAt)/1000;
+    // Count only active gameplay frames so a tab switch, pause, or backgrounded
+    // phone cannot consume the player's race time. Cap long frame gaps after resume.
+    this.race.elapsed+=Math.max(0,Math.min(Number(dt)||0,.1));
     const checkpoint=CHAPTER2_RACE_CHECKPOINTS[this.race.index];
-    if(checkpoint&&distance(player,checkpoint)<115){
+    const previousPlayer={x:this.race.lastPlayerX??player.x,z:this.race.lastPlayerZ??player.z};
+    const touchedCheckpoint=checkpoint&&(distance(player,checkpoint)<145||distanceToSegment(checkpoint,previousPlayer,player)<100);
+    if(touchedCheckpoint){
       this.battle.burst(checkpoint.x,checkpoint.z,'#63c9ff',24,70);
       this.race.splits.push(this.race.elapsed);
       this.race.index++;
@@ -1172,13 +1182,15 @@ class RrvvfoMission2{
     // Wade follows the same route as a visible pace ghost. He is fast, but the
     // player can win by using the unlocked movement kit cleanly.
     const target=CHAPTER2_RACE_CHECKPOINTS[Math.min(this.race.index,CHAPTER2_RACE_CHECKPOINTS.length-1)];
+    const activeCheckpoint=CHAPTER2_RACE_CHECKPOINTS[this.race.index]||checkpoint;
     const dx=target.x-this.race.wadeX,dz=target.z-this.race.wadeZ,d=Math.max(1,Math.hypot(dx,dz));
     const speed=285;
     this.race.wadeX+=dx/d*Math.min(d,speed*dt);this.race.wadeZ+=dz/d*Math.min(d,speed*dt);
     this.root.querySelector('[data-c2-race-time]').textContent=`${this.race.elapsed.toFixed(1)}s`;
-    const playerDistance=checkpoint?distance(player,checkpoint):0,wadeDistance=target?distance(this.race,target):0;
+    const playerDistance=activeCheckpoint?distance(player,activeCheckpoint):0,wadeDistance=target?distance(this.race,target):0;
     const lead=playerDistance-wadeDistance;
     this.root.querySelector('[data-c2-race-lead]').textContent=Math.abs(lead)<35?'EVEN WITH WADE':lead<0?'AHEAD OF WADE':'WADE IS AHEAD';
+    this.race.lastPlayerX=player.x;this.race.lastPlayerZ=player.z;
     raceState.bestTime=raceState.bestTime==null?null:raceState.bestTime;
   }
 

@@ -1,5 +1,5 @@
-const RELEASE_CACHE_ID='29a408-final-qol-20260817';
-const EXPECTED_BUILD='Prototype 2.9A.40.8 — Final Legacy QoL Update';
+const RELEASE_CACHE_ID='29a409-wade-race-events-20261122';
+const EXPECTED_BUILD='Prototype 2.9A.40.9 — Story Event Reliability';
 const TOTAL_TESTS=489;
 const IMPORT_TIMEOUT_MS=600000;
 const STALL_TIMEOUT_MS=35000;

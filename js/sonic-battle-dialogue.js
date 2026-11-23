@@ -1,5 +1,5 @@
-import {storyConfirm} from './story/story-ux.js?v=29a408-final-qol-20260817';
-import {loadQolSettings} from './qol-settings.js?v=29a408-final-qol-20260817';
+import {storyConfirm} from './story/story-ux.js?v=29a409-wade-race-events-20261122';
+import {loadQolSettings} from './qol-settings.js?v=29a409-wade-race-events-20261122';
 
 /* Parallels X shared story dialogue presentation. */
 // Scenes you have already read (3+ lines, no choices) can be skipped in one

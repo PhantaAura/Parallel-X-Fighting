@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a408-final-qol-20260817';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a409-wade-race-events-20261122';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.21';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([
@@ -12,11 +12,13 @@ export const CHAPTER2_DISTRICTS=Object.freeze([
 ]);
 
 export const CHAPTER2_RACE_CHECKPOINTS=Object.freeze([
-  {id:'market',label:'MARKET STREET',x:-640,z:620},
-  {id:'practice',label:'PRACTICE RING',x:-1120,z:560},
-  {id:'registration',label:'REGISTRATION ROOF WALK',x:-120,z:-690},
-  {id:'spectator',label:'SPECTATOR DISTRICT',x:650,z:-520},
-  {id:'stadium',label:'MAIN ARENA GATE',x:1125,z:40}
+  // Keep race triggers on the walkable lanes beside the market and practice props.
+  {id:'market',label:'MARKET STREET',x:-800,z:560},
+  {id:'practice',label:'PRACTICE RING',x:-1120,z:480},
+  // The registration and medical buildings are solid; these are their open approaches.
+  {id:'registration',label:'REGISTRATION PLAZA',x:-350,z:-420},
+  {id:'spectator',label:'SPECTATOR DISTRICT',x:770,z:-320},
+  {id:'stadium',label:'MAIN ARENA GATE',x:1080,z:-275}
 ]);
 
 export const CHAPTER2_SHORTCUTS=Object.freeze([

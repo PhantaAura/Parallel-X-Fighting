@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a408-final-qol-20260817';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a409-wade-race-events-20261122';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 

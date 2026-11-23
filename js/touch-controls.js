@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a408-final-qol-20260817';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a409-wade-race-events-20261122';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',

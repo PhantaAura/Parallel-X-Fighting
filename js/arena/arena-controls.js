@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a408-final-qol-20260817';
-import {sharedInput} from '../input-runtime.js?v=29a408-final-qol-20260817';
+import {CONTROL_MAPS} from '../input.js?v=29a409-wade-race-events-20261122';
+import {sharedInput} from '../input-runtime.js?v=29a409-wade-race-events-20261122';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

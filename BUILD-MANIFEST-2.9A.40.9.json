@@ -1,0 +1,15 @@
+{
+  "build": "Prototype 2.9A.40.9 — Story Event Reliability",
+  "base": "Prototype 2.9A.40.8 — Final Legacy QoL Update",
+  "baseCommit": "2923ef7e3dc8fc98ac2d44720753180a1315ebb0",
+  "cache": "29a409-wade-race-events-20261122",
+  "saveSchema": 268,
+  "releaseType": "full cumulative GitHub Pages deployment",
+  "chapter5Touched": false,
+  "features": [
+    "Wade race checkpoints moved to reachable walkable approaches",
+    "swept checkpoint detection prevents fast movement from skipping triggers",
+    "race timer pauses with inactive gameplay and ignores long resume frames",
+    "Chapters 5–8 pacing and continuity expansion roadmap"
+  ]
+}

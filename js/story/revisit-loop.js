@@ -1,5 +1,5 @@
-import {normalizeConnectedWorldState,recordWorldVisit} from './connected-world.js?v=29a408-final-qol-20260817';
-import {loadFieldSkillState} from './field-skills.js?v=29a408-final-qol-20260817';
+import {normalizeConnectedWorldState,recordWorldVisit} from './connected-world.js?v=29a409-wade-race-events-20261122';
+import {loadFieldSkillState} from './field-skills.js?v=29a409-wade-race-events-20261122';
 
 export const REVISIT_LOOP_VERSION=1;
 const unique=values=>[...new Set((Array.isArray(values)?values:[]).filter(Boolean))];

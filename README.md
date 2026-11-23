@@ -1,5 +1,5 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite
+## Prototype 2.9A.40.9 — Story Event Reliability
 
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
@@ -16,9 +16,11 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.40.7.1 — Chapter 3 Sabotage Investigation Rewrite**
+**Prototype 2.9A.40.9 — Story Event Reliability**
 
 This is a complete cumulative build. No older package is required.
+
+Wade’s race checkpoints now sit on clear approaches around the tournament grounds, crossing a marker between frames still registers, and the timer pauses when gameplay is inactive. The supplied Chapters 5–8 roadmap has been expanded into a paced route plan; future chapter gameplay remains the next implementation milestone.
 
 
 

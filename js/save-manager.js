@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a408-final-qol-20260817';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a409-wade-race-events-20261122';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',

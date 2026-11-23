@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a408-final-qol-20260817';
+import {BUILD_VERSION} from '../build-info.js?v=29a409-wade-race-events-20261122';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

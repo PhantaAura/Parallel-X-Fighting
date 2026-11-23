@@ -1,6 +1,6 @@
 "use strict";
 
-import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a410-pacing-objective-qol-20261122';
+import {CONTROLLER_STYLE_IDS,createCustomControllerMapping} from './input.js?v=29a411-orgred-chapters-20261122';
 
 export const CONTROLLER_SETTINGS_KEY='pxControllerSettingsV1';
 export const CONTROLLER_COMPLETION_FEATURES=Object.freeze([

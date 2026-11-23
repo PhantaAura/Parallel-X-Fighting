@@ -1,0 +1,17 @@
+{
+  "build": "Prototype 2.9A.40.11 — Chapters 5–8",
+  "base": "Prototype 2.9A.40.10 — Pacing & Objective QoL",
+  "baseCommit": "39b44fb2c8532c9a42b6d7d770d643e9c95026aa",
+  "cache": "29a411-orgred-chapters-20261122",
+  "saveSchema": 268,
+  "releaseType": "full cumulative GitHub Pages deployment",
+  "chapter5Touched": true,
+  "features": [
+    "playable Chapters 5–8 with sequential unlocks, checkpoints, and chapter completion",
+    "Organization of the Red / Hollow Archive continuity, clone arc, and Season 1 finale",
+    "Chapter 5 unlocks the unstable Shots of Agony prototype",
+    "the Sage failsafe is established before its Chapter 7 payoff",
+    "four optional choice-driven quests with saved steps and one-time rewards",
+    "chapter replay, confirmed fresh restart, objective history, retry assist, and pacing profiles"
+  ]
+}

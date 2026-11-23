@@ -1,5 +1,5 @@
-import {normalizeConnectedWorldState,recordWorldVisit} from './connected-world.js?v=29a410-pacing-objective-qol-20261122';
-import {loadFieldSkillState} from './field-skills.js?v=29a410-pacing-objective-qol-20261122';
+import {normalizeConnectedWorldState,recordWorldVisit} from './connected-world.js?v=29a411-orgred-chapters-20261122';
+import {loadFieldSkillState} from './field-skills.js?v=29a411-orgred-chapters-20261122';
 
 export const REVISIT_LOOP_VERSION=1;
 const unique=values=>[...new Set((Array.isArray(values)?values:[]).filter(Boolean))];

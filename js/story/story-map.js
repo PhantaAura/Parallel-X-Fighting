@@ -1,4 +1,4 @@
-import {WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,normalizeConnectedWorldState,worldMapSummary} from './connected-world.js?v=29a410-pacing-objective-qol-20261122';
+import {WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,normalizeConnectedWorldState,worldMapSummary} from './connected-world.js?v=29a411-orgred-chapters-20261122';
 function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
 const REGION_TONES=Object.freeze({
   training:{sky:'#d8efff',land:'#9ac47c',route:'#d0ad78',water:'#6fb7df',accent:'#e9ba5d'},

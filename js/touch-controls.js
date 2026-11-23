@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a410-pacing-objective-qol-20261122';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a411-orgred-chapters-20261122';
 
 const COMBAT_ACTIONS = Object.freeze({
   jump:'j',light:'a',heavy:'h',grab:'s',charge:'k',interact:'i',block:'b',dash:'d',

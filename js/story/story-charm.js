@@ -1,4 +1,4 @@
-import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a410-pacing-objective-qol-20261122';
+import {storyExperienceBeat,storyRankReaction} from './story-experience.js?v=29a411-orgred-chapters-20261122';
 const SESSION_KEY='pxStoryCharmSessionV1';
 const MAX_QUEUE=16;
 

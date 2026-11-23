@@ -20,6 +20,26 @@ export const STORY_EXPERIENCE_PROFILES=Object.freeze({
     chapter:4,label:'ECHO REGION',targetMinutes:Object.freeze([75,95]),cadenceMinutes:Object.freeze([2,4]),
     rhythm:Object.freeze(['ARRIVE','LEARN VILLAGE','PARTY FIELDWORK','CAVERNS','DEFENSE','RECOVER','OPTIONAL SECRET','SOLO CLIMB','BOSS','LOOKOUT']),
     promise:'The longest chapter because it has the most distinct adventure phases, not because it has more empty walking.'
+  }),
+  5:Object.freeze({
+    chapter:5,label:'NOT A BIG DEAL',targetMinutes:Object.freeze([45,55]),cadenceMinutes:Object.freeze([2,4]),
+    rhythm:Object.freeze(['ARGUE','OBSERVE','REPLICATE','CHOOSE WHAT TO SAVE','ADAPTIVE BOSS','SHADOW LEAVES','CLONE REVEAL']),
+    promise:'Three bases, three different kinds of evidence, and a reveal that changes the question.'
+  }),
+  6:Object.freeze({
+    chapter:6,label:'THE OTHER RRVVFO',targetMinutes:Object.freeze([35,45]),cadenceMinutes:Object.freeze([2,4]),
+    rhythm:Object.freeze(['MISIDENTITY','SHARED MEMORY','MIRROR DUEL','FRIENDS DOUBT','PURSUIT','EMERALD THEFT']),
+    promise:'A tighter character chapter that lets the clone’s belief feel human before the theft changes the stakes.'
+  }),
+  7:Object.freeze({
+    chapter:7,label:'WHICH ONE IS REAL?',targetMinutes:Object.freeze([45,55]),cadenceMinutes:Object.freeze([2,4]),
+    rhythm:Object.freeze(['NETWORK ATTACK','SIPHON THREAT','CHOICE','POWER LOSS','PURGE','FAILSAFE','ALLIANCE']),
+    promise:'The sacrifice has room to land, with one clear turning point and a playable ally-making fight.'
+  }),
+  8:Object.freeze({
+    chapter:8,label:'CLASH OF SOULS',targetMinutes:Object.freeze([60,75]),cadenceMinutes:Object.freeze([2,4]),
+    rhythm:Object.freeze(['INFILTRATE','BARK BREACH','WADE SCRAMBLE','PREDICTION BOSS','DOUBLE SOLAR WAVE','AFTERMATH','CO-LEADER ESCAPE']),
+    promise:'The biggest finale earns its length through team roles, a three-phase Leader fight, and the paired technique payoff.'
   })
 });
 
@@ -52,10 +72,21 @@ const CHECKPOINT_BEATS=Object.freeze({
   'rrvvfo-04-mountainEntered':Object.freeze({chapter:4,kicker:'SOLO PHASE',title:'RRVVFO CLIMBS ALONE',detail:'The party chapter deliberately narrows into a quieter mountain route.',tone:'echo'}),
   'rrvvfo-04-mountainSignals':Object.freeze({chapter:4,kicker:'THE TRAIL CONVERGES',title:'PROJECT HOLLOW IS WATCHING THE LOOKOUT',detail:'Exploration turns into a readable boss setup.',tone:'danger'}),
   'rrvvfo-04-hollowWatcherDefeated':Object.freeze({chapter:4,kicker:'BOSS CLEARED',title:'THE SUMMIT IS OPEN',detail:'One last field problem remains: the lookout is floating.',tone:'danger'}),
-  'rrvvfo-04-lookoutReached':Object.freeze({chapter:4,kicker:'DESTINATION REACHED',title:'SHADOW’S LOOKOUT',detail:'The longest chapter ends on a technique payoff instead of another hallway.',tone:'echo'})
+  'rrvvfo-04-lookoutReached':Object.freeze({chapter:4,kicker:'DESTINATION REACHED',title:'SHADOW’S LOOKOUT',detail:'The longest chapter ends on a technique payoff instead of another hallway.',tone:'echo'}),
+  'rrvvfo-05-shadow-briefing':Object.freeze({chapter:5,kicker:'THE ARGUMENT',title:'SHADOW WANTS PROOF',detail:'Rrvvfo turns suspicion into three separate field investigations.',tone:'mystery'}),
+  'rrvvfo-05-observation-site':Object.freeze({chapter:5,kicker:'BASE 1',title:'THE RED IS RECORDING THE CROWD',detail:'Its models track match context as well as fighting styles.',tone:'mystery'}),
+  'rrvvfo-05-replication-lab':Object.freeze({chapter:5,kicker:'BASE 2',title:'PATTERNS ARE BECOMING PEOPLE',detail:'Biological compatibility and memory transfer point to a living duplicate.',tone:'danger'}),
+  'rrvvfo-05-archive-outpost':Object.freeze({chapter:5,kicker:'BASE 3',title:'HOLLOW MIMIC DEFEATED',detail:'The archive ties Project Hollow to the Organization of the Red.',tone:'danger'}),
+  'rrvvfo-06-mirror-duel':Object.freeze({chapter:6,kicker:'IDENTITY',title:'THE OTHER RRVVFO',detail:'A mirrored fight ends when Rrvvfo chooses not to finish his double.',tone:'mystery'}),
+  'rrvvfo-06-red-extraction':Object.freeze({chapter:6,kicker:'THE REAL OBJECTIVE',title:'VIREK’S EMERALD IS GONE',detail:'The clone encounter covered the Red’s theft and worldwide activation.',tone:'danger'}),
+  'rrvvfo-07-blocker-choice':Object.freeze({chapter:7,kicker:'THE TURNING POINT',title:'RRVVFO TAKES THE DRAIN',detail:'He gives up his power to keep Bark and Wade out of the siphon.',tone:'danger'}),
+  'rrvvfo-07-failsafe-and-choice':Object.freeze({chapter:7,kicker:'ONE USE',title:'THE CLONE GETS TO CHOOSE',detail:'The Sage’s planted failsafe works; Rrvvfo’s choice changes the clone’s mind.',tone:'victory'}),
+  'rrvvfo-08-red-leader':Object.freeze({chapter:8,kicker:'FINAL BATTLE',title:'THE RED LEADER',detail:'Three phases peel away prediction, Emerald power, and the network.',tone:'danger'}),
+  'rrvvfo-08-double-solar-wave':Object.freeze({chapter:8,kicker:'PAIRED TECHNIQUE',title:'DOUBLE SOLAR WAVE',detail:'Both Rrvvfos synchronize without canceling one another.',tone:'victory'}),
+  'rrvvfo-08-co-leader-escape':Object.freeze({chapter:8,kicker:'SEASON FINALE',title:'THE EMERALD IS FREE',detail:'The takeover ends; the Co-Leader escapes with the next threat.',tone:'victory'})
 });
 
-export function storyExperienceProfile(chapter=1){return STORY_EXPERIENCE_PROFILES[Math.max(1,Math.min(4,Number(chapter)||1))]}
+export function storyExperienceProfile(chapter=1){return STORY_EXPERIENCE_PROFILES[Math.max(1,Math.min(8,Number(chapter)||1))]}
 export function storyTargetMinutes(chapter=1){return[...storyExperienceProfile(chapter).targetMinutes]}
 export function storyChapterIsLongest(chapter=1){const own=storyExperienceProfile(chapter).targetMinutes[1];return Object.values(STORY_EXPERIENCE_PROFILES).every(profile=>own>=profile.targetMinutes[1])}
 export function storyExperienceBeat(checkpoint=''){return CHECKPOINT_BEATS[String(checkpoint)]||null}

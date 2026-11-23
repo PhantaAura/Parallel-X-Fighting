@@ -1,7 +1,7 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a410-pacing-objective-qol-20261122';
-import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a410-pacing-objective-qol-20261122';
-import {storyExperienceProfile} from './story-experience.js?v=29a410-pacing-objective-qol-20261122';
-import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a410-pacing-objective-qol-20261122';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a411-orgred-chapters-20261122';
+import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a411-orgred-chapters-20261122';
+import {storyExperienceProfile} from './story-experience.js?v=29a411-orgred-chapters-20261122';
+import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a411-orgred-chapters-20261122';
 import {
   LOST_YEAR_SAVE_KEY,
   RRVVFO_CHAPTERS,
@@ -12,7 +12,7 @@ import {
   routeProgress,
   LOST_YEAR_ROUTES,
   saveLostYearProgress
-} from './lost-year-data.js?v=29a410-pacing-objective-qol-20261122';
+} from './lost-year-data.js?v=29a411-orgred-chapters-20261122';
 
 const CODE=Object.freeze(['up','up','down','down','left','right','left','right','b','a']);
 const KEY_TO_CODE=Object.freeze({ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',KeyB:'b',KeyA:'a'});
@@ -24,12 +24,16 @@ const OBJECTIVE_PAIRS=Object.freeze([
   ['[data-tutorial-objective]','[data-tutorial-detail]'],
   ['[data-m0-objective]','[data-m0-detail]']
 ]);
-const CHAPTER_START_STEP=Object.freeze({1:'rrvvfo-00',2:'rrvvfo-02',3:'rrvvfo-03',4:'rrvvfo-04'});
+const CHAPTER_START_STEP=Object.freeze({1:'rrvvfo-00',2:'rrvvfo-02',3:'rrvvfo-03',4:'rrvvfo-04',5:'rrvvfo-05',6:'rrvvfo-06',7:'rrvvfo-07',8:'rrvvfo-08'});
 const CHAPTER_MISSIONS=Object.freeze({
   1:['rrvvfo-00','rrvvfo-01','rrvvfo-road'],
   2:['rrvvfo-02'],
   3:['rrvvfo-03'],
-  4:['rrvvfo-04']
+  4:['rrvvfo-04'],
+  5:['rrvvfo-05'],
+  6:['rrvvfo-06'],
+  7:['rrvvfo-07'],
+  8:['rrvvfo-08']
 });
 
 const PREFIGHT_BACKUP_KEY='pxStoryPreFightBackupV1';
@@ -140,7 +144,7 @@ class StoryPolishController{
           <div class="playtestSnapshot" data-playtest-snapshot></div>
           <div class="playtestReliability" data-playtest-reliability><strong data-playtest-reliability-title>SAVE HEALTH</strong><span data-playtest-reliability-mode></span><span data-playtest-reliability-issues></span></div>
           <section><h3>RECOVERY</h3><div class="playtestButtons"><button type="button" data-playtest-action="checkpoint">RESTART FROM SAVED CHECKPOINT</button><button type="button" data-playtest-action="chapterSelect">OPEN CHAPTER SELECT</button><button type="button" data-playtest-action="resetChapter">RESET CURRENT CHAPTER</button></div></section>
-          <section><h3>JUMP TO RELEASED CHAPTER</h3><div class="playtestButtons">${[1,2,3,4].map(number=>`<button type="button" data-playtest-chapter="${number}">CHAPTER ${number}</button>`).join('')}<button type="button" data-playtest-chapter-hub="4">CHAPTER 4 • ECHO VILLAGE HUB</button></div></section>
+          <section><h3>JUMP TO RELEASED CHAPTER</h3><div class="playtestButtons">${[1,2,3,4,5,6,7,8].map(number=>`<button type="button" data-playtest-chapter="${number}">CHAPTER ${number}</button>`).join('')}<button type="button" data-playtest-chapter-hub="4">CHAPTER 4 • ECHO VILLAGE HUB</button></div></section>
           <section><h3>QUICK COMBAT TEST</h3><div class="playtestButtons"><button type="button" data-playtest-fight="revvfo">RRVVFO VS REVVFO</button><button type="button" data-playtest-fight="wade">RRVVFO VS WADE</button><button type="button" data-playtest-fight="bark">RRVVFO VS BARK</button></div></section>
           <section><h3>BUG REPORT</h3><div class="playtestButtons"><button type="button" class="primary" data-playtest-action="copyReport">COPY BUG REPORT</button><button type="button" data-playtest-action="downloadReport">DOWNLOAD REPORT</button><button type="button" data-playtest-action="refreshFlags">REFRESH FLAGS</button></div></section>
           <pre data-playtest-flags></pre>
@@ -357,14 +361,14 @@ class StoryPolishController{
   snapshot(){
     const progress=loadLostYearProgress(),root=currentStoryRoot(),chapter=currentChapterNumber()||this.currentChapter;
     const reliability=inspectStoryReliability(progress,{active:Boolean(root),replay:this.currentReplay,playtest:this.currentPlaytest});
-    const experience=Number(chapter)>=1&&Number(chapter)<=4?storyExperienceProfile(Number(chapter)):null;
+    const experience=Number(chapter)>=1&&Number(chapter)<=8?storyExperienceProfile(Number(chapter)):null;
     return{
       build:BUILD_VERSION,saveSchema:SAVE_SCHEMA_VERSION,
       chapter:chapter||'Story menu',mode:root?.dataset?.storyEngineMode||this.currentMode||'menu',runMode:reliability.runMode,temporary:reliability.temporary,saveable:reliability.saveable,saveHealth:reliability.health,saveIssues:reliability.issues,chapterStates:reliability.chapters,checkpoint:progress.lastCheckpoint,
       checkpointLabel:checkpointLabel(progress),storyLevel:progress.storyLevel,storyXp:progress.storyXp,
       pacingTarget:experience?`${experience.targetMinutes[0]}–${experience.targetMinutes[1]} min`:null,pacingCadence:experience?`${experience.cadenceMinutes[0]}–${experience.cadenceMinutes[1]} min between meaningful beats`:null,pacingRhythm:experience?.rhythm||[],
       completedMissions:progress.completedMissions,unlocks:progress.unlocks,
-      chapter2State:progress.chapter2State,chapter3State:progress.chapter3State,chapter4State:progress.chapter4State,
+      chapter2State:progress.chapter2State,chapter3State:progress.chapter3State,chapter4State:progress.chapter4State,chapter5State:progress.chapter5State,chapter6State:progress.chapter6State,chapter7State:progress.chapter7State,chapter8State:progress.chapter8State,
       url:location.href,userAgent:navigator.userAgent,viewport:`${innerWidth}×${innerHeight}`,time:new Date().toISOString()
     };
   }
@@ -418,7 +422,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a410-pacing-objective-qol-20261122`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a411-orgred-chapters-20261122`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'echo-mountain':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }
@@ -427,9 +431,9 @@ class StoryPolishController{
     if(!number){this.showObjective('NO ACTIVE CHAPTER','Open a released chapter first.','PLAYTEST TOOL');return}
     if(!confirm(`Reset Chapter ${number} and all later released chapters? This is a debug action.`))return;
     const progress=loadLostYearProgress(),remove=new Set();
-    for(let chapter=number;chapter<=4;chapter++)for(const id of CHAPTER_MISSIONS[chapter]||[])remove.add(id);
+    for(let chapter=number;chapter<=8;chapter++)for(const id of CHAPTER_MISSIONS[chapter]||[])remove.add(id);
     const next={...progress,completedMissions:(progress.completedMissions||[]).filter(id=>!remove.has(id)),lastCheckpoint:CHAPTER_START_STEP[number]};
-    if(number<=2)next.chapter2State={};if(number<=3)next.chapter3State={};if(number<=4)next.chapter4State={};
+    if(number<=2)next.chapter2State={};if(number<=3)next.chapter3State={};if(number<=4)next.chapter4State={};if(number<=5)next.chapter5State={};if(number<=6)next.chapter6State={};if(number<=7)next.chapter7State={};if(number<=8)next.chapter8State={};
     saveLostYearProgress(next);this.refreshPlaytest();this.showObjective(`CHAPTER ${number} RESET`,'Use Jump to Chapter or return to Chapter Select.','PLAYTEST TOOL');
   }
 }

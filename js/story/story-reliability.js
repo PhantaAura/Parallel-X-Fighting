@@ -4,10 +4,14 @@ export const STORY_CHAPTER_MISSIONS=Object.freeze({
   1:Object.freeze(['rrvvfo-00','rrvvfo-01','rrvvfo-road']),
   2:Object.freeze(['rrvvfo-02']),
   3:Object.freeze(['rrvvfo-03']),
-  4:Object.freeze(['rrvvfo-04'])
+  4:Object.freeze(['rrvvfo-04']),
+  5:Object.freeze(['rrvvfo-05']),
+  6:Object.freeze(['rrvvfo-06']),
+  7:Object.freeze(['rrvvfo-07']),
+  8:Object.freeze(['rrvvfo-08'])
 });
 
-export const STORY_CHAPTER_STARTS=Object.freeze({1:'rrvvfo-00',2:'rrvvfo-02',3:'rrvvfo-03',4:'rrvvfo-04'});
+export const STORY_CHAPTER_STARTS=Object.freeze({1:'rrvvfo-00',2:'rrvvfo-02',3:'rrvvfo-03',4:'rrvvfo-04',5:'rrvvfo-05',6:'rrvvfo-06',7:'rrvvfo-07',8:'rrvvfo-08'});
 const CHAPTER4_ENDING_EVIDENCE=Object.freeze(['hollowWatcherDefeated','lookoutReached','shadowArrival','chapterSaved']);
 const CHAPTER4_OLD_ENDING_EVIDENCE=Object.freeze(['hollowWatcherDefeated','lookoutReached','shadowBriefing','chapterSaved']);
 
@@ -30,6 +34,8 @@ function chapter4EndingEvidence(progress){
 
 function checkpointChapter(checkpoint=''){
   const value=String(checkpoint||'');
+  const chapterMatch=/^rrvvfo-0([4-8])(?:-|$)/.exec(value);
+  if(chapterMatch)return Number(chapterMatch[1]);
   if(value.startsWith('rrvvfo-04'))return 4;
   if(value.startsWith('rrvvfo-03'))return 3;
   if(value.startsWith('rrvvfo-02'))return 2;
@@ -45,6 +51,7 @@ function chapterStarted(progress,number){
   if(number===2)return Boolean(Object.keys(progress?.chapter2State||{}).length);
   if(number===3)return Boolean(Object.keys(progress?.chapter3State||{}).length);
   if(number===4)return Boolean(Object.keys(progress?.chapter4State||{}).length);
+  if(number>=5&&number<=8)return Boolean(Object.keys(progress?.[`chapter${number}State`]||{}).length);
   return Boolean(progress?.routeStarted&&number===1);
 }
 
@@ -52,13 +59,14 @@ function chapterComplete(progress,number){
   const completed=completedSet(progress),missions=STORY_CHAPTER_MISSIONS[number]||[];
   if(!missions.length||!hasAll(completed,missions))return false;
   if(number===4&&!chapter4EndingEvidence(progress))return false;
+  if(number>=5&&number<=8&&!progress?.[`chapter${number}State`]?.completed)return false;
   return true;
 }
 
 function nextMission(progress){
   const completed=completedSet(progress);
   if((completed.has('rrvvfo-04')||progress?.chapter4State?.chapterComplete)&&!chapter4EndingEvidence(progress))return'rrvvfo-04';
-  for(const number of [1,2,3,4])for(const mission of STORY_CHAPTER_MISSIONS[number])if(!completed.has(mission))return mission;
+  for(const number of [1,2,3,4,5,6,7,8])for(const mission of STORY_CHAPTER_MISSIONS[number])if(!completed.has(mission))return mission;
   return null;
 }
 
@@ -67,7 +75,7 @@ export function inspectStoryReliability(progress={},runtime={}){
   const rawChapter4Marked=Boolean(completed.has('rrvvfo-04')||progress?.chapter4State?.chapterComplete);
   if(rawChapter4Marked&&!chapter4EndingEvidence(progress))issues.push('Chapter 4 is marked complete without its ending evidence.');
 
-  for(const number of [1,2,3,4]){
+  for(const number of [1,2,3,4,5,6,7,8]){
     const complete=chapterComplete(progress,number),started=chapterStarted(progress,number);
     if(complete&&number>1){
       for(let prior=1;prior<number;prior++)if(!chapterComplete(progress,prior))issues.push(`Chapter ${number} is complete before Chapter ${prior}.`);
@@ -134,8 +142,32 @@ export const STORY_AFTERGLOW=Object.freeze({
     kicker:'ECHO REGION REMEMBERS WHAT HAPPENED',
     title:'SHADOW’S LOOKOUT REACHED',
     recap:'Rrvvfo helped Echo Village recover, crossed the mountain alone, broke the Hollow Watcher’s pattern, and reached the floating lookout.',
-    changes:Object.freeze(['Echo Village remains restored','Chapter 4 records its optional discoveries','Rrvvfo’s released route now stands at 4 / 8 chapters']),
-    next:'The released story pauses here until Chapter 5 is officially built.'
+    changes:Object.freeze(['Echo Village remains restored','Chapter 4 records its optional discoveries','The evidence points to three Organization of the Red field sites']),
+    next:'Take the data core back to Shadow and prove the threat is larger than the old Hollow operation.'
+  }),
+  5:Object.freeze({
+    kicker:'THE ARCHIVE WAS ONLY THE BEGINNING',title:'A SECOND RRVVFO WAKES',
+    recap:'Three field bases connect combat mimicry to biological memory transfer. Shadow leaves Earth, and the Organization of the Red activates its clone.',
+    changes:Object.freeze(['The Sage’s one-use failsafe is established','Shadow’s galaxy route begins','The clone remembers a life he believes is his']),
+    next:'Follow the matching energy signature to Echo Village.'
+  }),
+  6:Object.freeze({
+    kicker:'TWO MEMORIES, ONE LIFE',title:'VIREK’S EMERALD IS MISSING',
+    recap:'The Oddballs meet a clone who believes he is Rrvvfo. The mirror duel breaks without a winner, while the Red steals the Emerald.',
+    changes:Object.freeze(['The clone has his own point of view','Bark and Wade know what the Red did to him','The worldwide network begins to wake']),
+    next:'Reach the relay before the Organization can activate it everywhere.'
+  }),
+  7:Object.freeze({
+    kicker:'HE CHOSE WHO PAYS',title:'THE CLONE CHANGES SIDES',
+    recap:'Rrvvfo takes the siphon to protect his friends. The Sage’s emergency pulse saves him, and the clone chooses to oppose the Organization.',
+    changes:Object.freeze(['The blocker is spent','The Sage’s failsafe is spent','The clone joins the team by choice']),
+    next:'Infiltrate the central facility with Bark, Wade, and the other Rrvvfo.'
+  }),
+  8:Object.freeze({
+    kicker:'TWO FLAMES, ONE CHOICE',title:'THE TAKEOVER IS STOPPED',
+    recap:'Bark breaks the defenses, Wade disables recovery, and the two Rrvvfos defeat the Leader with Double Solar Wave.',
+    changes:Object.freeze(['Virek’s Emerald is free','The Organization’s worldwide network is down','The Co-Leader escaped and vowed to get the Emerald back']),
+    next:'Season 1 is complete. The clone can now decide what kind of future to build.'
   })
 });
 

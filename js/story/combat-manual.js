@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a410-pacing-objective-qol-20261122';
+import {BUILD_VERSION} from '../build-info.js?v=29a411-orgred-chapters-20261122';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

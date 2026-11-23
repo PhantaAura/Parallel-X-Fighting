@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a410-pacing-objective-qol-20261122';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a410-pacing-objective-qol-20261122';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a411-orgred-chapters-20261122';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a411-orgred-chapters-20261122';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
 export const CHAPTER4_STATE_VERSION=5;
 

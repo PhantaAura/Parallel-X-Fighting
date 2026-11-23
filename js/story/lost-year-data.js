@@ -1,5 +1,5 @@
-import {inspectStoryReliability} from './story-reliability.js?v=29a410-pacing-objective-qol-20261122';
-import {normalizeConnectedWorldState} from './connected-world.js?v=29a410-pacing-objective-qol-20261122';
+import {inspectStoryReliability} from './story-reliability.js?v=29a411-orgred-chapters-20261122';
+import {normalizeConnectedWorldState} from './connected-world.js?v=29a411-orgred-chapters-20261122';
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;
@@ -30,7 +30,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
     availability:'AVAILABLE',
     available:true,
     unlock:'Available from the start',
-    description:'Follow Rrvvfo through an eight-chapter Lost Year route. Four chapters are currently playable, with Chapters 5–8 reserved for the continuing story.',
+    description:'Play the complete eight-chapter Lost Year route: from Rrvvfo’s return to fighting through the Organization of the Red conspiracy and the clash with his clone.',
     perspective:'Main combat route',
     color:'#e94b3c',
     missions:[
@@ -110,6 +110,34 @@ export const LOST_YEAR_ROUTES=Object.freeze([
         objectives:['Reach Echo Village','Restore the Echo Beacon','Recover the mountain-lift parts','Defend Echo Village','Optionally complete The Old Man’s Potions and seal Ryuzankaro','Defeat the Hollow Watcher','Enter Shadow’s Lookout'],
         stage:'Echo Region + Echo Village + Echo Caverns + Mountain Path + Shadow’s Lookout',
         note:'The Ryuzankaro quest unlocks only after the mandatory village defense. Vibration Sense is optional and never required for chapter completion.'
+      },
+      {
+        id:'rrvvfo-05',number:5,title:'NOT A BIG DEAL',available:true,playable:true,unlockAfter:'rrvvfo-04',status:'PLAYABLE INVESTIGATION',
+        description:'Shadow calls the threat overblown. Three distinct Organization of the Red field sites uncover combat mimicry, memory-transfer research, and the clone being built from Rrvvfo’s data.',
+        objectives:['Challenge Shadow’s read of the conspiracy','Break the Combat Observation Site','Expose the Power Replication Lab','Defeat the Hollow Mimic at the Archive Outpost','Return with proof and discover the clone'],
+        stage:'Shadow’s Lookout + Three Organization of the Red Field Bases',
+        note:'The older Project Hollow name survives as the Archive program inside the Organization of the Red. The Sage’s one-use life-support failsafe is seeded here.'
+      },
+      {
+        id:'rrvvfo-06',number:6,title:'THE OTHER RRVVFO',available:true,playable:true,unlockAfter:'rrvvfo-05',status:'PLAYABLE MIRROR CONFRONTATION',
+        description:'Echo Village mistakes the original for a copy. A mirror duel and memories shared with Bark, Wade, and the Oddballs show that the clone believes his own story.',
+        objectives:['Find the matching energy signature','Convince the Oddballs you are the original','Survive the mirror duel','Face Bark and Wade’s mistrust','Stop the Red extraction team and discover the missing Emerald'],
+        stage:'Echo Village + Organization of the Red Extraction Point',
+        note:'The clone is a person with copied memories through the end of Episode 5.5, not a villain who knows he is a replacement.'
+      },
+      {
+        id:'rrvvfo-07',number:7,title:'WHICH ONE IS REAL?',available:true,playable:true,unlockAfter:'rrvvfo-06',status:'PLAYABLE SACRIFICE',
+        description:'The stolen Virek Emerald powers the Red network. Rrvvfo risks his energy to protect Bark and Wade; the clone sees the choice, the Organization turns on him, and the Sage’s planted failsafe saves Rrvvfo.',
+        objectives:['Break the Red network relay','Face the clone’s energy-stealing gauntlets','Choose to protect your friends','Survive the Red purge squad','Give the clone a reason to choose for himself'],
+        stage:'Organization of the Red Relay Network',
+        note:'Shadow’s blocker and the Sage’s one-use emergency pulse are both established before their Chapter 7 payoff.'
+      },
+      {
+        id:'rrvvfo-08',number:8,title:'CLASH OF SOULS',available:true,playable:true,unlockAfter:'rrvvfo-07',status:'PLAYABLE SEASON FINALE',
+        description:'Rrvvfo, his clone, Bark, and Wade infiltrate the central facility, defeat the Leader, and use Double Solar Wave to free the Emerald. The Co-Leader escapes with a new threat.',
+        objectives:['Infiltrate the central Red facility','Let Bark break its defenses','Let Wade interrupt the network','Turn the clone’s prediction system against the Leader','Unleash Double Solar Wave','Stop the takeover and face the Co-Leader’s escape'],
+        stage:'Organization of the Red Central Facility',
+        note:'Regular story chapters remain the route structure; optional adventures stay as side content. This is the Season 1 finale.'
       }
     ]
 
@@ -117,7 +145,7 @@ export const LOST_YEAR_ROUTES=Object.freeze([
 ]);
 
 export function defaultLostYearProgress(){
-  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],keyItems:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},storyCharmState:{discoveries:[],activities:[],celebrations:[]},worldState:normalizeConnectedWorldState({},{}),chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},updatedAt:Date.now()};
+  return{version:1,selectedRoute:'rrvvfo',routeStarted:false,lastCheckpoint:'rrvvfo-00',completedMissions:[],viewedBriefings:[],unlocks:[],keyItems:[],chapterQuestRewards:[],chapterCompletionRewards:[],storyLevel:1,storyXp:0,storyBonusStats:{hp:0,power:0,defense:0,speed:0,focus:0},storyCharmState:{discoveries:[],activities:[],celebrations:[]},worldState:normalizeConnectedWorldState({},{}),chapter1TutorialCheckpoint:'movement',chapter2State:{},chapter3Preview:{},chapter3State:{},chapter4State:{},chapter5State:{},chapter6State:{},chapter7State:{},chapter8State:{},updatedAt:Date.now()};
 }
 
 let lastSaveFailure=null;
@@ -136,6 +164,8 @@ export function loadLostYearProgress(storage=availableStoryStorage()){
       viewedBriefings:Array.isArray(parsed.viewedBriefings)?parsed.viewedBriefings:[],
       unlocks:Array.isArray(parsed.unlocks)?parsed.unlocks:[],
       keyItems:Array.isArray(parsed.keyItems)?[...new Set(parsed.keyItems.filter(item=>typeof item==='string'))]:[],
+      chapterQuestRewards:Array.isArray(parsed.chapterQuestRewards)?[...new Set(parsed.chapterQuestRewards.filter(id=>typeof id==='string'))]:[],
+      chapterCompletionRewards:Array.isArray(parsed.chapterCompletionRewards)?[...new Set(parsed.chapterCompletionRewards.map(Number).filter(number=>Number.isInteger(number)&&number>=5&&number<=8))]:[],
       storyBonusStats:{...fallback.storyBonusStats,...(parsed.storyBonusStats||{})},
       storyCharmState:{...fallback.storyCharmState,...(parsed.storyCharmState||{}),discoveries:[...new Set(parsed.storyCharmState?.discoveries||[])],activities:[...new Set(parsed.storyCharmState?.activities||[])],celebrations:[...new Set(parsed.storyCharmState?.celebrations||[])]},
       worldState:normalizeConnectedWorldState(parsed.worldState||{},parsed),
@@ -218,6 +248,26 @@ export const RRVVFO_CHAPTERS=Object.freeze([
     id:'rrvvfo-chapter-4',number:4,title:'ECHO REGION',
     description:'Restore Echo Village with Bark and Wade, optionally confront Ryuzankaro, defeat the adaptive Hollow Watcher, and reach Shadow’s Lookout.',
     missions:['rrvvfo-04']
+  },
+  {
+    id:'rrvvfo-chapter-5',number:5,title:'NOT A BIG DEAL',
+    description:'Follow three distinct field investigations from Shadow’s Lookout to the Archive Outpost and expose the Red’s Rrvvfo clone.',
+    missions:['rrvvfo-05']
+  },
+  {
+    id:'rrvvfo-chapter-6',number:6,title:'THE OTHER RRVVFO',
+    description:'Meet the clone who believes he is Rrvvfo, survive a mirror duel, and discover the Emerald theft behind the confrontation.',
+    missions:['rrvvfo-06']
+  },
+  {
+    id:'rrvvfo-chapter-7',number:7,title:'WHICH ONE IS REAL?',
+    description:'Risk Rrvvfo’s own power to protect his friends and give the clone a reason to turn against the Organization of the Red.',
+    missions:['rrvvfo-07']
+  },
+  {
+    id:'rrvvfo-chapter-8',number:8,title:'CLASH OF SOULS',
+    description:'Bring the allies together for the Organization of the Red’s central facility, the Leader’s defeat, and Double Solar Wave.',
+    missions:['rrvvfo-08']
   }
 ]);
 
@@ -234,12 +284,17 @@ export function rrvvfoNextMission(progress){
   if(!completed.has('rrvvfo-02'))return'rrvvfo-02';
   if(!completed.has('rrvvfo-03'))return'rrvvfo-03';
   if(!completed.has('rrvvfo-04'))return'rrvvfo-04';
+  if(!completed.has('rrvvfo-05')||!progress?.chapter5State?.completed)return'rrvvfo-05';
+  if(!completed.has('rrvvfo-06')||!progress?.chapter6State?.completed)return'rrvvfo-06';
+  if(!completed.has('rrvvfo-07')||!progress?.chapter7State?.completed)return'rrvvfo-07';
+  if(!completed.has('rrvvfo-08')||!progress?.chapter8State?.completed)return'rrvvfo-08';
   return null;
 }
 
 export function rrvvfoChapterComplete(chapter,progress){
   if(chapter?.number===4&&chapter4CompletionConflict(progress))return false;
   const completed=new Set(progress?.completedMissions||[]);
+  if(chapter?.number>=5&&chapter?.number<=8&&!progress?.[`chapter${chapter.number}State`]?.completed)return false;
   return Boolean(chapter?.missions?.length&&chapter.missions.every(id=>completed.has(id)));
 }
 

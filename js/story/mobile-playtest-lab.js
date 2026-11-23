@@ -1,9 +1,9 @@
 import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js';
-import {loadLostYearProgress} from './lost-year-data.js?v=29a410-pacing-objective-qol-20261122';
-import {WORLD_DELIGHT_DISCOVERIES} from './world-delight.js?v=29a410-pacing-objective-qol-20261122';
-import {CHAPTER1_GUIDANCE,CHAPTER1_ROUTES,CHAPTER1_FIRE_BLAST_STORY_FOCUS} from './chapter1-adventure.js?v=29a410-pacing-objective-qol-20261122';
-import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a410-pacing-objective-qol-20261122';
-import {ArenaBattle} from '../arena/arena-mode.js?v=29a410-pacing-objective-qol-20261122';
+import {loadLostYearProgress} from './lost-year-data.js?v=29a411-orgred-chapters-20261122';
+import {WORLD_DELIGHT_DISCOVERIES} from './world-delight.js?v=29a411-orgred-chapters-20261122';
+import {CHAPTER1_GUIDANCE,CHAPTER1_ROUTES,CHAPTER1_FIRE_BLAST_STORY_FOCUS} from './chapter1-adventure.js?v=29a411-orgred-chapters-20261122';
+import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a411-orgred-chapters-20261122';
+import {ArenaBattle} from '../arena/arena-mode.js?v=29a411-orgred-chapters-20261122';
 
 const DEV_SESSION_KEY='pxDeveloperUnlockedSession';
 const LAST_REPORT_KEY='pxPlaytestLastReportV2';
@@ -56,7 +56,7 @@ function buildLab(){
   <div class="pxLabCard"><header><div><small>DEVELOPER • MOBILE SAFE</small><h2>PLAYTEST LAB</h2></div><button type="button" data-px-lab-close aria-label="Close Playtest Lab">×</button></header>
   <div class="pxLabBody">
     <section><h3>ONE-CLICK QA</h3><p>Runs non-destructive runtime checks. This catches broken wiring and suspicious states; it does not pretend a bot can decide whether a chapter is fun.</p><div class="pxLabButtons"><button class="primary" type="button" data-px-full-qa>RUN FULL QA</button><button type="button" data-px-clear-output>CLEAR OUTPUT</button></div><div class="pxLabStatus" data-px-status></div></section>
-    <section><h3>HUMAN PACING PLAYTEST</h3><p>Records real objective timing, dialogue, fights, ranks, background pauses, damage, and approximate arena coverage while you play. Temporary Chapter jumps use the existing developer route.</p><div class="pxLabButtons"><button class="good" type="button" data-px-start-human>START RECORDING</button><button type="button" data-px-stop-human>STOP + REPORT</button><button type="button" data-px-chapter="1">PLAYTEST CH1</button><button type="button" data-px-chapter="2">PLAYTEST CH2</button><button type="button" data-px-chapter="3">PLAYTEST CH3</button><button type="button" data-px-chapter="4">PLAYTEST CH4</button></div></section>
+    <section><h3>HUMAN PACING PLAYTEST</h3><p>Records real objective timing, dialogue, fights, ranks, background pauses, damage, and approximate arena coverage while you play. Temporary Chapter jumps use the existing developer route.</p><div class="pxLabButtons"><button class="good" type="button" data-px-start-human>START RECORDING</button><button type="button" data-px-stop-human>STOP + REPORT</button><button type="button" data-px-chapter="1">PLAYTEST CH1</button><button type="button" data-px-chapter="2">PLAYTEST CH2</button><button type="button" data-px-chapter="3">PLAYTEST CH3</button><button type="button" data-px-chapter="4">PLAYTEST CH4</button><button type="button" data-px-chapter="5">PLAYTEST CH5</button><button type="button" data-px-chapter="6">PLAYTEST CH6</button><button type="button" data-px-chapter="7">PLAYTEST CH7</button><button type="button" data-px-chapter="8">PLAYTEST CH8</button></div></section>
     <section><h3>COMBAT QUICK TESTS</h3><p>Starts the existing temporary developer fights while telemetry is running.</p><div class="pxLabButtons"><button type="button" data-px-fight="revvfo">VS REVVFO</button><button type="button" data-px-fight="wade">VS WADE</button><button type="button" data-px-fight="bark">VS BARK</button></div></section>
     <section><h3>REPORT</h3><div class="pxLabButtons"><button class="primary" type="button" data-px-copy-report>COPY LAST REPORT</button><button type="button" data-px-download-report>EXPORT JSON</button></div><pre data-px-output>Playtest Lab ready.</pre></section>
   </div></div>`;
@@ -211,9 +211,9 @@ async function runFullQa(){
   add('Existing Konami developer room',document.querySelector('[data-story-playtest]')?'PASS':'WARN','↑ ↑ ↓ ↓ ← → ← → B A');
   try{
     const modules=await Promise.allSettled([
-      import('./rrvvfo-mission-2.js?v=29a410-pacing-objective-qol-20261122'),
-      import('./rrvvfo-chapter-3.js?v=29a410-pacing-objective-qol-20261122'),
-      import('./rrvvfo-chapter-4.js?v=29a410-pacing-objective-qol-20261122')
+      import('./rrvvfo-mission-2.js?v=29a411-orgred-chapters-20261122'),
+      import('./rrvvfo-chapter-3.js?v=29a411-orgred-chapters-20261122'),
+      import('./rrvvfo-chapter-4.js?v=29a411-orgred-chapters-20261122')
     ]);const failed=modules.filter(item=>item.status==='rejected');add('Released Chapter 2–4 modules import',failed.length?'FAIL':'PASS',failed.length?failed.map(item=>item.reason?.message||'import failed').join(' | '):'3 / 3 loaded');
   }catch(error){add('Released Chapter 2–4 modules import','FAIL',error.message)}
   const pass=checks.filter(c=>c.status==='PASS').length,fail=checks.filter(c=>c.status==='FAIL').length,warn=checks.filter(c=>c.status==='WARN').length;
@@ -226,7 +226,8 @@ function startChapterPlaytest(chapter){
   const existing=document.querySelector(`[data-story-playtest] [data-playtest-chapter="${chapter}"]`);
   if(existing){existing.click();return}
   document.dispatchEvent(new CustomEvent('pxplaytestopenstory'));
-  setTimeout(()=>document.dispatchEvent(new CustomEvent('pxplayteststartchapter',{detail:{number:chapter}})),120);
+  const stepId=chapter===1?'rrvvfo-00':chapter===2?'rrvvfo-02':'rrvvfo-0'+chapter;
+  setTimeout(()=>document.dispatchEvent(new CustomEvent('pxplayteststartchapter',{detail:{number:chapter,stepId}})),120);
 }
 
 function startQuickFight(opponent){

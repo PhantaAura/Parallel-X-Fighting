@@ -1,8 +1,8 @@
-import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a410-pacing-objective-qol-20261122';
-import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a410-pacing-objective-qol-20261122';
+import {FIGHTER_STATUS,PLAYABLE_ROSTER_IDS,ROSTER,ROSTER_IDS,isMirrorMatch} from '../js/roster.js?v=29a411-orgred-chapters-20261122';
+import {CONTROLLER_STYLES,INPUT_BUFFER_FRAMES,SIMULTANEOUS_WINDOW_FRAMES,InputManager,canSimplifyTouchAction,formatComboPrompt} from '../js/input.js?v=29a411-orgred-chapters-20261122';
 import {ATTACKS,Projectile,TimerRegistry,calculateFinalDamage,resetCombo} from '../js/combat.js';
-import {EffectSystem} from '../js/effects.js?v=29a410-pacing-objective-qol-20261122';
-import {Fighter} from '../js/fighter.js?v=29a410-pacing-objective-qol-20261122';
+import {EffectSystem} from '../js/effects.js?v=29a411-orgred-chapters-20261122';
+import {Fighter} from '../js/fighter.js?v=29a411-orgred-chapters-20261122';
 import {CHARACTER_AI,aiProfile,availableAIActions,decideCPU,selectAIAction} from '../js/ai.js';
 import {MOVESETS,MOVE_DAMAGE_TOTALS,moveFor} from '../js/movesets.js';
 import {trainingState,recordInput,resetTrainingClash,resetTrainingWorld,resetTrainingPosition,swapTrainingSides,refillTraining,clearTrainingState,exitTrainingWorld,setTrainingSetting,dummyCommand} from '../js/training.js';
@@ -17,29 +17,29 @@ import {CLASH_PULSE_FRAMES,CLASH_TAP_CAP_PER_SECOND,joystickDirections,resolveDP
 import {TOUCH_CONTROL_IDS,TOUCH_PRESETS,applyTouchPreset,createDefaultTouchSettings,deleteNamedTouchLayout,displayedControlPosition,loadNamedTouchLayout,responsiveControlPosition,saveNamedTouchLayout} from '../js/touch-layout-editor.js';
 import {SpriteAtlas,isRepositoryRelativePath,validateSpriteManifest} from '../js/sprite-atlas.js';
 import {ANIMATION_PRIORITY,SpriteAnimator} from '../js/sprite-animation.js';
-import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a410-pacing-objective-qol-20261122';
-import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a410-pacing-objective-qol-20261122';
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a410-pacing-objective-qol-20261122';
-import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a410-pacing-objective-qol-20261122';
-import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a410-pacing-objective-qol-20261122';
-import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a410-pacing-objective-qol-20261122';
-import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a410-pacing-objective-qol-20261122';
-import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a410-pacing-objective-qol-20261122';
-import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a410-pacing-objective-qol-20261122';
-import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a410-pacing-objective-qol-20261122';
-import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a410-pacing-objective-qol-20261122';
-import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a410-pacing-objective-qol-20261122';
-import {CONNECTED_WORLD_VERSION,WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,connectedZoneNeighbors,discoverWorldLandmark,discoverWorldShortcut,freshConnectedWorldState,normalizeConnectedWorldState,recordInteriorVisit,recordWorldVisit,renderTravelJournal,setWorldDoorState,worldDoorState,worldInteriorKnown,worldMapSummary,worldShortcutKnown,worldZoneKnown} from '../js/story/connected-world.js?v=29a410-pacing-objective-qol-20261122';
-import {STORY_BUILDINGS,STORY_INTERIOR_VERSION,buildingDefinition,buildingIdsForChapter,buildingMapTitle,canEnterBuilding,interiorActorPoints,interiorMapPoints,interiorTransition,lockedDoorLine,resolveExteriorBuildingCollision} from '../js/story/story-interiors.js?v=29a410-pacing-objective-qol-20261122';
-import {FIELD_SKILL_REACTIONS,WORLD_DELIGHT_DISCOVERIES,WORLD_DELIGHT_VERSION,delightForChapter,discoverWorldDelight,loadWorldDelightState,normalizeWorldDelightState,worldDelightKnown} from '../js/story/world-delight.js?v=29a410-pacing-objective-qol-20261122';
-import {FAST_TRAVEL_NODES,REVISIT_LOOP_VERSION,REVISIT_OPPORTUNITIES,claimRevisitOpportunity,fastTravelDestination,fastTravelNodeAvailable,markFastTravelArrival,renderRevisitJournal,revisitOpportunityStatus,revisitState,syncFastTravelNodes,unlockFastTravelNode} from '../js/story/revisit-loop.js?v=29a410-pacing-objective-qol-20261122';
-import {CHAPTER3_REPLACEMENT_ACTIVITIES,QUEST_AUDIT,QUEST_OVERHAUL_VERSION,chapter2BracketRoute,chapter3ReplacementActivity,chapter4PotionReady,chapter4PotionRoute,chapter4SignalRoute,chapter4SignalsReady,questAuditSummary} from '../js/story/quest-overhaul.js?v=29a410-pacing-objective-qol-20261122';
-import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a410-pacing-objective-qol-20261122';
-import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a410-pacing-objective-qol-20261122';
-import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a410-pacing-objective-qol-20261122';
-import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a410-pacing-objective-qol-20261122';
-import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a410-pacing-objective-qol-20261122';
-import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a410-pacing-objective-qol-20261122';
+import {BARK_MANIFEST_URL,FighterVisuals,RRVVFO_APPEARANCES,RRVVFO_VISUAL_SAVE_KEY,SPRITE_FIGHTER_IDS,WADE_MANIFEST_URL,availableRrvvfoAppearances,defaultRrvvfoVisualSettings,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,resolveRrvvfoAnimation,saveRrvvfoVisualSettings,shouldShowRrvvfoLoadFailure} from '../js/fighter-visuals.js?v=29a411-orgred-chapters-20261122';
+import {CONTROLLER_COMPLETION_FEATURES,CONTROLLER_SETTINGS_KEY,ControllerManager,assignConnectedControllers,controllerMenuButtons,createDefaultControllerSettings,detectControllerStyle,loadControllerSettings,saveControllerSettings} from '../js/controller-manager.js?v=29a411-orgred-chapters-20261122';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../js/build-info.js?v=29a411-orgred-chapters-20261122';
+import {CHAPTER2_BRACKET_CARDS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,createChapter2QuestState,missingChapter2BracketCards,normalizeChapter2QuestState,requiredRumorCountForStep} from '../js/story/chapter2-hub-quests.js?v=29a411-orgred-chapters-20261122';
+import {CHAPTER3_BRACKET_ORDER,CHAPTER3_EVIDENCE,CHAPTER3_MANDATORY_STORIES,CHAPTER3_MISSION_ID,CHAPTER3_OPTIONAL_QUESTS,CHAPTER3_REQUIRED_STEPS,chapter3Complete,chapter3CompletionPercent,chapter3NextRequired,freshChapter3State,markChapter3Required,normalizeChapter3State} from '../js/story/chapter3-content.js?v=29a411-orgred-chapters-20261122';
+import {CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable} from '../js/story/chapter4-content.js?v=29a411-orgred-chapters-20261122';
+import {RPG_PACING_PHASES,completePacingOrientation,createRpgPacingState,normalizeRpgPacingState,pacingOrientationProgress,recordPacingConversation,recordPacingInteraction,recordPacingVisit,rpgPacingQuestWave,setRpgPacingPhase} from '../js/story/rpg-pacing.js?v=29a411-orgred-chapters-20261122';
+import {CHAPTER2_EXHIBITION_SEQUENCE,CHAPTER3_INCIDENT_ORDER,CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction,createQuestVarietyState,exhibitionRank,nextIncidentStep,normalizeQuestVarietyState,recordIncidentStep,runawayCartRank} from '../js/story/quest-variety.js?v=29a411-orgred-chapters-20261122';
+import {STORY_AFTERGLOW,inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from '../js/story/story-reliability.js?v=29a411-orgred-chapters-20261122';
+import {STORY_EXPERIENCE_PROFILES,storyChapterIsLongest,storyExperienceBeat,storyExperienceProfile,storyRankReaction,storyTargetMinutes} from '../js/story/story-experience.js?v=29a411-orgred-chapters-20261122';
+import {ADVENTURE_MISSIONS,CHAPTER_GAMEPLAY_IDENTITIES,ENEMY_ARCHETYPES,ENEMY_ARCHETYPE_ICONS,RRVVFO_BUILDS,RRVVFO_PASSIVES,RRVVFO_TECHNIQUES,adventureMissionResultLabel,applyRrvvfoBuildToFighter,chapterGameplayIdentity,completeAdventureMission,currentRrvvfoBuild,enemyArchetype,enemyArchetypeShape,loadAdventureProgress,loadRrvvfoBuild,renderRrvvfoBuildLab,saveRrvvfoBuild,saveRrvvfoCustomBuild,storySafeRrvvfoBuild,tuneRrvvfoAbility} from '../js/story/core-fun.js?v=29a411-orgred-chapters-20261122';
+import {FIELD_SKILLS,STORY_TECHNIQUE_RULES,loadFieldSkillState,masterFieldSkill,normalizeFieldSkillState,recordFieldSkillTrial,renderFieldSkillJournal,storyTechniqueAvailable} from '../js/story/field-skills.js?v=29a411-orgred-chapters-20261122';
+import {CONNECTED_WORLD_VERSION,WORLD_REGIONS,WORLD_REGION_LINKS,WORLD_SHORTCUTS,connectedZoneNeighbors,discoverWorldLandmark,discoverWorldShortcut,freshConnectedWorldState,normalizeConnectedWorldState,recordInteriorVisit,recordWorldVisit,renderTravelJournal,setWorldDoorState,worldDoorState,worldInteriorKnown,worldMapSummary,worldShortcutKnown,worldZoneKnown} from '../js/story/connected-world.js?v=29a411-orgred-chapters-20261122';
+import {STORY_BUILDINGS,STORY_INTERIOR_VERSION,buildingDefinition,buildingIdsForChapter,buildingMapTitle,canEnterBuilding,interiorActorPoints,interiorMapPoints,interiorTransition,lockedDoorLine,resolveExteriorBuildingCollision} from '../js/story/story-interiors.js?v=29a411-orgred-chapters-20261122';
+import {FIELD_SKILL_REACTIONS,WORLD_DELIGHT_DISCOVERIES,WORLD_DELIGHT_VERSION,delightForChapter,discoverWorldDelight,loadWorldDelightState,normalizeWorldDelightState,worldDelightKnown} from '../js/story/world-delight.js?v=29a411-orgred-chapters-20261122';
+import {FAST_TRAVEL_NODES,REVISIT_LOOP_VERSION,REVISIT_OPPORTUNITIES,claimRevisitOpportunity,fastTravelDestination,fastTravelNodeAvailable,markFastTravelArrival,renderRevisitJournal,revisitOpportunityStatus,revisitState,syncFastTravelNodes,unlockFastTravelNode} from '../js/story/revisit-loop.js?v=29a411-orgred-chapters-20261122';
+import {CHAPTER3_REPLACEMENT_ACTIVITIES,QUEST_AUDIT,QUEST_OVERHAUL_VERSION,chapter2BracketRoute,chapter3ReplacementActivity,chapter4PotionReady,chapter4PotionRoute,chapter4SignalRoute,chapter4SignalsReady,questAuditSummary} from '../js/story/quest-overhaul.js?v=29a411-orgred-chapters-20261122';
+import {effectiveStoryBonusStats,storyAttackMultiplier,storyDefenseMultiplier,storySpeedMultiplier,storyStatsForLevel} from '../js/story/story-progression.js?v=29a411-orgred-chapters-20261122';
+import {MAIN_MENU_MODES,PROGRESS_LOCKED_MODE_IDS,MainMenu,mainMenuConfirmLabel,mainMenuModesForProgress} from '../js/main-menu.js?v=29a411-orgred-chapters-20261122';
+import {LOST_YEAR_SAVE_KEY,LOST_YEAR_ROUTES,RRVVFO_CHAPTERS,STORY_CHAPTERS_PER_CHARACTER,chapter4CompletionConflict,completedRrvvfoChapterCount,lastLostYearSaveError,modeUnlockedForProgress,repairChapter4Progress,routeProgress,rrvvfoChapterComplete,rrvvfoNextMission,saveLostYearProgress,storyModeComplete} from '../js/story/lost-year-data.js?v=29a411-orgred-chapters-20261122';
+import {applyHubCameraLook,createHubCameraLookState,resolveHubCameraOcclusion,snapHubCamera,updateHubCamera} from '../js/story/hub-camera.js?v=29a411-orgred-chapters-20261122';
+import {resolveHubWorldCollision,stageHubColliders} from '../js/story/hub-collision.js?v=29a411-orgred-chapters-20261122';
+import {getArenaStage,listArenaStages,stageProfile,validateArenaStage} from '../js/arena/arena-stages.js?v=29a411-orgred-chapters-20261122';
 import {PAUSE_ACTIONS,requiresRestartConfirmation,simulationCanAdvance} from '../js/pause-menu.js';
 import {RESULT_ACTIONS,buildResultsModel} from '../js/results-screen.js';
 import {MatchStatistics,formatMatchDuration} from '../js/match-statistics.js';
@@ -48,26 +48,26 @@ import {DEFAULT_QOL_SETTINGS,QOL_SETTINGS_KEY,loadQolSettings,saveQolSettings,sa
 import {NotificationSystem} from '../js/notification-system.js';
 import {SAVE_EXPORT_KEYS,createSaveExport,importSaveText,resetSaveGroup,stringifySave,validateSaveImport} from '../js/save-manager.js';
 import {TRAINING_PRESET_KEY,applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from '../js/training-presets.js';
-import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a410-pacing-objective-qol-20261122';
-import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a410-pacing-objective-qol-20261122';
-import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a410-pacing-objective-qol-20261122';
+import {TRAINING_TRIALS,createTrainingTrialState,pursuitTimingGrade,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../js/training-trials.js?v=29a411-orgred-chapters-20261122';
+import {MASTERY_CHALLENGES,MASTERY_RECORDS_KEY,battleMasteryRank,createBattleMasterySession,finalizeBattleMastery,loadMasteryRecords,masterySummary,recordBattleMasteryEvent,recordMasteryChallenge,renderMasteryRecords} from '../js/mastery-records.js?v=29a411-orgred-chapters-20261122';
+import {CHAPTER4_ENEMY_ROLES,chapter4EnemyRole} from '../js/story/chapter4-enemy-roles.js?v=29a411-orgred-chapters-20261122';
 import {FirstTimeHints,HINTS_DISMISSED_KEY} from '../js/first-time-hints.js';
 import {cooldownText,fighterHudModel} from '../js/hud-model.js';
-import {LoadingManager} from '../js/loading-manager.js?v=29a410-pacing-objective-qol-20261122';
+import {LoadingManager} from '../js/loading-manager.js?v=29a411-orgred-chapters-20261122';
 import {ABILITY_HOTBAR_KEY,FIGHTER_ABILITY_HOTBARS,abilitiesForFighter,abilityStatus,createDefaultAbilityHotbarSettings,defaultAbilityOrder,loadAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from '../js/ability-hotbar-data.js';
 import {AbilityHotbar,HOTBAR_INFO_HOLD_MS,hotbarPrompt} from '../js/ability-hotbar.js';
 import {LOGICAL_GAME_HEIGHT,LOGICAL_GAME_WIDTH,calculateResponsiveLayout,classifyDisplay,controlsOverlap} from '../js/responsive-game-layout.js';
 import {MOBILE_PRESENTATION_KEY,OrientationManager,createMobilePresentationSettings,loadMobilePresentationSettings,saveMobilePresentationSettings,shouldRecommendPortrait} from '../js/orientation-manager.js';
 import {FullscreenManager,fullscreenSupported} from '../js/fullscreen-manager.js';
-import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a410-pacing-objective-qol-20261122';
-import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a410-pacing-objective-qol-20261122';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a410-pacing-objective-qol-20261122';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a410-pacing-objective-qol-20261122';
-import {STAGES} from '../js/stages.js?v=29a410-pacing-objective-qol-20261122';
-import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a410-pacing-objective-qol-20261122';
+import {COMBAT_MANUAL_PAGES,grantPublicCombatManual,loadCombatManualState} from '../js/story/combat-manual.js?v=29a411-orgred-chapters-20261122';
+import {ARENA_NORMAL_PROFILES,FIGHTER_FEEL_PROFILES,RRVVFO_TACTICAL_LOADOUT,SPECIAL_CATEGORIES,abilityCategory,arenaAttackFor,fighterFeelFor} from '../js/arena/arena-combat-data.js?v=29a411-orgred-chapters-20261122';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from '../js/arena/pursuit-combat.js?v=29a411-orgred-chapters-20261122';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../js/focus-recovery.js?v=29a411-orgred-chapters-20261122';
+import {STAGES} from '../js/stages.js?v=29a411-orgred-chapters-20261122';
+import {STAGE_PERSONALITY,projectileHitsStageGeometry,resolveStageGeometry,stageGeometryFor,stagePersonalityFor} from '../js/arena/stage-personality.js?v=29a411-orgred-chapters-20261122';
 
-const RELEASE_CACHE_ID='29a410-pacing-objective-qol-20261122';
-const EXPECTED_BUILD='Prototype 2.9A.40.9 — Story Event Reliability';
+const RELEASE_CACHE_ID='29a411-orgred-chapters-20261122';
+const EXPECTED_BUILD='Prototype 2.9A.40.11 — Chapters 5–8';
 const TOTAL_TESTS=489;
 const TEST_TIMEOUT_MS=30000;
 class SmokeTimeoutError extends Error{constructor(name){super(`Timed out after ${TEST_TIMEOUT_MS/1000} seconds: ${name}`);this.name='SmokeTimeoutError';this.code='PX_SMOKE_TIMEOUT'}}
@@ -610,7 +610,7 @@ await test('Chapter 2 has RPG stats, scaled enemies, Story Assist, and a permane
   assert(!source.includes('SURVIVE THE SCRIPTED FINAL'),'developer language remains in the final objective');
 });
 await test('Chapter 3 contains the sabotage investigation, Project Hollow reveal, blue-clone escape, and blackout handoff',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a410-pacing-objective-qol-20261122');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-3.js?v=29a411-orgred-chapters-20261122');
   assert(typeof chapterModule.startRrvvfoChapter3==='function','the rewritten Chapter 3 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-3.js')).text();
   for(const token of ['SABOTAGE_EVIDENCE_POINTS','SABOTAGE_WITNESSES','investigateMaintenanceEntry','inspectHiddenInfrastructure','inspectSageTrail','findRealSage','beginLockdownFight','startDoorSequence','showBlueCloneLesson','activateTeleporter','enterRemoteRegion'])assert(source.includes(token),`rewritten Chapter 3 omitted ${token}`);
@@ -660,7 +660,7 @@ await test('Chapter 4 data preserves the revised village-first structure and opt
   assert(chapter4Complete(complete)&&chapter4CompletionPercent(complete)===100,'complete Chapter 4 state was not recognized');
 });
 await test('Chapter 4 implements Echo Village, Ryuzankaro, Vibration Sense, Hollow Watcher, and Shadow ending',async()=>{
-  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a410-pacing-objective-qol-20261122');
+  const chapterModule=await import('../js/story/rrvvfo-chapter-4.js?v=29a411-orgred-chapters-20261122');
   assert(typeof chapterModule.startRrvvfoChapter4==='function','Chapter 4 module cannot be imported');
   const source=await(await fetchFresh('../js/story/rrvvfo-chapter-4.js')).text();
   for(const token of ['reachVillage','barkWadeArrival','repairBeacon','enterCaverns','returnToVillageAfterParts','startOldManQuest','revealRyuzankaro','startImpactQte','startSwapQte','startSealQte','useVibrationSense','Hollow Watcher','enterLookout','startShadowArrival'])assert(source.includes(token),`Chapter 4 omitted ${token}`);
@@ -1001,11 +1001,11 @@ await test('Story chapters use one shared runtime controller without method monk
 });
 
 
-await test('Prototype 2.9A.24 preserves the eight-chapter route without inventing Chapters 5–8',async()=>{
+await test('Prototype 2.9A.40.11 exposes the complete eight-chapter route',async()=>{
   const [data,story]=await Promise.all([fetchFresh('../js/story/lost-year-data.js').then(r=>r.text()),fetchFresh('../js/story/lost-year-story.js').then(r=>r.text())]);
   assert(data.includes('RRVVFO_PLANNED_CHAPTER_COUNT=8'),'eight-chapter foundation is missing');
-  assert(story.includes('4 RELEASED / 8 PLANNED')&&story.includes('PLANNED • NOT YET RELEASED'),'future chapter slots are not presented honestly');
-  assert(story.includes('No plot details are being invented before the official plan.'),'future chapter cards invent unsupported story information');
+  assert(data.includes('chapter5State')&&data.includes('chapter8State'),'playable Chapter 5–8 save states are missing');
+  assert(story.includes('startRrvvfoChapter5')&&story.includes('startRrvvfoChapter8'),'chapter selection does not launch all eight chapters');
 });
 await test('Echo Village has a low-tech resonance identity and invasive Hollow contrast',async()=>{
   const [chapter,stages]=await Promise.all([fetchFresh('../js/story/rrvvfo-chapter-4.js').then(r=>r.text()),fetchFresh('../js/arena/arena-stages.js').then(r=>r.text())]);
@@ -1847,7 +1847,7 @@ await test('2.9A.36 older Chapter 4 saves beyond the caverns never move backward
 });
 
 await test('2.9A.36 active build packages playful exploration without changing save schema',async()=>{
-  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
+  const [html,build,manifest]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a411-orgred-chapters-20261122'),fetchSource('../BUILD-MANIFEST-2.9A.36.json')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.36 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.36 changed the save schema unexpectedly');
   assert(html.includes(RELEASE_CACHE_ID),'2.9A.36 cache identity is not synchronized');
@@ -1910,7 +1910,7 @@ await test('2.9A.37 secret playtest menu exposes Story save health and chapter s
 
 await test('2.9A.37 chapter results include RPG afterglow instead of rushing the next objective',async()=>{
   const polish=await fetchSource('../js/story/story-polish.js');
-  assert(Object.keys(STORY_AFTERGLOW).length===4,'released chapters do not all have afterglow data');
+  assert(Object.keys(STORY_AFTERGLOW).length===8,'released chapters do not all have afterglow data');
   const chapter2=storyAfterglowFor(2,{}),chapter4=storyAfterglowFor(4,{chapter4State:{ryuzankaro:{bossDefeated:true}}});
   assert(chapter2.changes.length>=3&&chapter2.next.includes('Return after closing'),'Chapter 2 afterglow does not connect the RPG journey');
   assert(chapter4.changes.some(line=>line.includes('Ryuzankaro')),'optional Chapter 4 accomplishment is absent from afterglow');
@@ -1918,7 +1918,7 @@ await test('2.9A.37 chapter results include RPG afterglow instead of rushing the
 });
 
 await test('2.9A.37 active build packages reliability and RPG flow without changing save schema',async()=>{
-  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122'),fetchSource('../js/story/story-reliability.js')]);
+  const [html,build,reliability]=await Promise.all([fetchSource('../index.html'),import('../js/build-info.js?v=29a411-orgred-chapters-20261122'),fetchSource('../js/story/story-reliability.js')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.37 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.37 changed save schema unexpectedly');
   assert(html.includes('story-rpg-flow-29a37.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.37 active page is not synchronized');
@@ -2011,7 +2011,7 @@ await test('2.9A.38 mastery records are included in safe save export and import'
 });
 
 await test('2.9A.38 active build integrates mastery results Training rewards and Extras records',async()=>{
-  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122')]);
+  const [html,arena,main,save,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/main.js'),fetchSource('../js/save-manager.js'),import('../js/build-info.js?v=29a411-orgred-chapters-20261122')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.38 build label is not centralized');assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.38 changed save schema unexpectedly');
   assert(html.includes('mastery-records-29a38.css')&&html.includes('MASTERY & RECORDS')&&html.includes(RELEASE_CACHE_ID),'2.9A.38 page does not expose Adventure Records');
   for(const token of ['createBattleMasterySession','recordBattleMasteryEvent','finalizeBattleMastery','data-mastery-result','recordMasteryChallenge'])assert(arena.includes(token),`Arena mastery integration omitted ${token}`);
@@ -2020,7 +2020,7 @@ await test('2.9A.38 active build integrates mastery results Training rewards and
 });
 
 
-await test('2.9A.40.10 chapter pacing trims long mandatory loops and keeps Chapter 4 longest',()=>{
+await test('2.9A.40.11 chapter pacing trims long mandatory loops and keeps Chapter 4 longest',()=>{
   assert(storyTargetMinutes(1).join('-')==='35-50','Chapter 1 target changed from the short opening role');
   assert(storyTargetMinutes(2).join('-')==='65-85','Chapter 2 pacing target is wrong');
   assert(storyTargetMinutes(3).join('-')==='45-65','Chapter 3 pacing target is wrong');
@@ -2031,7 +2031,7 @@ await test('2.9A.40.10 chapter pacing trims long mandatory loops and keeps Chapt
 await test('2.9A.39 meaningful RPG beats cover travel tournament mystery and Echo Region',()=>{
   const samples=['rrvvfo-road-cart-saved','rrvvfo-02-round-1','rrvvfo-03-strangeManLead','rrvvfo-04-cavernsEntered','rrvvfo-04-lookoutReached'];
   for(const checkpoint of samples){const beat=storyExperienceBeat(checkpoint);assert(beat?.title&&beat?.detail,`missing experience beat for ${checkpoint}`)}
-  assert(Object.keys(STORY_EXPERIENCE_PROFILES).length===4,'experience profiles do not cover all released chapters');
+  assert(Object.keys(STORY_EXPERIENCE_PROFILES).length===8,'experience profiles do not cover all released chapters');
 });
 
 await test('2.9A.39 high fight ranks celebrate skill without interrupting every result',()=>{
@@ -2049,7 +2049,7 @@ await test('2.9A.39 Chapter 4 adds optional party recovery without adding a mand
 });
 
 await test('2.9A.39.1 active build preserves RPG polish with the new Chapter 4 ending',async()=>{
-  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122')]);
+  const [html,charm,arena,polish,build]=await Promise.all([fetchSource('../index.html'),fetchSource('../js/story/story-charm.js'),fetchSource('../js/arena/arena-mode.js'),fetchSource('../js/story/story-polish.js'),import('../js/build-info.js?v=29a411-orgred-chapters-20261122')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD&&build.SAVE_SCHEMA_VERSION===268,'2.9A.39.1 build identity or save schema is wrong');
   assert(html.includes('full-experience-29a39.css')&&html.includes(RELEASE_CACHE_ID),'2.9A.39.1 presentation/cache is not synchronized');
   assert(charm.includes('storyExperienceBeat')&&charm.includes('pxstoryfightrank'),'Story charm does not consume the new pacing/rank events');
@@ -2138,7 +2138,7 @@ await test('2.9A.40.2 Flow Cancel and build passives give audiovisual feedback i
 });
 
 await test('2.9A.40.2 current release identity keeps save schema 268 and the new cache synchronized',async()=>{
-  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122'),fetchSource('../index.html')]);
+  const [build,index]=await Promise.all([import('../js/build-info.js?v=29a411-orgred-chapters-20261122'),fetchSource('../index.html')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.2 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.2 changed save schema unexpectedly');
   assert(index.includes('field-minimal-29a402.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.2 index is missing the minimal-UI release identity');
@@ -2296,7 +2296,7 @@ await test('2.9A.40.4 interior-map tabs obey hidden state so local building maps
 });
 
 await test('2.9A.40.4 current release synchronizes interiors connected maps and save schema 268',async()=>{
-  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122'),fetchSource('../index.html'),fetchSource('../css/connected-world-29a403.css')]);
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a411-orgred-chapters-20261122'),fetchSource('../index.html'),fetchSource('../css/connected-world-29a403.css')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.4 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.4 changed save schema unexpectedly');
   assert(index.includes('connected-world-29a403.css')&&index.includes('buildings-interiors-29a404.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.4 index is missing connected-world/interior presentation cache identity');
@@ -2361,7 +2361,7 @@ await test('2.9A.40.5 secrets stay subtle: Echo overlook only marks itself when 
 });
 
 await test('2.9A.40.5 current release keeps save schema 268 and synchronizes World Delight presentation',async()=>{
-  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122'),fetchSource('../index.html'),fetchSource('../css/world-delight-29a405.css')]);
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a411-orgred-chapters-20261122'),fetchSource('../index.html'),fetchSource('../css/world-delight-29a405.css')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'2.9A.40.5 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'2.9A.40.5 changed save schema unexpectedly');
   assert(index.includes('world-delight-29a405.css')&&index.includes(RELEASE_CACHE_ID),'2.9A.40.5 index is missing World Delight release identity');
@@ -2429,7 +2429,7 @@ await test('2.9A.40.6 Echo revisit mode adds a Vibration Sense shrine reward wit
 });
 
 await test('2.9A.40.6 release identity keeps schema 268 and loads revisit-loop presentation',async()=>{
-  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122'),fetchSource('../index.html'),fetchSource('../css/revisit-loop-29a406.css')]);
+  const [build,index,css]=await Promise.all([import('../js/build-info.js?v=29a411-orgred-chapters-20261122'),fetchSource('../index.html'),fetchSource('../css/revisit-loop-29a406.css')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'40.6 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'40.6 changed save schema unexpectedly');
   assert(index.includes('revisit-loop-29a406.css')&&index.includes(RELEASE_CACHE_ID),'40.6 index omitted revisit-loop presentation/cache');
@@ -2567,7 +2567,7 @@ await test('2.9A.40.7.1 old completed and mid-facility Chapter 3 saves migrate i
 });
 
 await test('2.9A.40.7.1 current release keeps save schema 268 and centralizes the Chapter 3 sabotage rewrite',async()=>{
-  const [build,index,questSource]=await Promise.all([import('../js/build-info.js?v=29a410-pacing-objective-qol-20261122'),fetchSource('../index.html'),fetchSource('../js/story/quest-overhaul.js')]);
+  const [build,index,questSource]=await Promise.all([import('../js/build-info.js?v=29a411-orgred-chapters-20261122'),fetchSource('../index.html'),fetchSource('../js/story/quest-overhaul.js')]);
   assert(build.BUILD_VERSION===EXPECTED_BUILD,'40.7.1 build label is not centralized');
   assert(build.SAVE_SCHEMA_VERSION===268,'40.7.1 changed save schema unexpectedly');
   assert(index.includes(RELEASE_CACHE_ID),'40.7.1 index omitted release cache identity');
@@ -2576,7 +2576,7 @@ await test('2.9A.40.7.1 current release keeps save schema 268 and centralizes th
 
 
 await test('2.9A.40.8 keyboard remapping swaps, rejects reserved keys, persists and resets',async()=>{
-  const input=await import('../js/input.js?v=29a410-pacing-objective-qol-20261122');
+  const input=await import('../js/input.js?v=29a411-orgred-chapters-20261122');
   const before=JSON.stringify(input.CONTROL_MAPS[0]),savedBefore=localStorage.getItem(input.KEY_BINDINGS_KEY);
   try{
     input.resetKeyBindings();
@@ -2597,7 +2597,7 @@ await test('2.9A.40.8 keyboard remapping swaps, rejects reserved keys, persists 
 });
 
 await test('2.9A.40.8 new settings sanitize safely and old settings stay valid',async()=>{
-  const settings=await import('../js/qol-settings.js?v=29a410-pacing-objective-qol-20261122');
+  const settings=await import('../js/qol-settings.js?v=29a411-orgred-chapters-20261122');
   const old=settings.sanitizeQolSettings({gameplay:{combatMessages:'important'},accessibility:{cameraShake:'off'}});
   assert(old.gameplay.skipSeenScenes===true&&old.gameplay.autosave===true&&old.accessibility.colorMode==='off','new settings did not default for an older save');
   assert(old.gameplay.combatMessages==='important'&&old.accessibility.cameraShake==='off','existing settings were lost');
@@ -2607,7 +2607,7 @@ await test('2.9A.40.8 new settings sanitize safely and old settings stay valid',
 });
 
 await test('2.9A.40.8 colorblind matrices are finite and separate red from green',async()=>{
-  const {daltonizeMatrix,applyColorMode}=await import('../js/qol-final.js?v=29a410-pacing-objective-qol-20261122');
+  const {daltonizeMatrix,applyColorMode}=await import('../js/qol-final.js?v=29a411-orgred-chapters-20261122');
   const identity=daltonizeMatrix('off');assert(identity[0][0]===1&&identity[1][1]===1&&identity[2][2]===1&&identity[0][1]===0,'off mode is not identity');
   const apply=(m,c)=>m.map(row=>Math.max(0,Math.min(1,row[0]*c[0]+row[1]*c[1]+row[2]*c[2])));
   for(const mode of ['protanopia','deuteranopia','tritanopia']){
@@ -2619,7 +2619,7 @@ await test('2.9A.40.8 colorblind matrices are finite and separate red from green
 });
 
 await test('2.9A.40.8 autosave writes on progress, keeps two slots, restores and survives a damaged slot',async()=>{
-  const {Autosave,restoreAutosave,describeAutosave}=await import('../js/qol-final.js?v=29a410-pacing-objective-qol-20261122');
+  const {Autosave,restoreAutosave,describeAutosave}=await import('../js/qol-final.js?v=29a411-orgred-chapters-20261122');
   const storage=memoryStorage();let clock=100000;
   const autosave=new Autosave({storage,now:()=>clock});
   assert(autosave.tick()===false,'wrote a backup with no progress');
@@ -2639,7 +2639,7 @@ await test('2.9A.40.8 autosave writes on progress, keeps two slots, restores and
 });
 
 await test('2.9A.40.8 save export/import and resets include the new keys',async()=>{
-  const save=await import('../js/save-manager.js?v=29a410-pacing-objective-qol-20261122');
+  const save=await import('../js/save-manager.js?v=29a411-orgred-chapters-20261122');
   assert(save.SAVE_EXPORT_KEYS.includes('pxKeyBindingsV1')&&save.SAVE_EXPORT_KEYS.includes('pxSeenDialoguesV1'),'new keys missing from exports');
   assert(!save.SAVE_EXPORT_KEYS.includes(save.AUTOSAVE_KEY),'autosave backup must stay out of exports');
   const storage=memoryStorage();storage.setItem('pxKeyBindingsV1','{"a":"KeyF"}');storage.setItem('pxSeenDialoguesV1','["abc"]');storage.setItem(save.AUTOSAVE_KEY,'{}');
@@ -2650,7 +2650,7 @@ await test('2.9A.40.8 save export/import and resets include the new keys',async(
 });
 
 await test('2.9A.40.8 dialogue offers one-press skip only for scenes already seen',async()=>{
-  const {SonicBattleDialogue}=await import('../js/sonic-battle-dialogue.js?v=29a410-pacing-objective-qol-20261122');
+  const {SonicBattleDialogue}=await import('../js/sonic-battle-dialogue.js?v=29a411-orgred-chapters-20261122');
   const seenBefore=localStorage.getItem('pxSeenDialoguesV1');localStorage.removeItem('pxSeenDialoguesV1');
   const host=document.createElement('div');document.body.appendChild(host);
   const lines=[{speaker:'Wade',text:'Smoke-test line one.'},{speaker:'Bark',text:'Smoke-test line two.'},{speaker:'Rrvvfo',text:'Smoke-test line three.'}];
@@ -2677,7 +2677,7 @@ await test('2.9A.40.8 dialogue offers one-press skip only for scenes already see
 });
 
 await test('2.9A.40.8 playtest-lab UI observer settles instead of looping forever on the settings panel',async()=>{
-  await import('../js/story/mobile-playtest-lab.js?v=29a410-pacing-objective-qol-20261122');
+  await import('../js/story/mobile-playtest-lab.js?v=29a411-orgred-chapters-20261122');
   const panel=document.createElement('div');panel.id='settingsPanel';panel.innerHTML='<div class="qolCard"><div id="settingsContent"></div><div class="settingsActions"></div></div>';
   let records=0;const observer=new MutationObserver(list=>{records+=list.length});observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class','hidden']});
   const existing=document.getElementById('settingsPanel');existing?.removeAttribute('id');

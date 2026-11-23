@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a410-pacing-objective-qol-20261122';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a410-pacing-objective-qol-20261122';
+import {sharedInput} from '../input-runtime.js?v=29a411-orgred-chapters-20261122';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a411-orgred-chapters-20261122';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast'},

@@ -1,5 +1,5 @@
-const RELEASE_CACHE_ID='29a410-pacing-objective-qol-20261122';
-const EXPECTED_BUILD='Prototype 2.9A.40.10 — Pacing & Objective QoL';
+const RELEASE_CACHE_ID='29a411-orgred-chapters-20261122';
+const EXPECTED_BUILD='Prototype 2.9A.40.11 — Chapters 5–8';
 const TOTAL_TESTS=489;
 const IMPORT_TIMEOUT_MS=600000;
 const STALL_TIMEOUT_MS=35000;

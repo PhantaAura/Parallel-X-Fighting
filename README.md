@@ -1,12 +1,14 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.40.10 — Pacing & Objective QoL
+## Prototype 2.9A.40.11 — Chapters 5–8
 
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
 - The real Sage is found fighting inside the facility; Project Hollow threatens the escape through lockdown/suppression rather than casually overpowering him.
 - The teleporter finale now uses Sage's blue clone as a mandatory technique-foundation story beat. It does **not** unlock Shots of Agony and is **not** framed as an Object Swap lesson.
 - The unstable teleport immediately leaves Rrvvfo unconscious in Echo Region for several days, giving Project Hollow time to begin its Chapter 4 operation.
-- Save schema remains 268 and Chapter 5 is untouched.
+- Chapters 5–8 are now playable; Project Hollow remains the Archive program within the Organization of the Red.
+- Chapter 5 introduces Rrvvfo’s unstable Shots of Agony technique. The Sage’s one-use life-support failsafe is established before Chapter 7.
+- Save schema remains 268.
 
 > **Combat Rank Patch integrated:** Every completed fight receives an **S / A / B / C / D / E** grade. Prototype 2.9A.40 includes that mini patch in the cumulative build.
 
@@ -16,11 +18,11 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.40.9 — Story Event Reliability**
+**Prototype 2.9A.40.11 — Chapters 5–8**
 
 This is a complete cumulative build. No older package is required.
 
-Wade’s race checkpoints now sit on clear approaches around the tournament grounds, crossing a marker between frames still registers, and the timer pauses when gameplay is inactive. Legacy adds the remake’s optional hold-to-advance dialogue control and a saved, chapter-filtered objective history. Chapters 2 and 4 have shorter required loops while keeping their key story beats.
+The full Rrvvfo route now runs through the Organization of the Red conspiracy and the Season 1 finale. Chapters 5–8 include checkpointed fights, story choices, objective history, chapter replay/restart, chapter-specific pacing targets, and one optional three-step quest in each chapter. Quest choices and progress auto-save; each quest grants a one-time reward. Chapter 5 unlocks the unstable Shots of Agony prototype. The earlier Legacy updates also fix Wade’s race event progression, add hold-to-advance dialogue, save objective history, and shorten mandatory loops in Chapters 2 and 4.
 
 
 
@@ -350,17 +352,20 @@ This cumulative follow-up keeps the 2.9A.40 Core Fun Overhaul and removes fricti
 
 ## Story progression
 
-Rrvvfo's route is planned for **eight chapters**. Four are currently playable, so completing Chapter 4 reports **4/8 — 50%**.
+Rrvvfo's route now has **eight playable chapters**. Completing Chapter 4 reports **4/8 — 50%**; completing the Season 1 finale reports **8/8 — 100%**.
 
 - **Chapter 1:** Shots of Agony training, Sage Manual, combat refresher, and wooded Tournament Road
 - **Chapter 2:** martial-arts festival hub, preparation activities, tournament bracket, and Plouke
 - **Chapter 3:** after-hours investigation, Strange Man warning, Resonance Facility, Project Hollow, and teleporter escape
 - **Chapter 4:** Echo Village, Bark and Wade team missions, optional Ryuzankaro secret boss, solo mountain route, Hollow Watcher, and the pebble Object Swap into Shadow's floating lookout
-- **Chapters 5–8:** planned but intentionally undescribed until their official story plans exist
+- **Chapter 5:** Shadow’s argument, three distinct Organization of the Red bases, Hollow Mimic, the unstable Shots of Agony prototype, and the clone’s first breath
+- **Chapter 6:** the clone’s real memories, the Echo Village identity mix-up, a mirror duel, and the stolen Virek Emerald
+- **Chapter 7:** the Red network, the clone’s siphon gauntlets, Rrvvfo’s power sacrifice, the Sage’s failsafe, and the clone’s choice to switch sides
+- **Chapter 8:** a four-person facility operation, the Red Leader’s three-phase fight, Double Solar Wave, the freed Emerald, and the Co-Leader’s escape
 
 ## Playable modes
 
-- Rrvvfo Story: Chapters 1–4
+- Rrvvfo Story: Chapters 1–8
 - Four standard playable fighters: Rrvvfo, Revvfo, Wade, and Bark
 - The Sage as a Story-only mentor and opponent
 - Training from the start

@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a524-scenery-art-20261123';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a524-scenery-art-20261123';
-import {storyConfirm} from './story-ux.js?v=29a524-scenery-art-20261123';
-import {storyPromptLabel} from './story-rpg-ui.js?v=29a524-scenery-art-20261123';
-import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a524-scenery-art-20261123';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a55b-valley-20261123';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a55b-valley-20261123';
+import {storyConfirm} from './story-ux.js?v=29a55b-valley-20261123';
+import {storyPromptLabel} from './story-rpg-ui.js?v=29a55b-valley-20261123';
+import {masterFieldSkill,recordFieldSkillTrial} from './field-skills.js?v=29a55b-valley-20261123';
 
 const MISSION_ID='rrvvfo-00';
 const UI_ID='rrvvfoMission0UI';

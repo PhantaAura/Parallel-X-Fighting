@@ -1,4 +1,4 @@
-import {storyTechniqueAvailable} from './field-skills.js?v=29a524-scenery-art-20261123';
+import {storyTechniqueAvailable} from './field-skills.js?v=29a55b-valley-20261123';
 const BUILD_KEY='pxRrvvfoBuildV1';
 const ADVENTURE_KEY='pxAdventureProgressV1';
 

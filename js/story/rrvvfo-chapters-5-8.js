@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a524-scenery-art-20261123';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a524-scenery-art-20261123';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a524-scenery-art-20261123';
-import {storyConfirm} from './story-ux.js?v=29a524-scenery-art-20261123';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a524-scenery-art-20261123';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a55b-valley-20261123';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a55b-valley-20261123';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a55b-valley-20261123';
+import {storyConfirm} from './story-ux.js?v=29a55b-valley-20261123';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a55b-valley-20261123';
 
 const RUN_ID='pxLegacyRrvvfoChapterRun';
 const CHAPTERS=Object.freeze({

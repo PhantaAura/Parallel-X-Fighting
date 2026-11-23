@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a524-scenery-art-20261123';
+import {BUILD_VERSION} from '../build-info.js?v=29a55b-valley-20261123';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

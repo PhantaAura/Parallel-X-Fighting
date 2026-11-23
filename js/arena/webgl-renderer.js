@@ -339,6 +339,7 @@ void main(){
 
   begin({eye=this.eye,target=this.target,fov=42,clear='#101326',fogColor='#0e0f1c',fogRange=[560,1450]}={}){
     const gl=this.gl;
+    this.groundHeight=null;
     this.eye=[...eye];this.target=[...target];
     this.projection=perspective(fov*DEG,this.canvas.width/this.canvas.height,1,3200);
     this.view=lookAt(this.eye,this.target);
@@ -371,6 +372,7 @@ void main(){
 
   draw(mesh,model,{color='#ffffff',alpha=1,texture=null,uvRect=[0,0,1,1],flipX=false,lit=true,depthWrite=true,cull=true}={}){
     const gl=this.gl,l=this.locations;
+    if(this.groundHeight){model=new Float32Array(model);model[13]+=this.groundHeight(model[12],model[14])}
     this.bind(mesh);
     gl.uniformMatrix4fv(l.model,false,model);
     gl.uniform4fv(l.color,this.color(color,alpha));
@@ -384,6 +386,13 @@ void main(){
     if(cull)gl.enable(gl.CULL_FACE);else gl.disable(gl.CULL_FACE);
     gl.drawElements(mesh.mode,mesh.count,gl.UNSIGNED_SHORT,0);
     gl.depthMask(true);
+  }
+
+  // Upload static landscape geometry once per renderer, rather than every frame.
+  landscapeMesh(key,data,options={}){
+    this.landscapeMeshes??=new Map();
+    if(!this.landscapeMeshes.has(key))this.landscapeMeshes.set(key,createMesh(this.gl,data.positions,data.uvs,data.normals,data.indices));
+    this.draw(this.landscapeMeshes.get(key),identity(),{...options,cull:false});
   }
 
   box(options={}){
@@ -441,6 +450,7 @@ void main(){
   }
 
   project(x,y,z){
+    if(this.groundHeight)y+=this.groundHeight(x,z);
     const m=this.viewProjection;
     const cx=m[0]*x+m[4]*y+m[8]*z+m[12];
     const cy=m[1]*x+m[5]*y+m[9]*z+m[13];

@@ -1,9 +1,9 @@
-import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a524-scenery-art-20261123';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a524-scenery-art-20261123';
-import {recordWorldVisit} from './connected-world.js?v=29a524-scenery-art-20261123';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a524-scenery-art-20261123';
-import {discoverWorldDelight} from './world-delight.js?v=29a524-scenery-art-20261123';
-import {ArenaBattle} from '../arena/arena-mode.js?v=29a524-scenery-art-20261123';
+import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a55b-valley-20261123';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a55b-valley-20261123';
+import {recordWorldVisit} from './connected-world.js?v=29a55b-valley-20261123';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a55b-valley-20261123';
+import {discoverWorldDelight} from './world-delight.js?v=29a55b-valley-20261123';
+import {ArenaBattle} from '../arena/arena-mode.js?v=29a55b-valley-20261123';
 import {
   CHAPTER1_ADVENTURE_VERSION,
   CHAPTER1_FIRE_BLAST_STORY_FOCUS,
@@ -12,7 +12,7 @@ import {
   CHAPTER1_ROUTES,
   chapter1RouteFromPosition,
   chapter1RouteMarkers
-} from './chapter1-adventure.js?v=29a524-scenery-art-20261123';
+} from './chapter1-adventure.js?v=29a55b-valley-20261123';
 
 const PATCH_FLAG=Symbol.for('px.chapter1Adventure4072r');
 const ARENA_FLAG=Symbol.for('px.storyFireBlast4072r');

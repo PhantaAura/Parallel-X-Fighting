@@ -1,4 +1,4 @@
-import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a524-scenery-art-20261123';
+import {TouchLayoutEditor,responsiveControlPosition} from './touch-layout-editor.js?v=29a55b-valley-20261123';
 
 function isMobileTouchPlatform(nav=globalThis.navigator){
   if(nav?.userAgentData?.mobile)return true;

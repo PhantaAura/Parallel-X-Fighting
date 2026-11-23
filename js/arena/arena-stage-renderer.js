@@ -1,3 +1,4 @@
+import {drawChapterOneLandscape,valleyHeight} from './chapter1-landscape.js?v=29a55b-valley-20261123';
 const NATURAL_STAGE_IDS=new Set(['training-road','tournament-hub','tournament','resonance-facility','echo-village','echo-mountain','echo-caverns','echo-sky','shadow-lookout','chapter5-outpost','chapter6-highlands','chapter7-relay','chapter8-core']);
 
 function drawPerimeterSegment(renderer,a,b,rail){renderer.segment(a,b,{width:rail.width,height:rail.height,color:rail.color,alpha:rail.alpha??1,lit:rail.lit??true})}
@@ -76,7 +77,6 @@ function drawChapterLandmarks(renderer,stage){
   const id=stage.id;
   if(id==='training-road'){
     // Open, flowerless countryside forms frame the path without turning it into a tournament field.
-    drawRollingHills(renderer);
     // A real roadside obstruction, creek stones, and a timber bridge read clearly from the 3D camera.
     renderer.sphere({x:337,y:34,z:0,sx:49,sy:48,sz:186,color:'#79502f'});
     for(const dx of [-15,0,15])renderer.segment({x:337+dx,y:54,z:-72},{x:337+dx,y:54,z:72},{width:2,height:2,color:'#493624',alpha:.6});
@@ -388,8 +388,8 @@ function drawFinishedScenery(r,box,stage){
 export function drawArenaStage(renderer,stage){
   const {bounds:b,floor,boundary,scenery}=stage;
   renderer.box(floor.base);
-  renderer.box(floor.surface);
-  dressGround(renderer,stage);
+  if(stage.id==='training-road')drawChapterOneLandscape(renderer);
+  else{renderer.box(floor.surface);dressGround(renderer,stage)}
 
   if(floor.grid&&!NATURAL_STAGE_IDS.has(stage.id)){
     const grid=floor.grid;
@@ -409,12 +409,13 @@ export function drawArenaStage(renderer,stage){
   }
 
   for(const box of scenery?.boxes||[]){
+    if(stage.id==='training-road'&&!(box.x===75&&box.y>=17&&box.y<=33||[-30,180].includes(box.x)&&Math.abs(box.z)===102))continue;
     if((stage.id==='remote-highlands'||stage.id==='chapter5-outpost'||stage.id==='chapter6-highlands'||stage.id==='chapter7-relay')&&Math.abs(box.z||0)===690&&((box.sx===28&&box.sy===140)||(box.sx===118&&box.sy===110)))continue;
     if(stage.id==='shadow-lookout'&&box.x===1120&&box.z===-330&&[420,240,300].includes(box.sx))continue;
     if(stage.id==='training-road'&&((box.z===-245&&box.sy>=64&&box.sy<=152)||box.x===600&&(Math.abs(box.z||0)===135||box.z===0)||box.x===1295&&box.z===-260||[1040,1250,1420].includes(box.x)&&box.z===250||[1250,1420].includes(box.x)&&box.z===265||(box.x===-1160&&box.z===-265)||([-1325,-995].includes(box.x)&&box.z===-85)))continue;
     drawFinishedScenery(renderer,box,stage);
   }
-  for(const tree of scenery?.trees||[])drawTree(renderer,tree);
+  if(stage.id!=='training-road')for(const tree of scenery?.trees||[])drawTree(renderer,tree);
   drawChapterLandmarks(renderer,stage);
 
   if(boundary){
@@ -434,4 +435,5 @@ export function drawArenaStage(renderer,stage){
   if(scenery?.lamp&&!NATURAL_STAGE_IDS.has(stage.id)){
     for(const point of scenery.lamps||[]){renderer.box({...scenery.lamp.post,x:point.x,z:point.z});renderer.box({...scenery.lamp.light,x:point.x,z:point.z})}
   }
+  if(stage.id==='training-road')renderer.groundHeight=valleyHeight;
 }

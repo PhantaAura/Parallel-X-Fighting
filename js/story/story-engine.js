@@ -1,7 +1,7 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a55b-valley-20261123';
-import {sharedInput} from '../input-runtime.js?v=29a55b-valley-20261123';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a55b-valley-20261123';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a55b-valley-20261123';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a56c-worlds';
+import {sharedInput} from '../input-runtime.js?v=29a56c-worlds';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a56c-worlds';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a56c-worlds';
 
 export const STORY_ENGINE_VERSION='2.9A.24';
 export const STORY_ENGINE_CACHE='29a412-echo-ridge-20261122';

@@ -18,11 +18,11 @@ header{max-width:1420px;margin:0 auto;padding:42px 28px 25px;border-bottom:1px s
 <p class="footerNote">Static scenery previews · no story progress or save data is changed.</p>
 <script type="module">
 const gallery=document.querySelector('#gallery');
-const cache='29a55b-valley-20261123';
+const cache='29a56c-worlds';
 const maps=[
   {id:'training-road',chapter:'CHAPTER 1',name:'Tournament Road',place:'A quiet countryside trail, creek crossing, bridge, and fallen log.' ,center:{x:260,z:0}},
   {id:'tournament-hub',chapter:'CHAPTER 2',name:'Local Tournament Grounds',place:'A martial-arts courtyard with a central ring, halls, and entry gate.',center:{x:0,z:0}},
-  {id:'resonance-facility',chapter:'CHAPTER 3',name:'Abandoned Resonance Facility',place:'An automated plant with assembly lanes, pipes, rails, and robot arms.',center:{x:0,z:-340}},
+  {id:'resonance-facility',chapter:'CHAPTER 3',name:'Abandoned Resonance Facility',place:'An automated plant with assembly lanes, pipes, rails, and robot arms.',center:{x:0,z:0}},
   {id:'echo-village',chapter:'CHAPTER 4',name:'Echo Village',place:'A weathered mountain settlement beneath the upper ridges.',center:{x:0,z:0}},
   {id:'echo-mountain',chapter:'CHAPTER 4',name:'Mountain Path',place:'A narrow ascent through pale rock spires and highland trees.',center:{x:0,z:0}},
   {id:'echo-caverns',chapter:'CHAPTER 4',name:'Echo Caverns',place:'A dark underground ruin lit by resonant mineral pillars.',center:{x:0,z:0}},
@@ -31,7 +31,7 @@ const maps=[
   {id:'chapter5-outpost',chapter:'CHAPTER 5',name:'Red Observation Outpost',place:'A field base tucked into the Echo foothills.',center:{x:515,z:-465}},
   {id:'chapter6-highlands',chapter:'CHAPTER 6',name:'Red Network Highlands',place:'A ridge station marked by directional signal beacons.',center:{x:0,z:0}},
   {id:'chapter7-relay',chapter:'CHAPTER 7',name:'Emerald Relay Plateau',place:'A remote plateau crossed by a chain of relay towers.',center:{x:0,z:0}},
-  {id:'chapter8-core',chapter:'CHAPTER 8',name:'Organization Central Core',place:'The final machine hall built around the Resonance core.',center:{x:390,z:-480}}
+  {id:'chapter8-core',chapter:'CHAPTER 8',name:'Organization Central Core',place:'The final machine hall built around the Resonance core.',center:{x:170,z:-220}}
 ];
 for(const map of maps){
   const card=document.createElement('article');card.className='mapCard';card.innerHTML=`<header><div><span class="chapter">${map.chapter}</span><h2>${map.name}</h2><p>${map.place}</p></div><span class="tag">3D STAGE</span></header><div class="canvasFrame"><img alt="${map.name}, three-dimensional game stage" loading="eager"><div class="loading">BUILDING MAP…</div></div>`;gallery.append(card);map.image=card.querySelector('img');map.card=card;

@@ -8,7 +8,7 @@ export function valleyHeight(x,z){
   return (32+84*(.5+.5*Math.sin(x/430+z/630))+50*Math.sin(z/460)**2)*rise*rise*Math.min(1,Math.max(0,(river-105)/130));
 }
 const noise=n=>{const t=Math.sin(n*78.233)*43758.5453;return t-Math.floor(t)};
-function surface(nx,nz,point){
+export function surface(nx,nz,point){
   const positions=[],normals=[],uvs=[],indices=[];
   for(let j=0;j<=nz;j++)for(let i=0;i<=nx;i++){
     const u=i/nx,v=j/nz,p=point(u,v),a=point(Math.min(1,u+.001),v),b=point(u,Math.min(1,v+.001));

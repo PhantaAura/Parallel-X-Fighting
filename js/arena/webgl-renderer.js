@@ -174,8 +174,8 @@ function cylinderMesh(gl,segments=18){
   const top=p.length/3;p.push(0,.5,0);uv.push(.5,.5);n.push(0,1,0);
   for(let i=0;i<segments;i++){
     const a=i*2,b=((i+1)%segments)*2;
-    indices.push(bottom,b,a);
-    indices.push(top,a+1,b+1);
+    indices.push(bottom,a,b);
+    indices.push(top,b+1,a+1);
   }
   return createMesh(gl,p,uv,n,indices);
 }
@@ -339,6 +339,7 @@ void main(){
 
   begin({eye=this.eye,target=this.target,fov=42,clear='#101326',fogColor='#0e0f1c',fogRange=[560,1450]}={}){
     const gl=this.gl;
+    this.chapterWorldRebuilt=false;
     this.groundHeight=null;
     this.eye=[...eye];this.target=[...target];
     this.projection=perspective(fov*DEG,this.canvas.width/this.canvas.height,1,3200);

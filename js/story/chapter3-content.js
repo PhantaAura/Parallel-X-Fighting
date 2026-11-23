@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a55b-valley-20261123';
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a55b-valley-20261123';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a56c-worlds';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a56c-worlds';
 export const CHAPTER3_MISSION_ID='rrvvfo-03';
 export const CHAPTER3_STATE_VERSION=4;
 

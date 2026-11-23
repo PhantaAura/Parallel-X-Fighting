@@ -1,29 +1,29 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a55b-valley-20261123';
-import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a55b-valley-20261123';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a55b-valley-20261123';
-import {StoryMap} from './story-map.js?v=29a55b-valley-20261123';
-import {storyConfirm} from './story-ux.js?v=29a55b-valley-20261123';
-import {openCombatManual} from './combat-manual.js?v=29a55b-valley-20261123';
-import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a55b-valley-20261123';
-import {renderFieldSkillJournal} from './field-skills.js?v=29a55b-valley-20261123';
-import {discoverWorldDelight} from './world-delight.js?v=29a55b-valley-20261123';
-import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a55b-valley-20261123';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a56c-worlds';
+import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a56c-worlds';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a56c-worlds';
+import {StoryMap} from './story-map.js?v=29a56c-worlds';
+import {storyConfirm} from './story-ux.js?v=29a56c-worlds';
+import {openCombatManual} from './combat-manual.js?v=29a56c-worlds';
+import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a56c-worlds';
+import {renderFieldSkillJournal} from './field-skills.js?v=29a56c-worlds';
+import {discoverWorldDelight} from './world-delight.js?v=29a56c-worlds';
+import {resetHubCameraLook,snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a56c-worlds';
 import {
   CHAPTER4_BEACON_NODES,CHAPTER4_CAVERN_DOORS,CHAPTER4_INGREDIENTS,CHAPTER4_LIFT_PARTS,CHAPTER4_REQUIRED_LIFT_PART_COUNT,
   CHAPTER4_MISSION_ID,CHAPTER4_MOUNTAIN_SIGNALS,CHAPTER4_REQUIRED_STEPS,
   chapter4Complete,chapter4CompletionPercent,chapter4NextRequired,chapter4VillageDefenseComplete,freshChapter4State,
   markChapter4Required,normalizeChapter4State,ryuzankaroQuestAvailable,ryuzankaroQuestResolved
-} from './chapter4-content.js?v=29a55b-valley-20261123';
-import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a55b-valley-20261123';
-import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a55b-valley-20261123';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a55b-valley-20261123';
-import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a55b-valley-20261123';
-import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a55b-valley-20261123';
-import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a55b-valley-20261123';
-import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a55b-valley-20261123';
-import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a55b-valley-20261123';
-import {chapter4PotionReady,chapter4PotionRoute,chapter4SignalsReady,chapter4SignalRoute} from './quest-overhaul.js?v=29a55b-valley-20261123';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a55b-valley-20261123';
+} from './chapter4-content.js?v=29a56c-worlds';
+import {completePacingOrientation,pacingOrientationProgress,recordPacingInteraction,recordPacingAftermath,rpgPacingLabel,rpgPacingQuestWave,setRpgPacingPhase} from './rpg-pacing.js?v=29a56c-worlds';
+import {chapter4EnemyRole} from './chapter4-enemy-roles.js?v=29a56c-worlds';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,completePartyFieldAction} from './quest-variety.js?v=29a56c-worlds';
+import {masterFieldSkill,hasFieldSkill} from './field-skills.js?v=29a56c-worlds';
+import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a56c-worlds';
+import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawBuildingDoor,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,lockedDoorLine,resolveExteriorBuildingCollision,resolveExteriorStructureCollision} from './story-interiors.js?v=29a56c-worlds';
+import {applyRrvvfoBuildToFighter,completeAdventureMission,discoverAdventureMission,enemyArchetype,enemyArchetypeIcon,enemyArchetypeShape,openRrvvfoBuildLab} from './core-fun.js?v=29a56c-worlds';
+import {claimRevisitOpportunity,revisitOpportunityStatus} from './revisit-loop.js?v=29a56c-worlds';
+import {chapter4PotionReady,chapter4PotionRoute,chapter4SignalsReady,chapter4SignalRoute} from './quest-overhaul.js?v=29a56c-worlds';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a56c-worlds';
 
 const UI_ID='rrvvfoChapter4UI';
 const MISSION_ID=CHAPTER4_MISSION_ID;
@@ -1053,7 +1053,7 @@ class RrvvfoChapter4{
     const pacingColor=this.pacing.phase==='aftermath'?'#8fe8ff':this.pacing.phase==='crisis'?'#ff745d':'#d9bd72';r.billboard({x:-350,y:310,z:540,size:24+Math.sin(time*2)*2,color:pacingColor,alpha:.24});
     // Ancient, low-tech settlement: hand-cut stone, timber, ropes, bells, water, and resonance craft.
     const homes=[[-520,210,0],[-280,360,1],[10,210,2],[300,380,3],[610,200,4],[-120,-330,5],[230,-410,6],[560,-300,7]];
-    for(const [x,z,i] of homes){
+    if(!r.chapterWorldRebuilt)for(const [x,z,i] of homes){
       r.cylinder({x,y:42,z,rx:54,sy:84,color:i%2?'#8a806b':'#756f61'});
       r.box({x,y:88,z,sx:122,sy:94,sz:106,color:i%2?'#72553c':'#664b36'});
       r.gableRoof({x,y:158,z,sx:164,sy:62,sz:148,color:i%2?'#4f382d':'#3f3430'});
@@ -1088,13 +1088,13 @@ class RrvvfoChapter4{
     r.segment({x:1260,y:330,z:-520},{x:1260,y:105,z:-430},{width:5,height:5,color:'#d1bb82'});
     r.box({x:1260,y:78,z:-430,sx:190,sy:20,sz:150,color:'#6c5137'});
     // Potion house, herb racks, market cloth, recovery mats.
-    r.box({x:260,y:74,z:610,sx:270,sy:145,sz:205,color:'#755b42'});r.gableRoof({x:260,y:172,z:610,sx:335,sy:70,sz:268,color:'#46343a'});
+    if(!r.chapterWorldRebuilt){r.box({x:260,y:74,z:610,sx:270,sy:145,sz:205,color:'#755b42'});r.gableRoof({x:260,y:172,z:610,sx:335,sy:70,sz:268,color:'#46343a'})}
     for(let i=0;i<5;i++){r.segment({x:145+i*55,y:58,z:492},{x:145+i*55,y:128,z:492},{width:5,height:5,color:'#5d472f'});r.billboard({x:145+i*55,y:105,z:487,size:18,color:i%2?'#9fd58a':'#d7b56e',alpha:.42})}
     for(let i=0;i<4;i++){r.box({x:-40+i*75,y:8,z:150,sx:58,sy:6,sz:98,color:i%2?'#9b6f4d':'#6e7f5a'});r.gableRoof({x:-40+i*75,y:105,z:150,sx:82,sy:25,sz:115,color:i%2?'#b36b55':'#5d7f71',alpha:.82})}
     // Wind chimes and bells make the village react to the region's wind.
     for(let i=0;i<10;i++){const x=-700+i*150,z=i%2?700:-650;r.segment({x,y:80,z},{x,y:160,z},{width:5,height:5,color:'#6a4d34'});r.cone({x,y:171+Math.sin(time*2+i)*4,z,rx:18,sy:28,color:'#c6a65b'});r.segment({x,y:175,z},{x,y:205,z},{width:2,height:2,color:'#e1cf9a'})}
     // 40.4: solid village shells with real doors. Enterable houses load interiors; background doors stay locked.
-    for(const house of [{x:-100,z:610,roof:'#5d7f71'},{x:80,z:610,roof:'#b36b55'},{x:-300,z:610,roof:'#6f647e'},{x:470,z:610,roof:'#7a6857'}]){r.box({x:house.x,y:70,z:house.z,sx:160,sy:140,sz:155,color:'#765b42'});r.gableRoof({x:house.x,y:170,z:house.z,sx:205,sy:62,sz:205,color:house.roof});drawBuildingDoor(r,{x:house.x,z:house.z-82,open:[-100,80].includes(house.x),tone:'#d9bd72'});r.box({x:house.x-48,y:95,z:house.z-80,sx:34,sy:42,sz:8,color:'#8edee8',alpha:.38})}
+    if(!r.chapterWorldRebuilt)for(const house of [{x:-100,z:610,roof:'#5d7f71'},{x:80,z:610,roof:'#b36b55'},{x:-300,z:610,roof:'#6f647e'},{x:470,z:610,roof:'#7a6857'}]){r.box({x:house.x,y:70,z:house.z,sx:160,sy:140,sz:155,color:'#765b42'});r.gableRoof({x:house.x,y:170,z:house.z,sx:205,sy:62,sz:205,color:house.roof});drawBuildingDoor(r,{x:house.x,z:house.z-82,open:[-100,80].includes(house.x),tone:'#d9bd72'});r.box({x:house.x-48,y:95,z:house.z-80,sx:34,sy:42,sz:8,color:'#8edee8',alpha:.38})}
     drawBuildingDoor(r,{x:260,z:505,open:true,tone:'#9fd58a'});
     // Project Hollow hardware deliberately clashes with the old settlement.
     if(!this.state.villageDefenseComplete){for(const [x,z,i] of [[-620,-430,0],[720,-470,1],[920,410,2]]){r.box({x,y:48,z,sx:88,sy:96,sz:70,color:'#252d39'});r.segment({x,y:95,z},{x:x+110,y:18,z:z+70},{width:9,height:9,color:'#1c222c'});r.billboard({x,y:112,z,size:28,color:'#63dce3',alpha:.38+Math.sin(time*5+i)*.08})}}
@@ -1129,16 +1129,16 @@ class RrvvfoChapter4{
 
   drawCompanion(r,x,z,color,label,seated=false){r.cylinder({x,y:seated?34:58,z,rx:17,sy:seated?58:92,color});r.cylinder({x,y:seated?77:120,z,rx:15,sy:26,color:'#8a6752'});r.billboard({x,y:seated?112:158,z,size:22,color:'#fff',alpha:.18})}
   drawOldMan(r,x,z){r.cylinder({x,y:58,z,rx:18,sy:100,color:'#6c5d74'});r.cylinder({x,y:122,z,rx:16,sy:28,color:'#9b765f'});r.cone({x,y:153,z,rx:30,sy:36,color:'#353044'})}
-  drawCaverns(r,time){for(let i=0;i<18;i++){const x=-1120+i*132,z=i%2?-610:610;r.cone({x,y:80+(i%3)*18,z,rx:70+(i%2)*18,sy:160+(i%3)*36,color:i%2?'#29383d':'#33464a'});if(i%3===0)r.billboard({x,y:150,z,size:20,color:'#83e4ef',alpha:.18+Math.sin(time*2+i)*.05})}for(const door of CHAPTER4_CAVERN_DOORS){if(this.state.cavernDoors.includes(door.id))continue;r.box({x:door.x,y:110,z:door.z,sx:70,sy:220,sz:260,color:door.element==='FIRE'?'#5a302d':door.element==='EARTH'?'#4f5146':'#2b4f68'});r.billboard({x:door.x,y:155,z:door.z,size:50,color:door.element==='FIRE'?'#ff7654':door.element==='EARTH'?'#d0a05e':'#68d2ff',alpha:.24})}}
-  drawMountain(r,time){for(let i=0;i<8;i++){const x=-1200+i*340,z=i%2?-640:640;r.cone({x,y:210+(i%3)*65,z,rx:250+(i%2)*60,rz:150,sy:420+(i%3)*130,color:i%2?'#46544f':'#3d4a48',alpha:.55})}for(let i=0;i<24;i++){const x=((time*(55+i%4*9)+i*160)%3000)-1500,z=-700+(i%7)*230;r.billboard({x,y:100+(i%3)*40,z,size:8,color:'#e4f5ff',alpha:.18})}
+  drawCaverns(r,time){if(!r.chapterWorldRebuilt)for(let i=0;i<18;i++){const x=-1120+i*132,z=i%2?-610:610;r.cone({x,y:80+(i%3)*18,z,rx:70+(i%2)*18,sy:160+(i%3)*36,color:i%2?'#29383d':'#33464a'});if(i%3===0)r.billboard({x,y:150,z,size:20,color:'#83e4ef',alpha:.18+Math.sin(time*2+i)*.05})}for(const door of CHAPTER4_CAVERN_DOORS){if(this.state.cavernDoors.includes(door.id))continue;r.box({x:door.x,y:110,z:door.z,sx:70,sy:220,sz:260,color:door.element==='FIRE'?'#5a302d':door.element==='EARTH'?'#4f5146':'#2b4f68'});r.billboard({x:door.x,y:155,z:door.z,size:50,color:door.element==='FIRE'?'#ff7654':door.element==='EARTH'?'#d0a05e':'#68d2ff',alpha:.24})}}
+  drawMountain(r,time){if(!r.chapterWorldRebuilt)for(let i=0;i<8;i++){const x=-1200+i*340,z=i%2?-640:640;r.cone({x,y:210+(i%3)*65,z,rx:250+(i%2)*60,rz:150,sy:420+(i%3)*130,color:i%2?'#46544f':'#3d4a48',alpha:.55})}for(let i=0;i<24;i++){const x=((time*(55+i%4*9)+i*160)%3000)-1500,z=-700+(i%7)*230;r.billboard({x,y:100+(i%3)*40,z,size:8,color:'#e4f5ff',alpha:.18})}
     // Highlighted summit pebble is the physical Object Swap target after the Watcher falls.
     if(this.state.hollowWatcher.defeated&&!this.state.requiredCompleted.includes('lookoutReached')){r.disc({x:1010,y:10,z:-250,rx:52,rz:40,color:'#fff0a8',alpha:.20+Math.sin(time*4)*.06});r.box({x:1010,y:18,z:-250,sx:24,sy:18,sz:20,color:'#d8cba8'});r.billboard({x:1010,y:90,z:-250,size:24,color:'#fff5c7',alpha:.72})}
     // Shadow's lookout floats far above the summit. It has no climbable support.
-    r.cone({x:1120,y:390,z:-330,rx:190,rz:150,sy:170,color:'#30383d',alpha:.94});
+    if(!r.chapterWorldRebuilt){r.cone({x:1120,y:390,z:-330,rx:190,rz:150,sy:170,color:'#30383d',alpha:.94});
     r.disc({x:1120,y:470,z:-330,rx:225,rz:185,color:'#56636a',alpha:.96});
     r.box({x:1120,y:545,z:-330,sx:245,sy:130,sz:220,color:'#5b6d7c'});
     r.gableRoof({x:1120,y:635,z:-330,sx:330,sy:70,sz:300,color:'#b8dff0',alpha:.72});
-    for(let i=0;i<5;i++){const a=i/5*Math.PI*2;r.billboard({x:1120+Math.cos(a)*260,y:430+Math.sin(time*1.4+i)*18,z:-330+Math.sin(a)*205,size:120,color:'#eef8ff',alpha:.10})}
+    for(let i=0;i<5;i++){const a=i/5*Math.PI*2;r.billboard({x:1120+Math.cos(a)*260,y:430+Math.sin(time*1.4+i)*18,z:-330+Math.sin(a)*205,size:120,color:'#eef8ff',alpha:.10})}}
     if(this.area==='lookout'){
       // Height and wind remain visible after landing so the sanctuary never reads as a flat room.
       for(let i=0;i<7;i++){

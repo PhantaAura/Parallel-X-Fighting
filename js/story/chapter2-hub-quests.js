@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a55b-valley-20261123';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a56c-worlds';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.22';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([

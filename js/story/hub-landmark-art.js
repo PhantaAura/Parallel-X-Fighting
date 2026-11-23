@@ -53,6 +53,7 @@ function martialStatue(r,x,z,flip=1){
 }
 
 export function drawTournamentLandmarks(r,time,{afterHours=false}={}){
+  if(r.chapterWorldRebuilt)return;
   const light=afterHours?'#8fc9d2':'#ffd06c',roof=afterHours?'#4b2730':'#8d2434',stone=afterHours?'#4f5854':'#dfd2b4';
   // Stone courtyards and a circular ceremonial plaza make the ground read differently from Chapter 1.
   r.disc({x:-280,y:9,z:40,rx:360,rz:310,color:afterHours?'#55615d':'#eee0bd',alpha:.96});

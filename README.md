@@ -1,5 +1,5 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.40.12 — Echo Ridge Expansion
+## Prototype 2.9A.46 — Broad Reliability & QoL Pass
 
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
@@ -16,9 +16,11 @@
 
 Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
+The latest pass repairs the built-in QA build identity check, aligns versioned imports for the story and arena runtime so browser caches cannot split their shared classes, and refreshes the route/tutorial/map presentation. The save schema remains 268.
+
 ## Current build
 
-**Prototype 2.9A.40.12 — Echo Ridge Expansion**
+**Prototype 2.9A.46 — Broad Reliability & QoL Pass**
 
 This is a complete cumulative build. No older package is required.
 

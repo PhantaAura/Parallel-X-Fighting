@@ -13,7 +13,7 @@ import {loadQolSettings} from '../qol-settings.js?v=29a412-echo-ridge-20261122';
 import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a412-echo-ridge-20261122';
 import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a412-echo-ridge-20261122';
 import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a412-echo-ridge-20261122';
-import {BUILD_VERSION} from '../build-info.js?v=29a417-adventure-presentation-20261122';
+import {BUILD_VERSION} from '../build-info.js?v=29a418-big-update-20261122';
 import {createBattleMasterySession,finalizeBattleMastery,masteryRankLabel,recordBattleMasteryEvent,recordMasteryChallenge} from '../mastery-records.js?v=29a412-echo-ridge-20261122';
 import {applyRrvvfoBuildToFighter,buildHasPassive,currentRrvvfoBuild,enemyArchetypeShape,tuneRrvvfoAbility} from '../story/core-fun.js?v=29a412-echo-ridge-20261122';
 

@@ -1,4 +1,4 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a412-echo-ridge-20261122';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a418-big-update-20261122';
 import {sharedInput} from '../input-runtime.js?v=29a412-echo-ridge-20261122';
 import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a412-echo-ridge-20261122';
 import {applyStoryProgressionToFighter} from './story-progression.js?v=29a412-echo-ridge-20261122';

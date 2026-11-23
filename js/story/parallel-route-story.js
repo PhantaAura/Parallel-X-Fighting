@@ -1,4 +1,4 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a412-echo-ridge-20261122';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a418-big-update-20261122';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
 import {storyConfirm} from './story-ux.js?v=29a412-echo-ridge-20261122';
 

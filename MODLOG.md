@@ -1,5 +1,12 @@
 # Fighter sprite atlas notes
 
+## Broad reliability and QoL pass (2.9A.46)
+
+- Fixed the built-in QA screen’s stale recovery build check; it compares the dedicated Chapter 1 recovery layer version instead of expecting the overall game build to contain a historical version string.
+- Aligned current versioned imports for the story battle engine, arena runtime, Chapter 1 recovery layer, and playtest checks so they share module instances after a browser refresh.
+- Updated the README’s current build details to match the cumulative release.
+- Kept save schema 268 unchanged.
+
 ## Adventure presentation pass (2.9A.45)
 
 - Reframed Chapter 1 as a guided dojo lesson with a short training plan, control summary, checkpoint resume, and a clearer skip-ahead action.

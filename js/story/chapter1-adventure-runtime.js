@@ -1,9 +1,9 @@
-import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a412-echo-ridge-20261122';
+import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a418-big-update-20261122';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
 import {recordWorldVisit} from './connected-world.js?v=29a412-echo-ridge-20261122';
 import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a412-echo-ridge-20261122';
 import {discoverWorldDelight} from './world-delight.js?v=29a412-echo-ridge-20261122';
-import {ArenaBattle} from '../arena/arena-mode.js?v=29a412-echo-ridge-20261122';
+import {ArenaBattle} from '../arena/arena-mode.js?v=29a418-big-update-20261122';
 import {
   CHAPTER1_ADVENTURE_VERSION,
   CHAPTER1_FIRE_BLAST_STORY_FOCUS,

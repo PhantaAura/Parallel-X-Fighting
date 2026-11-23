@@ -229,6 +229,7 @@ const TANGAI_DOJO={
 const GLOBAL_TOURNAMENT={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'tournament',
+  backdrop:'chapter2-tournament',
   name:'Global Tournament',
   subtitle:'Grand championship ring',
   available:true,
@@ -299,6 +300,7 @@ const GLOBAL_TOURNAMENT={
 const TRAINING_FIELD={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'training-field',
+  backdrop:'chapter1-field',
   name:'Sage Training Field',
   subtitle:'Open recovery-year sparring ground',
   available:true,
@@ -362,6 +364,7 @@ const TRAINING_FIELD={
 const TRAINING_ROAD={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'training-road',
+  backdrop:'chapter1-field',
   name:'Training Grounds and Tournament Road',
   subtitle:'Living Chapter 1 hub and guided road',
   available:true,
@@ -561,6 +564,7 @@ const EXPANDED_TRAINING_REGION={
 const LOCAL_TOURNAMENT_HUB={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'tournament-hub',
+  backdrop:'chapter2-tournament',
   name:'Local Tournament Grounds',
   subtitle:'Open Chapter 2 story hub',
   available:true,
@@ -681,6 +685,7 @@ const LOCAL_TOURNAMENT_HUB={
 const AFTER_HOURS_TOURNAMENT={
   ...LOCAL_TOURNAMENT_HUB,
   id:'after-hours-tournament',
+  backdrop:null,
   name:'After-Hours Tournament',
   subtitle:'Chapter 3 nighttime investigation hub',
   performance:{...LOCAL_TOURNAMENT_HUB.performance,particleMultiplier:.66},
@@ -734,6 +739,7 @@ const AFTER_HOURS_TOURNAMENT={
 const RESONANCE_FACILITY={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'resonance-facility',
+  backdrop:'chapter3-factory',
   name:'Abandoned Resonance Facility',
   subtitle:'Chapter 3 underground investigation and combat',
   available:true,
@@ -789,6 +795,7 @@ const RESONANCE_FACILITY={
 const REMOTE_HIGHLANDS={
   schema:ARENA_STAGE_SCHEMA_VERSION,
   id:'remote-highlands',
+  backdrop:'chapter4-echo-region',
   name:'Remote Highlands',
   subtitle:'Chapter 3 destination near Shadow’s Lookout',
   available:true,
@@ -840,7 +847,7 @@ const REMOTE_HIGHLANDS={
 
 const ECHO_VILLAGE={
   schema:ARENA_STAGE_SCHEMA_VERSION,
-  id:'echo-village',name:'Echo Village',subtitle:'Ancient resonance settlement beneath Shadow’s Lookout',available:true,
+  id:'echo-village',backdrop:'chapter4-echo-region',name:'Echo Village',subtitle:'Ancient resonance settlement beneath Shadow’s Lookout',available:true,
   performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.68},
   bounds:{minX:-1600,maxX:1600,minZ:-920,maxZ:920},
   spawnPoints:[{x:-1363,z:100},{x:120,z:-40}],projectileLimits:{padding:240,minY:-70,maxY:980},ai:{wallMargin:140},
@@ -904,7 +911,7 @@ const ECHO_SKY={
 
 const ECHO_MOUNTAIN={
   schema:ARENA_STAGE_SCHEMA_VERSION,
-  id:'echo-mountain',name:'Mountain Path',subtitle:'The ascent to Shadow’s Lookout',available:true,
+  id:'echo-mountain',backdrop:'chapter4-mountain',name:'Mountain Path',subtitle:'The ascent to Shadow’s Lookout',available:true,
   performance:{tier:'medium',mobileScenery:'reduced',particleMultiplier:.72},
   bounds:{minX:-1450,maxX:1450,minZ:-760,maxZ:760},spawnPoints:[{x:-1240,z:0},{x:760,z:0}],projectileLimits:{padding:220,minY:-120,maxY:980},ai:{wallMargin:120},
   camera:{yawDeg:40,fov:44,clear:'#6b8298',fogColor:'#c1ced8',fogRange:[1000,3400],focusClampX:1360,focusClampZ:700,baseDistance:1060,separationScale:.2,minDistance:980,maxDistance:1250,heightBase:500,heightDistanceScale:.17,horizontalDistanceScale:.82,targetHeight:52,jumpTargetScale:.18,focusSmoothing:.085,zoomSmoothing:.06},

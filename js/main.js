@@ -17,16 +17,16 @@ import {AudioManager} from './audio-manager.js';
 import {HapticsManager,MobilePlatformController,loadTouchSettings,saveTouchSettings} from './mobile-platform.js';
 import {TouchControls} from './touch-controls.js?v=29a412-echo-ridge-20261122';
 import {TouchSettingsPanel,createDefaultTouchSettings} from './touch-layout-editor.js?v=29a412-echo-ridge-20261122';
-import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=29a418-big-update-20261122';
+import {FighterVisuals,availableRrvvfoAppearances,isDeveloperSpriteBuild,loadRrvvfoVisualSettings,normalizeRrvvfoAppearance,shouldShowRrvvfoLoadFailure} from './fighter-visuals.js?v=29a419-map-visuals-20261123';
 import {SpriteDebugViewer} from './sprite-debug-viewer.js';
 import {ControllerManager} from './controller-manager.js?v=29a412-echo-ridge-20261122';
-import {BUILD_VERSION} from './build-info.js?v=29a418-big-update-20261122';
-import {initializeStoryPolish} from './story/story-polish.js?v=29a418-big-update-20261122';
+import {BUILD_VERSION} from './build-info.js?v=29a419-map-visuals-20261123';
+import {initializeStoryPolish} from './story/story-polish.js?v=29a419-map-visuals-20261123';
 import {initializeStoryCharm} from './story/story-charm.js?v=29a412-echo-ridge-20261122';
 import {initializeWorldDelight} from './story/world-delight.js?v=29a412-echo-ridge-20261122';
 import {initializeMobileStoryUi} from './story/mobile-story-ui.js?v=29a412-echo-ridge-20261122';
 import {ConfirmationDialog} from './confirmation-dialog.js';
-import {MainMenu} from './main-menu.js?v=29a418-big-update-20261122';
+import {MainMenu} from './main-menu.js?v=29a419-map-visuals-20261123';
 import {MatchStatistics} from './match-statistics.js';
 import {PauseMenu,simulationCanAdvance} from './pause-menu.js?v=29a412-echo-ridge-20261122';
 import {ResultsScreen} from './results-screen.js';
@@ -34,7 +34,7 @@ import {loadQolSettings,saveQolSettings} from './qol-settings.js?v=29a412-echo-r
 import {NotificationSystem} from './notification-system.js';
 import {adaptiveMoveList,renderAdaptiveMoveList} from './move-list.js';
 import {SettingsPanel} from './settings-panel.js?v=29a412-echo-ridge-20261122';
-import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=29a418-big-update-20261122';
+import {importSaveText,resetSaveGroup,stringifySave} from './save-manager.js?v=29a419-map-visuals-20261123';
 import {LoadingManager} from './loading-manager.js';
 import {applyTrainingPreset,loadTrainingPresets,saveTrainingPreset} from './training-presets.js';
 import {FirstTimeHints} from './first-time-hints.js';
@@ -45,7 +45,7 @@ import {ResponsiveGameLayout} from './responsive-game-layout.js?v=29a412-echo-ri
 import {OrientationManager,loadMobilePresentationSettings,saveMobilePresentationSettings} from './orientation-manager.js?v=29a412-echo-ridge-20261122';
 import {FullscreenManager} from './fullscreen-manager.js?v=29a412-echo-ridge-20261122';
 import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a412-echo-ridge-20261122';
-import {initFinalQol,applyColorMode,openKeyBindingsPanel,restoreAutosave,describeAutosave} from './qol-final.js?v=29a418-big-update-20261122';
+import {initFinalQol,applyColorMode,openKeyBindingsPanel,restoreAutosave,describeAutosave} from './qol-final.js?v=29a419-map-visuals-20261123';
 import {CONTROL_MAPS,keyDisplayName} from './input.js?v=29a412-echo-ridge-20261122';
 
 const canvas=$('game'),ctx=canvas.getContext('2d'),WIDTH=canvas.width,HEIGHT=canvas.height,GROUND=430;
@@ -181,7 +181,7 @@ function controlsModel(side){const device=input.lastInputDevice[side-1],style=in
 function openControlsPanel(){const sides=mode==='local'?[1,2]:[1],models=sides.map(controlsModel);$('controlsPanelBody').innerHTML=`<div class="controlsSummary">${models.map(model=>`<section><h3>PLAYER ${model.side} — ${model.style.toUpperCase()}</h3><dl>${model.rows.map(([name,value])=>`<div><dt>${name}</dt><dd>${value}</dd></div>`).join('')}</dl></section>`).join('')}</div><p class="moveListNote">Controller assignments: Player 1 — ${controllerManager.settings.assignments[0]===null?'Keyboard / Auto':`Controller ${controllerManager.settings.assignments[0]+1}`} • Player 2 — ${controllerManager.settings.assignments[1]===null?'Keyboard / Auto':`Controller ${controllerManager.settings.assignments[1]+1}`}</p>`;$('controlsPanel').classList.remove('hidden');$('closeControlsPanel').focus()}
 function closeControlsPanel(){$('controlsPanel').classList.add('hidden');if(paused)showPauseOverlay()}
 function openExtrasPanel(section='version'){$('extrasPanel').classList.remove('hidden');showExtra(section)}
-function showExtra(section){const content=$('extrasContent');if(section==='manual'){import('./story/combat-manual.js?v=29a418-big-update-20261122').then(({openCombatManual})=>{openCombatManual({grantPublic:true,onClose:()=>{$('extrasPanel').classList.remove('hidden')}});$('extrasPanel').classList.add('hidden')});return}if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style} <small>• ${FIGHTER_STATUS[id]?.label||'PROTOTYPE'}</small></p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls'){openControlsPanel();return}else if(section==='mastery'){import('./mastery-records.js?v=29a412-echo-ridge-20261122').then(({loadMasteryRecords,renderMasteryRecords})=>{content.innerHTML=renderMasteryRecords(loadMasteryRecords(resilientStorage))});return}else if(section==='builds'||section==='adventure'){import('./story/core-fun.js?v=29a412-echo-ridge-20261122').then(({renderCoreFunExtras,bindRrvvfoBuildLab})=>{content.innerHTML=renderCoreFunExtras({storage:resilientStorage});const lab=content.querySelector('[data-extras-build-lab]');if(lab)bindRrvvfoBuildLab(lab,{storage:resilientStorage,onChange:()=>{content.innerHTML=renderCoreFunExtras({storage:resilientStorage});const next=content.querySelector('[data-extras-build-lab]');if(next)bindRrvvfoBuildLab(next,{storage:resilientStorage})}})});return}else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Living Tournament Hub • Chapters 1–4 • Story RPG stats • Side quests • Tournament intermissions • Kinetic combat</p>`}
+function showExtra(section){const content=$('extrasContent');if(section==='manual'){import('./story/combat-manual.js?v=29a419-map-visuals-20261123').then(({openCombatManual})=>{openCombatManual({grantPublic:true,onClose:()=>{$('extrasPanel').classList.remove('hidden')}});$('extrasPanel').classList.add('hidden')});return}if(section==='moves'){openAdaptiveMoveList(p1id,1);return}if(section==='profiles')content.innerHTML=Object.entries(ROSTER).map(([id,fighter])=>`<p><strong>${fighter.n}</strong> — ${FIGHTER_META[id].style} <small>• ${FIGHTER_STATUS[id]?.label||'PROTOTYPE'}</small></p>`).join('');else if(section==='stages')content.innerHTML=Object.entries(STAGES).map(([id,data])=>`<p><strong>${data.n}</strong> — ${STAGE_DETAILS[id].description}</p>`).join('');else if(section==='controls'){openControlsPanel();return}else if(section==='mastery'){import('./mastery-records.js?v=29a412-echo-ridge-20261122').then(({loadMasteryRecords,renderMasteryRecords})=>{content.innerHTML=renderMasteryRecords(loadMasteryRecords(resilientStorage))});return}else if(section==='builds'||section==='adventure'){import('./story/core-fun.js?v=29a412-echo-ridge-20261122').then(({renderCoreFunExtras,bindRrvvfoBuildLab})=>{content.innerHTML=renderCoreFunExtras({storage:resilientStorage});const lab=content.querySelector('[data-extras-build-lab]');if(lab)bindRrvvfoBuildLab(lab,{storage:resilientStorage,onChange:()=>{content.innerHTML=renderCoreFunExtras({storage:resilientStorage});const next=content.querySelector('[data-extras-build-lab]');if(next)bindRrvvfoBuildLab(next,{storage:resilientStorage})}})});return}else if(section==='credits')content.innerHTML='<strong>Parallels X: Clash of Souls</strong><p>Original characters and game direction by the Parallels X creator. Browser prototype engineering developed collaboratively with Codex.</p>';else content.innerHTML=`<strong>${BUILD_VERSION}</strong><p>Living Tournament Hub • Chapters 1–4 • Story RPG stats • Side quests • Tournament intermissions • Kinetic combat</p>`}
 
 const STARTED_KEY='pxQolStartSeen';
 const LAST_ACTIVITY_KEY='pxQolLastActivity';
@@ -503,7 +503,7 @@ async function startGameInternal(){
     if(['cpu','local'].includes(requestedMode)){
       hideMenuLayers();
       cleanupMatchForNavigation();
-      const {startConfiguredArenaBattle}=await import('./arena/arena-mode.js?v=29a418-big-update-20261122');
+      const {startConfiguredArenaBattle}=await import('./arena/arena-mode.js?v=29a419-map-visuals-20261123');
       saveLastActivity();
       loadingManager.task('match','done');
       loadingManager.finish('3D BATTLE READY');

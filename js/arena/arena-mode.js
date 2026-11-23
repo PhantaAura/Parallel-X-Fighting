@@ -1,5 +1,5 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a412-echo-ridge-20261122';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a419-map-visuals-20261123';
 import {drawStagePersonality,projectileHitsStageGeometry,resolveStageGeometry,stagePersonalityFor} from './stage-personality.js?v=29a412-echo-ridge-20261122';
 import {drawArenaStage} from './arena-stage-renderer.js';
 import {WebGLArenaRenderer} from './webgl-renderer.js';
@@ -13,7 +13,7 @@ import {loadQolSettings} from '../qol-settings.js?v=29a412-echo-ridge-20261122';
 import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a412-echo-ridge-20261122';
 import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a412-echo-ridge-20261122';
 import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a412-echo-ridge-20261122';
-import {BUILD_VERSION} from '../build-info.js?v=29a418-big-update-20261122';
+import {BUILD_VERSION} from '../build-info.js?v=29a419-map-visuals-20261123';
 import {createBattleMasterySession,finalizeBattleMastery,masteryRankLabel,recordBattleMasteryEvent,recordMasteryChallenge} from '../mastery-records.js?v=29a412-echo-ridge-20261122';
 import {applyRrvvfoBuildToFighter,buildHasPassive,currentRrvvfoBuild,enemyArchetypeShape,tuneRrvvfoAbility} from '../story/core-fun.js?v=29a412-echo-ridge-20261122';
 
@@ -41,6 +41,14 @@ const JUGGLE_LIMIT=COMBAT_RULES.juggleLimit;
 const EDGE_PRESSURE_HITS=COMBAT_RULES.edgePressureHits;
 const EDGE_PRESSURE_WINDOW=COMBAT_RULES.edgePressureWindow;
 const LENS_MASTERY_KEY='pxLensMasteryV1';
+const STAGE_BACKDROPS=Object.freeze({
+  'chapter1-field':new URL('../../assets/environments/ch1-field.webp',import.meta.url).href,
+  'chapter2-tournament':new URL('../../assets/environments/ch2-tournament.webp',import.meta.url).href,
+  'chapter3-factory':new URL('../../assets/environments/ch3-factory.webp',import.meta.url).href,
+  'chapter4-echo-region':new URL('../../assets/environments/ch4-echo-region.webp',import.meta.url).href,
+  'chapter4-mountain':new URL('../../assets/environments/ch4-mountain.webp',import.meta.url).href,
+  'shadow-lookout':new URL('../../assets/environments/ch4-lookout.webp',import.meta.url).href
+});
 
 const MOVEMENT_PROFILES=Object.freeze({
   rrvvfo:Object.freeze({walkSpeed:154,runSpeed:316,airSpeed:218,accel:1320,runAccel:1820,brake:1990,airAccel:720,airBrake:112,dashSpeed:720,pursuitSpeed:960}),
@@ -139,8 +147,9 @@ function installUI(){
   style.textContent=`
 #${ID}{position:fixed;inset:0;z-index:1200;background:radial-gradient(circle at 50% 30%,#2b2140,#080a12 70%);color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif;overflow:hidden}
 #${ID}.hidden{display:none}
-#${ID} canvas{position:absolute;z-index:0;inset:0;margin:auto;cursor:crosshair;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));max-width:100%;max-height:100%;touch-action:none;background:#101326}
-#${ID} [data-world-layer]{z-index:0}#${ID} [data-fighter-layer]{z-index:2!important;pointer-events:none;cursor:default;background:transparent!important}
+#${ID} .stageBackdrop{position:absolute;z-index:0;inset:0;margin:auto;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));background-color:#101326;background-position:center 50%;background-size:cover;background-repeat:no-repeat;filter:saturate(.86) brightness(.92);pointer-events:none}
+#${ID} canvas{position:absolute;z-index:1;inset:0;margin:auto;cursor:crosshair;width:min(100vw,calc(100vh*16/9));height:min(100vh,calc(100vw*9/16));max-width:100%;max-height:100%;touch-action:none;background:transparent}
+#${ID} [data-world-layer]{z-index:1}#${ID} [data-fighter-layer]{z-index:2!important;pointer-events:none;cursor:default;background:transparent!important}
 #${ID} .top{position:absolute;z-index:20;inset:14px 18px auto;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;text-shadow:0 2px 8px #000;pointer-events:none}
 #${ID} .side.r{text-align:right}#${ID} .name{display:flex;justify-content:space-between;font-weight:900;letter-spacing:.08em}#${ID} .r .name{flex-direction:row-reverse}
 #${ID} .track{position:relative;height:17px;margin-top:6px;background:#080a12;border:2px solid #ffffffb8;transform:skewX(-10deg);overflow:hidden}#${ID} .fill,#${ID} .recoverableFill{position:absolute;inset:0 auto 0 0;height:100%;transition:width .08s,left .08s}#${ID} .recoverableFill{z-index:1;background:repeating-linear-gradient(135deg,#e9f7ff99 0 4px,#9ec8db88 4px 8px);box-shadow:inset 0 0 8px #fff6}#${ID} .fill{z-index:2;background:linear-gradient(90deg,#ff3b30,#ff9f0a)}#${ID} .r .fill{background:linear-gradient(90deg,#af52de,#5e5ce6)}#${ID} .track.focusActive{box-shadow:0 0 0 2px #a9fff2,0 0 18px #6fffd499}
@@ -197,6 +206,7 @@ function installUI(){
   root.id=ID;
   root.className='hidden';
   root.innerHTML=`
+<div class="stageBackdrop" data-stage-backdrop aria-hidden="true"></div>
 <canvas data-world-layer width="${W}" height="${H}" aria-label="WebGL perspective arena"></canvas>
 <canvas data-fighter-layer width="${W}" height="${H}" aria-hidden="true"></canvas>
 
@@ -512,10 +522,16 @@ class ArenaBattle{
 
   setStage(stageId='dojo'){
     if(this.active)throw new Error('Cannot change arenas during an active match.');
-    this.stage=getArenaStage(stageId);this.stageProfile=stageProfile(this.stage.id);this.ringOutEnabled=this.stageProfile?.boundary==='RING-OUT'&&this.matchMode!=='training';this.stageBoundaryPulse=0;this.crowdExcitement=0;
+    this.stage=getArenaStage(stageId);this.setStageBackdrop(this.stage.backdrop||'');this.stageProfile=stageProfile(this.stage.id);this.ringOutEnabled=this.stageProfile?.boundary==='RING-OUT'&&this.matchMode!=='training';this.stageBoundaryPulse=0;this.crowdExcitement=0;
     const [spawn1,spawn2]=this.stage.spawnPoints;
     this.fighters[0].reset(spawn1.x,spawn1.z);this.fighters[1].reset(spawn2.x,spawn2.z);this.camera=initialCameraState(this.stage,this.fighters);
     return this.stage;
+  }
+
+  setStageBackdrop(backdropId=this.stage?.backdrop||''){
+    const id=String(backdropId||''),source=STAGE_BACKDROPS[id],node=this.root?.querySelector('[data-stage-backdrop]');
+    if(node){node.style.backgroundImage=source?'url("' + source + '")':'';node.dataset.backdrop=id}
+    return Boolean(source);
   }
 
   start(){

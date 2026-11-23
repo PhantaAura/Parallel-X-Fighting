@@ -1,5 +1,16 @@
 # Fighter sprite atlas notes
 
+## Chapter 1–4 environment pass (2.9A.47)
+
+- Added original painterly scene backdrops for the natural Chapter 1 field, the Chapter 2 tournament grounds, the Chapter 3 automated factory, Echo Region, the rocky mountain ascent, and Shadow’s floating sanctuary.
+- Kept the environments behind the existing 3D floors and scenery, so collision, race checkpoints, story triggers, puzzles, side quests, and map progression still use their existing world data.
+- Kept Chapter 1’s route a countryside field with no tournament branding; the tournament architecture appears only at the actual grounds.
+- Added a Rrvvfo correction to Wade’s introduction: Wade calls it a route “to the tournament,” Rrvvfo points out they are already inside, and Wade reframes it as the fastest route across.
+- Added a Settings-only MAP DEBUG MODE unlock with chapter warps, five boss practice fights, combat quick tests, and six temporary map previews. Chapter entries run as replays; practice fights and previews use training mode, so they do not change story progress. The older Story Menu debug room now also requires the Settings unlock.
+- Kept the after-hours tournament investigation on its dark night palette instead of showing the daytime tournament backdrop.
+- Updated the browser cache key and build label to 2.9A.47. Save schema remains 268.
+
+
 ## Broad reliability and QoL pass (2.9A.46)
 
 - Fixed the built-in QA screen’s stale recovery build check; it compares the dedicated Chapter 1 recovery layer version instead of expecting the overall game build to contain a historical version string.

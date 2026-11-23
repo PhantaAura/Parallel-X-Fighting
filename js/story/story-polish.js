@@ -1,4 +1,4 @@
-import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a418-big-update-20261122';
+import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js?v=29a419-map-visuals-20261123';
 import {inspectStoryReliability,storyAfterglowFor,storyReliabilitySummary} from './story-reliability.js?v=29a412-echo-ridge-20261122';
 import {storyExperienceProfile} from './story-experience.js?v=29a412-echo-ridge-20261122';
 import {chapterGameplayIdentity,currentRrvvfoBuild} from './core-fun.js?v=29a412-echo-ridge-20261122';
@@ -37,6 +37,8 @@ const CHAPTER_MISSIONS=Object.freeze({
 });
 
 const PREFIGHT_BACKUP_KEY='pxStoryPreFightBackupV1';
+const MAP_DEBUG_SESSION_KEY='pxMapDebugUnlockedSession';
+function settingsDebugUnlocked(){try{return sessionStorage.getItem(MAP_DEBUG_SESSION_KEY)==='1'}catch{return false}}
 function storePreFightBackup(chapter=0){
   try{sessionStorage.setItem(PREFIGHT_BACKUP_KEY,JSON.stringify({version:1,createdAt:Date.now(),chapter:Number(chapter)||0,progress:loadLostYearProgress()}));return true}catch{return false}
 }
@@ -343,7 +345,7 @@ class StoryPolishController{
   acceptCodeToken(token){
     const expected=CODE[this.codeBuffer.length];
     if(token===expected)this.codeBuffer.push(token);else this.codeBuffer=token===CODE[0]?[token]:[];
-    if(this.codeBuffer.length===CODE.length){this.codeBuffer=[];this.openPlaytest()}
+    if(this.codeBuffer.length===CODE.length){this.codeBuffer=[];if(!settingsDebugUnlocked()){this.showObjective('DEBUG MODE LOCKED','Open Settings and enter the Konami code there first.','DEBUG MODE');return}this.openPlaytest()}
   }
   pollController(){
     if(this.storyMenuContextActive()){
@@ -381,7 +383,7 @@ class StoryPolishController{
     panel.querySelector('[data-playtest-reliability-issues]').textContent=data.saveIssues.length?data.saveIssues.join(' • '):'Chapter order, completion evidence, and checkpoint order agree.';
     this.playtest.querySelector('[data-playtest-flags]').textContent=JSON.stringify(data,null,2);
   }
-  openPlaytest(){this.build();this.refreshPlaytest();this.playtest.hidden=false;this.playtest.classList.add('show');this.playtest.querySelector('[data-playtest-close]').focus()}
+  openPlaytest(){if(!settingsDebugUnlocked())return;this.build();this.refreshPlaytest();this.playtest.hidden=false;this.playtest.classList.add('show');this.playtest.querySelector('[data-playtest-close]').focus()}
   closePlaytest(){this.playtest?.classList.remove('show');setHidden(this.playtest,true)}
 
   async handlePlaytestAction(action){
@@ -422,7 +424,7 @@ class StoryPolishController{
     if(currentStoryRoot()){this.showObjective('RETURN TO THE STORY MENU FIRST','Quick combat tests are isolated so they cannot corrupt an active chapter.','PLAYTEST TOOL');return}
     this.closePlaytest();
     try{
-      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a418-big-update-20261122`);
+      const {startConfiguredArenaBattle}=await import(`../arena/arena-mode.js?v=29a419-map-visuals-20261123`);
       startConfiguredArenaBattle({mode:'cpu',fighters:['rrvvfo',opponent],stageId:opponent==='wade'?'tournament':opponent==='bark'?'echo-mountain':'dojo',difficulty:'normal',koTarget:1});
     }catch(error){console.error('[Playtest combat]',error);this.showObjective('COMBAT TEST FAILED',safe(error.message||error),'PLAYTEST TOOL')}
   }

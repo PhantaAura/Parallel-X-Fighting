@@ -1,13 +1,13 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a418-big-update-20261122';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a419-map-visuals-20261123';
 import {sharedInput} from '../input-runtime.js?v=29a412-echo-ridge-20261122';
 import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
-import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a418-big-update-20261122';
+import {discoverCombatManualPage,openCombatManual} from './combat-manual.js?v=29a419-map-visuals-20261123';
 import {applyStoryProgressionToFighter,applyStoryLevelToFighter,storyStatsForLevel,addStoryXp,levelHudText,STORY_LEVEL_THRESHOLDS} from './story-progression.js?v=29a412-echo-ridge-20261122';
 import {storyConfirm} from './story-ux.js?v=29a412-echo-ridge-20261122';
 import {storyAttackStripMarkup,storyStatsMarkup,storyControlLegendMarkup} from './story-rpg-ui.js?v=29a412-echo-ridge-20261122';
 import {CHAPTER2_DISTRICTS,CHAPTER2_OPTIONAL_QUESTS,CHAPTER2_PLOUKE_CLUES,CHAPTER2_RACE_CHECKPOINTS,CHAPTER2_RING_SUPPORTS,CHAPTER2_SHORTCUTS,chapter2MandatoryReadyForTournament,chapter2QuestSummary,markQuestComplete,missingChapter2BracketCards,nearestDistrict,normalizeChapter2QuestState,requiredRumorCountForStep} from './chapter2-hub-quests.js?v=29a412-echo-ridge-20261122';
 import {snapHubCamera,updateHubCamera} from './hub-camera.js?v=29a412-echo-ridge-20261122';
-import {StoryMap} from './story-map.js?v=29a418-big-update-20261122';
+import {StoryMap} from './story-map.js?v=29a419-map-visuals-20261123';
 import {recordWorldVisit,discoverWorldShortcut,recordInteriorVisit} from './connected-world.js?v=29a412-echo-ridge-20261122';
 import {buildingDefinition,buildingMapTitle,clampInteriorPlayer,drawStoryInterior,interiorActorPoints,interiorBounds,interiorExitPoint,interiorLifeLine,interiorMapPoints,resolveExteriorBuildingCollision} from './story-interiors.js?v=29a412-echo-ridge-20261122';
 import {drawTournamentLandmarks} from './hub-landmark-art.js?v=29a412-echo-ridge-20261122';
@@ -1102,8 +1102,10 @@ class RrvvfoMission2{
       {speaker:'BARK',speakerClass:'neutral',text:'It’s me.',tail:'down'},
       {speaker:'WADE',speakerClass:'neutral',text:'It’s me. I’m the most tactical.',tail:'down'},
       {speaker:'BARK AND RRVVFO',speakerClass:'neutral',text:'In what world?',tail:'down'},
-      {speaker:'WADE',speakerClass:'neutral',text:'Then follow me. I found the fastest route through this whole place.',tail:'down'},
-      {speaker:'RRVVFO',speakerClass:'p1',text:'You found a route and turned it into a competition. Of course.',tail:'down'}
+      {speaker:'WADE',speakerClass:'neutral',text:'Then follow me. I know the fastest route to the tournament!',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'Wade, we’re already in it.',tail:'down'},
+      {speaker:'WADE',speakerClass:'neutral',text:'Right. Then I know the fastest route across the tournament.',tail:'down'},
+      {speaker:'RRVVFO',speakerClass:'p1',text:'You got there eventually.',tail:'down'}
     ],()=>{
       this.state.metBarkWade=true;
       this.saveChapterState();

@@ -2,18 +2,20 @@ import {BUILD_VERSION,SAVE_SCHEMA_VERSION} from '../build-info.js';
 import {loadLostYearProgress} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
 import {WORLD_DELIGHT_DISCOVERIES} from './world-delight.js?v=29a412-echo-ridge-20261122';
 import {CHAPTER1_ADVENTURE_VERSION,CHAPTER1_GUIDANCE,CHAPTER1_ROUTES,CHAPTER1_FIRE_BLAST_STORY_FOCUS} from './chapter1-adventure.js?v=29a412-echo-ridge-20261122';
-import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a418-big-update-20261122';
-import {ArenaBattle} from '../arena/arena-mode.js?v=29a418-big-update-20261122';
+import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a419-map-visuals-20261123';
+import {ArenaBattle} from '../arena/arena-mode.js?v=29a419-map-visuals-20261123';
 
 const DEV_SESSION_KEY='pxDeveloperUnlockedSession';
 const LAST_REPORT_KEY='pxPlaytestLastReportV2';
 const VERSION_TAPS=7;
 const VERSION_TAP_WINDOW=4200;
+const MAP_DEBUG_SESSION_KEY='pxMapDebugUnlockedSession';
+const MAP_DEBUG_CODE=Object.freeze(['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']);
 const ARENA_TELEMETRY_FLAG=Symbol.for('px.playtestArenaTelemetry4072r');
 
 const state={
   root:null,output:null,unlocked:false,tapCount:0,lastTap:0,session:null,lastReport:'',
-  lastArenaSample:0,settingsObserver:null,objectiveObserver:null
+  lastArenaSample:0,settingsObserver:null,objectiveObserver:null,mapDebugUnlocked:false,mapDebugCodeIndex:0,mapDebugLastAt:0
 };
 
 function safeJson(value){try{return JSON.stringify(value)}catch{return'{}'}}
@@ -56,8 +58,8 @@ function buildLab(){
   <div class="pxLabCard"><header><div><small>DEVELOPER • MOBILE SAFE</small><h2>PLAYTEST LAB</h2></div><button type="button" data-px-lab-close aria-label="Close Playtest Lab">×</button></header>
   <div class="pxLabBody">
     <section><h3>ONE-CLICK QA</h3><p>Runs non-destructive runtime checks. This catches broken wiring and suspicious states; it does not pretend a bot can decide whether a chapter is fun.</p><div class="pxLabButtons"><button class="primary" type="button" data-px-full-qa>RUN FULL QA</button><button type="button" data-px-clear-output>CLEAR OUTPUT</button></div><div class="pxLabStatus" data-px-status></div></section>
-    <section><h3>HUMAN PACING PLAYTEST</h3><p>Records real objective timing, dialogue, fights, ranks, background pauses, damage, and approximate arena coverage while you play. Temporary Chapter jumps use the existing developer route.</p><div class="pxLabButtons"><button class="good" type="button" data-px-start-human>START RECORDING</button><button type="button" data-px-stop-human>STOP + REPORT</button><button type="button" data-px-chapter="1">PLAYTEST CH1</button><button type="button" data-px-chapter="2">PLAYTEST CH2</button><button type="button" data-px-chapter="3">PLAYTEST CH3</button><button type="button" data-px-chapter="4">PLAYTEST CH4</button><button type="button" data-px-chapter="5">PLAYTEST CH5</button><button type="button" data-px-chapter="6">PLAYTEST CH6</button><button type="button" data-px-chapter="7">PLAYTEST CH7</button><button type="button" data-px-chapter="8">PLAYTEST CH8</button></div></section>
-    <section><h3>COMBAT QUICK TESTS</h3><p>Starts the existing temporary developer fights while telemetry is running.</p><div class="pxLabButtons"><button type="button" data-px-fight="revvfo">VS REVVFO</button><button type="button" data-px-fight="wade">VS WADE</button><button type="button" data-px-fight="bark">VS BARK</button></div></section>
+    <section><h3>HUMAN PACING PLAYTEST</h3><p>Records real objective timing, dialogue, fights, ranks, background pauses, damage, and approximate arena coverage while you play.</p><div class="pxLabButtons"><button class="good" type="button" data-px-start-human>START RECORDING</button><button type="button" data-px-stop-human>STOP + REPORT</button></div></section>
+    <section data-px-map-debug-section hidden><h3>MAP DEBUG MODE</h3><p>Chapter jumps run as temporary replays. Boss practice and map previews use training matches. These tools do not change story progress.</p><h4>CHAPTER WARPS</h4><div class="pxLabButtons"><button type="button" data-px-debug-chapter="1">CH1 • RRVVFO’S ARRIVAL</button><button type="button" data-px-debug-chapter="2">CH2 • TOURNAMENT</button><button type="button" data-px-debug-chapter="3">CH3 • SABOTAGE</button><button type="button" data-px-debug-chapter="4">CH4 • ECHO REGION</button><button type="button" data-px-debug-chapter="5">CH5 • THE HOLLOW</button><button type="button" data-px-debug-chapter="6">CH6 • THE RED NETWORK</button><button type="button" data-px-debug-chapter="7">CH7 • THE CLONE</button><button type="button" data-px-debug-chapter="8">CH8 • THE FINALE</button><button type="button" data-px-debug-chapter-hub="4">CH4 • VILLAGE HUB</button></div><h4>BOSS PRACTICE</h4><div class="pxLabButtons"><button type="button" data-px-debug-boss="hollow-commander">PROJECT HOLLOW COMMANDER</button><button type="button" data-px-debug-boss="hollow-watcher">HOLLOW WATCHER</button><button type="button" data-px-debug-boss="ryuzankaro">RYUZANKARO</button><button type="button" data-px-debug-boss="hollow-mimic">HOLLOW MIMIC</button><button type="button" data-px-debug-boss="red-leader">THE RED LEADER</button></div><h4>MAP PREVIEWS</h4><div class="pxLabButtons"><button type="button" data-px-map-debug="training-road">CH1 • COUNTRYSIDE</button><button type="button" data-px-map-debug="tournament-hub">CH2 • TOURNAMENT</button><button type="button" data-px-map-debug="resonance-facility">CH3 • FACTORY</button><button type="button" data-px-map-debug="echo-village">CH4 • ECHO REGION</button><button type="button" data-px-map-debug="echo-mountain">CH4 • MOUNTAIN PATH</button><button type="button" data-px-map-debug="shadow-lookout">CH4 • SHADOW’S LOOKOUT</button></div><h4>COMBAT QUICK TESTS</h4><div class="pxLabButtons"><button type="button" data-px-fight="revvfo">VS REVVFO</button><button type="button" data-px-fight="wade">VS WADE</button><button type="button" data-px-fight="bark">VS BARK</button></div></section>
     <section><h3>REPORT</h3><div class="pxLabButtons"><button class="primary" type="button" data-px-copy-report>COPY LAST REPORT</button><button type="button" data-px-download-report>EXPORT JSON</button></div><pre data-px-output>Playtest Lab ready.</pre></section>
   </div></div>`;
   document.body.appendChild(root);state.root=root;state.output=root.querySelector('[data-px-output]');
@@ -66,16 +68,19 @@ function buildLab(){
   root.querySelector('[data-px-clear-output]').addEventListener('click',()=>setOutput(''));
   root.querySelector('[data-px-start-human]').addEventListener('click',()=>startHumanPlaytest({source:'manual'}));
   root.querySelector('[data-px-stop-human]').addEventListener('click',()=>stopHumanPlaytest({reason:'manual'}));
-  root.querySelectorAll('[data-px-chapter]').forEach(button=>button.addEventListener('click',()=>startChapterPlaytest(Number(button.dataset.pxChapter))));
+  root.querySelectorAll('[data-px-debug-chapter]').forEach(button=>button.addEventListener('click',()=>startDebugChapter(Number(button.dataset.pxDebugChapter))));
+  root.querySelectorAll('[data-px-debug-chapter-hub]').forEach(button=>button.addEventListener('click',()=>startDebugChapterHub(Number(button.dataset.pxDebugChapterHub))));
+  root.querySelectorAll('[data-px-debug-boss]').forEach(button=>button.addEventListener('click',()=>startBossDebugPreview(button.dataset.pxDebugBoss)));
   root.querySelectorAll('[data-px-fight]').forEach(button=>button.addEventListener('click',()=>startQuickFight(button.dataset.pxFight)));
+  root.querySelectorAll('[data-px-map-debug]').forEach(button=>button.addEventListener('click',()=>startMapDebugPreview(button.dataset.pxMapDebug)));
   root.querySelector('[data-px-copy-report]').addEventListener('click',copyLastReport);
   root.querySelector('[data-px-download-report]').addEventListener('click',downloadLastReport);
   root.addEventListener('pointerdown',event=>{if(event.target===root)closeLab()});
   renderStatus();return root;
 }
 
-function setOutput(value){buildLab();state.output.textContent=text(value)}
-function openLab(){unlockDeveloper({quiet:true});buildLab();state.root.hidden=false;renderStatus();setOutput(state.lastReport||storageGet(LAST_REPORT_KEY)||'Playtest Lab ready.');state.root.querySelector('[data-px-lab-close]')?.focus()}
+function setOutput(value){buildLab();state.output.textContent=text(value);renderMapDebugGate()}
+function openLab(){unlockDeveloper({quiet:true});buildLab();state.root.hidden=false;renderStatus();renderMapDebugGate();setOutput(state.lastReport||storageGet(LAST_REPORT_KEY)||'Playtest Lab ready.');state.root.querySelector('[data-px-lab-close]')?.focus()}
 function closeLab(){if(state.root)state.root.hidden=true}
 
 function unlockDeveloper({quiet=false}={}){
@@ -98,7 +103,13 @@ function installSettingsEntry(){
   // mutation, which re-triggered the observer forever and froze the game at startup.
   const unlockKey=state.unlocked?'1':'0';
   if(tap.dataset.pxUnlock!==unlockKey){tap.dataset.pxUnlock=unlockKey;tap.classList.toggle('unlocked',state.unlocked);tap.querySelector('span').textContent=state.unlocked?'DEVELOPER MODE • SESSION UNLOCKED':'BUILD VERSION • tap 7× for developer tools'}
-  const actions=panel.querySelector('.settingsActions');if(actions&&state.unlocked&&!actions.querySelector('#pxDeveloperLabButton')){const button=document.createElement('button');button.id='pxDeveloperLabButton';button.type='button';button.textContent='DEVELOPER MENU • PLAYTEST LAB';button.addEventListener('click',openLab);actions.appendChild(button)}
+  let mapHint=panel.querySelector('[data-px-map-debug-hint]');
+  if(!mapHint){mapHint=document.createElement('div');mapHint.className='pxDevBuildTap';mapHint.setAttribute('data-px-map-debug-hint','');mapHint.setAttribute('aria-live','polite');const content=panel.querySelector('#settingsContent');content?.insertAdjacentElement('afterend',mapHint)}
+  const mapDebugState=state.mapDebugUnlocked?'1':'0';
+  if(mapHint&&mapHint.dataset.state!==mapDebugState){mapHint.dataset.state=mapDebugState;mapHint.textContent=state.mapDebugUnlocked?'MAP DEBUG UNLOCKED • USE OPEN MAP DEBUG MODE BELOW':'MAP DEBUG • ENTER ↑ ↑ ↓ ↓ ← → ← → B A WHILE SETTINGS IS OPEN'}
+  const actions=panel.querySelector('.settingsActions');
+  if(actions&&state.unlocked&&!actions.querySelector('#pxDeveloperLabButton')){const button=document.createElement('button');button.id='pxDeveloperLabButton';button.type='button';button.textContent='DEVELOPER MENU • PLAYTEST LAB';button.addEventListener('click',openLab);actions.appendChild(button)}
+  if(actions&&state.mapDebugUnlocked&&!actions.querySelector('#pxMapDebugLabButton')){const button=document.createElement('button');button.id='pxMapDebugLabButton';button.type='button';button.className='primary';button.textContent='OPEN MAP DEBUG MODE';button.addEventListener('click',openLab);actions.appendChild(button)}
 }
 
 function handleBuildTap(){
@@ -110,6 +121,35 @@ function handleBuildTap(){
 function injectIntoExistingDevRoom(){
   const panel=document.querySelector('[data-story-playtest]');if(!panel||panel.querySelector('.pxInjectedLabSection'))return;
   const article=panel.querySelector('article')||panel;const section=document.createElement('section');section.className='pxInjectedLabSection';section.innerHTML='<h3>PLAYTEST LAB</h3><div class="playtestButtons"><button type="button" data-px-open-integrated-lab>OPEN MOBILE PLAYTEST LAB</button></div>';section.querySelector('button').addEventListener('click',openLab);article.appendChild(section);
+}
+
+function settingsPanelIsOpen(){
+  const panel=document.getElementById('settingsPanel');
+  return Boolean(panel&&!panel.classList.contains('hidden')&&panel.getClientRects().length);
+}
+
+function renderMapDebugGate(){
+  const section=state.root?.querySelector('[data-px-map-debug-section]');
+  if(section)section.hidden=!state.mapDebugUnlocked;
+}
+
+function activeStoryBattleIsOpen(){
+  const arena=document.getElementById('arenaModeScreen');
+  return Boolean(arena&&!arena.classList.contains('hidden')&&arena.dataset.storyProfile);
+}
+
+function handleMapDebugKonami(event){
+  if(!settingsPanelIsOpen()){state.mapDebugCodeIndex=0;return}
+  const key=event.key.startsWith('Arrow')?event.key:event.key.toLowerCase();
+  const now=wallNow();
+  if(now-state.mapDebugLastAt>6500)state.mapDebugCodeIndex=0;
+  const expected=MAP_DEBUG_CODE[state.mapDebugCodeIndex];
+  if(key===expected){state.mapDebugCodeIndex++;event.preventDefault();event.stopPropagation()}
+  else{state.mapDebugCodeIndex=key===MAP_DEBUG_CODE[0]?1:0;if(state.mapDebugCodeIndex)event.preventDefault()}
+  state.mapDebugLastAt=now;
+  if(state.mapDebugCodeIndex!==MAP_DEBUG_CODE.length)return;
+  state.mapDebugCodeIndex=0;state.mapDebugUnlocked=true;sessionSet(MAP_DEBUG_SESSION_KEY,'1');
+  installSettingsEntry();renderMapDebugGate();
 }
 
 function installUiObserver(){
@@ -211,9 +251,9 @@ async function runFullQa(){
   add('Existing Konami developer room',document.querySelector('[data-story-playtest]')?'PASS':'WARN','↑ ↑ ↓ ↓ ← → ← → B A');
   try{
     const modules=await Promise.allSettled([
-      import('./rrvvfo-mission-2.js?v=29a418-big-update-20261122'),
-      import('./rrvvfo-chapter-3.js?v=29a418-big-update-20261122'),
-      import('./rrvvfo-chapter-4.js?v=29a418-big-update-20261122')
+      import('./rrvvfo-mission-2.js?v=29a419-map-visuals-20261123'),
+      import('./rrvvfo-chapter-3.js?v=29a419-map-visuals-20261123'),
+      import('./rrvvfo-chapter-4.js?v=29a419-map-visuals-20261123')
     ]);const failed=modules.filter(item=>item.status==='rejected');add('Released Chapter 2–4 modules import',failed.length?'FAIL':'PASS',failed.length?failed.map(item=>item.reason?.message||'import failed').join(' | '):'3 / 3 loaded');
   }catch(error){add('Released Chapter 2–4 modules import','FAIL',error.message)}
   const pass=checks.filter(c=>c.status==='PASS').length,fail=checks.filter(c=>c.status==='FAIL').length,warn=checks.filter(c=>c.status==='WARN').length;
@@ -221,19 +261,65 @@ async function runFullQa(){
   state.lastReport=output;storageSet(LAST_REPORT_KEY,output);setOutput(output);renderStatus();return{checks,pass,fail,warn};
 }
 
-function startChapterPlaytest(chapter){
+function startChapterPlaytest(chapter,{entry=''}={}){
+  if(!state.mapDebugUnlocked){setOutput('DEBUG MODE LOCKED • Enter ↑ ↑ ↓ ↓ ← → ← → B A while Settings is open.');return}
+  if(!Number.isInteger(chapter)||chapter<1||chapter>8)return;
+  if(activeStoryBattleIsOpen()){setOutput('Close the active chapter before jumping to another one. Your story save stays untouched.');return}
   if(!state.session)startHumanPlaytest({source:'chapter-jump',chapter});else state.session.chapterRequested=chapter;
-  const existing=document.querySelector(`[data-story-playtest] [data-playtest-chapter="${chapter}"]`);
-  if(existing){existing.click();return}
+  const selector=entry==='hub'?`[data-story-playtest] [data-playtest-chapter-hub="${chapter}"]`:`[data-story-playtest] [data-playtest-chapter="${chapter}"]`;
+  const existing=document.querySelector(selector);
+  if(existing){closeLab();existing.click();return}
+  closeLab();
   document.dispatchEvent(new CustomEvent('pxplaytestopenstory'));
   const stepId=chapter===1?'rrvvfo-00':chapter===2?'rrvvfo-02':'rrvvfo-0'+chapter;
-  setTimeout(()=>document.dispatchEvent(new CustomEvent('pxplayteststartchapter',{detail:{number:chapter,stepId}})),120);
+  setTimeout(()=>document.dispatchEvent(new CustomEvent('pxplayteststartchapter',{detail:{number:chapter,stepId,entry}})),120);
+}
+
+function startDebugChapter(chapter){startChapterPlaytest(chapter)}
+function startDebugChapterHub(chapter){if(chapter===4)startChapterPlaytest(4,{entry:'hub'})}
+
+const DEBUG_BOSS_PRESETS=Object.freeze({
+  'hollow-commander':{fighterId:'grunt-commander',name:'Project Hollow Commander',stage:'echo-village',accent:'#9b7de4',archetype:'support',hp:135,speed:.94,attack:1.08,defense:.92},
+  'hollow-watcher':{fighterId:'hollow-watcher',name:'Hollow Watcher',stage:'echo-mountain',accent:'#68d7e3',archetype:'ranged',hp:155,speed:1.02,attack:.98,defense:.9},
+  ryuzankaro:{fighterId:'ryuzankaro',name:'Ryuzankaro',stage:'echo-sky',accent:'#55408b',archetype:'heavy',hp:185,speed:.82,attack:1.18,defense:.84},
+  'hollow-mimic':{fighterId:'hollow-grunt',name:'Hollow Mimic',stage:'resonance-facility',accent:'#bb6bf0',archetype:'trickster',hp:170,speed:1.06,attack:1.08,defense:.88},
+  'red-leader':{fighterId:'red-commander',name:'Organization of the Red Leader',stage:'resonance-facility',accent:'#de4a52',archetype:'heavy',hp:195,speed:.88,attack:1.2,defense:.82}
+});
+
+async function startBossDebugPreview(bossId){
+  const boss=DEBUG_BOSS_PRESETS[bossId];if(!state.mapDebugUnlocked||!boss)return;
+  if(activeStoryBattleIsOpen()){setOutput('Close the active chapter before opening boss practice. Your story save stays untouched.');return}
+  closeLab();
+  try{
+    const {startConfiguredArenaBattle}=await import('../arena/arena-mode.js?v=29a419-map-visuals-20261123');
+    const battle=startConfiguredArenaBattle({mode:'training',fighters:['rrvvfo',boss.fighterId],stageId:boss.stage,difficulty:'normal',koTarget:1,allowRandomRematch:false});
+    if(!battle)throw new Error('The boss practice fight could not open.');
+    const foe=battle.fighters[1];foe.name=boss.name;foe.accent=boss.accent;foe.aiArchetype=boss.archetype;foe.visualScale=1.12;foe.maxHp=boss.hp;foe.hp=boss.hp;foe.storySpeedMultiplier=boss.speed;foe.storyAttackMultiplier=boss.attack;foe.storyDefenseMultiplier=boss.defense;foe.en=55;foe.asset=null;
+    battle.trainingDummy='cpu';battle.trainingPursuitDefense='occasional';battle.trainingRecovery='never';battle.hud();battle.notice(`${boss.name.toUpperCase()} • DEBUG PRACTICE`,2);
+  }catch(error){console.error('[Boss debug practice]',error);openLab();setOutput('BOSS PRACTICE FAILED\n'+text(error.message||error))}
+}
+
+async function startMapDebugPreview(stageId){
+  const allowed=new Set(['training-road','tournament-hub','resonance-facility','echo-village','echo-mountain','shadow-lookout']);
+  if(!state.mapDebugUnlocked||!allowed.has(stageId))return;
+  if(activeStoryBattleIsOpen()){setOutput('Close the active chapter before opening a map preview. Your story save stays untouched.');return}
+  closeLab();
+  try{
+    const {startConfiguredArenaBattle}=await import('../arena/arena-mode.js?v=29a419-map-visuals-20261123');
+    const stageIdForArena=stageId==='shadow-lookout'?'echo-mountain':stageId;
+    const battle=startConfiguredArenaBattle({mode:'training',fighters:['rrvvfo','revvfo'],stageId:stageIdForArena,koTarget:1});
+    if(!battle)throw new Error('The arena could not open this map.');
+    if(stageId==='shadow-lookout')battle.setStageBackdrop('shadow-lookout');
+    battle.trainingDummy='stand';battle.trainingPursuitDefense='never';
+  }catch(error){console.error('[Map debug preview]',error);openLab();setOutput('MAP PREVIEW FAILED\n'+text(error.message||error))}
 }
 
 function startQuickFight(opponent){
+  if(!state.mapDebugUnlocked){setOutput('DEBUG MODE LOCKED • Enter ↑ ↑ ↓ ↓ ← → ← → B A while Settings is open.');return}
+  if(activeStoryBattleIsOpen()){setOutput('Close the active chapter before opening a combat test. Your story save stays untouched.');return}
   if(!state.session)startHumanPlaytest({source:'combat-quick-test'});
   const existing=document.querySelector(`[data-story-playtest] [data-playtest-fight="${CSS.escape(opponent)}"]`);
-  if(existing){existing.click();return}
+  if(existing){closeLab();existing.click();return}
   setOutput(`Could not find the existing ${opponent} developer fight button in this runtime.`);openLab();
 }
 
@@ -283,7 +369,7 @@ function sampleArena(arena){
 }
 
 function boot(){
-  state.unlocked=sessionGet(DEV_SESSION_KEY)==='1';state.lastReport=storageGet(LAST_REPORT_KEY)||'';buildLab();installUiObserver();installTelemetryListeners();installArenaTelemetry();if(state.unlocked)installSettingsEntry();
+  state.unlocked=sessionGet(DEV_SESSION_KEY)==='1';state.mapDebugUnlocked=sessionGet(MAP_DEBUG_SESSION_KEY)==='1';state.lastReport=storageGet(LAST_REPORT_KEY)||'';buildLab();installUiObserver();installTelemetryListeners();installArenaTelemetry();document.addEventListener('keydown',handleMapDebugKonami,true);renderMapDebugGate();if(state.unlocked)installSettingsEntry();
   globalThis.__PX_PLAYTEST_LAB__={open:openLab,close:closeLab,runFullQa,startHumanPlaytest,stopHumanPlaytest,startChapterPlaytest,get active(){return Boolean(state.session)},get lastReport(){return state.lastReport}};
 }
 

@@ -217,7 +217,7 @@ function gableRoofMesh(gl){
 export class WebGLArenaRenderer{
   constructor(canvas){
     this.canvas=canvas;
-    const gl=canvas.getContext('webgl',{alpha:false,antialias:true,premultipliedAlpha:false});
+    const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false});
     if(!gl)throw new Error('WebGL is not available in this browser.');
     this.gl=gl;
     this.program=program(gl,`
@@ -328,7 +328,7 @@ void main(){
     this.viewProjection=multiply(this.projection,this.view);
     const color=this.color(clear);
     gl.viewport(0,0,this.canvas.width,this.canvas.height);
-    gl.clearColor(color[0],color[1],color[2],1);
+    gl.clearColor(color[0],color[1],color[2],0);
     gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
     gl.useProgram(this.program);
     gl.uniformMatrix4fv(this.locations.projection,false,this.projection);

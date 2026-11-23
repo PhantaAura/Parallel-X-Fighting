@@ -1,8 +1,8 @@
-import {BUILD_VERSION} from './build-info.js?v=29a418-big-update-20261122';
+import {BUILD_VERSION} from './build-info.js?v=29a419-map-visuals-20261123';
 import {sharedInput} from './input-runtime.js?v=29a412-echo-ridge-20261122';
 import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a412-echo-ridge-20261122';
 
-const MENU_MODULE_CACHE='29a418-big-update-20261122';
+const MENU_MODULE_CACHE='29a419-map-visuals-20261123';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([

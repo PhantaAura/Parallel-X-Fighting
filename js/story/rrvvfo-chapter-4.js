@@ -1,9 +1,9 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a418-big-update-20261122';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a419-map-visuals-20261123';
 import {loadLostYearProgress,repairChapter4Progress,saveLostYearProgress} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
 import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a412-echo-ridge-20261122';
-import {StoryMap} from './story-map.js?v=29a418-big-update-20261122';
+import {StoryMap} from './story-map.js?v=29a419-map-visuals-20261123';
 import {storyConfirm} from './story-ux.js?v=29a412-echo-ridge-20261122';
-import {openCombatManual} from './combat-manual.js?v=29a418-big-update-20261122';
+import {openCombatManual} from './combat-manual.js?v=29a419-map-visuals-20261123';
 import {storyAttackStripMarkup,storyControlLegendMarkup,storyStatsMarkup} from './story-rpg-ui.js?v=29a412-echo-ridge-20261122';
 import {renderFieldSkillJournal} from './field-skills.js?v=29a412-echo-ridge-20261122';
 import {discoverWorldDelight} from './world-delight.js?v=29a412-echo-ridge-20261122';
@@ -795,7 +795,7 @@ class RrvvfoChapter4{
   enterLookout({restored=false}={}){if(!restored){discoverAdventureMission('c4-solo-summit');completeAdventureMission('c4-solo-summit',{rank:'A',reward:'ARCHIVE • MOUNTAIN WIND'})}
     document.dispatchEvent(new CustomEvent('pxmusictheme',{detail:'mystery'}));
     document.dispatchEvent(new CustomEvent('pxcombatduck',{detail:{amount:.82,duration:1.25}}));
-    this.area='lookout';this.state.location='shadow-lookout';this.switchStage('echo-mountain');this.mode='mountain';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();
+    this.area='lookout';this.state.location='shadow-lookout';this.switchStage('echo-mountain');this.battle.setStageBackdrop('shadow-lookout');this.mode='mountain';this.currentFight=null;this.battle.phase='play';this.battle.hideBanner();
     this.engine.setLabels({stageName:'SHADOW’S LOOKOUT',chapterLabel:'RRVVFO CHAPTER 4',names:['RRVVFO','']});
     this.preparePlayer({x:930,z:-330});const player=this.battle.fighters[0];player.y=LOOKOUT_HEIGHT;player.vy=0;player.grounded=true;player.kvy=0;
     resetHubCameraLook(this.battle);this.lookoutLandingSeconds=restored?.85:LOOKOUT_LANDING_SECONDS;this.lookoutPromptCueShown=false;

@@ -1,4 +1,4 @@
-import {InputManager} from './input.js?v=29a57-lookout-center';
+import {InputManager} from './input.js?v=29a58a-quality';
 
 /**
  * The single semantic input runtime used by 2-D combat, Training, Arena, and

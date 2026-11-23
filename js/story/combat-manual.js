@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a57-lookout-center';
+import {BUILD_VERSION} from '../build-info.js?v=29a58a-quality';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

@@ -18,7 +18,7 @@ header{max-width:1420px;margin:0 auto;padding:42px 28px 25px;border-bottom:1px s
 <p class="footerNote">Static scenery previews · no story progress or save data is changed.</p>
 <script type="module">
 const gallery=document.querySelector('#gallery');
-const cache='29a57-lookout-center';
+const cache='29a58a-quality';
 const maps=[
   {id:'training-road',chapter:'CHAPTER 1',name:'Tournament Road',place:'A quiet countryside trail, creek crossing, bridge, and fallen log.' ,center:{x:260,z:0}},
   {id:'tournament-hub',chapter:'CHAPTER 2',name:'Local Tournament Grounds',place:'A martial-arts courtyard with a central ring, halls, and entry gate.',center:{x:0,z:0}},
@@ -36,6 +36,7 @@ const maps=[
 for(const map of maps){
   const card=document.createElement('article');card.className='mapCard';card.innerHTML=`<header><div><span class="chapter">${map.chapter}</span><h2>${map.name}</h2><p>${map.place}</p></div><span class="tag">3D STAGE</span></header><div class="canvasFrame"><img alt="${map.name}, three-dimensional game stage" loading="eager"><div class="loading">BUILDING MAP…</div></div>`;gallery.append(card);map.image=card.querySelector('img');map.card=card;
 }
+let renderer=null;
 try{
   const [{ARENA_STAGES},{drawArenaStage},{WebGLArenaRenderer}]=await Promise.all([
     import(`./js/arena/arena-stages.js?v=${cache}`),
@@ -44,7 +45,7 @@ try{
   ]);
   const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
   const canvas=document.createElement('canvas');canvas.width=960;canvas.height=540;
-  const renderer=new WebGLArenaRenderer(canvas,{preserveDrawingBuffer:true});
+  renderer=new WebGLArenaRenderer(canvas,{preserveDrawingBuffer:true});
   for(const map of maps){
     const stage=ARENA_STAGES[map.id];if(!stage)throw new Error(`Missing stage: ${map.id}`);
     const camera=stage.camera,yaw=(camera.yawDeg||38)*Math.PI/180;
@@ -60,7 +61,7 @@ try{
 }catch(error){
   console.error('[3D map gallery]',error);
   document.querySelectorAll('.mapCard:not(.ready) .loading').forEach(label=>{label.textContent='MAP PREVIEW FAILED';label.closest('.mapCard')?.classList.add('failed')});
-}
+}finally{renderer?.dispose()}
 </script>
 </body>
 </html>

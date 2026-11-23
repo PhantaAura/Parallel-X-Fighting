@@ -2,8 +2,8 @@
 // Colorblind modes, autosave backups with a save indicator, and the keyboard
 // binding panel. Every feature degrades safely when storage or SVG filters are
 // unavailable: the game keeps working with the defaults.
-import {createSaveExport,importSaveText,AUTOSAVE_KEY} from './save-manager.js?v=29a57-lookout-center';
-import {REMAPPABLE_ACTIONS,setKeyBinding,resetKeyBindings,defaultKeyBinding,keyDisplayName,CONTROL_MAPS} from './input.js?v=29a57-lookout-center';
+import {createSaveExport,importSaveText,AUTOSAVE_KEY} from './save-manager.js?v=29a58a-quality';
+import {REMAPPABLE_ACTIONS,setKeyBinding,resetKeyBindings,defaultKeyBinding,keyDisplayName,CONTROL_MAPS} from './input.js?v=29a58a-quality';
 
 /* ---------------------------------------------------------------- colorblind */
 // Machado et al. (2009) full-severity simulation matrices. We use them to find

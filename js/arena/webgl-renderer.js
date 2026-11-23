@@ -237,6 +237,9 @@ export class WebGLArenaRenderer{
     const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false,preserveDrawingBuffer});
     if(!gl)throw new Error('WebGL is not available in this browser.');
     this.gl=gl;
+    this.disposed=false;
+    this.textures=new Set();
+    this.landscapeMeshes=new Map();
     this.program=program(gl,`
 attribute vec3 aPosition;
 attribute vec2 aTexCoord;
@@ -315,8 +318,22 @@ void main(){
     gl.uniform1i(this.locations.texture,0);
   }
 
+  dispose(){
+    if(this.disposed)return;
+    this.disposed=true;
+    const gl=this.gl;
+    for(const mesh of [...Object.values(this.meshes),...this.landscapeMeshes.values()]){
+      for(const key of ['position','uv','normal','index'])gl.deleteBuffer(mesh[key]);
+    }
+    for(const texture of this.textures)gl.deleteTexture(texture);
+    gl.deleteProgram(this.program);
+    this.textures.clear();this.landscapeMeshes.clear();this.colorCache.clear();
+    this.worldMaterials=null;this.valleyMaterials=null;this.groundHeight=null;
+  }
+
   makeWhiteTexture(){
     const gl=this.gl,texture=gl.createTexture();
+    this.textures.add(texture);
     gl.bindTexture(gl.TEXTURE_2D,texture);
     gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array([255,255,255,255]));
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);
@@ -325,7 +342,9 @@ void main(){
   }
 
   createTexture(image){
+    if(this.disposed)return null;
     const gl=this.gl,texture=gl.createTexture();
+    this.textures.add(texture);
     gl.bindTexture(gl.TEXTURE_2D,texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);
@@ -339,6 +358,7 @@ void main(){
 
   begin({eye=this.eye,target=this.target,fov=42,clear='#101326',fogColor='#0e0f1c',fogRange=[560,1450]}={}){
     const gl=this.gl;
+    if(this.disposed)return;
     this.chapterWorldRebuilt=false;
     this.groundHeight=null;
     this.eye=[...eye];this.target=[...target];
@@ -372,6 +392,7 @@ void main(){
   }
 
   draw(mesh,model,{color='#ffffff',alpha=1,texture=null,uvRect=[0,0,1,1],flipX=false,lit=true,depthWrite=true,cull=true}={}){
+    if(this.disposed)return;
     const gl=this.gl,l=this.locations;
     if(this.groundHeight){model=new Float32Array(model);model[13]+=this.groundHeight(model[12],model[14])}
     this.bind(mesh);
@@ -391,7 +412,7 @@ void main(){
 
   // Upload static landscape geometry once per renderer, rather than every frame.
   landscapeMesh(key,data,options={}){
-    this.landscapeMeshes??=new Map();
+    if(this.disposed)return;
     if(!this.landscapeMeshes.has(key))this.landscapeMeshes.set(key,createMesh(this.gl,data.positions,data.uvs,data.normals,data.indices));
     this.draw(this.landscapeMeshes.get(key),identity(),{...options,cull:false});
   }

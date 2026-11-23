@@ -1,0 +1,39 @@
+<!doctype html><meta charset="utf-8"><title>Clash of Souls lifecycle checks</title>
+<style>body{background:#132021;color:#e8ebdf;font:18px/1.6 system-ui;padding:24px}pre{white-space:pre-wrap}.pass{color:#85d9a0}.fail{color:#ff9888}</style>
+<section id="settingsPanel" hidden><div id="settingsContent"></div><div class="settingsActions"></div></section>
+<h1>Battle lifecycle checks</h1><pre id="result">Running…</pre>
+<script type="module">
+const result=document.querySelector('#result'),lines=[];
+try{
+  const [{ArenaBattle},{createStoryBattle,destroyStoryBattle,attachStoryEngine}]=await Promise.all([
+    import('../js/arena/arena-mode.js?v=29a58a-quality'),
+    import('../js/story/story-engine.js?v=29a58a-quality')
+  ]);
+  const check=(condition,label)=>{if(!condition)throw Error(label);lines.push('PASS · '+label)};
+  const first=new ArenaBattle('dojo');
+  // A second battle must take ownership of the shared screen, discarding old callbacks.
+  const second=new ArenaBattle('dojo');
+  check(first.disposed&&!first.root.isConnected,'Previous battle is disposed when replaced');
+  let calls=0;second.castAbility=()=>calls++;
+  second.root.querySelector('[data-arena-slot]').click();
+  check(calls===1,'One hotbar click produces one ability activation');
+  second.dispose();second.dispose();
+  check(second.renderer.disposed&&second.renderer.textures.size===0,'Renderer releases its textures on repeated teardown');
+  check(!second.root.isConnected,'Battle screen and its DOM listeners are removed');
+  const story=createStoryBattle({stageId:'echo-village'});
+  destroyStoryBattle(story);
+  check(story.disposed&&!story.root.isConnected,'Story cleanup disposes its own battle without requiring a session');
+  const live=createStoryBattle({stageId:'dojo'});
+  const session=attachStoryEngine(live,{mode:'exploration'});live.audio.enable=()=>{};
+  live.start();destroyStoryBattle(live);session.destroy();
+  check(!live.active&&!live.controls.active&&live.disposed,'Attached story teardown stops active controls and is safe twice');
+  const third=new ArenaBattle('resonance-facility');third.draw();third.dispose();
+  check(third.renderer.landscapeMeshes.size===0,'A rendered chapter releases its uploaded scenery meshes');
+  check(document.querySelectorAll('#arenaModeScreenStyle').length===1,'Arena styles do not accumulate');
+  await import('../js/story/mobile-playtest-lab.js?v=29a58a-quality');
+  await new Promise(resolve=>requestAnimationFrame(resolve));
+  check(Boolean(document.querySelector('[data-px-build-tap] span')),'Settings version entry stays distinct from the map debug hint');
+  check(document.querySelectorAll('[data-px-build-tap]').length===1,'Repeated Settings observation does not duplicate the version entry');
+  result.className='pass';result.textContent=lines.join('\n');
+}catch(error){result.className='fail';result.textContent=lines.join('\n')+'\nFAIL · '+error.stack;console.error(error)}
+</script>

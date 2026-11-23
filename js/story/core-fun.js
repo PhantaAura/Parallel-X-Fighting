@@ -1,4 +1,4 @@
-import {storyTechniqueAvailable} from './field-skills.js?v=29a57-lookout-center';
+import {storyTechniqueAvailable} from './field-skills.js?v=29a58a-quality';
 const BUILD_KEY='pxRrvvfoBuildV1';
 const ADVENTURE_KEY='pxAdventureProgressV1';
 

@@ -1,4 +1,4 @@
-import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a57-lookout-center';
+import {SAVE_SCHEMA_VERSION,BUILD_VERSION} from './build-info.js?v=29a58a-quality';
 
 export const SAVE_EXPORT_KEYS=Object.freeze([
   'pxSave',
@@ -39,8 +39,8 @@ const TRAINING_KEYS=Object.freeze(['pxTrainingPresetsV1']);
 function availableStorage(){try{return globalThis.localStorage}catch{return null}}
 
 function storageRead(storage,key){try{return storage?.getItem?.(key)??null}catch{return null}}
-function storageWrite(storage,key,value){storage?.setItem?.(key,value)}
-function storageRemove(storage,key){storage?.removeItem?.(key)}
+function storageWrite(storage,key,value){storage.setItem(key,value)}
+function storageRemove(storage,key){storage.removeItem(key)}
 
 export function createSaveExport(storage=availableStorage()){
   const data={};
@@ -67,11 +67,14 @@ export function validateSaveImport(value){
 }
 
 export function importSaveText(text,storage=availableStorage()){
+  if(!storage||!['getItem','setItem','removeItem'].every(key=>typeof storage[key]==='function'))return{ok:false,error:'Save storage is unavailable'};
   let parsed;
   try{parsed=JSON.parse(String(text))}catch{return{ok:false,error:'Save text is not valid JSON'}}
   const checked=validateSaveImport(parsed);
   if(!checked.valid)return{ok:false,error:checked.error};
-  const previous=Object.fromEntries(SAVE_EXPORT_KEYS.map(key=>[key,storageRead(storage,key)]));
+  let previous;
+  try{previous=Object.fromEntries(SAVE_EXPORT_KEYS.map(key=>[key,storage.getItem(key)]))}
+  catch{return{ok:false,error:'Could not read the existing save; import cancelled'}}
   try{
     for(const key of SAVE_EXPORT_KEYS)storageRemove(storage,key);
     for(const [key,value] of Object.entries(checked.data))storageWrite(storage,key,value);

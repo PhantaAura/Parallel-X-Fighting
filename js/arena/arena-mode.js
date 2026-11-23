@@ -1,21 +1,21 @@
 import {aimVector,blockFacesAttacker,clamp,hitVolumeConnects,lerp,normalizeMovement,projectileConnects,rotateToward} from './arena-math.js';
-import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a57-lookout-center';
-import {drawStagePersonality,projectileHitsStageGeometry,resolveStageGeometry,stagePersonalityFor} from './stage-personality.js?v=29a57-lookout-center';
-import {drawArenaStage} from './arena-stage-renderer.js?v=29a57-lookout-center';
-import {WebGLArenaRenderer} from './webgl-renderer.js?v=29a57-lookout-center';
-import {ArenaControlManager} from './arena-controls.js?v=29a57-lookout-center';
-import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor,fighterFeelFor} from './arena-combat-data.js?v=29a57-lookout-center';
-import {finalKoImpactFor,signatureMeleeKind,signatureProfileFor} from './signature-combat.js?v=29a57-lookout-center';
-import {PLAYABLE_ROSTER_IDS,ROSTER} from '../roster.js?v=29a57-lookout-center';
-import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a57-lookout-center';
-import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a57-lookout-center';
-import {loadQolSettings} from '../qol-settings.js?v=29a57-lookout-center';
-import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a57-lookout-center';
-import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a57-lookout-center';
-import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a57-lookout-center';
-import {BUILD_VERSION} from '../build-info.js?v=29a57-lookout-center';
-import {createBattleMasterySession,finalizeBattleMastery,masteryRankLabel,recordBattleMasteryEvent,recordMasteryChallenge} from '../mastery-records.js?v=29a57-lookout-center';
-import {applyRrvvfoBuildToFighter,buildHasPassive,currentRrvvfoBuild,enemyArchetypeShape,tuneRrvvfoAbility} from '../story/core-fun.js?v=29a57-lookout-center';
+import {clampToStage,getArenaStage,listArenaStages,outsideStageProjectileBounds,stageProfile,stageWallAvoidance} from './arena-stages.js?v=29a58a-quality';
+import {drawStagePersonality,projectileHitsStageGeometry,resolveStageGeometry,stagePersonalityFor} from './stage-personality.js?v=29a58a-quality';
+import {drawArenaStage} from './arena-stage-renderer.js?v=29a58a-quality';
+import {WebGLArenaRenderer} from './webgl-renderer.js?v=29a58a-quality';
+import {ArenaControlManager} from './arena-controls.js?v=29a58a-quality';
+import {ABILITY_CATEGORY,ARENA_NORMAL_PROFILES,SPECIAL_CATEGORIES,abilityCategory,abilityTiming,arenaAttackFor,fighterFeelFor} from './arena-combat-data.js?v=29a58a-quality';
+import {finalKoImpactFor,signatureMeleeKind,signatureProfileFor} from './signature-combat.js?v=29a58a-quality';
+import {PLAYABLE_ROSTER_IDS,ROSTER} from '../roster.js?v=29a58a-quality';
+import {COMBAT_RULES,difficultyProfile,decayHabit} from '../combat-core.js?v=29a58a-quality';
+import {resolveHubWorldCollision} from '../story/hub-collision.js?v=29a58a-quality';
+import {loadQolSettings} from '../qol-settings.js?v=29a58a-quality';
+import {createTrainingTrialState,recordTrainingTrialEvent,resetTrainingTrial,trainingTrialView} from '../training-trials.js?v=29a58a-quality';
+import {PURSUIT_TUNING,canGroundBounce,canWallSplat,dashIdentityFor,pursuitDurationFor,pursuitPromptText,pursuitTechAvailable,pursuitWindowFor} from './pursuit-combat.js?v=29a58a-quality';
+import {FOCUS_RECOVERY_RULES,channelFocusRecovery,endFocusRecovery,focusRecoveryAvailability,interruptFocusRecovery,recoverableHealthView,registerRecoverableDamage,resetFocusRecovery,tickFocusRecovery} from '../focus-recovery.js?v=29a58a-quality';
+import {BUILD_VERSION} from '../build-info.js?v=29a58a-quality';
+import {createBattleMasterySession,finalizeBattleMastery,masteryRankLabel,recordBattleMasteryEvent,recordMasteryChallenge} from '../mastery-records.js?v=29a58a-quality';
+import {applyRrvvfoBuildToFighter,buildHasPassive,currentRrvvfoBuild,enemyArchetypeShape,tuneRrvvfoAbility} from '../story/core-fun.js?v=29a58a-quality';
 
 const ID='arenaModeScreen';
 const W=960;
@@ -137,6 +137,7 @@ function installUI(){
   let root=document.getElementById(ID);
   if(root)return root;
   const style=document.createElement('style');
+  style.id=ID+'Style';
   style.textContent=`
 #${ID}{position:fixed;inset:0;z-index:1200;background:radial-gradient(circle at 50% 30%,#2b2140,#080a12 70%);color:#fff;font-family:Inter,Segoe UI,Arial,sans-serif;overflow:hidden}
 #${ID}.hidden{display:none}
@@ -198,7 +199,7 @@ function installUI(){
 @media(orientation:portrait) and (pointer:coarse){#${ID}.arena-touch-active .rotateHint{display:grid}}
 @media(max-width:700px){#${ID} .arenaHotbar{width:min(94vw,620px);bottom:5px}#${ID} .arenaSlots{gap:3px}#${ID} .arenaAbility{height:66px;padding:3px}#${ID} .arenaIcon{font-size:18px;line-height:19px}#${ID} .arenaAbilityName{font-size:8px}#${ID} .arenaCost,#${ID} .arenaState{font-size:7px}#${ID} .bottom{bottom:77px}#${ID} .arenaNotice{bottom:77px}#${ID} .top{inset:7px 7px auto;gap:7px}#${ID} .name{font-size:10px!important}#${ID} .track{height:12px!important}#${ID} .clock{padding:4px 7px!important}#${ID} .clock b{font-size:21px!important}#${ID} .help{font-size:8px}#${ID} .badge{display:none}#${ID} .banner{top:31%;max-width:88vw;padding:8px 12px;font-size:clamp(18px,6vw,30px)}#${ID} .comboCallout{font-size:20px;top:27%}}
 `;
-  document.head.appendChild(style);
+  if(!document.getElementById(style.id))document.head.appendChild(style);
   root=document.createElement('section');
   root.id=ID;
   root.className='hidden';
@@ -265,9 +266,13 @@ async function loadSprite(renderer,id){
     const response=await fetch(manifestUrl);
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     const manifest=await response.json();
+    if(renderer.disposed)return null;
     const image=new Image();
-    image.src=new URL(manifest.image,manifestUrl).href;
-    await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=()=>reject(new Error('Atlas image failed to load'))});
+    await new Promise((resolve,reject)=>{
+      image.onload=resolve;image.onerror=()=>reject(new Error('Atlas image failed to load'));
+      image.src=new URL(manifest.image,manifestUrl).href;
+    });
+    if(renderer.disposed)return null;
     return{manifest,image,texture:renderer.createTexture(image)};
   }catch(error){console.warn('[Arena 2.4C] sprite fallback',id,error);return null}
 }
@@ -356,7 +361,9 @@ class ArenaFighter{
 
 class ArenaBattle{
   constructor(stageId='dojo'){
-    this.root=installUI();this.canvas=this.root.querySelector('[data-world-layer]');this.fighterCanvas=this.root.querySelector('[data-fighter-layer]');this.fighterContext=this.fighterCanvas.getContext('2d',{alpha:true});this.renderer=new WebGLArenaRenderer(this.canvas);this.audio=new CombatAudio();this.stage=getArenaStage(stageId);
+    document.getElementById(ID)?.__arenaBattle?.dispose();
+    this.disposed=false;
+    this.root=installUI();this.root.__arenaBattle=this;this.canvas=this.root.querySelector('[data-world-layer]');this.fighterCanvas=this.root.querySelector('[data-fighter-layer]');this.fighterContext=this.fighterCanvas.getContext('2d',{alpha:true});this.renderer=new WebGLArenaRenderer(this.canvas);this.audio=new CombatAudio();this.stage=getArenaStage(stageId);
     this.active=false;this.paused=false;this.accumulator=0;this.last=0;this.raf=0;this.hitstop=0;this.cameraShake=0;this.flashTime=0;
     const [spawn1,spawn2]=this.stage.spawnPoints;this.fighters=[new ArenaFighter('rrvvfo','Rrvvfo',spawn1.x,spawn1.z,false,'#ff493d','down'),new ArenaFighter('revvfo','Revvfo',spawn2.x,spawn2.z,true,'#a855f7','down')];
     this.trainingMode=false;this.localMode=false;this.matchMode='cpu';this.allowRandomRematch=true;this.identityGuideOpen=false;this.trainingDummy='stand';this.trainingPursuitDefense='never';this.trainingRecovery='never';this.trainingDrill='free';this.trainingTrial=createTrainingTrialState('free');this.feedback=combatFeedbackPreferences();this.camera=initialCameraState(this.stage,this.fighters);this.stageSelectIndex=0;this.pursuitCameraBlend=0;this.pursuitImpactHold=0;this.pursuitPromptLinger=0;this.pursuitPromptLastText='';this.identityHintsShown=new Set();this.selectedAbilitySlot=0;this.combatEventSerial=0;this.particles=[];this.projectiles=[];this.agonyClones=[];this.thunderZones=[];this.quakes=[];this.earthWalls=[];this.breakables=[];this.noticeTime=0;this.koTarget=KO_TARGET;this.scores=[0,0];this.round=1;this.time=Infinity;this.phase='intro';this.phaseTime=1.55;this.lastLoser=-1;this.ringOutEnabled=false;this.onRingOut=null;this.stageBoundaryPulse=0;this.crowdExcitement=0;this.announcerCooldown=0;this.pendingKoImpact=null;this.difficulty=this.readDifficulty();this.lensMastery=this.readLensMastery();this.masterySession=createBattleMasterySession({fighterId:this.fighters[0].id,opponentId:this.fighters[1].id,stageId:this.stage.id,mode:this.matchMode});this.masteryResult=null;
@@ -456,7 +463,14 @@ class ArenaBattle{
   saveLensMastery(value){this.lensMastery=clamp(Math.round(value),0,100);try{localStorage.setItem(LENS_MASTERY_KEY,String(this.lensMastery))}catch{}return this.lensMastery}
   lensCosts(){const ratio=this.lensMastery/100;return{energy:Math.round(60-15*ratio),hp:Math.round(25-15*ratio),duration:4+ratio*1.5,autoDodges:this.lensMastery>=100?2:0}}
   predictedAction(foe){const exact=String(foe.attackState?.def?.kind||foe.aiQueuedAbility||foe.aiIntent||'approach').toLowerCase();if(this.lensMastery>=70)return exact.toUpperCase().replaceAll('_',' ');if(exact.includes('beam')||exact.includes('blast')||exact.includes('projectile'))return'RANGED PRESSURE';if(exact.includes('dash')||exact.includes('approach')||exact.includes('move'))return'MOVEMENT APPROACH';if(exact.includes('guard')||exact.includes('block'))return'DEFENSIVE ACTION';if(exact.includes('heavy')||exact.includes('launcher'))return'HEAVY PRESSURE';return'MELEE PRESSURE'}
-  loadFighterAsset(id){return loadSprite(this.renderer,id)}
+  loadFighterAsset(id){
+    this.assetPromises??=new Map();
+    if(!this.assetPromises.has(id))this.assetPromises.set(id,loadSprite(this.renderer,id).then(asset=>{
+      if(!asset)this.assetPromises.delete(id);
+      return asset;
+    }));
+    return this.assetPromises.get(id);
+  }
   ensureFighterAsset(fighter,id=fighter?.id,{force=false}={}){
     if(!fighter||!id)return Promise.resolve(null);
     const expectedId=String(id);
@@ -502,8 +516,19 @@ class ArenaBattle{
   }
 
   stopMatch(){
-    if(this.active){this.active=false;cancelAnimationFrame(this.raf);this.controls.stop()}
+    this.active=false;cancelAnimationFrame(this.raf);this.raf=0;this.controls.stop();
     for(const fighter of this.fighters){this.clearPursuitState(fighter);endFocusRecovery(fighter,{applyRecovery:false})}this.pursuitCameraBlend=0;this.pursuitImpactHold=0;this.pursuitPromptLinger=0;this.pursuitPromptLastText='';this.hitstop=0;this.cameraShake=0;this.paused=false;this.controlSettingsPaused=false;this.identityGuideOpen=false;this.root.querySelector('[data-identity-guide]')?.classList.add('hidden');this.root.classList.remove('paused','pursuit-active');this.root.querySelector('[data-pursuit-prompt]')?.classList.remove('show','ready','danger');this.root.querySelectorAll('.resourceTrack.techReady,.resourceTrack.techSpent').forEach(node=>node.classList.remove('techReady','techSpent'));this.root.querySelector('[data-result]').classList.add('hidden');this.clearFighterLayer();this.updateLensBlindness();
+  }
+
+  dispose(){
+    if(this.disposed)return;
+    this.stopMatch();
+    this.disposed=true;
+    this.renderer.dispose();
+    this.assetPromises?.clear();
+    const context=this.audio.context;this.audio.context=null;
+    if(context&&context.state!=='closed')context.close().catch(()=>{});
+    if(this.root.__arenaBattle===this){delete this.root.__arenaBattle;this.root.remove()}
   }
 
   showStageSelect(){
@@ -527,7 +552,7 @@ class ArenaBattle{
 
 
   start(){
-    if(this.active)return;this.feedback=combatFeedbackPreferences();this.root.querySelector('[data-arena-stage-select]').classList.add('hidden');this.active=true;this.root.querySelector('[data-stage-name]').textContent=`${this.stage.name.toUpperCase()} • ${this.stageProfile?.archetype||'NEUTRAL'}`;this.canvas.setAttribute('aria-label',`${this.stage.name} WebGL perspective arena`);this.audio.enable();this.root.classList.remove('hidden','paused');['startScreen','mainMenuScreen','menuScreen','gameScreen'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));this.controls.start();this.root.classList.toggle('arenaTrainingMode',this.trainingMode);this.root.querySelector('[data-arena-training-panel]')?.classList.toggle('hidden',!this.trainingMode);this.setTrainingPanelCollapsed(this.trainingMode&&this.controls.touchEnabled());this.restart();this.last=performance.now();this.raf=requestAnimationFrame(timestamp=>this.loop(timestamp));
+    if(this.disposed||this.active)return;this.feedback=combatFeedbackPreferences();this.root.querySelector('[data-arena-stage-select]').classList.add('hidden');this.active=true;this.root.querySelector('[data-stage-name]').textContent=`${this.stage.name.toUpperCase()} • ${this.stageProfile?.archetype||'NEUTRAL'}`;this.canvas.setAttribute('aria-label',`${this.stage.name} WebGL perspective arena`);this.audio.enable();this.root.classList.remove('hidden','paused');['startScreen','mainMenuScreen','menuScreen','gameScreen'].forEach(id=>document.getElementById(id)?.classList.add('hidden'));this.controls.start();this.root.classList.toggle('arenaTrainingMode',this.trainingMode);this.root.querySelector('[data-arena-training-panel]')?.classList.toggle('hidden',!this.trainingMode);this.setTrainingPanelCollapsed(this.trainingMode&&this.controls.touchEnabled());this.restart();this.last=performance.now();this.raf=requestAnimationFrame(timestamp=>this.loop(timestamp));
     this.fighters.forEach(fighter=>{void this.ensureFighterAsset(fighter,fighter.id)});
   }
 
@@ -1382,10 +1407,10 @@ class ArenaBattle{
 }
 
 let instance=null;
-export function resetArenaBattleInstance(){if(instance)instance.stopMatch();instance=null}
-export function startArenaTraining(){try{if(!instance)instance=new ArenaBattle('dojo');instance.configureMatch({mode:'training',fighters:['rrvvfo','revvfo'],stageId:'dojo',koTarget:3});instance.trainingDummy='stand';instance.start()}catch(error){console.error('[Arena Training]',error);alert(`Arena Training could not start: ${error.message}`)}}
+export function resetArenaBattleInstance(){const previous=instance;instance=null;previous?.dispose()}
+export function startArenaTraining(){try{if(!instance||instance.disposed)instance=new ArenaBattle('dojo');instance.configureMatch({mode:'training',fighters:['rrvvfo','revvfo'],stageId:'dojo',koTarget:3});instance.trainingDummy='stand';instance.start()}catch(error){console.error('[Arena Training]',error);alert(`Arena Training could not start: ${error.message}`)}}
 
-export function startConfiguredArenaBattle(config={}){try{if(!instance)instance=new ArenaBattle(config.stageId||'dojo');instance.configureMatch(config);instance.start();return instance}catch(error){console.error('[Arena Configured Battle]',error);alert(`Arena Battle could not start: ${error.message}`);return null}}
+export function startConfiguredArenaBattle(config={}){try{if(!instance||instance.disposed)instance=new ArenaBattle(config.stageId||'dojo');instance.configureMatch(config);instance.start();return instance}catch(error){console.error('[Arena Configured Battle]',error);alert(`Arena Battle could not start: ${error.message}`);return null}}
 
-export function startArenaBattle(stageId=null){try{if(!instance)instance=new ArenaBattle(stageId||'dojo');instance.configureMatch({mode:'cpu',fighters:['rrvvfo','revvfo'],stageId:stageId||'dojo',difficulty:instance.readDifficulty(),koTarget:KO_TARGET});if(stageId)instance.start();else instance.showStageSelect()}catch(error){console.error(`[Arena ${BUILD_VERSION}]`,error);alert(`Arena Battle could not start: ${error.message}`)}}
+export function startArenaBattle(stageId=null){try{if(!instance||instance.disposed)instance=new ArenaBattle(stageId||'dojo');instance.configureMatch({mode:'cpu',fighters:['rrvvfo','revvfo'],stageId:stageId||'dojo',difficulty:instance.readDifficulty(),koTarget:KO_TARGET});if(stageId)instance.start();else instance.showStageSelect()}catch(error){console.error(`[Arena ${BUILD_VERSION}]`,error);alert(`Arena Battle could not start: ${error.message}`)}}
 export{ArenaBattle,ArenaFighter,ATTACKS,animationName,frameFor};

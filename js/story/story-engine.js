@@ -1,7 +1,7 @@
-import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a57-lookout-center';
-import {sharedInput} from '../input-runtime.js?v=29a57-lookout-center';
-import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a57-lookout-center';
-import {applyStoryProgressionToFighter} from './story-progression.js?v=29a57-lookout-center';
+import {ArenaBattle,resetArenaBattleInstance} from '../arena/arena-mode.js?v=29a58a-quality';
+import {sharedInput} from '../input-runtime.js?v=29a58a-quality';
+import {SonicBattleDialogue} from '../sonic-battle-dialogue.js?v=29a58a-quality';
+import {applyStoryProgressionToFighter} from './story-progression.js?v=29a58a-quality';
 
 export const STORY_ENGINE_VERSION='2.9A.24';
 export const STORY_ENGINE_CACHE='29a412-echo-ridge-20261122';
@@ -371,6 +371,7 @@ export class StoryEngineSession{
   }
 
   destroy(){
+    if(!this.attached)return;
     this.closeDialogue();
     this.clearHotbarAvailability();
     this.clearChapterProfile();
@@ -383,7 +384,8 @@ export class StoryEngineSession{
       for(const key of ['storyEngineMode','storyEngineVersion','storyInput','storyHudMode','storyRuntime','storyChapter','storyProfile'])delete root.dataset[key];
     }
     for(const [name,fn] of Object.entries(this.baseRuntime))this.battle[name]=fn;
-    resetArenaBattleInstance();
+    this.battle.dispose();
+    this.battle.storyEngine=null;
     this.attached=false;
   }
 }
@@ -396,7 +398,7 @@ export function attachStoryEngine(battle,options={}){
 
 export function destroyStoryBattle(battle){
   if(battle?.storyEngine)battle.storyEngine.destroy();
-  else resetArenaBattleInstance();
+  else battle?.dispose();
 }
 
 export function storyArenaNames(battle,left,right){setArenaNames(battle,left,right)}

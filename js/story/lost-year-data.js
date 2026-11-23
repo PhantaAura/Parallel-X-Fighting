@@ -1,5 +1,5 @@
-import {inspectStoryReliability} from './story-reliability.js?v=29a57-lookout-center';
-import {normalizeConnectedWorldState} from './connected-world.js?v=29a57-lookout-center';
+import {inspectStoryReliability} from './story-reliability.js?v=29a58a-quality';
+import {normalizeConnectedWorldState} from './connected-world.js?v=29a58a-quality';
 export const LOST_YEAR_SAVE_KEY='pxLostYearProgressV1';
 export const RRVVFO_PLANNED_CHAPTER_COUNT=8;
 export const STORY_CHAPTERS_PER_CHARACTER=RRVVFO_PLANNED_CHAPTER_COUNT;

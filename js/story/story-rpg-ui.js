@@ -1,5 +1,5 @@
-import {sharedInput} from '../input-runtime.js?v=29a57-lookout-center';
-import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a57-lookout-center';
+import {sharedInput} from '../input-runtime.js?v=29a58a-quality';
+import {storyStatsForProgress,storyLevelFromProgress,storyXpFromProgress,levelHudText} from './story-progression.js?v=29a58a-quality';
 
 export const RRVVFO_ATTACK_SIGNS=Object.freeze([
   {type:'SHOT',icon:'✦',name:'Fire Blast'},

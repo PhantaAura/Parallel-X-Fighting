@@ -1,5 +1,16 @@
 # Fighter sprite atlas notes
 
+## Code quality and lifecycle fixes (2.9A.58)
+
+- Fixed the malformed debug-combat import that prevented the main module graph from parsing.
+- Battles now own and dispose their screen, controls, GPU resources and audio context; chapter cleanup disposes its actual battle and repeated teardown is safe. Styles and button listeners no longer accumulate across replacement battles.
+- Deduplicated sprite loading per battle, registered image handlers before assigning the source, and prevented late loads from allocating textures after disposal.
+- Extracted a pure surface-mesh utility; fixed edge normals, guarded degenerate tips and enforced WebGL 1 index limits.
+- Save imports now fail explicitly when storage is unavailable or cannot be read before replacement.
+- Separated the Settings build-button selector from the debug hint. The map gallery releases graphics resources after capturing its previews.
+- Added ten Node regression checks, including syntax validation of every game module, and a browser lifecycle check page.
+
+
 ## Shadow’s Lookout alignment (2.9A.57)
 
 - Centered the sanctuary building and dome on the round plinth and surrounding column ring, removing a 65-unit rear offset.

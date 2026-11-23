@@ -1,9 +1,9 @@
-import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a57-lookout-center';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a57-lookout-center';
-import {recordWorldVisit} from './connected-world.js?v=29a57-lookout-center';
-import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a57-lookout-center';
-import {discoverWorldDelight} from './world-delight.js?v=29a57-lookout-center';
-import {ArenaBattle} from '../arena/arena-mode.js?v=29a57-lookout-center';
+import {RrvvfoRoadHub} from './rrvvfo-road-hub.js?v=29a58a-quality';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a58a-quality';
+import {recordWorldVisit} from './connected-world.js?v=29a58a-quality';
+import {completeAdventureMission,discoverAdventureMission} from './core-fun.js?v=29a58a-quality';
+import {discoverWorldDelight} from './world-delight.js?v=29a58a-quality';
+import {ArenaBattle} from '../arena/arena-mode.js?v=29a58a-quality';
 import {
   CHAPTER1_ADVENTURE_VERSION,
   CHAPTER1_FIRE_BLAST_STORY_FOCUS,
@@ -12,7 +12,7 @@ import {
   CHAPTER1_ROUTES,
   chapter1RouteFromPosition,
   chapter1RouteMarkers
-} from './chapter1-adventure.js?v=29a57-lookout-center';
+} from './chapter1-adventure.js?v=29a58a-quality';
 
 const PATCH_FLAG=Symbol.for('px.chapter1Adventure4072r');
 const ARENA_FLAG=Symbol.for('px.storyFireBlast4072r');

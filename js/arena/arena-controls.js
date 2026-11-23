@@ -1,5 +1,5 @@
-import {CONTROL_MAPS} from '../input.js?v=29a57-lookout-center';
-import {sharedInput} from '../input-runtime.js?v=29a57-lookout-center';
+import {CONTROL_MAPS} from '../input.js?v=29a58a-quality';
+import {sharedInput} from '../input-runtime.js?v=29a58a-quality';
 
 export const ARENA_CONTROL_SETTINGS_KEY='pxArenaControlsV1';
 

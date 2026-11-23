@@ -1,5 +1,5 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.57 — Chapter World Rebuild
+## Prototype 2.9A.58 — Code Quality and Stability
 
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
@@ -24,7 +24,7 @@ The route selector now uses its missing character-preview panel and shows the ro
 
 ## Current build
 
-**Prototype 2.9A.57 — Chapter World Rebuild**
+**Prototype 2.9A.58 — Code Quality and Stability**
 
 This is a complete cumulative build. No older package is required.
 
@@ -420,3 +420,7 @@ Save-export schema: **268**. Existing Story saves continue through the current s
 ## Testing
 
 Use [`FRIEND-PLAYTEST-CHECKLIST-2.9A.33.md`](FRIEND-PLAYTEST-CHECKLIST-2.9A.33.md) for the real-device pass. See [`PATCH-NOTES-2.9A.33.md`](PATCH-NOTES-2.9A.33.md) and [`VALIDATION-2.9A.33.md`](VALIDATION-2.9A.33.md) for release details.
+
+## Code checks
+
+Run `node --test tests/code-quality.test.mjs` for save-import, geometry, renderer cleanup, and JavaScript syntax checks. Serve the repository locally and open `tests/lifecycle-smoke.html` for browser lifecycle checks. These do not replace chapter playthroughs or mobile performance checks.

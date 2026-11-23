@@ -1,3 +1,5 @@
+import {surface} from './surface-mesh.js?v=29a58a-quality';
+
 // Chapter 1 uses a sculpted valley mesh; the central story lanes stay level.
 const roadZ=x=>Math.sin((x-75)/470)*44;
 const riverX=z=>75+Math.sin(z/290)*48*(1-Math.exp(-z*z/50000));
@@ -8,18 +10,7 @@ export function valleyHeight(x,z){
   return (32+84*(.5+.5*Math.sin(x/430+z/630))+50*Math.sin(z/460)**2)*rise*rise*Math.min(1,Math.max(0,(river-105)/130));
 }
 const noise=n=>{const t=Math.sin(n*78.233)*43758.5453;return t-Math.floor(t)};
-export function surface(nx,nz,point){
-  const positions=[],normals=[],uvs=[],indices=[];
-  for(let j=0;j<=nz;j++)for(let i=0;i<=nx;i++){
-    const u=i/nx,v=j/nz,p=point(u,v),a=point(Math.min(1,u+.001),v),b=point(u,Math.min(1,v+.001));
-    positions.push(...p);uvs.push(u,v);
-    const ax=a[0]-p[0],ay=a[1]-p[1],az=a[2]-p[2],bx=b[0]-p[0],by=b[1]-p[1],bz=b[2]-p[2];
-    let n=[az*by-ay*bz,ax*bz-az*bx,ay*bx-ax*by],l=Math.hypot(...n)||1;
-    if(n[1]<0)n=n.map(x=>-x);normals.push(...n.map(x=>x/l));
-    if(i<nx&&j<nz){const k=j*(nx+1)+i;indices.push(k,k+nx+1,k+1,k+1,k+nx+1,k+nx+2)}
-  }
-  return{positions,normals,uvs,indices};
-}
+
 const terrain=surface(100,80,(u,v)=>{const x=-3500+u*7000,z=-2600+v*5200;return[x,valleyHeight(x,z),z]});
 const road=surface(100,8,(u,v)=>{const x=-1480+u*3100,edge=86+Math.sin(x/103)*6+Math.sin(x/37)*3,z=roadZ(x)+(v-.5)*edge*2;return[x,3+Math.sin(v*Math.PI)*1.5,z]});
 const creek=surface(10,90,(u,v)=>{const z=-2400+v*4800,x=riverX(z)+(u-.5)*(113+Math.sin(z/120)*10);return[x,5,z]});

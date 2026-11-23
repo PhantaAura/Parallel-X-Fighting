@@ -11,7 +11,9 @@ export const SAGE_MANIFEST_URL=new URL('../assets/fighters/sage/sage-animations.
 export const WADE_MANIFEST_URL=new URL('../assets/fighters/wade/wade-animations.json',import.meta.url).href;
 export const BARK_MANIFEST_URL=new URL('../assets/fighters/bark/bark-animations.json',import.meta.url).href;
 export const JIMMY_MANIFEST_URL=new URL('../assets/fighters/jimmy/jimmy-animations.json',import.meta.url).href;
-export const SPRITE_FIGHTER_IDS=Object.freeze(['rrvvfo','revvfo','wade','bark','sage','jimmy']);
+export const JONATHAN_MANIFEST_URL=new URL('../assets/fighters/jonathan/jonathan-animations.json',import.meta.url).href;
+export const RAGGIE_MANIFEST_URL=new URL('../assets/fighters/raggie/raggie-animations.json',import.meta.url).href;
+export const SPRITE_FIGHTER_IDS=Object.freeze(['rrvvfo','revvfo','wade','bark','sage','jimmy','jonathan','raggie']);
 const RRVVFO_VISUAL_SCHEMA_VERSION=5;
 export const RRVVFO_APPEARANCE_SLOTS=Object.freeze(['player1','player2','trainingPlayer1','trainingDummy']);
 export const RRVVFO_APPEARANCES=Object.freeze({
@@ -84,7 +86,7 @@ export const resolveRrvvfoAnimation=resolveFighterAnimation;
 export class FighterVisuals{
   constructor({settings=loadRrvvfoVisualSettings(),manifestUrl=null,manifestUrls={},onStatus=()=>{}}={}){
     this.settings={...defaultRrvvfoVisualSettings(),...settings};
-    this.manifestUrls={rrvvfo:manifestUrl||RRVVFO_MANIFEST_URL,revvfo:REVVFO_MANIFEST_URL,wade:WADE_MANIFEST_URL,bark:BARK_MANIFEST_URL,sage:SAGE_MANIFEST_URL,jimmy:JIMMY_MANIFEST_URL,...manifestUrls};
+    this.manifestUrls={rrvvfo:manifestUrl||RRVVFO_MANIFEST_URL,revvfo:REVVFO_MANIFEST_URL,wade:WADE_MANIFEST_URL,bark:BARK_MANIFEST_URL,sage:SAGE_MANIFEST_URL,jimmy:JIMMY_MANIFEST_URL,jonathan:JONATHAN_MANIFEST_URL,raggie:RAGGIE_MANIFEST_URL,...manifestUrls};
     this.onStatus=onStatus;this.status='idle';this.error=null;
     this.atlases=new Map();this.renderers=new Map();this.animators=new WeakMap();this.afterimages=new WeakMap();
     // Compatibility aliases used by the Rrvvfo debug viewer.

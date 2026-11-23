@@ -1,0 +1,1874 @@
+{
+  "version": 2,
+  "fighter": "raggie",
+  "image": "./raggie-atlas.webp",
+  "atlas": {
+    "width": 1152,
+    "height": 1152,
+    "frameCanvas": [
+      192,
+      192
+    ],
+    "columns": 6
+  },
+  "defaults": {
+    "appearance": "down",
+    "groundPivot": [
+      96,
+      178
+    ],
+    "scale": 0.74,
+    "pixelSmoothing": true,
+    "depthScale": 0.08,
+    "maxAfterimages": 3
+  },
+  "frames": {
+    "raggie_01": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        8,
+        105,
+        184
+      ],
+      "source": [
+        0,
+        0,
+        192,
+        192
+      ]
+    },
+    "raggie_02": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        33,
+        11,
+        124,
+        181
+      ],
+      "source": [
+        192,
+        0,
+        192,
+        192
+      ]
+    },
+    "raggie_03": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        35,
+        10,
+        132,
+        182
+      ],
+      "source": [
+        384,
+        0,
+        192,
+        192
+      ]
+    },
+    "raggie_04": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        29,
+        10,
+        107,
+        182
+      ],
+      "source": [
+        576,
+        0,
+        192,
+        192
+      ]
+    },
+    "raggie_05": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        31,
+        10,
+        111,
+        182
+      ],
+      "source": [
+        768,
+        0,
+        192,
+        192
+      ]
+    },
+    "raggie_06": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        35,
+        10,
+        116,
+        182
+      ],
+      "source": [
+        960,
+        0,
+        192,
+        192
+      ]
+    },
+    "raggie_07": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        25,
+        0,
+        135,
+        192
+      ],
+      "source": [
+        0,
+        192,
+        192,
+        192
+      ]
+    },
+    "raggie_08": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        44,
+        0,
+        117,
+        192
+      ],
+      "source": [
+        192,
+        192,
+        192,
+        192
+      ]
+    },
+    "raggie_09": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        23,
+        0,
+        135,
+        192
+      ],
+      "source": [
+        384,
+        192,
+        192,
+        192
+      ]
+    },
+    "raggie_10": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        37,
+        0,
+        111,
+        192
+      ],
+      "source": [
+        576,
+        192,
+        192,
+        192
+      ]
+    },
+    "raggie_11": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        23,
+        0,
+        129,
+        192
+      ],
+      "source": [
+        768,
+        192,
+        192,
+        192
+      ]
+    },
+    "raggie_12": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        29,
+        0,
+        132,
+        184
+      ],
+      "source": [
+        960,
+        192,
+        192,
+        192
+      ]
+    },
+    "raggie_13": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        30,
+        0,
+        135,
+        192
+      ],
+      "source": [
+        0,
+        384,
+        192,
+        192
+      ]
+    },
+    "raggie_14": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        14,
+        0,
+        170,
+        192
+      ],
+      "source": [
+        192,
+        384,
+        192,
+        192
+      ]
+    },
+    "raggie_15": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        17,
+        0,
+        142,
+        192
+      ],
+      "source": [
+        384,
+        384,
+        192,
+        192
+      ]
+    },
+    "raggie_16": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        28,
+        0,
+        112,
+        192
+      ],
+      "source": [
+        576,
+        384,
+        192,
+        192
+      ]
+    },
+    "raggie_17": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        21,
+        0,
+        136,
+        192
+      ],
+      "source": [
+        768,
+        384,
+        192,
+        192
+      ]
+    },
+    "raggie_18": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        40,
+        76,
+        113,
+        116
+      ],
+      "source": [
+        960,
+        384,
+        192,
+        192
+      ]
+    },
+    "raggie_19": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        17,
+        0,
+        167,
+        192
+      ],
+      "source": [
+        0,
+        576,
+        192,
+        192
+      ]
+    },
+    "raggie_20": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        20,
+        0,
+        166,
+        192
+      ],
+      "source": [
+        192,
+        576,
+        192,
+        192
+      ]
+    },
+    "raggie_21": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        48,
+        0,
+        116,
+        192
+      ],
+      "source": [
+        384,
+        576,
+        192,
+        192
+      ]
+    },
+    "raggie_22": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        29,
+        0,
+        124,
+        189
+      ],
+      "source": [
+        576,
+        576,
+        192,
+        192
+      ]
+    },
+    "raggie_23": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        23,
+        0,
+        139,
+        192
+      ],
+      "source": [
+        768,
+        576,
+        192,
+        192
+      ]
+    },
+    "raggie_24": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        21,
+        0,
+        156,
+        192
+      ],
+      "source": [
+        960,
+        576,
+        192,
+        192
+      ]
+    },
+    "raggie_25": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        33,
+        20,
+        124,
+        152
+      ],
+      "source": [
+        0,
+        768,
+        192,
+        192
+      ]
+    },
+    "raggie_26": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        19,
+        21,
+        125,
+        151
+      ],
+      "source": [
+        192,
+        768,
+        192,
+        192
+      ]
+    },
+    "raggie_27": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        1,
+        23,
+        171,
+        147
+      ],
+      "source": [
+        384,
+        768,
+        192,
+        192
+      ]
+    },
+    "raggie_28": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        4,
+        23,
+        181,
+        148
+      ],
+      "source": [
+        576,
+        768,
+        192,
+        192
+      ]
+    },
+    "raggie_29": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        5,
+        25,
+        154,
+        146
+      ],
+      "source": [
+        768,
+        768,
+        192,
+        192
+      ]
+    },
+    "raggie_30": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        13,
+        21,
+        152,
+        150
+      ],
+      "source": [
+        960,
+        768,
+        192,
+        192
+      ]
+    },
+    "raggie_31": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        15,
+        15,
+        143,
+        154
+      ],
+      "source": [
+        0,
+        960,
+        192,
+        192
+      ]
+    },
+    "raggie_32": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        29,
+        12,
+        116,
+        159
+      ],
+      "source": [
+        192,
+        960,
+        192,
+        192
+      ]
+    },
+    "raggie_33": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        17,
+        16,
+        141,
+        150
+      ],
+      "source": [
+        384,
+        960,
+        192,
+        192
+      ]
+    },
+    "raggie_34": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        14,
+        9,
+        132,
+        161
+      ],
+      "source": [
+        576,
+        960,
+        192,
+        192
+      ]
+    },
+    "raggie_35": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        7,
+        2,
+        147,
+        166
+      ],
+      "source": [
+        768,
+        960,
+        192,
+        192
+      ]
+    },
+    "raggie_36": {
+      "width": 192,
+      "height": 192,
+      "groundPivot": [
+        96,
+        178
+      ],
+      "centerPivot": [
+        96,
+        96
+      ],
+      "visualOffsetX": 0,
+      "visualOffsetY": 0,
+      "effectAnchor": [
+        122,
+        96
+      ],
+      "handAnchor": [
+        130,
+        91
+      ],
+      "projectileOrigin": [
+        139,
+        90
+      ],
+      "targetFacingDirection": "right",
+      "contentBounds": [
+        25,
+        12,
+        140,
+        159
+      ],
+      "source": [
+        960,
+        960,
+        192,
+        192
+      ]
+    }
+  },
+  "animations": {
+    "idle": {
+      "frames": [
+        "raggie_01",
+        "raggie_02",
+        "raggie_03",
+        "raggie_04"
+      ],
+      "frameDuration": 125,
+      "loop": true,
+      "cancelable": true
+    },
+    "fightingStance": {
+      "frames": [
+        "raggie_05",
+        "raggie_06"
+      ],
+      "frameDuration": 105,
+      "loop": true,
+      "cancelable": true
+    },
+    "run": {
+      "frames": [
+        "raggie_07",
+        "raggie_08",
+        "raggie_09",
+        "raggie_10"
+      ],
+      "frameDuration": 78,
+      "loop": true,
+      "cancelable": true
+    },
+    "jumpStart": {
+      "frames": [
+        "raggie_13",
+        "raggie_14"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true
+    },
+    "jumpRise": {
+      "frames": [
+        "raggie_14",
+        "raggie_15"
+      ],
+      "frameDuration": 90,
+      "loop": true,
+      "cancelable": true
+    },
+    "fall": {
+      "frames": [
+        "raggie_15",
+        "raggie_16"
+      ],
+      "frameDuration": 90,
+      "loop": true,
+      "cancelable": true
+    },
+    "land": {
+      "frames": [
+        "raggie_17",
+        "raggie_18"
+      ],
+      "frameDuration": 70,
+      "loop": false,
+      "cancelable": true
+    },
+    "dash": {
+      "frames": [
+        "raggie_11",
+        "raggie_12"
+      ],
+      "frameDuration": 58,
+      "loop": false,
+      "cancelable": true
+    },
+    "turn": {
+      "frames": [
+        "raggie_02",
+        "raggie_03",
+        "raggie_04"
+      ],
+      "frameDuration": 85,
+      "loop": false,
+      "cancelable": true
+    },
+    "light1": {
+      "frames": [
+        "raggie_25",
+        "raggie_26"
+      ],
+      "frameDuration": 58,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ]
+    },
+    "light2": {
+      "frames": [
+        "raggie_26",
+        "raggie_27"
+      ],
+      "frameDuration": 62,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ]
+    },
+    "light3": {
+      "frames": [
+        "raggie_28",
+        "raggie_29"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ]
+    },
+    "heavyStartup": {
+      "frames": [
+        "raggie_27",
+        "raggie_28"
+      ],
+      "frameDuration": 85,
+      "loop": false,
+      "cancelable": true
+    },
+    "heavyActive": {
+      "frames": [
+        "raggie_29",
+        "raggie_30"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ]
+    },
+    "heavyRecovery": {
+      "frames": [
+        "raggie_30",
+        "raggie_31"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "launcherStartup": {
+      "frames": [
+        "raggie_32",
+        "raggie_33"
+      ],
+      "frameDuration": 80,
+      "loop": false,
+      "cancelable": true
+    },
+    "launcherActive": {
+      "frames": [
+        "raggie_33",
+        "raggie_34"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ]
+    },
+    "launcherRecovery": {
+      "frames": [
+        "raggie_34",
+        "raggie_35"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "airLight": {
+      "frames": [
+        "raggie_20",
+        "raggie_25"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ]
+    },
+    "airHeavy": {
+      "frames": [
+        "raggie_21",
+        "raggie_22"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ]
+    },
+    "airHurt": {
+      "frames": [
+        "raggie_11"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "airFall": {
+      "frames": [
+        "raggie_15",
+        "raggie_16"
+      ],
+      "frameDuration": 90,
+      "loop": true,
+      "cancelable": true
+    },
+    "blockStart": {
+      "frames": [
+        "raggie_11",
+        "raggie_12"
+      ],
+      "frameDuration": 80,
+      "loop": false,
+      "cancelable": true
+    },
+    "blockHold": {
+      "frames": [
+        "raggie_12",
+        "raggie_13"
+      ],
+      "frameDuration": 100,
+      "loop": true,
+      "cancelable": true
+    },
+    "blockHit": {
+      "frames": [
+        "raggie_14",
+        "raggie_15"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true
+    },
+    "perfectBlock": {
+      "frames": [
+        "raggie_12",
+        "raggie_14"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true
+    },
+    "hurtLight": {
+      "frames": [
+        "raggie_11"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true
+    },
+    "hurtHeavy": {
+      "frames": [
+        "raggie_14"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "knockback": {
+      "frames": [
+        "raggie_11",
+        "raggie_14"
+      ],
+      "frameDuration": 80,
+      "loop": false,
+      "cancelable": true
+    },
+    "knockdown": {
+      "frames": [
+        "raggie_35",
+        "raggie_36"
+      ],
+      "frameDuration": 105,
+      "loop": false,
+      "cancelable": true
+    },
+    "groundDown": {
+      "frames": [
+        "raggie_36"
+      ],
+      "frameDuration": 110,
+      "loop": true,
+      "cancelable": true
+    },
+    "getUp": {
+      "frames": [
+        "raggie_17",
+        "raggie_18",
+        "raggie_19"
+      ],
+      "frameDuration": 95,
+      "loop": false,
+      "cancelable": true
+    },
+    "defeated": {
+      "frames": [
+        "raggie_36"
+      ],
+      "frameDuration": 130,
+      "loop": false,
+      "cancelable": true
+    },
+    "victory": {
+      "frames": [
+        "raggie_32",
+        "raggie_33",
+        "raggie_34"
+      ],
+      "frameDuration": 140,
+      "loop": false,
+      "cancelable": true
+    },
+    "defeat": {
+      "frames": [
+        "raggie_35",
+        "raggie_36",
+        "raggie_01"
+      ],
+      "frameDuration": 130,
+      "loop": false,
+      "cancelable": true
+    },
+    "flatten": {
+      "frames": [
+        "raggie_19",
+        "raggie_20"
+      ],
+      "frameDuration": 100,
+      "loop": false,
+      "cancelable": true
+    },
+    "foldThroughGap": {
+      "frames": [
+        "raggie_20",
+        "raggie_21",
+        "raggie_22"
+      ],
+      "frameDuration": 90,
+      "loop": false,
+      "cancelable": true
+    },
+    "unfold": {
+      "frames": [
+        "raggie_23",
+        "raggie_24"
+      ],
+      "frameDuration": 85,
+      "loop": false,
+      "cancelable": true
+    },
+    "paperDisc": {
+      "frames": [
+        "raggie_25",
+        "raggie_26",
+        "raggie_27"
+      ],
+      "frameDuration": 65,
+      "loop": false,
+      "cancelable": true,
+      "events": [
+        {
+          "frame": 1,
+          "type": "attackActive"
+        }
+      ]
+    },
+    "paperDiscReturn": {
+      "frames": [
+        "raggie_26",
+        "raggie_27"
+      ],
+      "frameDuration": 70,
+      "loop": false,
+      "cancelable": true
+    },
+    "paperFeint": {
+      "frames": [
+        "raggie_28",
+        "raggie_29"
+      ],
+      "frameDuration": 70,
+      "loop": false,
+      "cancelable": true
+    },
+    "float": {
+      "frames": [
+        "raggie_15",
+        "raggie_16"
+      ],
+      "frameDuration": 110,
+      "loop": true,
+      "cancelable": true
+    },
+    "slipSideways": {
+      "frames": [
+        "raggie_20",
+        "raggie_22"
+      ],
+      "frameDuration": 75,
+      "loop": false,
+      "cancelable": true
+    }
+  },
+  "effects": {}
+}

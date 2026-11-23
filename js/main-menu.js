@@ -1,12 +1,12 @@
-import {BUILD_VERSION} from './build-info.js?v=29a412-echo-ridge-20261122';
+import {BUILD_VERSION} from './build-info.js?v=29a413-parallel-routes-20261122';
 import {sharedInput} from './input-runtime.js?v=29a412-echo-ridge-20261122';
 import {loadLostYearProgress,modeUnlockedForProgress,modeUnlockRequirement} from './story/lost-year-data.js?v=29a412-echo-ridge-20261122';
 
-const MENU_MODULE_CACHE='29a412-echo-ridge-20261122';
+const MENU_MODULE_CACHE='29a413-parallel-routes-20261122';
 export const PROGRESS_LOCKED_MODE_IDS=Object.freeze(['arena','cpu','local']);
 
 export const MAIN_MENU_MODES=Object.freeze([
-  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Experience what happened after Rrvvfo defeated Revvfo. Follow Rrvvfo through training, Tournament Road, the tournament, the mystery under the ring, and Echo Region.',players:'1',availability:'Rrvvfo • Chapters 1–4 of 8',accent:'story'},
+  {id:'story',label:'STORY',kicker:'THE LOST YEAR',description:'Choose Rrvvfo, Wade, Bark, Virek, or the Oddballs and experience the Lost Year from five connected perspectives.',players:'1',availability:'5 routes • 28 playable chapters',accent:'story'},
   {id:'arena',label:'ARENA',kicker:'3D BATTLE',description:'Fight across Tangai Dojo, the Global Tournament, Resonance Facility, Echo Caverns, and Mountain Path with stage-specific pressure, pursuit, and edge-control rules.',players:'1',availability:'5 playable arenas',accent:'arena'},
   {id:'cpu',label:'VS CPU',kicker:'SINGLE BATTLE',description:'Choose a fighter and play a quick battle or a full first-to-3 match against a fair 100-health rival.',players:'1',availability:'Available',accent:'cpu'},
   {id:'local',label:'2 PLAYER',kicker:'LOCAL VS',description:'Choose two finished fighters on the same device. Quick and full match formats use the same unified controls.',players:'2',availability:'Available',accent:'local'},

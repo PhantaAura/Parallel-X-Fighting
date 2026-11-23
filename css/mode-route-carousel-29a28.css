@@ -420,3 +420,12 @@
   #lostYearStoryScreen .routePanel{display:block!important}
   #lostYearStoryScreen .routePanel .routeFeature{display:none!important}
 }
+#lostYearStoryScreen .routeGrid.routeChooser{display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important;overflow:hidden!important}
+#lostYearStoryScreen .routeChooserGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:none!important;align-content:start!important;align-items:stretch!important;gap:9px!important;overflow-y:auto!important;padding:4px 8px 12px!important}
+#lostYearStoryScreen .routeChooserGrid .routeCard{min-width:0!important;min-height:150px!important;grid-template-columns:72px minmax(0,1fr)!important;grid-template-rows:1fr auto!important;gap:7px!important;padding:8px!important}
+#lostYearStoryScreen .routeChooserGrid .routePortrait{grid-row:1 / span 2!important;min-height:112px!important}
+#lostYearStoryScreen .routeChooserGrid .routeCopy h2{margin:3px 0!important;font-size:clamp(17px,2vw,26px)!important}
+#lostYearStoryScreen .routeChooserGrid .routeCopy h3{margin:3px 0!important;font-size:9px!important}
+#lostYearStoryScreen .routeChooserGrid .routeCopy p{display:block!important;margin:3px 0!important;font-size:9px!important;line-height:1.25!important}
+#lostYearStoryScreen .routeChooserGrid .routeStartHint{grid-column:2!important;justify-self:start!important;margin-top:1px!important;font-size:8px!important}
+@media(max-width:650px){#lostYearStoryScreen .routeChooserGrid{grid-template-columns:1fr!important}#lostYearStoryScreen .routeChooserGrid .routeCard{min-height:128px!important}}

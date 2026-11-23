@@ -1,4 +1,4 @@
-import {normalizeQuestVarietyState} from './quest-variety.js?v=29a411-orgred-chapters-20261122';
+import {normalizeQuestVarietyState} from './quest-variety.js?v=29a412-echo-ridge-20261122';
 export const CHAPTER2_HUB_QUEST_VERSION='2.9A.21';
 
 export const CHAPTER2_DISTRICTS=Object.freeze([

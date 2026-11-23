@@ -1,5 +1,5 @@
 # Parallels X: Clash of Souls
-## Prototype 2.9A.40.11 — Chapters 5–8
+## Prototype 2.9A.40.12 — Echo Ridge Expansion
 
 - Chapter 3 now begins with the unresolved tournament sabotage, not suspicion of Sage's Plouke disguise.
 - Ring evidence and witness testimony lead naturally into Strange Man's warning, the medical-worker contradiction, tournament maintenance, and the gradual Project Hollow reveal.
@@ -18,11 +18,11 @@ Play the GitHub Pages build: <https://phantaaura.github.io/Parallel-X-Fighting/>
 
 ## Current build
 
-**Prototype 2.9A.40.11 — Chapters 5–8**
+**Prototype 2.9A.40.12 — Echo Ridge Expansion**
 
 This is a complete cumulative build. No older package is required.
 
-The full Rrvvfo route now runs through the Organization of the Red conspiracy and the Season 1 finale. Chapters 5–8 include checkpointed fights, story choices, objective history, chapter replay/restart, chapter-specific pacing targets, and one optional three-step quest in each chapter. Quest choices and progress auto-save; each quest grants a one-time reward. Chapter 5 unlocks the unstable Shots of Agony prototype. The earlier Legacy updates also fix Wade’s race event progression, add hold-to-advance dialogue, save objective history, and shorten mandatory loops in Chapters 2 and 4.
+The full Rrvvfo route now runs through the Organization of the Red conspiracy and the Season 1 finale. Chapters 5–8 include checkpointed fights, story choices, objective history, chapter replay/restart, chapter-specific pacing targets, and one optional three-step quest in each chapter. Echo Region now has an optional upper-ridge exploration loop from the village overlook to a hidden keepsake, with its own map zones and a one-time Story XP reward. The loop adds a scenic route without adding required chapter errands. Chapter 5 unlocks the unstable Shots of Agony prototype. The earlier Legacy updates also fix Wade’s race event progression, add hold-to-advance dialogue, save objective history, and shorten mandatory loops in Chapters 2 and 4.
 
 
 

@@ -1,4 +1,4 @@
-import {abilityStatus,createDefaultAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a411-orgred-chapters-20261122';
+import {abilityStatus,createDefaultAbilityHotbarSettings,moveAbilitySlot,orderedAbilities,restoreAbilityOrder,saveAbilityHotbarSettings} from './ability-hotbar-data.js?v=29a412-echo-ridge-20261122';
 
 export const HOTBAR_INFO_HOLD_MS=460;
 export function hotbarPrompt(input,side,entry,device=input?.lastInputDevice?.[side-1]||'keyboard',slot=1){if(device==='touch')return'TAP';if(device==='keyboard'||device==='mouse')return String(slot);return input?.actionLabel?.(side,'u',{device:'controller'})||'ACTIVATE'}

@@ -76,6 +76,8 @@ export const WORLD_REGIONS=freezeDeep({
       water:{id:'water',name:'WATER CHANNEL',map:{x:420,y:430},kind:'landmark'},
       shrine:{id:'shrine',name:'OLD SHRINE',map:{x:310,y:100},kind:'secret'},
       upperRidge:{id:'upperRidge',name:'UPPER RIDGE',map:{x:500,y:155},kind:'route',layer:'upper'},
+      echoOverlook:{id:'echoOverlook',name:'ECHO OVERLOOK',map:{x:575,y:95},kind:'landmark',layer:'upper'},
+      ridgeCache:{id:'ridgeCache',name:'RIDGE KEEPSAKE',map:{x:650,y:105},kind:'secret',layer:'upper'},
       apothecary:{id:'apothecary',name:'OLD APOTHECARY',map:{x:455,y:235},kind:'building'},
       cavernApproach:{id:'cavernApproach',name:'CAVERN APPROACH',map:{x:555,y:350},kind:'junction'},
       caverns:{id:'caverns',name:'ECHO CAVERNS',map:{x:650,y:395},kind:'dungeon',layer:'lower'},
@@ -87,6 +89,7 @@ export const WORLD_REGIONS=freezeDeep({
     links:[
       ['lowerTrail','villageGate'],['villageGate','central'],['central','residential'],['central','wall'],['central','water'],
       ['residential','shrine'],['residential','apothecary'],['water','cavernApproach'],['apothecary','upperRidge'],
+      ['upperRidge','echoOverlook'],['echoOverlook','ridgeCache'],['ridgeCache','foothills'],
       ['upperRidge','cavernApproach'],['cavernApproach','caverns'],['cavernApproach','foothills'],['foothills','mountain'],['mountain','summit'],['summit','lookout']
     ]
   }

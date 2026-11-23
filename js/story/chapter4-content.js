@@ -1,5 +1,5 @@
-import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a411-orgred-chapters-20261122';
-import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a411-orgred-chapters-20261122';
+import {normalizeRpgPacingState} from './rpg-pacing.js?v=29a412-echo-ridge-20261122';
+import {CHAPTER4_PARTY_FIELD_ACTIONS,normalizeQuestVarietyState} from './quest-variety.js?v=29a412-echo-ridge-20261122';
 export const CHAPTER4_MISSION_ID='rrvvfo-04';
 export const CHAPTER4_STATE_VERSION=5;
 
@@ -51,7 +51,7 @@ export function freshChapter4State(){
     beaconNodes:[],cavernDoors:[],liftParts:[],mountainSignals:[],
     pacing:normalizeRpgPacingState('chapter4'),
     variety:normalizeQuestVarietyState('chapter4'),
-    villageDefenseComplete:false,teamRestSeen:false,charm:{echoChimesComplete:false},
+    villageDefenseComplete:false,teamRestSeen:false,charm:{echoChimesComplete:false,echoOverlookVisited:false,echoRidgeKeepsake:false},
     ryuzankaro:{available:false,started:false,ingredients:[],swarmsCleared:[],apothecaryFormula:false,bossDefeated:false,skipped:false,phase:'idle',checkpoint:'none',rewardsGranted:false},
     rewards:{lensMastery:0,vibrationSense:false,objectSwapRange:0,teamBadge:false,ryuzankaroCodex:false},
     hollowWatcher:{defeated:false,patternsRecorded:0,highestConfidence:0},

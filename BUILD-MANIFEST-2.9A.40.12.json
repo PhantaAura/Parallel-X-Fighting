@@ -1,0 +1,14 @@
+{
+  "build": "Prototype 2.9A.40.12 — Echo Ridge Expansion",
+  "base": "Prototype 2.9A.40.11 — Chapters 5–8",
+  "baseCommit": "e2b0d58f34d01f4fdff0e229038053373d7beb88",
+  "cache": "29a412-echo-ridge-20261122",
+  "saveSchema": 268,
+  "releaseType": "full cumulative GitHub Pages deployment",
+  "features": [
+    "optional Echo Region overlook and ridge keepsake route",
+    "two new connected-world map zones linked to Upper Ridge and Mountain Foothills",
+    "one-time 75 Story XP reward and persistent Echo Ridge Rubbing key item",
+    "route progress and rewards stay out of temporary Replay saves"
+  ]
+}

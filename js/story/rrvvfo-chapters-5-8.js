@@ -1,8 +1,8 @@
-import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a411-orgred-chapters-20261122';
-import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a411-orgred-chapters-20261122';
-import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a411-orgred-chapters-20261122';
-import {storyConfirm} from './story-ux.js?v=29a411-orgred-chapters-20261122';
-import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a411-orgred-chapters-20261122';
+import {attachStoryEngine,createStoryBattle,destroyStoryBattle} from './story-engine.js?v=29a412-echo-ridge-20261122';
+import {loadLostYearProgress,saveLostYearProgress} from './lost-year-data.js?v=29a412-echo-ridge-20261122';
+import {addStoryXp,applyStoryLevelToFighter,applyStoryProgressionToFighter} from './story-progression.js?v=29a412-echo-ridge-20261122';
+import {storyConfirm} from './story-ux.js?v=29a412-echo-ridge-20261122';
+import {attachStoryObjectiveHistory,recordStoryObjective} from './objective-history.js?v=29a412-echo-ridge-20261122';
 
 const RUN_ID='pxLegacyRrvvfoChapterRun';
 const CHAPTERS=Object.freeze({

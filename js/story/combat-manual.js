@@ -1,4 +1,4 @@
-import {BUILD_VERSION} from '../build-info.js?v=29a415-jonathan-raggie-atlases-20261122';
+import {BUILD_VERSION} from '../build-info.js?v=29a416-arcade-ink-ui-20261122';
 const MANUAL_SAVE_KEY='pxCombatManualV1';
 const MANUAL_UI_ID='pxCombatManualUI';
 

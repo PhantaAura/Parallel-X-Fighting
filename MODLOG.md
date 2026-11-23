@@ -19,3 +19,10 @@
 - Added a 6 × 6 transparent atlas and animation manifest for Raggie, using flat 2D hand-drawn cartoon art to match his original reference. His actions cover quick movement, flattening, folding through gaps, unfolding, feints, floating, and Paper Disc use.
 - Added both fighters to the sprite visual manifest registry so their atlases can render when story content uses them.
 - Both atlases use 192 × 192 cells, pivot [96, 178], default render scale 0.74, and right-facing orientation.
+
+## Arcade ink UI (2.9A.44)
+
+- Reworked the start screen, mode carousel, fighter setup, route chooser, and training controls with a flatter arcade palette, clearer hierarchy, and more legible text.
+- Removed the route chooser's CSS-drawn placeholder faces in favor of simple route-color letter badges.
+- Replaced internal build codenames in the player-facing version label with a clean version string.
+- Kept existing gameplay and route selection behavior unchanged.

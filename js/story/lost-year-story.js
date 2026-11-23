@@ -37,7 +37,7 @@ function buildScreen(){
   root.innerHTML=`
     <div class="lyShell">
       <header class="lyTop">
-        <button type="button" data-ly-back>← MODE SELECT</button>
+        <button type="button" data-ly-back>MODE SELECT</button>
         <div class="storyModeTitle"><small>PARALLELS X • STORY</small><h1>ROUTE <span>SELECT</span></h1></div>
         <button type="button" data-story-help>CONTROLS</button>
       </header>
